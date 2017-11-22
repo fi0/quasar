@@ -1,5 +1,6 @@
 import logging
 import sys
+import time
 
 from .config import config
 from .utils import strip_str, now_minus_hours
@@ -50,6 +51,7 @@ def _backfill(hours=None):
         if hours is None:
             _update_progress(db, current_page)
         current_page += 1
+        time.sleep(0.1)
         page = scraper.getJson('', params={'page': current_page})
 
     # Cleanup
