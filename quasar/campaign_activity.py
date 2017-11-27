@@ -35,11 +35,11 @@ def _backfill(hours=None):
                               'filter[updated_at]': start_time,
                               'pagination': 'cursor'})
 
-    if hours is not None:
+    if int(hours) > 120 or hours is None:
+        current_page = _get_start_page(db)
+    else:
         print("Current backfill hours are %s." % hours)
         current_page = 1
-    else:
-        current_page = _get_start_page(db)
 
     page = scraper.getJson('', params={'page': current_page})
 
@@ -48,7 +48,7 @@ def _backfill(hours=None):
         print("Current page: {}".format(current_page,))
         data = page['data']
         _process_records(db, data)
-        if hours is None:
+        if int(hours) > 120 or hours is None:
             _update_progress(db, current_page)
         current_page += 1
         time.sleep(0.1)
