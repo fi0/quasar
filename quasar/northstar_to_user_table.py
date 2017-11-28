@@ -51,7 +51,6 @@ class NorthstarDB:
                         addr_city, addr_state,\
                         addr_zip, country, language,\
                         agg_id, cgg_id,\
-                        moco_commons_profile_id,\
                         moco_current_status,\
                         moco_source_detail)\
                         VALUES(%s,%s,%s,%s,%s,%s,\
@@ -71,7 +70,6 @@ class NorthstarDB:
                         addr_city = %s, addr_state = %s,\
                         addr_zip = %s, country = %s, language = %s,\
                         agg_id = NULL, cgg_id = NULL,\
-                        moco_commons_profile_id = %s,\
                         moco_current_status = %s,\
                         moco_source_detail = %s",
                           (strip_str(user['id']),
@@ -93,8 +91,7 @@ class NorthstarDB:
                            strip_str(user['addr_zip']),
                            strip_str(user['country']),
                            strip_str(user['language']),
-                           strip_str(user['mobilecommons_id']),
-                           strip_str(user['mobilecommons_status']),
+                           strip_str(user['sms_status']),
                            strip_str(user['source_detail']),
                            strip_str(user['created_at']),
                            strip_str(user['last_authenticated_at']),
