@@ -41,9 +41,9 @@ class NorthstarDB:
 
     def save_user(self, user):
         self.db.query_str("INSERT INTO quasar.users (northstar_id,\
-                        northstar_created_at_timestamp,\
+                        created_at,\
                         last_logged_in, last_accessed, drupal_uid,\
-                        northstar_id_source_name,\
+                        source,\
                         email, facebook_id,\
                         mobile, birthdate,\
                         first_name, last_name,\
@@ -51,18 +51,18 @@ class NorthstarDB:
                         addr_city, addr_state,\
                         addr_zip, country, language,\
                         agg_id, cgg_id,\
-                        moco_current_status,\
-                        moco_source_detail)\
+                        sms_status,\
+                        source_detail)\
                         VALUES(%s,%s,%s,%s,%s,%s,\
                         %s,%s,%s,%s,%s,\
                         %s,%s,%s,%s,\
                         %s,%s,%s,%s,\
-                        NULL,NULL,%s,%s,%s)\
+                        NULL,NULL,%s,%s)\
                         ON DUPLICATE KEY UPDATE \
-                        northstar_created_at_timestamp = %s,\
+                        created_at = %s,\
                         last_logged_in = %s,\
                         last_accessed = %s, drupal_uid = %s,\
-                        northstar_id_source_name = %s,\
+                        source = %s,\
                         email = %s, facebook_id = %s,\
                         mobile = %s, birthdate = %s,\
                         first_name = %s, last_name = %s,\
@@ -70,8 +70,8 @@ class NorthstarDB:
                         addr_city = %s, addr_state = %s,\
                         addr_zip = %s, country = %s, language = %s,\
                         agg_id = NULL, cgg_id = NULL,\
-                        moco_current_status = %s,\
-                        moco_source_detail = %s",
+                        sms_status = %s,\
+                        source_detail = %s",
                           (strip_str(user['id']),
                            strip_str(user['created_at']),
                            strip_str(user['last_authenticated_at']),
@@ -111,8 +111,7 @@ class NorthstarDB:
                            strip_str(user['addr_zip']),
                            strip_str(user['country']),
                            strip_str(user['language']),
-                           strip_str(user['mobilecommons_id']),
-                           strip_str(user['mobilecommons_status']),
+                           strip_str(user['sms_status']),
                            strip_str(user['source_detail'])))
 
 
