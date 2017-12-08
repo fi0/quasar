@@ -16,8 +16,6 @@ class MemberEventLog:
     def drop_tables(self):
         drop_mel = "DROP TABLE IF EXISTS quasar.member_event_log;"
         drop_game_log = "DROP TABLE IF EXISTS quasar.sms_game_log;"
-        print(drop_mel)
-        print(drop_game_log)
         self.db.query(drop_mel)
         self.db.query(drop_game_log)
 
