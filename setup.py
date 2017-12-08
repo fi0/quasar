@@ -15,6 +15,7 @@ setup(
             'campaign_info_table_refresh = quasar.phoenix_to_campaign_info_table:main',
             'cio_import = quasar.cio_queue_process:main',
             'etl_monitoring = quasar.etl_monitoring:run_monitoring',
+            'member_event_log = quasar.member_event_log:mel',
             'get_competitions = quasar.gladiator_import:get_competitions',
             'import_UID_to_mobile_user_lookup_table = quasar.import_uid_by_phone_number:main',
             'legacy_cio_backfill = quasar.cio_legacy_backfill:legacy_cio_backfill',
