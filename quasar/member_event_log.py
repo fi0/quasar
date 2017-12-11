@@ -21,7 +21,7 @@ class MemberEventLog:
 
     def create_game_log(self):
         game_log_query = """
-         CREATE TABLE IF NOT EXISTS sms_game_log AS
+         CREATE TABLE IF NOT EXISTS quasar.sms_game_log AS
             (SELECT
                 concat(IF(mml.mu_uid > 0,
                             mml.mu_uid,
@@ -43,7 +43,7 @@ class MemberEventLog:
 
     def create_member_event_log(self):
         mel_query = """
-        CREATE TABLE IF NOT EXISTS temp_mel AS 
+        CREATE TABLE IF NOT EXISTS quasar.member_event_log AS
         (SELECT
             concat(a.northstar_id,
                    a.timestamp,
