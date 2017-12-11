@@ -1,9 +1,9 @@
-from datetime import datetime as dt
 import re
 import sys
 
 from .config import config
 from .database import Database
+
 
 class MemberEventLog:
     def __init__(self):
@@ -21,11 +21,11 @@ class MemberEventLog:
 
     def create_game_log(self):
         game_log_query = """
-         CREATE TABLE IF NOT EXISTS sms_game_log AS 
-            (SELECT 
-                concat(IF(mml.mu_uid > 0 , 
-                            mml.mu_uid, 
-                            mml.ms_phone_number), 
+         CREATE TABLE IF NOT EXISTS sms_game_log AS
+            (SELECT
+                concat(IF(mml.mu_uid > 0,
+                            mml.mu_uid,
+                            mml.ms_phone_number),
                             (mml.ms_activated_at),
                             mml.mc_run_id, 6) AS 'event_id',
                 IF(mml.mu_uid > 0 , mml.mu_uid, mml.ms_phone_number) AS 'uid',
@@ -45,16 +45,16 @@ class MemberEventLog:
         mel_query = """
         CREATE TABLE IF NOT EXISTS temp_mel AS 
         (SELECT
-            concat(a.northstar_id, 
-                   a.timestamp, 
-                   a.action_id, 
+            concat(a.northstar_id,
+                   a.timestamp,
+                   a.action_id,
                    a.action_serial_id) AS 'event_id',
             a.northstar_id AS 'northstar_id',
             a.timestamp AS 'timestamp',
             a.action AS 'action_type',
             a.action_id AS 'action_id',
             a.source AS 'source'
-        FROM 
+        FROM
             (SELECT ### campaign sign up ###
                 ca.northstar_id AS 'northstar_id',
                     ca.signup_created_at AS 'timestamp',
