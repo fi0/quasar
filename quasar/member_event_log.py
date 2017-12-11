@@ -76,14 +76,14 @@ class MemberEventLog:
             WHERE rb.post_id > 0
             UNION ALL
             SELECT ### site access ###
-                    u.northstar_id AS 'northstar_id',
+                u.northstar_id AS 'northstar_id',
                 u.last_accessed AS 'timestamp',
                 "site_access" AS 'action',
                 "3" AS 'action_id',
                 NULL AS 'source',
                 "0" AS 'action_serial_id'
             FROM quasar.users_log u
-            WHERE u.last_accessed >= u.northstar_created_at_timestamp
+            WHERE u.last_accessed >= u.created_at
             UNION ALL
             SELECT ### site login ###
                     u.northstar_id AS 'northstar_id',
@@ -93,7 +93,7 @@ class MemberEventLog:
                 NULL AS 'source',
                 "0" AS 'action_serial_id'
             FROM quasar.users_log u
-            WHERE u.last_logged_in >= u.northstar_created_at_timestamp
+            WHERE u.last_logged_in >= u.created_at
             UNION ALL
             SELECT ### sms game log ###
                 qu.northstar_id AS 'northstar_id',
