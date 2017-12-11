@@ -86,7 +86,7 @@ class MemberEventLog:
             WHERE u.last_accessed > u.created_at
             UNION ALL
             SELECT ### site login ###
-                    u.northstar_id AS 'northstar_id',
+                u.northstar_id AS 'northstar_id',
                 u.last_logged_in AS 'timestamp',
                 "site_login" AS 'action',
                 "4" AS 'action_id',
