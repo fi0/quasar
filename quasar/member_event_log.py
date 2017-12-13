@@ -83,17 +83,26 @@ class MemberEventLog:
                 NULL AS 'source',
                 "0" AS 'action_serial_id'
             FROM quasar.users_log u
-            WHERE u.last_accessed >= u.created_at
+            WHERE u.last_accessed > u.created_at
             UNION ALL
             SELECT ### site login ###
-                    u.northstar_id AS 'northstar_id',
+                u.northstar_id AS 'northstar_id',
                 u.last_logged_in AS 'timestamp',
                 "site_login" AS 'action',
                 "4" AS 'action_id',
                 NULL AS 'source',
                 "0" AS 'action_serial_id'
             FROM quasar.users_log u
-            WHERE u.last_logged_in >= u.created_at
+            WHERE u.last_logged_in > u.created_at
+            UNION ALL
+            SELECT ### account creation ###
+                u.northstar_id AS 'northstar_id',
+                u.created_at AS 'timestamp',
+                "account_creation" AS 'action',
+                "7" AS 'action_id',
+                u.source AS 'source',
+                u.northstar_id AS 'action_serial_id'
+            FROM quasar.users u
             UNION ALL
             SELECT ### sms game log ###
                 qu.northstar_id AS 'northstar_id',
