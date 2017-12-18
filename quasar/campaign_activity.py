@@ -92,6 +92,7 @@ def _process_records(db, rogue_page):
                               quantity = %s,\
                               why_participated = %s,\
                               signup_source = %s,\
+                              signup_details = %s,\
                               signup_created_at = %s,\
                               signup_updated_at = %s,\
                               post_id = -1,\
@@ -108,6 +109,7 @@ def _process_records(db, rogue_page):
                           strip_str(i['quantity']),
                           strip_str(i['why_participated']),
                           strip_str(i['signup_source']),
+                          strip_str(i['details']),
                           strip_str(i['created_at']),
                           strip_str(i['updated_at'])))
         else:
@@ -121,6 +123,7 @@ def _process_records(db, rogue_page):
                                   quantity = %s,\
                                   why_participated = %s,\
                                   signup_source = %s,\
+                                  signup_details = %s,\
                                   signup_created_at = %s,\
                                   signup_updated_at = %s,\
                                   post_id = %s,\
@@ -138,6 +141,7 @@ def _process_records(db, rogue_page):
                               strip_str(i['quantity']),
                               strip_str(i['why_participated']),
                               strip_str(i['signup_source']),
+                              strip_str(i['details']),
                               strip_str(i['created_at']),
                               strip_str(i['updated_at']),
                               strip_str(j['id']),
