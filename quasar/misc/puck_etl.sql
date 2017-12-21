@@ -106,9 +106,12 @@ CREATE TABLE public.device_northstar_crosswalk AS
 		ON nsids.deviceid_s = counts.deviceid_s
 	);
 
-GRANT SELECT ON public.phoenix_next_sessions TO public;
+GRANT SELECT ON public.phoenix_next_sessions TO jjensen;
 GRANT SELECT ON public.phoenix_next_events TO public;
 GRANT SELECT ON public.device_northstar_crosswalk TO public;
+GRANT SELECT ON ALL tables IN SCHEMA public TO jjensen;
+GRANT SELECT ON ALL tables IN SCHEMA public TO shasan;
+GRANT SELECT ON ALL tables IN SCHEMA public TO quasaradm;
 GRANT SELECT ON ALL tables IN SCHEMA heroku_wzsf6b3z TO jjensen;
 GRANT SELECT ON ALL tables IN SCHEMA heroku_wzsf6b3z TO shasan;
 GRANT SELECT ON ALL tables IN SCHEMA heroku_wzsf6b3z TO quasaradm;
