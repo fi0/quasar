@@ -47,7 +47,7 @@ echo "Puck mongo backup complete."
 
 # Restore to internal mongo cluster.
 echo "Restoring Puck dump to internal mongo cluster."
-mongorestore --drop -h mongo1.d12g.co /var/tmp/puck-mongo-dump
+mongorestore --drop -h mongo2.d12g.co /var/tmp/puck-mongo-dump
 
 # ToroDB Stampede to Quasar PostgreSQL DB
 sudo torodb-stampede &
@@ -66,4 +66,4 @@ sudo /usr/bin/pkill -f torodb-stampede
 
 # Refreshing Puck Postgres DB Tables
 echo "Refreshing Puck derived tables."
-/usr/bin/psql -h quasar-pg.c9ajz690mens.us-east-1.rds.amazonaws.com -U torodb quasar -a -f puck-etl.sql
+/usr/bin/psql -h quasar-pg.c9ajz690mens.us-east-1.rds.amazonaws.com -U torodb quasar -a -f puck_etl.sql
