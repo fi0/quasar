@@ -31,4 +31,4 @@ sudo /usr/bin/pkill -f torodb-stampede
 
 # Refreshing Puck Postgres DB Tables
 echo "Refreshing Puck derived tables."
-/usr/bin/psql -h quasar-pg.c9ajz690mens.us-east-1.rds.amazonaws.com -U torodb quasar -a -f puck_etl.sql
+/usr/bin/psql -h quasar-pg.c9ajz690mens.us-east-1.rds.amazonaws.com -U torodb quasar -a -f ~/puck_etl.sql
