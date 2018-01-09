@@ -31,7 +31,8 @@ class QuasarQueue:
         self.connection = pika.BlockingConnection(self.params)
         self.channel = self.connection.channel()
         self.channel.basic_qos(prefetch_count=config.QUEUE_PREFETCH_COUNT)
-        self.channel.queue_declare(amqp_queue, durable=True)
+        self.channel.queue_declare(amqp_queue, durable=True,
+                                   arguments={'x-max-priority': 2})
 
         self.amqp_uri = amqp_uri
         self.amqp_exchange = amqp_exchange
