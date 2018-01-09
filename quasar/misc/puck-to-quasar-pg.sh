@@ -19,7 +19,7 @@ sudo torodb-stampede &
 
 # Sleep for 10 mins to allow for full sync
 echo "Waiting for ToroDB sync to finish."
-for i in {1..600}
+for i in {1..1200}
 do
   echo "Been asleep for $i seconds."
   sleep 1
