@@ -1,5 +1,6 @@
 import json
 
+from .config import config
 from .database import Database
 from .queue import QuasarQueue
 from .utils import unixtime_to_isotime as u2i
