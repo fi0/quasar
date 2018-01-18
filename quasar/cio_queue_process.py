@@ -11,6 +11,10 @@ db = Database()
 
 class CioQueue(QuasarQueue):
 
+    def __init__(self):
+        super(CioQueue, self).__init__(config.AMQP_URI, config.BLINK_QUEUE,
+                                       config.BLINK_EXCHANGE)
+
     def process_message(self, message_data):
         print(''.join(("Processing C.IO event id: "
                        "{}.")).format(message_data['data']['event_id']))

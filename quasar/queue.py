@@ -21,10 +21,7 @@ class QuasarQueue:
     by children classes to specify exactly how to handle each message.
     """
 
-    def __init__(self,
-                 amqp_uri=config.AMQP_URI,
-                 amqp_queue=config.AMQP_QUEUE,
-                 amqp_exchange=config.AMQP_EXCHANGE):
+    def __init__(self, amqp_uri, amqp_queue, amqp_exchange):
         """Setup MySQL and AMQP connections and credentials."""
         self.params = pika.URLParameters(amqp_uri)
         self.params.socket_timeout = 5
