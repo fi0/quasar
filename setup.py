@@ -30,6 +30,7 @@ setup(
             'phoenix_next_cleanup = quasar.phoenix_next_queue_cleanup:main',
             'regenerate_mobile_master_lookup_lite_table = quasar.create_mobile_master_lookup_lite:main',
             'runscope_cleanup = quasar.cio_runscope_queue_cleanup:main',
+            'reportbacks_asterisk = quasar.reportback_asterisk:run_load_reportbacks',
             'scrape_moco_profiles = quasar.moco_scraper:start_profile_scrape',
             'scrape_moco_messages = quasar.moco_scraper:start_message_scrape',
             'update_mobile = quasar.jc_update_mobile:main',
