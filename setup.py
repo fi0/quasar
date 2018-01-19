@@ -34,6 +34,7 @@ setup(
             'rogue_test_route = quasar.rogue_queue_test:test_consume',
             'rogue_test_consume = quasar.rogue_queue_test:rogue_consume',
             'runscope_cleanup = quasar.cio_runscope_queue_cleanup:main',
+            'reportbacks_asterisk = quasar.reportback_asterisk:run_load_reportbacks',
             'scrape_moco_profiles = quasar.moco_scraper:start_profile_scrape',
             'scrape_moco_messages = quasar.moco_scraper:start_message_scrape',
             'update_mobile = quasar.jc_update_mobile:main',
