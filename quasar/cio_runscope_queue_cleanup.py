@@ -1,7 +1,13 @@
+from .config import config
 from .queue import QuasarQueue
 
 
 class RunscopeQueue(QuasarQueue):
+
+    def __init__(self):
+        super(RunscopeQueue, self).__init__(config.AMQP_URI,
+                                            config.BLINK_QUEUE,
+                                            config.BLINK_EXCHANGE)
 
     def process_message(self, message_data):
         email = message_data['data']['data']['email_address']

@@ -1,5 +1,6 @@
 import json
 
+from .config import config
 from .database import Database
 from .queue import QuasarQueue
 from .utils import unixtime_to_isotime as u2i
@@ -10,6 +11,10 @@ db = Database()
 
 
 class CioQueue(QuasarQueue):
+
+    def __init__(self):
+        super(CioQueue, self).__init__(config.AMQP_URI, config.BLINK_QUEUE,
+                                       config.BLINK_EXCHANGE)
 
     def process_message(self, message_data):
         print(''.join(("Processing C.IO event id: "
