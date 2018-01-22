@@ -13,8 +13,8 @@ class RogueQueue(QuasarQueue):
 
     def process_message(self, message_data):
         message = json.loads(message_data)
-        print("Meta is {}.".format(message['meta']))
-        print("Data is {}.".format(message['data']))
+        print(''.join(("Timestamp {} for Rogue message consumed."
+                       "")).format(message['data']['data']['timestamp']))
 
 
 rogue_queue = RogueQueue()
@@ -48,11 +48,10 @@ class TestQueue(QuasarQueue):
                 message['data']['meta']['message_source'] == 'rogue'):
             print("Routing Rogue message to Rogue queue.")
             rogue_queue.pub_message(message_data)
-        elif int(message['data']['meta']['message_num']) < 100:
-            print(''.join(("Generic message {} processed."
-                           "")).format(message['data']['meta']['message_num']))
         else:
-            print("Message just ack'd.")
+            message_num = message['data']['meta']['message_num']
+            print(''.join(("Generic message {} processed."
+                           "")).format(message_num))
 
 
 test_queue = TestQueue()
@@ -66,7 +65,6 @@ def pub_rogue():
 
 def test_consume():
     test_queue.start_consume()
-
 
 def rogue_consume():
     rogue_queue.start_consume()

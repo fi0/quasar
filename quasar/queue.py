@@ -30,6 +30,7 @@ class QuasarQueue:
         self.channel.basic_qos(prefetch_count=config.QUEUE_PREFETCH_COUNT)
         self.channel.queue_declare(amqp_queue, durable=True,
                                    arguments={'x-max-priority': 2})
+        self.channel.confirm_delivery()
 
         self.amqp_uri = amqp_uri
         self.amqp_exchange = amqp_exchange
