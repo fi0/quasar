@@ -2,6 +2,7 @@ import sys
 import os
 import datetime as dt
 import pandas as pd
+import sqlalchemy as sal
 
 from .config import config
 from .utils import QuasarException
@@ -218,7 +219,13 @@ class ETLMonitoring:
             name='monitoring',
             con=self.db.engine,
             schema='quasar',
-            if_exists='append'
+            if_exists='append',
+            index=False,
+            dtype={'timestamp': sal.types.NVARCHAR(length=64),
+                   'output': sal.types.INTEGER(),
+                   'query': sal.types.INTEGER(),
+                   'table': sal.types.NVARCHAR(length=64)
+                   }
         )
 
     @staticmethod
