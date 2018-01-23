@@ -3,6 +3,7 @@ import json
 from .config import config
 from .database import Database
 from .queue import QuasarQueue
+from .rogue_queue import RogueQueue
 from .utils import unixtime_to_isotime as u2i
 from .utils import strip_str
 
@@ -10,27 +11,18 @@ from .utils import strip_str
 db = Database()
 
 
-class RogueQueue(QuasarQueue):
-
-    def __init__(self):
-        super(RogueQueue, self).__init__(config.AMQP_URI, config.ROGUE_QUEUE,
-                                         config.QUASAR_EXCHANGE)
-
-
-rogue_queue = RogueQueue()
-
-
 class CioQueue(QuasarQueue):
 
     def __init__(self):
         super(CioQueue, self).__init__(config.AMQP_URI, config.BLINK_QUEUE,
                                        config.BLINK_EXCHANGE)
+        self.rogue_queue = RogueQueue()
 
     def process_message(self, message_data):
         if ('message_source' in message_data['data']['meta'] and
                 message_data['data']['meta']['message_source'] == 'rogue'):
             print("Routing message to Rogue queue.")
-            rogue_queue.pub_message(message_data)
+            self.rogue_queue.pub_message(message_data)
         else:
             print(''.join(("Processing C.IO event id: "
                            "{}.")).format(message_data['data']['event_id']))
