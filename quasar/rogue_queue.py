@@ -1,8 +1,8 @@
 import json
-import time
 
 from .config import config
 from .queue import QuasarQueue
+
 
 class RogueQueue(QuasarQueue):
 
