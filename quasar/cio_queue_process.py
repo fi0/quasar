@@ -27,8 +27,8 @@ class CioQueue(QuasarQueue):
                                        config.BLINK_EXCHANGE)
 
     def process_message(self, message_data):
-        if ('message_source' in message['data']['meta'] and
-                message['data']['meta']['message_source'] == 'rogue'):
+        if ('message_source' in message_data['data']['meta'] and
+                message_data['data']['meta']['message_source'] == 'rogue'):
             print("Routing message to Rogue queue.")
             rogue_queue.pub_message(message_data)
         else:
