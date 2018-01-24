@@ -10,6 +10,16 @@ from .utils import strip_str
 db = Database()
 
 
+class RogueQueue(QuasarQueue):
+
+    def __init__(self):
+        super(RogueQueue, self).__init__(config.AMQP_URI, config.ROGUE_QUEUE,
+                                         config.QUASAR_EXCHANGE)
+
+
+rogue_queue = RogueQueue()
+
+
 class CioQueue(QuasarQueue):
 
     def __init__(self):
@@ -17,14 +27,19 @@ class CioQueue(QuasarQueue):
                                        config.BLINK_EXCHANGE)
 
     def process_message(self, message_data):
-        print(''.join(("Processing C.IO event id: "
-                       "{}.")).format(message_data['data']['event_id']))
-        log_event(db, message_data)
-        customer_event(db, message_data)
-        event_type = message_data['data']['event_type']
-        if (event_type == 'customer_subscribed' or
-                event_type == 'customer_unsubscribed'):
-            legacy_sub_unsub(db, message_data)
+        if ('message_source' in message_data['data']['meta'] and
+                message_data['data']['meta']['message_source'] == 'rogue'):
+            print("Routing message to Rogue queue.")
+            rogue_queue.pub_message(message_data)
+        else:
+            print(''.join(("Processing C.IO event id: "
+                           "{}.")).format(message_data['data']['event_id']))
+            log_event(db, message_data)
+            customer_event(db, message_data)
+            event_type = message_data['data']['event_type']
+            if (event_type == 'customer_subscribed' or
+                    event_type == 'customer_unsubscribed'):
+                legacy_sub_unsub(db, message_data)
 
 
 def log_event(db, message_data):
