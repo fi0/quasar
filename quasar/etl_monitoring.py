@@ -97,7 +97,7 @@ class ETLMonitoring:
         for query in queries.values():
             value = self.get_value(query)
             values.append(value)
-            time = dt.datetime.now().strftime("%m-%d-%y %H:%M:%S")
+            time = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             ts.append(time)
             this_table = query.split('FROM')[1].split(' ')[1]
             table.append(this_table)
@@ -221,7 +221,7 @@ class ETLMonitoring:
             schema='quasar',
             if_exists='append',
             index=False,
-            dtype={'timestamp': sal.types.NVARCHAR(length=64),
+            dtype={'timestamp': sal.types.DATETIME(),
                    'output': sal.types.INTEGER(),
                    'query': sal.types.INTEGER(),
                    'table': sal.types.NVARCHAR(length=64)

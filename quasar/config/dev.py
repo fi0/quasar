@@ -33,3 +33,6 @@ DS_ROGUE_API_KEY = 'someapikey'
 CAMPAIGN_ACTIVITY_TABLE = 'campaign_activity'
 ROGUE_URI = 'https://rogue.dosomething.org'
 ROGUE_PROGRESS_TABLE = 'quasar_etl_status.rogue_ingestion'
+
+#ETL Monitoring Vars
+ETLMON_SLACKBOT_TOKEN='xoxp-2152988404-201786385638-247781009026-455941a49d3d5967698cbca9e222356b'
