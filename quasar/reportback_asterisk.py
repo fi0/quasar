@@ -1,4 +1,5 @@
 import pandas as pd
+import sqlalchemy as sal
 
 from .etl_monitoring import DataFrameDB
 
@@ -18,7 +19,16 @@ class LoadReportback:
             con=self.db.engine,
             schema='playpen',
             if_exists='replace',
-            index=False
+            index=False,
+            dtype={'date': sal.types.DATE(),
+                   'rbs': sal.types.INTEGER(),
+                   'calls': sal.types.INTEGER(),
+                   'social': sal.types.INTEGER(),
+                   'voter_registrations': sal.types.INTEGER(),
+                   'other': sal.types.INTEGER(),
+                   'campaign_run_id': sal.types.INTEGER(),
+                   'campaign': sal.types.NVARCHAR(length=64)
+                   }
         )
 
     def read_load(self):
