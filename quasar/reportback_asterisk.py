@@ -9,8 +9,8 @@ class LoadReportback:
         db_opts = {}
         self.db = DataFrameDB(db_opts)
 
-    def read_csv(self):
-        df = pd.read_csv("quasar/misc/reportbacks_asterisk.csv")
+    def read_csv(self, path):
+        df = pd.read_csv(path)
         return df
 
     def load_csv(self, df):
