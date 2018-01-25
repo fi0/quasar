@@ -11,6 +11,5 @@ class RogueQueue(QuasarQueue):
                                          config.QUASAR_EXCHANGE)
 
     def process_message(self, message_data):
-        message = json.loads(message_data)
         print(''.join(("Timestamp {} for Rogue message consumed."
-                       "")).format(message['data']['data']['timestamp']))
+                       "")).format(message_data['data']['data']['timestamp']))
