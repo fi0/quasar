@@ -1,4 +1,5 @@
 import json
+import pydash
 import time
 
 
@@ -20,7 +21,7 @@ class TestQueue(QuasarQueue):
                            "queue {}.")).format(i, config.TEST_QUEUE))
             message_data = {"data": {"data": {"timestamp": time.time()},
                             "meta": {"message_num": i}}}
-            self.pub_message(self.body_encode(message_data))
+            self.pub_message(message_data)
 
     def pub_test_rogue_messages(self):
         for i in range(100):
@@ -28,16 +29,14 @@ class TestQueue(QuasarQueue):
                            "queue {}.")).format(i, config.TEST_QUEUE))
             message_data = {"data": {"data": {"timestamp": time.time()},
                             "meta": {"message_source": "rogue"}}}
-            self.pub_message(self.body_encode(message_data))
+            self.pub_message(message_data)
 
     def process_message(self, message_data):
-        message = json.loads(message_data)
-        if ('message_source' in message['data']['meta'] and
-                message['data']['meta']['message_source'] == 'rogue'):
+        if pydash.get(message_data, 'data.meta.message_source') == 'rogue':
             print("Routing Rogue message to Rogue queue.")
             self.rogue_queue.pub_message(message_data)
         else:
-            message_num = message['data']['meta']['message_num']
+            message_num = message_data['data']['meta']['message_num']
             print(''.join(("Generic message {} processed."
                            "")).format(message_num))
 
