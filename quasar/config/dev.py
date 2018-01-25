@@ -36,3 +36,6 @@ ROGUE_PROGRESS_TABLE = 'quasar_etl_status.rogue_ingestion'
 
 # ETL Monitoring Vars
 ETLMON_SLACKBOT_TOKEN = 'SLACKBOT_TOKEN'
+
+# Rb CSV Path
+RB_CSV_PATH = 'PATH'
