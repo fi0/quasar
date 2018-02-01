@@ -20,7 +20,11 @@ class CioQueue(QuasarQueue):
         if pydash.get(message_data, 'data.meta.message_source') == 'rogue':
             print("Routing message to Rogue queue.")
             self.rogue_queue.pub_message(message_data)
+        elif (pydash.get(message_data, 'data.test1') is not None or
+                pydash.get(message_data, 'data.event') is not None):
+            pass
         else:
+            print(message_data)
             print(''.join(("Processing C.IO event id: "
                            "{}.")).format(message_data['data']['event_id']))
             self.log_event(message_data)
@@ -30,13 +34,13 @@ class CioQueue(QuasarQueue):
                     event_type == 'customer_unsubscribed'):
                 self.legacy_sub_unsub(message_data)
 
-    def log_event(message_data):
+    def log_event(self, message_data):
         self.db.query_str(''.join(("INSERT INTO cio.event_log"
                           "(meta, data) VALUES (%s, %s)")),
                           (json.dumps(message_data['meta']),
                            json.dumps(message_data['data'])))
 
-    def customer_event(message_data):
+    def customer_event(self, message_data):
         self.db.query_str(''.join(("INSERT INTO cio.customer_event "
                                    "VALUES (%s, %s, %s, %s)")),
                           (message_data['data']['event_type'],
@@ -44,7 +48,7 @@ class CioQueue(QuasarQueue):
                            u2i(message_data['data']['timestamp']),
                            message_data['data']['data']['customer_id']))
 
-    def legacy_sub_unsub(message_data):
+    def legacy_sub_unsub(self, message_data):
         email = message_data['data']['data']['email_address']
         nsid = self.db.query_str(''.join(("SELECT northstar_id "
                                           "FROM quasar.users "
