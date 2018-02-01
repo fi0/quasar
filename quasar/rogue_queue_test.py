@@ -59,3 +59,5 @@ def test_consume():
 def rogue_consume():
     rogue_queue = RogueQueue()
     rogue_queue.start_consume()
+
+
