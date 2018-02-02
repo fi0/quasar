@@ -49,6 +49,7 @@ class MemberEventLog:
                    a.timestamp,
                    a.action_id,
                    a.action_serial_id) AS 'event_id',
+            a.action_serial_id,
             a.northstar_id AS 'northstar_id',
             a.timestamp AS 'timestamp',
             a.action AS 'action_type',
