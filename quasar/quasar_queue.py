@@ -1,5 +1,6 @@
 import json
 import pydash
+import sys
 
 from .config import config
 from .database import Database
@@ -20,6 +21,7 @@ class CioQueue(QuasarQueue):
         if pydash.get(message_data, 'data.meta.message_source') == 'rogue':
             print("Routing message to Rogue queue.")
             self.rogue_queue.pub_message(message_data)
+        # Remove this elif before pushing to Prod. For clearing stage only.
         elif (pydash.get(message_data, 'data.test1') is not None or
                 pydash.get(message_data, 'data.event') is not None):
             pass
@@ -80,12 +82,15 @@ class RogueQueue(QuasarQueue):
         super(RogueQueue, self).__init__(config.AMQP_URI, config.ROGUE_QUEUE,
                                          config.QUASAR_EXCHANGE)
         self.db = Database()
+        self.campaign_activity_table = config.CAMPAIGN_ACTIVITY_TABLE
+        self.campaign_activity_log_table = config.CAMPAIGN_ACTIVITY_LOG_TABLE
+        self.campaign_activity_details = config.CAMPAIGN_ACTIVITY_DETAIL_TABLE
 
     def process_message(self, message_data):
         data = message_data['data']
-        if data['posts']['data'] == []:
+        if message_data['meta']['type'] == 'signup':
             self.db.query_str("REPLACE INTO " +
-                              campaign_activity_table +
+                              self.campaign_activity_table +
                               " SET northstar_id = %s,\
                                    signup_id = %s,\
                                    campaign_id = %s,\
@@ -114,10 +119,10 @@ class RogueQueue(QuasarQueue):
                                strip_str(data['created_at']),
                                strip_str(data['updated_at'])))
             print("Signup {} ETL'd.".format(data['signup_id']))
-        else:
-            for post in data['posts']['data']:
+        elif message_data['meta']['type'] == 'post':
+            if (data['deleted_at'] is None:
                 self.db.query_str("REPLACE INTO " +
-                                  campaign_activity_table +
+                                  self.campaign_activity_table +
                                   " SET northstar_id = %s,\
                                        signup_id = %s,\
                                        campaign_id = %s,\
@@ -154,4 +159,93 @@ class RogueQueue(QuasarQueue):
                                    strip_str(post['source']),
                                    strip_str(post['created_at']),
                                    strip_str(post['updated_at'])))
+                if data['details'] is not None:
+                    details = data['details']
+                    self.db.query_str("REPLACE INTO " +
+                                      self.campaign_activity_details +
+                                      " SET post_id = %s,\
+                                           hostname = %s,\
+                                           referral_code = %s,\
+                                           partner_comms_opt_in = %s,\
+                                           created_at = %s,\
+                                           updated_at = %s,\
+                                           voter_registration_status = %s,\
+                                           voter_registration_source = %s,\
+                                           voter_registration_method = %s,\
+                                           voting_method_preference = %s,\
+                                           email_subscribed = %s,\
+                                           sms_subscribed = %s",
+                                      (details['hostname'],
+                                       details['referral-code'],
+                                       details['partner-comms-opt-in'],
+                                       details['created-at'],
+                                       details['updated-at'],
+                                       details['voter-registration-status'],
+                                       details['voter-registration-source'],
+                                       details['voter-registration-method'],
+                                       details['voting-method-preference'],
+                                       details['email subscribed'],
+                                       details['sms subscribed']))
                 print("Post {} ETL'd.".format(post['id']))
+            else:
+                self.db.query_str("REPLACE INTO " +
+                                  campaign_activity_table +
+                                  " SET northstar_id = %s,\
+                                       signup_id = %s,\
+                                       campaign_id = %s,\
+                                       campaign_run_id = %s,\
+                                       quantity = %s,\
+                                       why_participated = %s,\
+                                       signup_source = %s,\
+                                       signup_details = %s,\
+                                       signup_created_at = %s,\
+                                       signup_updated_at = %s,\
+                                       post_id = %s,\
+                                       url = %s,\
+                                       caption = %s,\
+                                       status = 'deleted',\
+                                       remote_addr = %s,\
+                                       post_source = %s,\
+                                       submission_created_at = %s,\
+                                       submission_updated_at = %s",
+                                  (strip_str(data['northstar_id']),
+                                   strip_str(data['signup_id']),
+                                   strip_str(data['campaign_id']),
+                                   strip_str(data['campaign_run_id']),
+                                   strip_str(data['quantity']),
+                                   strip_str(data['why_participated']),
+                                   strip_str(data['signup_source']),
+                                   strip_str(data['details']),
+                                   strip_str(data['created_at']),
+                                   strip_str(data['updated_at']),
+                                   strip_str(post['id']),
+                                   post['media']['url'],
+                                   strip_str(post['media']['caption']),
+                                   strip_str(post['remote_addr']),
+                                   strip_str(post['source']),
+                                   strip_str(post['created_at']),
+                                   strip_str(post['deleted_at'])))
+                self.db.query_str("INSERT IGNORE INTO " +
+                                  self.campaign_activity_log_table +
+                                  " * FROM " +
+                                  self.campaign_activity_table +
+                                  " WHERE post_id = %s AND" +
+                                  " signup_updated_at = %s",
+                                  (strip_str(post['id']),
+                                   strip_str(['data']['signup_updated_at'])))
+                self.db.query_str("DELETE FROM " +
+                                  self.campaign_activity_table +
+                                  " WHERE northstar_id = %s AND" +
+                                  " signup_id = %s AND" +
+                                  " post_id = %s AND" +
+                                  " signup_updated_at = %s",
+                                  (strip_str(['data']['northstar_id']),
+                                   strip_str(['data']['signup_id']),
+                                   strip_str(post['id']),
+                                   strip_str(['data']['signup_created_at']),
+                                   strip_str(['data']['signup_updated_at'])))
+                print("Post {} deleted and archived.".format(post['id']))
+        else:
+            print("Unknown rogue message type. Exiting.")
+            sys.exit(1)
+
