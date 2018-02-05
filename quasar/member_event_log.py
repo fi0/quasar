@@ -49,6 +49,7 @@ class MemberEventLog:
                    a.timestamp,
                    a.action_id,
                    a.action_serial_id) AS 'event_id',
+            a.action_serial_id,
             a.northstar_id AS 'northstar_id',
             a.timestamp AS 'timestamp',
             a.action AS 'action_type',
@@ -102,23 +103,20 @@ class MemberEventLog:
                 "7" AS 'action_id',
                 u.source AS 'source',
                 u.northstar_id AS 'action_serial_id'
-            FROM quasar.users u
-            UNION ALL
-            SELECT ### sms game log ###
-                qu.northstar_id AS 'northstar_id',
-                sgl.timestamp AS 'timestamp',
-                sgl.action AS 'action',
-                sgl.action_id AS 'action_id',
-                NULL AS 'source',
-                "0" AS 'action_serial_id'
-            FROM sms_game_log sgl
-            LEFT JOIN quasar.users qu on qu.drupal_uid = sgl.uid) AS a);"""
+            FROM quasar.users u) AS a)
+        ORDER BY a.timestamp asc;"""
         self.db.query(mel_query)
+
+    def add_indices(self):
+        index_query = "ALTER TABLE `quasar.member_event_log` " \
+                      "ADD INDEX (event_id, northstar_id, timestamp)"
+        self.db.query(index_query)
 
     def sequence(self):
         self.drop_tables()
         self.create_game_log()
         self.create_member_event_log()
+        self.add_indices()
         self.db.disconnect()
 
 

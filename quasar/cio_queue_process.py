@@ -1,4 +1,5 @@
 import json
+import pydash
 
 from .config import config
 from .database import Database
@@ -19,8 +20,7 @@ class CioQueue(QuasarQueue):
         self.rogue_queue = RogueQueue()
 
     def process_message(self, message_data):
-        if ('message_source' in message_data['data']['meta'] and
-                message_data['data']['meta']['message_source'] == 'rogue'):
+        if pydash.get(message_data, 'data.meta.message_source') == 'rogue':
             print("Routing message to Rogue queue.")
             self.rogue_queue.pub_message(message_data)
         else:
