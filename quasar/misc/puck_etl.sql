@@ -22,7 +22,7 @@ CREATE TEMPORARY TABLE path_campaign_lookup AS
 
 CREATE TABLE public.phoenix_next_events AS 
 	(SELECT 
-		CASE WHEN meta.id_s IS NULL THEN meta.did::VARCHAR ELSE meta.id_s END AS event_id,
+		meta.did::VARCHAR AS event_id,
 		meta.timestamp_d AS ts,
 		event.name_s AS event_name,
 		event.source_s AS event_source,
