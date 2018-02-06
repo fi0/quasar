@@ -108,7 +108,7 @@ class MemberEventLog:
         self.db.query(mel_query)
 
     def add_indices(self):
-        index_query = ''.join(("ALTER TABLE `quasar.member_event_log` "
+        index_query = ''.join(("ALTER TABLE member_event_log "
                                "ADD INDEX "
                                "(event_id, northstar_id, timestamp)"))
         self.db.query(index_query)
