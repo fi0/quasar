@@ -21,10 +21,6 @@ class CioQueue(QuasarQueue):
         if pydash.get(message_data, 'data.meta.message_source') == 'rogue':
             print("Routing message to Rogue queue.")
             self.rogue_queue.pub_message(message_data)
-        # Remove this elif before pushing to Prod. For clearing stage only.
-        elif (pydash.get(message_data, 'data.test1') is not None or
-                pydash.get(message_data, 'data.event') is not None):
-            pass
         else:
             print(message_data)
             print(''.join(("Processing C.IO event id: "
