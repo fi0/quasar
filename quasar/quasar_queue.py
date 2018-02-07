@@ -82,136 +82,162 @@ class RogueQueue(QuasarQueue):
         self.campaign_activity_log_table = config.CAMPAIGN_ACTIVITY_LOG_TABLE
         self.campaign_activity_details = config.CAMPAIGN_ACTIVITY_DETAIL_TABLE
 
+    def _add_signup(self, signup_data):
+        self.db_query_str(''.join(("REPLACE INTO "
+                                   self.campaign_activity_table
+                                   " SET northstar_id = %s, "
+                                   "signup_id = %s, campaign_id = %s, "
+                                   "campaign_run_id = %s, quantity = %s, "
+                                   "why_participated = %s, "
+                                   "signup_source = %s, signup_details = %s, "
+                                   "signup_created_at = %s, "
+                                   "signup_updated_at = %s, "
+                                   "post_id = -1, url = NULL, "
+                                   "caption = NULL, status = NULL, "
+                                   "remote_addr = NULL, post_source = NULL, "
+                                   "submission_created_at = ''")),
+                          signup_data['northstar_id'],
+                          signup_data['signup_id'],
+                          signup_data['campaign_id'],
+                          signup_data['campaign_run_id'],
+                          signup_data['quantity'],
+                          signup_data['why_participated'],
+                          signup_data['signup_source'],
+                          signup_data['details'],
+                          signup_data['created_at'],
+                          signup_data['updated_at'])
+        print("Signup {} ETL'd.".format(signup_data['signup_id']))
+
+    def _delete_signup(self, signup_id, deleted_at):
+        # Set signup status to 'deleted'.
+        self.db.query_str(''.join(("REPLACE INTO "
+                                   self.campaign_activity_table 
+                                  " SET status = %s, "
+                                  "submission_updated_at = %s, "
+                                  "WHERE signup_id = %s")),
+                          ('deleted', deleted_at, signup_id))
+        # Copy signup into campaign_activity_log table.
+        self.db.query_str(''.join(("INSERT IGNORE INTO " 
+                                   self.campaign_activity_log_table
+                                   " * FROM "
+                                   self.campaign_activity_table
+                                   " WHERE signup_id = %s AND "
+                                   "submission_updated_at = %s")),
+                          (signup_id, deleted_at))
+        # Delete signup from campaign_activity table.
+        self.db.query_str(''.join(("DELETE FROM " +
+                                   self.campaign_activity_table
+                                   " WHERE status = %s AND "
+                                   "signup_id = %s AND "
+                                   "submission_updated_at = %s")),
+                          ('deleted', signup_id, deleted_at))
+        print("Post {} deleted and archived.".format(post_id))
+
+    def _add_post(self, post_data):
+        self.db.query_str(''.join(("REPLACE INTO "
+                                   self.campaign_activity_table
+                                   " SET northstar_id = %s, "
+                                   "signup_id = %s, campaign_id = %s, "
+                                   "campaign_run_id = %s, quantity = %s, "
+                                   "why_participated = %s,"
+                                   "signup_source = %s, "
+                                   "signup_created_at = %s, "
+                                   "signup_updated_at = %s, "
+                                   "post_id = %s, url = %s, caption = %s, "
+                                   "status = %s, remote_addr = %s, "
+                                   "post_source = %s, "
+                                   "submission_created_at = %s, "
+                                   "submission_updated_at = %s, "
+                                   "action = %s, post_type = %s")),
+                          post_data['northstar_id'],
+                          post_data['signup_id'],
+                          post_data['campaign_id'],
+                          post_data['campaign_run_id'],
+                          post_data['quantity'],
+                          post_data['why_participated'],
+                          post_data['signup_source'],
+                          post_data['signup_created_at'],
+                          post_data['signup_updated_at'],
+                          post_data['id'],
+                          post_data['media']['url'],
+                          post_data['media']['caption'],
+                          post_data['status'],
+                          post_data['remote_addr'],
+                          post_data['source'],
+                          post_data['created_at'],
+                          post_data['updated_at'],
+                          post_data['action'],
+                          post_data['type'])
+        print("Post {} ETL'd.".format(post_data['id']))
+
+    def _add_post_details(self, post_id, post_details):
+        # Is this line necessary, or just needs this during testing? Ask @DFurnes.
+        details = json.loads(post_details)
+        self.db.query_str(''.join(("REPLACE INTO "
+                                   self.campaign_activity_details 
+                                   " SET post_id = %s, hostname = %s, "
+                                   "referral_code = %s, "
+                                   "partner_comms_opt_in = %s, "
+                                   "created_at = %s, updated_at = %s, "
+                                   "voter_registration_status = %s, "
+                                   "voter_registration_source = %s, "
+                                   "voter_registration_method = %s, "
+                                   "voting_method_preference = %s, "
+                                   "email_subscribed = %s, "
+                                   "sms_subscribed = %s")),
+                          post_id,
+                          details['hostname'],
+                          details['referral-code'],
+                          details['partner-comms-opt-in'],
+                          details['created-at'],
+                          details['updated-at'],
+                          details['voter-registration-status'],
+                          details['voter-registration-source'],
+                          details['voter-registration-method'],
+                          details['voting-method-preference'],
+                          details['email subscribed'],
+                          details['sms subscribed'])
+        print("Details for post {} ETL'd.".format(post_id))
+
+    def _delete_post(self, post_id, deleted_at):
+        # Set post status to 'deleted'.
+        self.db.query_str(''.join(("REPLACE INTO "
+                                   self.campaign_activity_table 
+                                  " SET status = %s, "
+                                  "submission_updated_at = %s, "
+                                  "WHERE post_id = %s")),
+                          ('deleted', deleted_at, post_id))
+        # Copy post into campaign_activity_log table.
+        self.db.query_str(''.join(("INSERT IGNORE INTO " 
+                                   self.campaign_activity_log_table
+                                   " * FROM "
+                                   self.campaign_activity_table
+                                   " WHERE post_id = %s AND "
+                                   "submission_updated_at = %s")),
+                          (post_id, deleted_at))
+        # Delete record from campaign_activity table.
+        self.db.query_str(''.join(("DELETE FROM " +
+                                   self.campaign_activity_table
+                                   " WHERE status = %s AND "
+                                   "post_id = %s AND "
+                                   "submission_updated_at = %s")),
+                          ('deleted', post_id, deleted_at))
+        print("Post {} deleted and archived.".format(post_id))
+
     def process_message(self, message_data):
         data = message_data['data']
         if data['meta']['type'] == 'signup':
-            self.db.query_str("REPLACE INTO " +
-                              self.campaign_activity_table +
-                              " SET northstar_id = %s,\
-                                   signup_id = %s,\
-                                   campaign_id = %s,\
-                                   campaign_run_id = %s,\
-                                   quantity = %s,\
-                                   why_participated = %s,\
-                                   signup_source = %s,\
-                                   signup_details = %s,\
-                                   signup_created_at = %s,\
-                                   signup_updated_at = %s,\
-                                   post_id = -1,\
-                                   url = NULL,\
-                                   caption = NULL,\
-                                   status = NULL,\
-                                   remote_addr = NULL,\
-                                   post_source = NULL,\
-                                   submission_created_at = ''",
-                              (strip_str(data['northstar_id']),
-                               strip_str(data['signup_id']),
-                               strip_str(data['campaign_id']),
-                               strip_str(data['campaign_run_id']),
-                               strip_str(data['quantity']),
-                               strip_str(data['why_participated']),
-                               strip_str(data['signup_source']),
-                               strip_str(data['details']),
-                               strip_str(data['created_at']),
-                               strip_str(data['updated_at'])))
-            print("Signup {} ETL'd.".format(data['signup_id']))
+            if not pydash.get(data, 'deleted_at'):
+                self._add_signup(data)
+            else:
+                self._delete_signup(data['id'], data['deleted_at'])
         elif data['meta']['type'] == 'post':
             if not pydash.get(data, 'deleted_at'):
-                self.db.query_str("REPLACE INTO " +
-                                  self.campaign_activity_table +
-                                  " SET northstar_id = %s,\
-                                       signup_id = %s,\
-                                       campaign_id = %s,\
-                                       campaign_run_id = %s,\
-                                       quantity = %s,\
-                                       why_participated = %s,\
-                                       signup_source = %s,\
-                                       signup_created_at = %s,\
-                                       signup_updated_at = %s,\
-                                       post_id = %s,\
-                                       url = %s,\
-                                       caption = %s,\
-                                       status = %s,\
-                                       remote_addr = %s,\
-                                       post_source = %s,\
-                                       submission_created_at = %s,\
-                                       submission_updated_at = %s,\
-                                       action = %s,\
-                                       post_type = %s",
-                                  (strip_str(data['northstar_id']),
-                                   strip_str(data['signup_id']),
-                                   strip_str(data['campaign_id']),
-                                   strip_str(data['campaign_run_id']),
-                                   strip_str(data['quantity']),
-                                   strip_str(data['why_participated']),
-                                   strip_str(data['signup_source']),
-                                   strip_str(data['signup_created_at']),
-                                   strip_str(data['signup_updated_at']),
-                                   strip_str(data['id']),
-                                   data['media']['url'],
-                                   strip_str(data['media']['caption']),
-                                   strip_str(data['status']),
-                                   strip_str(data['remote_addr']),
-                                   strip_str(data['source']),
-                                   strip_str(data['created_at']),
-                                   strip_str(data['updated_at']),
-                                   strip_str(data['action']),
-                                   strip_str(data['type'])))
+                self._add_post(data)
                 if data['details'] is not None:
-                    details = json.loads(data['details'])
-                    self.db.query_str("REPLACE INTO " +
-                                      self.campaign_activity_details +
-                                      " SET post_id = %s,\
-                                           hostname = %s,\
-                                           referral_code = %s,\
-                                           partner_comms_opt_in = %s,\
-                                           created_at = %s,\
-                                           updated_at = %s,\
-                                           voter_registration_status = %s,\
-                                           voter_registration_source = %s,\
-                                           voter_registration_method = %s,\
-                                           voting_method_preference = %s,\
-                                           email_subscribed = %s,\
-                                           sms_subscribed = %s",
-                                      (data['id'],
-                                       details['hostname'],
-                                       details['referral-code'],
-                                       details['partner-comms-opt-in'],
-                                       details['created-at'],
-                                       details['updated-at'],
-                                       details['voter-registration-status'],
-                                       details['voter-registration-source'],
-                                       details['voter-registration-method'],
-                                       details['voting-method-preference'],
-                                       details['email subscribed'],
-                                       details['sms subscribed']))
-                print("Post {} ETL'd.".format(data['id']))
+                    self._add_post_details(data['id'], data['details'])
             else:
-                self.db.query_str("REPLACE INTO " +
-                                  self.campaign_activity_table +
-                                  " SET status = %s,\
-                                       submission_updated_at = %s,\
-                                       WHERE post_id = %s",
-                                  ('deleted',
-                                   strip_str(data['deleted_at']),
-                                   data['id']))
-                self.db.query_str("INSERT IGNORE INTO " +
-                                  self.campaign_activity_log_table +
-                                  " * FROM " +
-                                  self.campaign_activity_table +
-                                  " WHERE post_id = %s AND" +
-                                  " submission_updated_at = %s",
-                                  (data['id'],
-                                   strip_str(data['deleted_at'])))
-                self.db.query_str("DELETE FROM " +
-                                  self.campaign_activity_table +
-                                  " WHERE status = %s AND" +
-                                  " post_id = %s AND" +
-                                  " submission_updated_at = %s",
-                                  ('deleted',
-                                   data['id'],
-                                   strip_str(data['deleted_at'])))
-                print("Post {} deleted and archived.".format(data['id']))
+                self._delete_post(data['id'], data['deleted_at'])
         else:
             print("Unknown rogue message type. Exiting.")
             sys.exit(1)
