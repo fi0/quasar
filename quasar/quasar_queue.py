@@ -83,7 +83,7 @@ class RogueQueue(QuasarQueue):
         self.campaign_activity_details = config.CAMPAIGN_ACTIVITY_DETAIL_TABLE
 
     def _add_signup(self, signup_data):
-        self.db_query_str(''.join(("REPLACE INTO ",
+        self.db.query_str(''.join(("REPLACE INTO ",
                                    self.campaign_activity_table,
                                    " SET northstar_id = %s, "
                                    "signup_id = %s, campaign_id = %s, "
@@ -96,16 +96,16 @@ class RogueQueue(QuasarQueue):
                                    "caption = NULL, status = NULL, "
                                    "remote_addr = NULL, post_source = NULL, "
                                    "submission_created_at = ''")),
-                          signup_data['northstar_id'],
-                          signup_data['signup_id'],
-                          signup_data['campaign_id'],
-                          signup_data['campaign_run_id'],
-                          signup_data['quantity'],
-                          signup_data['why_participated'],
-                          signup_data['signup_source'],
-                          signup_data['details'],
-                          signup_data['created_at'],
-                          signup_data['updated_at'])
+                          (signup_data['northstar_id'],
+                           signup_data['signup_id'],
+                           signup_data['campaign_id'],
+                           signup_data['campaign_run_id'],
+                           signup_data['quantity'],
+                           signup_data['why_participated'],
+                           signup_data['signup_source'],
+                           signup_data['details'],
+                           signup_data['created_at'],
+                           signup_data['updated_at']))
         print("Signup {} ETL'd.".format(signup_data['signup_id']))
 
     def _delete_signup(self, signup_id, deleted_at):
@@ -113,7 +113,7 @@ class RogueQueue(QuasarQueue):
         self.db.query_str(''.join(("UPDATE ",
                                    self.campaign_activity_table,
                                   " SET status = %s, "
-                                  "signup_updated_at = %s, "
+                                  "signup_updated_at = %s "
                                   "WHERE signup_id = %s")),
                           ('signup_deleted', deleted_at, signup_id))
         # Copy signup into campaign_activity_log table.
@@ -149,25 +149,25 @@ class RogueQueue(QuasarQueue):
                                    "submission_created_at = %s, "
                                    "submission_updated_at = %s, "
                                    "action = %s, post_type = %s")),
-                          post_data['northstar_id'],
-                          post_data['signup_id'],
-                          post_data['campaign_id'],
-                          post_data['campaign_run_id'],
-                          post_data['quantity'],
-                          post_data['why_participated'],
-                          post_data['signup_source'],
-                          post_data['signup_created_at'],
-                          post_data['signup_updated_at'],
-                          post_data['id'],
-                          post_data['media']['url'],
-                          post_data['media']['caption'],
-                          post_data['status'],
-                          post_data['remote_addr'],
-                          post_data['source'],
-                          post_data['created_at'],
-                          post_data['updated_at'],
-                          post_data['action'],
-                          post_data['type'])
+                          (post_data['northstar_id'],
+                           post_data['signup_id'],
+                           post_data['campaign_id'],
+                           post_data['campaign_run_id'],
+                           post_data['quantity'],
+                           post_data['why_participated'],
+                           post_data['signup_source'],
+                           post_data['signup_created_at'],
+                           post_data['signup_updated_at'],
+                           post_data['id'],
+                           post_data['media']['url'],
+                           post_data['media']['caption'],
+                           post_data['status'],
+                           post_data['remote_addr'],
+                           post_data['source'],
+                           post_data['created_at'],
+                           post_data['updated_at'],
+                           post_data['action'],
+                           post_data['type']))
         print("Post {} ETL'd.".format(post_data['id']))
 
     def _add_post_details(self, post_id, post_details):
@@ -185,18 +185,18 @@ class RogueQueue(QuasarQueue):
                                    "voting_method_preference = %s, "
                                    "email_subscribed = %s, "
                                    "sms_subscribed = %s")),
-                          post_id,
-                          details['hostname'],
-                          details['referral-code'],
-                          details['partner-comms-opt-in'],
-                          details['created-at'],
-                          details['updated-at'],
-                          details['voter-registration-status'],
-                          details['voter-registration-source'],
-                          details['voter-registration-method'],
-                          details['voting-method-preference'],
-                          details['email subscribed'],
-                          details['sms subscribed'])
+                          (post_id,
+                           details['hostname'],
+                           details['referral-code'],
+                           details['partner-comms-opt-in'],
+                           details['created-at'],
+                           details['updated-at'],
+                           details['voter-registration-status'],
+                           details['voter-registration-source'],
+                           details['voter-registration-method'],
+                           details['voting-method-preference'],
+                           details['email subscribed'],
+                           details['sms subscribed']))
         print("Details for post {} ETL'd.".format(post_id))
 
     def _delete_post(self, post_id, deleted_at):
@@ -205,7 +205,7 @@ class RogueQueue(QuasarQueue):
                                    self.campaign_activity_table,
                                   " SET status = %s, "
                                   "submission_updated_at = %s, "
-                                  "signup_updated_at = %s, "
+                                  "signup_updated_at = %s "
                                   "WHERE post_id = %s")),
                           ('deleted', deleted_at, deleted_at, post_id))
         # Copy post into campaign_activity_log table.
