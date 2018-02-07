@@ -83,8 +83,8 @@ class RogueQueue(QuasarQueue):
         self.campaign_activity_details = config.CAMPAIGN_ACTIVITY_DETAIL_TABLE
 
     def _add_signup(self, signup_data):
-        self.db_query_str(''.join(("REPLACE INTO "
-                                   self.campaign_activity_table
+        self.db_query_str(''.join(("REPLACE INTO ",
+                                   self.campaign_activity_table,
                                    " SET northstar_id = %s, "
                                    "signup_id = %s, campaign_id = %s, "
                                    "campaign_run_id = %s, quantity = %s, "
@@ -110,23 +110,23 @@ class RogueQueue(QuasarQueue):
 
     def _delete_signup(self, signup_id, deleted_at):
         # Set signup status to 'deleted'.
-        self.db.query_str(''.join(("UPDATE "
-                                   self.campaign_activity_table 
+        self.db.query_str(''.join(("UPDATE ",
+                                   self.campaign_activity_table,
                                   " SET status = %s, "
                                   "signup_updated_at = %s, "
                                   "WHERE signup_id = %s")),
                           ('signup_deleted', deleted_at, signup_id))
         # Copy signup into campaign_activity_log table.
-        self.db.query_str(''.join(("INSERT IGNORE INTO " 
-                                   self.campaign_activity_log_table
-                                   " SELECT * FROM "
-                                   self.campaign_activity_table
+        self.db.query_str(''.join(("INSERT IGNORE INTO ",
+                                   self.campaign_activity_log_table,
+                                   " SELECT * FROM ",
+                                   self.campaign_activity_table,
                                    " WHERE signup_id = %s AND "
                                    "signup_updated_at = %s")),
                           (signup_id, deleted_at))
         # Delete signup from campaign_activity table.
-        self.db.query_str(''.join(("DELETE FROM "
-                                   self.campaign_activity_table
+        self.db.query_str(''.join(("DELETE FROM ",
+                                   self.campaign_activity_table,
                                    " WHERE status = %s AND "
                                    "signup_id = %s AND "
                                    "signup_updated_at = %s")),
@@ -134,8 +134,8 @@ class RogueQueue(QuasarQueue):
         print("Post {} deleted and archived.".format(post_id))
 
     def _add_post(self, post_data):
-        self.db.query_str(''.join(("REPLACE INTO "
-                                   self.campaign_activity_table
+        self.db.query_str(''.join(("REPLACE INTO ",
+                                   self.campaign_activity_table,
                                    " SET northstar_id = %s, "
                                    "signup_id = %s, campaign_id = %s, "
                                    "campaign_run_id = %s, quantity = %s, "
@@ -173,8 +173,8 @@ class RogueQueue(QuasarQueue):
     def _add_post_details(self, post_id, post_details):
         # Is this line necessary, or just needs this during testing? Ask @DFurnes.
         details = json.loads(post_details)
-        self.db.query_str(''.join(("REPLACE INTO "
-                                   self.campaign_activity_details 
+        self.db.query_str(''.join(("REPLACE INTO ",
+                                   self.campaign_activity_details,
                                    " SET post_id = %s, hostname = %s, "
                                    "referral_code = %s, "
                                    "partner_comms_opt_in = %s, "
@@ -201,24 +201,24 @@ class RogueQueue(QuasarQueue):
 
     def _delete_post(self, post_id, deleted_at):
         # Set post status to 'deleted'.
-        self.db.query_str(''.join(("UPDATE "
-                                   self.campaign_activity_table 
+        self.db.query_str(''.join(("UPDATE ",
+                                   self.campaign_activity_table,
                                   " SET status = %s, "
                                   "submission_updated_at = %s, "
                                   "signup_updated_at = %s, "
                                   "WHERE post_id = %s")),
                           ('deleted', deleted_at, deleted_at, post_id))
         # Copy post into campaign_activity_log table.
-        self.db.query_str(''.join(("INSERT IGNORE INTO " 
-                                   self.campaign_activity_log_table
-                                   " SELECT * FROM "
-                                   self.campaign_activity_table
+        self.db.query_str(''.join(("INSERT IGNORE INTO ",
+                                   self.campaign_activity_log_table,
+                                   " SELECT * FROM ",
+                                   self.campaign_activity_table,
                                    " WHERE post_id = %s AND "
                                    "submission_updated_at = %s")),
                           (post_id, deleted_at))
         # Delete record from campaign_activity table.
-        self.db.query_str(''.join(("DELETE FROM "
-                                   self.campaign_activity_table
+        self.db.query_str(''.join(("DELETE FROM ",
+                                   self.campaign_activity_table,
                                    " WHERE status = %s AND "
                                    "post_id = %s AND "
                                    "signup_updated_at = %s")),
@@ -242,4 +242,3 @@ class RogueQueue(QuasarQueue):
         else:
             print("Unknown rogue message type. Exiting.")
             sys.exit(1)
-
