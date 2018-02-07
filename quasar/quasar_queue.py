@@ -110,27 +110,27 @@ class RogueQueue(QuasarQueue):
 
     def _delete_signup(self, signup_id, deleted_at):
         # Set signup status to 'deleted'.
-        self.db.query_str(''.join(("REPLACE INTO "
+        self.db.query_str(''.join(("UPDATE "
                                    self.campaign_activity_table 
                                   " SET status = %s, "
-                                  "submission_updated_at = %s, "
+                                  "signup_updated_at = %s, "
                                   "WHERE signup_id = %s")),
-                          ('deleted', deleted_at, signup_id))
+                          ('signup_deleted', deleted_at, signup_id))
         # Copy signup into campaign_activity_log table.
         self.db.query_str(''.join(("INSERT IGNORE INTO " 
                                    self.campaign_activity_log_table
-                                   " * FROM "
+                                   " SELECT * FROM "
                                    self.campaign_activity_table
                                    " WHERE signup_id = %s AND "
-                                   "submission_updated_at = %s")),
+                                   "signup_updated_at = %s")),
                           (signup_id, deleted_at))
         # Delete signup from campaign_activity table.
-        self.db.query_str(''.join(("DELETE FROM " +
+        self.db.query_str(''.join(("DELETE FROM "
                                    self.campaign_activity_table
                                    " WHERE status = %s AND "
                                    "signup_id = %s AND "
-                                   "submission_updated_at = %s")),
-                          ('deleted', signup_id, deleted_at))
+                                   "signup_updated_at = %s")),
+                          ('signup_deleted', signup_id, deleted_at))
         print("Post {} deleted and archived.".format(post_id))
 
     def _add_post(self, post_data):
@@ -217,7 +217,7 @@ class RogueQueue(QuasarQueue):
                                    "submission_updated_at = %s")),
                           (post_id, deleted_at))
         # Delete record from campaign_activity table.
-        self.db.query_str(''.join(("DELETE FROM " +
+        self.db.query_str(''.join(("DELETE FROM "
                                    self.campaign_activity_table
                                    " WHERE status = %s AND "
                                    "post_id = %s AND "
