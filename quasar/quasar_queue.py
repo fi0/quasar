@@ -201,16 +201,17 @@ class RogueQueue(QuasarQueue):
 
     def _delete_post(self, post_id, deleted_at):
         # Set post status to 'deleted'.
-        self.db.query_str(''.join(("REPLACE INTO "
+        self.db.query_str(''.join(("UPDATE "
                                    self.campaign_activity_table 
                                   " SET status = %s, "
                                   "submission_updated_at = %s, "
+                                  "signup_updated_at = %s, "
                                   "WHERE post_id = %s")),
-                          ('deleted', deleted_at, post_id))
+                          ('deleted', deleted_at, deleted_at, post_id))
         # Copy post into campaign_activity_log table.
         self.db.query_str(''.join(("INSERT IGNORE INTO " 
                                    self.campaign_activity_log_table
-                                   " * FROM "
+                                   " SELECT * FROM "
                                    self.campaign_activity_table
                                    " WHERE post_id = %s AND "
                                    "submission_updated_at = %s")),
@@ -220,7 +221,7 @@ class RogueQueue(QuasarQueue):
                                    self.campaign_activity_table
                                    " WHERE status = %s AND "
                                    "post_id = %s AND "
-                                   "submission_updated_at = %s")),
+                                   "signup_updated_at = %s")),
                           ('deleted', post_id, deleted_at))
         print("Post {} deleted and archived.".format(post_id))
 
