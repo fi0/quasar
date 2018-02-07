@@ -84,7 +84,7 @@ class RogueQueue(QuasarQueue):
 
     def process_message(self, message_data):
         data = message_data['data']
-        if message_data['meta']['type'] == 'signup':
+        if data['meta']['type'] == 'signup':
             self.db.query_str("REPLACE INTO " +
                               self.campaign_activity_table +
                               " SET northstar_id = %s,\
@@ -115,8 +115,8 @@ class RogueQueue(QuasarQueue):
                                strip_str(data['created_at']),
                                strip_str(data['updated_at'])))
             print("Signup {} ETL'd.".format(data['signup_id']))
-        elif message_data['meta']['type'] == 'post':
-            if (data['deleted_at'] is None:
+        elif data['meta']['type'] == 'post':
+            if not pydash.get(data, 'deleted_at'):
                 self.db.query_str("REPLACE INTO " +
                                   self.campaign_activity_table +
                                   " SET northstar_id = %s,\
@@ -126,7 +126,6 @@ class RogueQueue(QuasarQueue):
                                        quantity = %s,\
                                        why_participated = %s,\
                                        signup_source = %s,\
-                                       signup_details = %s,\
                                        signup_created_at = %s,\
                                        signup_updated_at = %s,\
                                        post_id = %s,\
@@ -136,7 +135,9 @@ class RogueQueue(QuasarQueue):
                                        remote_addr = %s,\
                                        post_source = %s,\
                                        submission_created_at = %s,\
-                                       submission_updated_at = %s",
+                                       submission_updated_at = %s,\
+                                       action = %s,\
+                                       post_type = %s",
                                   (strip_str(data['northstar_id']),
                                    strip_str(data['signup_id']),
                                    strip_str(data['campaign_id']),
@@ -144,19 +145,20 @@ class RogueQueue(QuasarQueue):
                                    strip_str(data['quantity']),
                                    strip_str(data['why_participated']),
                                    strip_str(data['signup_source']),
-                                   strip_str(data['details']),
+                                   strip_str(data['signup_created_at']),
+                                   strip_str(data['signup_updated_at']),
+                                   strip_str(data['id']),
+                                   data['media']['url'],
+                                   strip_str(data['media']['caption']),
+                                   strip_str(data['status']),
+                                   strip_str(data['remote_addr']),
+                                   strip_str(data['source']),
                                    strip_str(data['created_at']),
                                    strip_str(data['updated_at']),
-                                   strip_str(post['id']),
-                                   post['media']['url'],
-                                   strip_str(post['media']['caption']),
-                                   strip_str(post['status']),
-                                   strip_str(post['remote_addr']),
-                                   strip_str(post['source']),
-                                   strip_str(post['created_at']),
-                                   strip_str(post['updated_at'])))
+                                   strip_str(data['action']),
+                                   strip_str(data['type'])))
                 if data['details'] is not None:
-                    details = data['details']
+                    details = json.loads(data['details'])
                     self.db.query_str("REPLACE INTO " +
                                       self.campaign_activity_details +
                                       " SET post_id = %s,\
@@ -171,7 +173,8 @@ class RogueQueue(QuasarQueue):
                                            voting_method_preference = %s,\
                                            email_subscribed = %s,\
                                            sms_subscribed = %s",
-                                      (details['hostname'],
+                                      (data['id'],
+                                       details['hostname'],
                                        details['referral-code'],
                                        details['partner-comms-opt-in'],
                                        details['created-at'],
@@ -182,65 +185,33 @@ class RogueQueue(QuasarQueue):
                                        details['voting-method-preference'],
                                        details['email subscribed'],
                                        details['sms subscribed']))
-                print("Post {} ETL'd.".format(post['id']))
+                print("Post {} ETL'd.".format(data['id']))
             else:
                 self.db.query_str("REPLACE INTO " +
-                                  campaign_activity_table +
-                                  " SET northstar_id = %s,\
-                                       signup_id = %s,\
-                                       campaign_id = %s,\
-                                       campaign_run_id = %s,\
-                                       quantity = %s,\
-                                       why_participated = %s,\
-                                       signup_source = %s,\
-                                       signup_details = %s,\
-                                       signup_created_at = %s,\
-                                       signup_updated_at = %s,\
-                                       post_id = %s,\
-                                       url = %s,\
-                                       caption = %s,\
-                                       status = 'deleted',\
-                                       remote_addr = %s,\
-                                       post_source = %s,\
-                                       submission_created_at = %s,\
-                                       submission_updated_at = %s",
-                                  (strip_str(data['northstar_id']),
-                                   strip_str(data['signup_id']),
-                                   strip_str(data['campaign_id']),
-                                   strip_str(data['campaign_run_id']),
-                                   strip_str(data['quantity']),
-                                   strip_str(data['why_participated']),
-                                   strip_str(data['signup_source']),
-                                   strip_str(data['details']),
-                                   strip_str(data['created_at']),
-                                   strip_str(data['updated_at']),
-                                   strip_str(post['id']),
-                                   post['media']['url'],
-                                   strip_str(post['media']['caption']),
-                                   strip_str(post['remote_addr']),
-                                   strip_str(post['source']),
-                                   strip_str(post['created_at']),
-                                   strip_str(post['deleted_at'])))
+                                  self.campaign_activity_table +
+                                  " SET status = %s,\
+                                       submission_updated_at = %s,\
+                                       WHERE post_id = %s",
+                                  ('deleted',
+                                   strip_str(data['deleted_at']),
+                                   data['id']))
                 self.db.query_str("INSERT IGNORE INTO " +
                                   self.campaign_activity_log_table +
                                   " * FROM " +
                                   self.campaign_activity_table +
                                   " WHERE post_id = %s AND" +
-                                  " signup_updated_at = %s",
-                                  (strip_str(post['id']),
-                                   strip_str(['data']['signup_updated_at'])))
+                                  " submission_updated_at = %s",
+                                  (data['id'],
+                                   strip_str(data['deleted_at'])))
                 self.db.query_str("DELETE FROM " +
                                   self.campaign_activity_table +
-                                  " WHERE northstar_id = %s AND" +
-                                  " signup_id = %s AND" +
+                                  " WHERE status = %s AND" +
                                   " post_id = %s AND" +
-                                  " signup_updated_at = %s",
-                                  (strip_str(['data']['northstar_id']),
-                                   strip_str(['data']['signup_id']),
-                                   strip_str(post['id']),
-                                   strip_str(['data']['signup_created_at']),
-                                   strip_str(['data']['signup_updated_at'])))
-                print("Post {} deleted and archived.".format(post['id']))
+                                  " submission_updated_at = %s",
+                                  ('deleted',
+                                   data['id'],
+                                   strip_str(data['deleted_at'])))
+                print("Post {} deleted and archived.".format(data['id']))
         else:
             print("Unknown rogue message type. Exiting.")
             sys.exit(1)
