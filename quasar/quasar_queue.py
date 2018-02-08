@@ -112,9 +112,9 @@ class RogueQueue(QuasarQueue):
         # Set signup status to 'deleted'.
         self.db.query_str(''.join(("UPDATE ",
                                    self.campaign_activity_table,
-                                  " SET status = %s, "
-                                  "signup_updated_at = %s "
-                                  "WHERE signup_id = %s")),
+                                   " SET status = %s, "
+                                   "signup_updated_at = %s "
+                                   "WHERE signup_id = %s")),
                           ('signup_deleted', deleted_at, signup_id))
         # Copy signup into campaign_activity_log table.
         self.db.query_str(''.join(("INSERT IGNORE INTO ",
@@ -131,7 +131,7 @@ class RogueQueue(QuasarQueue):
                                    "signup_id = %s AND "
                                    "signup_updated_at = %s")),
                           ('signup_deleted', signup_id, deleted_at))
-        print("Post {} deleted and archived.".format(post_id))
+        print("Signup {} deleted and archived.".format(signup_id))
 
     def _add_post(self, post_data):
         self.db.query_str(''.join(("REPLACE INTO ",
@@ -204,10 +204,10 @@ class RogueQueue(QuasarQueue):
         # Set post status to 'deleted'.
         self.db.query_str(''.join(("UPDATE ",
                                    self.campaign_activity_table,
-                                  " SET status = %s, "
-                                  "submission_updated_at = %s, "
-                                  "signup_updated_at = %s "
-                                  "WHERE post_id = %s")),
+                                   " SET status = %s, "
+                                   "submission_updated_at = %s, "
+                                   "signup_updated_at = %s "
+                                   "WHERE post_id = %s")),
                           ('deleted', deleted_at, deleted_at, post_id))
         # Copy post into campaign_activity_log table.
         self.db.query_str(''.join(("INSERT IGNORE INTO ",
