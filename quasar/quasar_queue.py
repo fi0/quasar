@@ -171,8 +171,9 @@ class RogueQueue(QuasarQueue):
         print("Post {} ETL'd.".format(post_data['id']))
 
     def _add_post_details(self, post_id, post_details):
-        # Is this line necessary, or just needs this during testing? Ask @DFurnes.
-        details = json.loads(post_details)
+        # TODO: Remove type check if Rogue sends this as JSON/dict.
+        if type(post_details) is str:
+            details = json.loads(post_details)
         self.db.query_str(''.join(("REPLACE INTO ",
                                    self.campaign_activity_details,
                                    " SET post_id = %s, hostname = %s, "
