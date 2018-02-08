@@ -32,7 +32,8 @@ setup(
             'rogue_consume = quasar.rogue_consumer:main',
             'runscope_cleanup = quasar.cio_runscope_queue_cleanup:main',
             'reportbacks_asterisk = quasar.reportback_asterisk:run_load_reportbacks',
-            'scrape_moco_profiles = quasar.moco_scraper:start_profile_scrape'
+            'scrape_moco_profiles = quasar.moco_scraper:start_profile_scrape',
+            'scrape_moco_messages = quasar.moco_scraper:start_message_scrape'
         ],
     },
     author="",
