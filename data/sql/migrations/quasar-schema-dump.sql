@@ -312,6 +312,7 @@ CREATE TABLE `campaign_activity_details` (
   `partner_comms_opt_in` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
+  `source_details` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `voter_registration_status` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `voter_registration_source` varchar(192) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `voter_registration_method` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -394,11 +395,13 @@ DROP TABLE IF EXISTS `member_event_log`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `member_event_log` (
   `event_id` varchar(116) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `northstar_id` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `action_serial_id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `northstar_id` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `timestamp` datetime DEFAULT NULL,
   `action_type` varchar(16) CHARACTER SET utf8 NOT NULL DEFAULT '',
   `action_id` varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT '',
-  `source` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `source` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  KEY `event_id` (`event_id`,`northstar_id`,`timestamp`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -730,4 +733,4 @@ CREATE TABLE `rogue_ingestion` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-01 14:03:44
+-- Dump completed on 2018-02-09 13:16:58
