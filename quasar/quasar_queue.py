@@ -179,6 +179,7 @@ class RogueQueue(QuasarQueue):
                                    "referral_code = %s, "
                                    "partner_comms_opt_in = %s, "
                                    "created_at = %s, updated_at = %s, "
+                                   "source_details = %s, "
                                    "voter_registration_status = %s, "
                                    "voter_registration_source = %s, "
                                    "voter_registration_method = %s, "
@@ -191,6 +192,7 @@ class RogueQueue(QuasarQueue):
                            details['partner-comms-opt-in'],
                            details['created-at'],
                            details['updated-at'],
+                           details['source_details'],
                            details['voter-registration-status'],
                            details['voter-registration-source'],
                            details['voter-registration-method'],
