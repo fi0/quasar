@@ -22,7 +22,6 @@ class CioQueue(QuasarQueue):
             print("Routing message to Rogue queue.")
             self.rogue_queue.pub_message(message_data)
         else:
-            print(message_data)
             print(''.join(("Processing C.IO event id: "
                            "{}.")).format(message_data['data']['event_id']))
             self.log_event(message_data)
