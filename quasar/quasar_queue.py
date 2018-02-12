@@ -173,32 +173,58 @@ class RogueQueue(QuasarQueue):
         # TODO: Remove type check if Rogue sends this as JSON/dict.
         if type(post_details) is str:
             details = json.loads(post_details)
-        self.db.query_str(''.join(("REPLACE INTO ",
-                                   self.campaign_activity_details,
-                                   " SET post_id = %s, hostname = %s, "
-                                   "referral_code = %s, "
-                                   "partner_comms_opt_in = %s, "
-                                   "created_at = %s, updated_at = %s, "
-                                   "source_details = %s, "
-                                   "voter_registration_status = %s, "
-                                   "voter_registration_source = %s, "
-                                   "voter_registration_method = %s, "
-                                   "voting_method_preference = %s, "
-                                   "email_subscribed = %s, "
-                                   "sms_subscribed = %s")),
-                          (post_id,
-                           details['hostname'],
-                           details['referral-code'],
-                           details['partner-comms-opt-in'],
-                           details['created-at'],
-                           details['updated-at'],
-                           details['source_details'],
-                           details['voter-registration-status'],
-                           details['voter-registration-source'],
-                           details['voter-registration-method'],
-                           details['voting-method-preference'],
-                           details['email subscribed'],
-                           details['sms subscribed']))
+        if pydash.get(details, 'source_details'):
+            self.db.query_str(''.join(("REPLACE INTO ",
+                                       self.campaign_activity_details,
+                                       " SET post_id = %s, hostname = %s, "
+                                       "referral_code = %s, "
+                                       "partner_comms_opt_in = %s, "
+                                       "created_at = %s, updated_at = %s, "
+                                       "source_details = %s, "
+                                       "voter_registration_status = %s, "
+                                       "voter_registration_source = %s, "
+                                       "voter_registration_method = %s, "
+                                       "voting_method_preference = %s, "
+                                       "email_subscribed = %s, "
+                                       "sms_subscribed = %s")),
+                              (post_id,
+                               details['hostname'],
+                               details['referral-code'],
+                               details['partner-comms-opt-in'],
+                               details['created-at'],
+                               details['updated-at'],
+                               details['source_details'],
+                               details['voter-registration-status'],
+                               details['voter-registration-source'],
+                               details['voter-registration-method'],
+                               details['voting-method-preference'],
+                               details['email subscribed'],
+                               details['sms subscribed']))
+        else:
+            self.db.query_str(''.join(("REPLACE INTO ",
+                                       self.campaign_activity_details,
+                                       " SET post_id = %s, hostname = %s, "
+                                       "referral_code = %s, "
+                                       "partner_comms_opt_in = %s, "
+                                       "created_at = %s, updated_at = %s, "
+                                       "voter_registration_status = %s, "
+                                       "voter_registration_source = %s, "
+                                       "voter_registration_method = %s, "
+                                       "voting_method_preference = %s, "
+                                       "email_subscribed = %s, "
+                                       "sms_subscribed = %s")),
+                              (post_id,
+                               details['hostname'],
+                               details['referral-code'],
+                               details['partner-comms-opt-in'],
+                               details['created-at'],
+                               details['updated-at'],
+                               details['voter-registration-status'],
+                               details['voter-registration-source'],
+                               details['voter-registration-method'],
+                               details['voting-method-preference'],
+                               details['email subscribed'],
+                               details['sms subscribed']))
         print("Details for post {} ETL'd.".format(post_id))
 
     def _delete_post(self, post_id, deleted_at):
