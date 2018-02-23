@@ -173,6 +173,8 @@ class RogueQueue(QuasarQueue):
         # TODO: Remove type check if Rogue sends this as JSON/dict.
         if type(post_details) is str:
             details = json.loads(post_details)
+        else:
+            details = post_details
         if pydash.get(details, 'source_details'):
             self.db.query_str(''.join(("REPLACE INTO ",
                                        self.campaign_activity_details,
@@ -263,7 +265,10 @@ class RogueQueue(QuasarQueue):
         elif data['meta']['type'] == 'post':
             if not pydash.get(data, 'deleted_at'):
                 self._add_post(data)
-                if data['details'] is not None:
+                if (pydash.get(data, 'details') is None or
+                        pydash.get(data, 'details') == ''):
+                    pass
+                else:
                     self._add_post_details(data['id'], data['details'])
             else:
                 self._delete_post(data['id'], data['deleted_at'])
