@@ -265,8 +265,8 @@ class RogueQueue(QuasarQueue):
         elif data['meta']['type'] == 'post':
             if not pydash.get(data, 'deleted_at'):
                 self._add_post(data)
-                if ((pydash.get(data, 'details') is None) or
-                       (pydash.get(data, 'details') == '')):
+                if (pydash.get(data, 'details') is None or
+                        pydash.get(data, 'details') == ''):
                     pass
                 else:
                     self._add_post_details(data['id'], data['details'])
