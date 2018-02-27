@@ -44,7 +44,7 @@ echo "[mysqld]" > /etc/mysql/conf.d/quasar.cnf
 echo "sql-mode=\"NO_ENGINE_SUBSTITUTION\"" >> /etc/mysql/conf.d/quasar.cnf
 sudo /etc/init.d/mysql restart
 
-MIGRATIONS=/vagrant/data/sql/migrations/*
+MIGRATIONS=/vagrant/data/sql/migrations/*.sql
 for file in $MIGRATIONS
 do
     mysql -uroot -ppassword < $file
