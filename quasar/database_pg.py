@@ -53,8 +53,10 @@ class Database:
                 results = self.cursor.fetchall()
                 return results
             except psycopg2.ProgrammingError as e:
-                pass
+                results = {}
+                return results
         except psycopg2.DatabaseError as e:
+            print(self.cursor.query)
             raise QuasarException(e)
 
     def query_str(self, query, string):
@@ -69,6 +71,8 @@ class Database:
                 results = self.cursor.fetchall()
                 return results
             except psycopg2.ProgrammingError as e:
-                pass
+                results = {}
+                return results
         except psycopg2.DatabaseError as e:
+            print(self.cursor.query)
             raise QuasarException(e)
