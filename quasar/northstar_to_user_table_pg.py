@@ -8,7 +8,7 @@ import time
 from .config import config
 from .northstarscraper import NorthstarScraper
 from .utils import strip_str
-from .database_pg import Database
+from .database_pg import NorthstarDatabase
 
 """DS Northstar to Quasar User ETL script.
 
@@ -22,45 +22,11 @@ that gets updated on ingestion loop.
 
 """
 
-opts = {
-            'user': config.PG_USER,
-            'host': config.PG_HOST,
-            'port': config.PG_PORT,
-            'password': config.PG_PASSWORD,
-            'database': config.PG_DATABASE,
-            'sslmode': config.PG_SSL
-        }
-
-class NorthstarDB(Database):
+class NorthstarDB:
 
     def __init__(self):
-        db_opts={}
-        self.db = Database.__init__(self, db_opts)
-        self.except_conn = psycopg2.connect(**opts)
-        self.except_cur = self.except_conn.cursor()
-
-    def query_str(self, query, string, record):
-        """Parse and run DB query.
-
-        Return On error, raise exception and log why.
-        """
-        try:
-            self.cursor.execute(query, string)
-            self.connection.commit()
-            try:
-                results = self.cursor.fetchall()
-                return results
-            except psycopg2.ProgrammingError as e:
-                results = {}
-                return results
-        except psycopg2.DataError as e:
-            print(self.cursor.query)
-            self.except_cur.execute(''.join(("INSERT INTO  "
-                                             "northstar.unprocessed_users "
-                                             "(northstar_record) VALUES "
-                                             "(%s)")),
-                                    (json.dumps(record),))
-            print("ID {} put in unprocessed table.".format(record['id']))
+        db_opts = {}
+        self.db = NorthstarDatabase(db_opts)
 
 
     def teardown(self):
@@ -68,7 +34,7 @@ class NorthstarDB(Database):
 
 
     def save_user(self, user):
-        self.query_str(''.join(("INSERT INTO northstar.users (id, "
+        self.db.query_str(''.join(("INSERT INTO northstar.users (id, "
                                    "first_name, last_name, last_initial, "
                                    "photo, email, mobile, facebook_id, "
                                    "interests, birthdate, addr_street1, "
@@ -131,12 +97,7 @@ class NorthstarDB(Database):
                            user['last_authenticated_at'],
                            user['last_messaged_at'],
                            user['updated_at'], user['created_at']),
-                       user)
-        # self.cursor.execute(''.join(("INSERT INTO  "
-        #                                  "northstar.unprocessed_users "
-        #                                  "(northstar_record) VALUES (%s)")),
-        #                         (json.dumps(user),))
-        # self.connection.commit()
+                          user)
 
 
 def _interval(hours_ago):
@@ -188,6 +149,7 @@ def _backfill(hours_ago=None):
             '/v1/users', {'page': start_page}, _process_page)
 
     self.teardown()
+    except_db.teardown()
 
     end_time = time.time()  # Record when script stopped running.
     duration = end_time - start_time  # Total duration in seconds.
