@@ -1,7 +1,9 @@
 from datetime import datetime as dt
-import time
+import json
+import psycopg2
 import re
 import sys
+import time
 
 from .config import config
 from .northstarscraper import NorthstarScraper
@@ -20,27 +22,53 @@ that gets updated on ingestion loop.
 
 """
 
+opts = {
+            'user': config.PG_USER,
+            'host': config.PG_HOST,
+            'port': config.PG_PORT,
+            'password': config.PG_PASSWORD,
+            'database': config.PG_DATABASE,
+            'sslmode': config.PG_SSL
+        }
 
-class NorthstarDB:
+class NorthstarDB(Database):
 
     def __init__(self):
         db_opts={}
-        self.db = Database(db_opts)
+        self.db = Database.__init__(self, db_opts)
+        self.except_conn = psycopg2.connect(**opts)
+        self.except_cur = self.except_conn.cursor()
+
+    def query_str(self, query, string, record):
+        """Parse and run DB query.
+
+        Return On error, raise exception and log why.
+        """
+        try:
+            self.cursor.execute(query, string)
+            self.connection.commit()
+            try:
+                results = self.cursor.fetchall()
+                return results
+            except psycopg2.ProgrammingError as e:
+                results = {}
+                return results
+        except psycopg2.DataError as e:
+            print(self.cursor.query)
+            self.except_cur.execute(''.join(("INSERT INTO  "
+                                             "northstar.unprocessed_users "
+                                             "(northstar_record) VALUES "
+                                             "(%s)")),
+                                    (json.dumps(record),))
+            print("ID {} put in unprocessed table.".format(record['id']))
+
 
     def teardown(self):
         self.db.disconnect()
 
-    def get_start_page(self):
-        querystr = "SELECT * from %s WHERE counter_name = 'last_page_scraped'" % config.ns_counter_table
-        last_page = self.db.query(querystr)
-        return last_page[0][1]
-
-    def update_start_page(self, page):
-        self.db.query("REPLACE INTO %s (counter_name, counter_value) VALUES(\"last_page_scraped\", \"%s\")" % (
-            config.ns_counter_table, page))
 
     def save_user(self, user):
-        self.db.query_str(''.join(("INSERT INTO northstar.users (id, "
+        self.query_str(''.join(("INSERT INTO northstar.users (id, "
                                    "first_name, last_name, last_initial, "
                                    "photo, email, mobile, facebook_id, "
                                    "interests, birthdate, addr_street1, "
@@ -102,7 +130,13 @@ class NorthstarDB:
                            user['last_accessed_at'],
                            user['last_authenticated_at'],
                            user['last_messaged_at'],
-                           user['updated_at'], user['created_at']))
+                           user['updated_at'], user['created_at']),
+                       user)
+        # self.cursor.execute(''.join(("INSERT INTO  "
+        #                                  "northstar.unprocessed_users "
+        #                                  "(northstar_record) VALUES (%s)")),
+        #                         (json.dumps(user),))
+        # self.connection.commit()
 
 
 def _interval(hours_ago):
@@ -153,7 +187,7 @@ def _backfill(hours_ago=None):
         scraper.process_all_pages(
             '/v1/users', {'page': start_page}, _process_page)
 
-    db.teardown()
+    self.teardown()
 
     end_time = time.time()  # Record when script stopped running.
     duration = end_time - start_time  # Total duration in seconds.

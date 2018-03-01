@@ -76,3 +76,4 @@ class Database:
         except psycopg2.DatabaseError as e:
             print(self.cursor.query)
             raise QuasarException(e)
+
