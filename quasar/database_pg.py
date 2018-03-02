@@ -4,6 +4,15 @@ import psycopg2
 from .config import config
 from .utils import QuasarException
 
+# Defaults
+opts = {
+    'user': config.PG_USER,
+    'host': config.PG_HOST,
+    'port': config.PG_PORT,
+    'password': config.PG_PASSWORD,
+    'database': config.PG_DATABASE,
+    'sslmode': config.PG_SSL
+}
 
 def _connect(opts):
     conn = None
@@ -18,17 +27,6 @@ def _connect(opts):
 class Database:
 
     def __init__(self, options={}):
-
-        # Defaults
-        opts = {
-            'user': config.PG_USER,
-            'host': config.PG_HOST,
-            'port': config.PG_PORT,
-            'password': config.PG_PASSWORD,
-            'database': config.PG_DATABASE,
-            'sslmode': config.PG_SSL
-        }
-
         opts.update(options)
 
         self.connection = _connect(opts)
@@ -81,17 +79,6 @@ class Database:
 class NorthstarDatabase:
 
     def __init__(self, options={}):
-
-        # Defaults
-        opts = {
-            'user': config.PG_USER,
-            'host': config.PG_HOST,
-            'port': config.PG_PORT,
-            'password': config.PG_PASSWORD,
-            'database': config.PG_DATABASE,
-            'sslmode': config.PG_SSL
-        }
-
         opts.update(options)
 
         self.connection = _connect(opts)
@@ -142,14 +129,6 @@ class NorthstarDatabase:
         except psycopg2.DatabaseError as e:
             print(self.cursor.query)
             print("ID {} not processed. Backing up.".format(record['id']))
-            opts = {
-                'user': config.PG_USER,
-                'host': config.PG_HOST,
-                'port': config.PG_PORT,
-                'password': config.PG_PASSWORD,
-                'database': config.PG_DATABASE,
-                'sslmode': config.PG_SSL
-            }
             self.connection = _connect(opts)
             if self.connection is None:
                 print("Error, couldn't connect to database with options:", opts)
@@ -157,6 +136,7 @@ class NorthstarDatabase:
                 self.cursor = self.connection.cursor()
             self.cursor.execute(''.join(("INSERT INTO northstar.unprocessed_users "
                                          "(northstar_record) VALUES "
-                                         "(%s)")), json.dumps(record))
+                                         "(%s)")), (json.dumps(record),))
             self.connection.commit()
+            # pass
 

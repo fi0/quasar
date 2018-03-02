@@ -148,8 +148,7 @@ def _backfill(hours_ago=None):
         scraper.process_all_pages(
             '/v1/users', {'page': start_page}, _process_page)
 
-    self.teardown()
-    except_db.teardown()
+    db.teardown()
 
     end_time = time.time()  # Record when script stopped running.
     duration = end_time - start_time  # Total duration in seconds.
