@@ -5,7 +5,7 @@ with open('requirements.txt') as f:
 
 setup(
     name="quasar",
-    version="0.2.0",
+    version="0.3.0",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
@@ -26,6 +26,7 @@ setup(
             'mobile_user_table_update = quasar.mobile_commons:backfill_user_profiles',
             'northstar_to_quasar_import = quasar.northstar_to_user_table:full_backfill',
             'northstar_to_quasar_import_backfill = quasar.northstar_to_user_table:backfill_since',
+            'northstar_to_quasar_diff_pg = quasar.northstar_to_user_table_pg:backfill_since',
             'quasar_blink_queue_consumer = quasar.customerio:main',
             'phoenix_next_cleanup = quasar.phoenix_next_queue_cleanup:main',
             'regenerate_mobile_master_lookup_lite_table = quasar.create_mobile_master_lookup_lite:main',
