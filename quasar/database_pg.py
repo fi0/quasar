@@ -76,23 +76,11 @@ class Database:
             print(self.cursor.query)
             raise QuasarException(e)
 
-class NorthstarDatabase:
+class NorthstarDatabase(Database):
 
     def __init__(self, options={}):
-        opts.update(options)
+        super().__init__(options)
 
-        self.connection = _connect(opts)
-        if self.connection is None:
-            print("Error, couldn't connect to database with options:", opts)
-        else:
-            self.cursor = self.connection.cursor()
-
-        self.db = Database()
-
-    def disconnect(self):
-        self.cursor.close()
-        self.connection.close()
-        return self.connection
 
     def query(self, query):
         """Parse and run DB query.
@@ -108,9 +96,18 @@ class NorthstarDatabase:
             except psycopg2.ProgrammingError as e:
                 results = {}
                 return results
-        except:
+        except psycopg2.DatabaseError as e:
             print(self.cursor.query)
-            raise QuasarException(e)
+            self.connection = _connect(opts)
+            if self.connection is None:
+                print("Error, couldn't connect to database with options:", opts)
+            else:
+                self.cursor = self.connection.cursor()
+            self.cursor.execute(''.join(("INSERT INTO northstar.unprocessed_users "
+                                         "(northstar_record) VALUES "
+                                         "(%s)")), (json.dumps(record),))
+            self.connection.commit()
+            print("ID {} not processed. Backing up.".format(record['id']))
 
     def query_str(self, query, string, record):
         """Parse and run DB query.
@@ -128,7 +125,6 @@ class NorthstarDatabase:
                 return results
         except psycopg2.DatabaseError as e:
             print(self.cursor.query)
-            print("ID {} not processed. Backing up.".format(record['id']))
             self.connection = _connect(opts)
             if self.connection is None:
                 print("Error, couldn't connect to database with options:", opts)
@@ -138,5 +134,5 @@ class NorthstarDatabase:
                                          "(northstar_record) VALUES "
                                          "(%s)")), (json.dumps(record),))
             self.connection.commit()
-            # pass
+            print("ID {} not processed. Backing up.".format(record['id']))
 
