@@ -52,7 +52,7 @@ class Database:
             try:
                 results = self.cursor.fetchall()
                 return results
-            except psycopg2.ProgrammingError as e:
+            except psycopg2.ProgrammingError:
                 results = {}
                 return results
         except psycopg2.DatabaseError as e:
@@ -70,7 +70,7 @@ class Database:
             try:
                 results = self.cursor.fetchall()
                 return results
-            except psycopg2.ProgrammingError as e:
+            except psycopg2.ProgrammingError:
                 results = {}
                 return results
         except psycopg2.DatabaseError as e:
