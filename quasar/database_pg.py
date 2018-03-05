@@ -83,7 +83,7 @@ class NorthstarDatabase(Database):
     def __init__(self, options={}):
         super().__init__(options)
 
-    def query(self, query):
+    def query(self, query, record):
         """Parse and run DB query.
 
         Return On error, raise exception and log why.
@@ -94,17 +94,18 @@ class NorthstarDatabase(Database):
             try:
                 results = self.cursor.fetchall()
                 return results
-            except psycopg2.ProgrammingError as e:
+            except psycopg2.ProgrammingError:
                 results = {}
                 return results
-        except psycopg2.DatabaseError as e:
+        except psycopg2.DatabaseError:
             print(self.cursor.query)
             self.connection = _connect(opts)
             if self.connection is None:
-                print("Error, couldn't connect to database with options:", opts)
+                print("Error, couldn't connect to database with opts:", opts)
             else:
                 self.cursor = self.connection.cursor()
-            self.cursor.execute(''.join(("INSERT INTO northstar.unprocessed_users "
+            self.cursor.execute(''.join(("INSERT INTO "
+                                         "northstar.unprocessed_users "
                                          "(northstar_record) VALUES "
                                          "(%s)")), (json.dumps(record),))
             self.connection.commit()
@@ -121,17 +122,18 @@ class NorthstarDatabase(Database):
             try:
                 results = self.cursor.fetchall()
                 return results
-            except psycopg2.ProgrammingError as e:
+            except psycopg2.ProgrammingError:
                 results = {}
                 return results
-        except psycopg2.DatabaseError as e:
+        except psycopg2.DatabaseError:
             print(self.cursor.query)
             self.connection = _connect(opts)
             if self.connection is None:
-                print("Error, couldn't connect to database with options:", opts)
+                print("Error, couldn't connect to database with opts:", opts)
             else:
                 self.cursor = self.connection.cursor()
-            self.cursor.execute(''.join(("INSERT INTO northstar.unprocessed_users "
+            self.cursor.execute(''.join(("INSERT INTO "
+                                         "northstar.unprocessed_users "
                                          "(northstar_record) VALUES "
                                          "(%s)")), (json.dumps(record),))
             self.connection.commit()

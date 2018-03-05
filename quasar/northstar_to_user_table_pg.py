@@ -1,13 +1,9 @@
 from datetime import datetime as dt
-import json
-import psycopg2
-import re
 import sys
 import time
 
 from .config import config
 from .northstarscraper import NorthstarScraper
-from .utils import strip_str
 from .database_pg import NorthstarDatabase
 
 """DS Northstar to Quasar User ETL script.
@@ -22,16 +18,15 @@ that gets updated on ingestion loop.
 
 """
 
+
 class NorthstarDB:
 
     def __init__(self):
         db_opts = {}
         self.db = NorthstarDatabase(db_opts)
 
-
     def teardown(self):
         self.db.disconnect()
-
 
     def save_user(self, user):
         self.db.query_str(''.join(("INSERT INTO northstar.users (id, "
