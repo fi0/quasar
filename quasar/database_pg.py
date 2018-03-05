@@ -14,6 +14,7 @@ opts = {
     'sslmode': config.PG_SSL
 }
 
+
 def _connect(opts):
     conn = None
     try:
@@ -76,11 +77,11 @@ class Database:
             print(self.cursor.query)
             raise QuasarException(e)
 
+
 class NorthstarDatabase(Database):
 
     def __init__(self, options={}):
         super().__init__(options)
-
 
     def query(self, query):
         """Parse and run DB query.
@@ -135,4 +136,3 @@ class NorthstarDatabase(Database):
                                          "(%s)")), (json.dumps(record),))
             self.connection.commit()
             print("ID {} not processed. Backing up.".format(record['id']))
-
