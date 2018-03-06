@@ -128,6 +128,7 @@ def _backfill(hours_ago=None):
         intervals = [_interval(hour) for hour in range(
             int(hours_ago) + 1) if hour > 0]
 
+        intervals.reverse()
         for start, end in intervals:
             create_params = {'after[created_at]': str(
                 start), 'before[created_at]': str(end)}
