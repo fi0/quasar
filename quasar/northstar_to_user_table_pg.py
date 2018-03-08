@@ -44,39 +44,9 @@ class NorthstarDB:
                                    "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,"
                                    "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,"
                                    "%s,%s,%s,%s,%s,%s,%s,%s,%s) "
-                                   "ON CONFLICT (id) DO UPDATE "
-                                   "SET (id, first_name, last_name, "
-                                   "last_initial, photo, email, mobile, "
-                                   "facebook_id, interests, birthdate, "
-                                   "addr_street1, addr_street2, "
-                                   "addr_city, addr_state, addr_zip, "
-                                   "addr_source, source, source_detail, "
-                                   "slack_id, sms_status, sms_paused, "
-                                   "language, country, drupal_id, "
-                                   "role, last_accessed_at, "
-                                   "last_authenticated_at, "
-                                   "last_messaged_at, updated_at, "
-                                   "created_at) = "
-                                   "(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,"
-                                   "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,"
-                                   "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)")),
+                                   "ON CONFLICT (id, created_at, updated_at)"
+                                   " DO NOTHING")),
                           (user['id'], user['first_name'],
-                           user['last_name'], user['last_initial'],
-                           user['photo'], user['email'], user['mobile'],
-                           user['facebook_id'], user['interests'],
-                           user['birthdate'], user['addr_street1'],
-                           user['addr_street2'], user['addr_city'],
-                           user['addr_state'], user['addr_zip'],
-                           user['addr_source'], user['source'],
-                           user['source_detail'], user['slack_id'],
-                           user['sms_status'], user['sms_paused'],
-                           user['language'], user['country'],
-                           user['drupal_id'], user['role'],
-                           user['last_accessed_at'],
-                           user['last_authenticated_at'],
-                           user['last_messaged_at'],
-                           user['updated_at'], user['created_at'],
-                           user['id'], user['first_name'],
                            user['last_name'], user['last_initial'],
                            user['photo'], user['email'], user['mobile'],
                            user['facebook_id'], user['interests'],
