@@ -29,6 +29,9 @@ CREATE TABLE public.phoenix_next_events AS
 		page.path AS path,
 		page.host AS host,
 		page.href AS href, 
+		page_q.utm_source_s AS page_utm_source,
+		page_q.utm_medium_s AS page_utm_medium,
+		page_q.utm_campaign_s AS page_utm_campaign,
 		dat.parentsource_s AS parent_source, 
 		COALESCE(dat.campaignid_s::varchar, lookup.campaign_id::varchar) AS campaign_id,
 		page.campaign_name,
@@ -54,6 +57,7 @@ CREATE TABLE public.phoenix_next_events AS
 			(regexp_split_to_array(p.path_s, E'\/'))[4] AS campaign_name
 		FROM heroku_wzsf6b3z.events_page p) page ON page.did = meta.did
 	LEFT JOIN path_campaign_lookup lookup ON page.campaign_name = lookup.campaign_name
+	LEFT JOIN heroku_wzsf6b3z.events_page_query page_q ON page_q.did = meta.did 
 	LEFT JOIN heroku_wzsf6b3z.events_user use ON use.did = meta.did
 	LEFT JOIN heroku_wzsf6b3z.events_browser brow ON brow.did = meta.did
 	)
@@ -63,7 +67,6 @@ CREATE TABLE public.phoenix_next_sessions AS
 	(SELECT DISTINCT
 			page.sessionid_s AS session_id,  
 			use.deviceid_s AS device_id,
-			use.ip_s AS ip_address,
 			COALESCE(page.landingtimestamp_d, 
 				(CASE WHEN page.landingtimestamp_s = 'null' THEN NULL ELSE page.landingtimestamp_s END)::bigint
 				)::bigint AS landing_ts,
@@ -121,6 +124,10 @@ GRANT SELECT ON ALL tables IN SCHEMA public TO jjensen;
 GRANT SELECT ON ALL tables IN SCHEMA public TO looker;
 GRANT SELECT ON ALL tables IN SCHEMA public TO shasan;
 GRANT SELECT ON ALL tables IN SCHEMA public TO jli;
+GRANT USAGE ON SCHEMA heroku_wzsf6b3z TO jjensen;
+GRANT USAGE ON SCHEMA heroku_wzsf6b3z TO shasan;
+GRANT USAGE ON SCHEMA heroku_wzsf6b3z TO looker;
+GRANT USAGE ON SCHEMA heroku_wzsf6b3z TO jli;
 GRANT SELECT ON ALL tables IN SCHEMA heroku_wzsf6b3z TO jjensen;
 GRANT SELECT ON ALL tables IN SCHEMA heroku_wzsf6b3z TO shasan;
 GRANT SELECT ON ALL tables IN SCHEMA heroku_wzsf6b3z TO looker;
