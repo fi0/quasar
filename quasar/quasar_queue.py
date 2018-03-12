@@ -13,7 +13,7 @@ class CioQueue(QuasarQueue):
 
     def __init__(self):
         super().__init__(config.AMQP_URI, config.BLINK_QUEUE,
-                                       config.BLINK_EXCHANGE)
+                         config.BLINK_EXCHANGE)
         self.rogue_queue = RogueQueue()
         self.rogue_pg_queue = RoguePostgresQueue()
         self.db = Database()
@@ -77,7 +77,7 @@ class RogueQueue(QuasarQueue):
 
     def __init__(self):
         super().__init__(config.AMQP_URI, config.ROGUE_QUEUE,
-                                         config.QUASAR_EXCHANGE)
+                         config.QUASAR_EXCHANGE)
         self.db = Database()
         self.campaign_activity_table = config.CAMPAIGN_ACTIVITY_TABLE
         self.campaign_activity_log_table = config.CAMPAIGN_ACTIVITY_LOG_TABLE
@@ -278,8 +278,9 @@ class RogueQueue(QuasarQueue):
             print("Unknown rogue message type. Exiting.")
             sys.exit(1)
 
+
 class RoguePostgresQueue(QuasarQueue):
 
     def __init__(self):
         super().__init__(config.AMQP_URI, config.ROGUE_PG_QUEUE,
-                                         config.QUASAR_EXCHANGE)
+                         config.QUASAR_EXCHANGE)
