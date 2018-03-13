@@ -313,12 +313,13 @@ class RoguePostgresQueue(QuasarQueue):
         # Get created_at date of signup.
         created_at = self.db.query_str(''.join(("SELECT created_at "
                                                 "FROM rogue.signups WHERE "
-                                                "id = %s")),
-                                       signup_id)
+                                                "id = '%s'")),
+                                       (signup_id,))
+        print("Created at is {}".format(created_at[0]))
         self.db.query_str(''.join(("INSERT INTO rogue.signups "
                                    "(id, created_at, updated_at, "
                                    "deleted_at) VALUES "
-                                   "(%s,%s,%s,%s")),
+                                   "(%s,%s,%s,%s)")),
                           (signup_id, created_at[0], deleted_at, deleted_at))
         print("Signup {} deleted and archived.".format(signup_id))
 
@@ -331,7 +332,8 @@ class RoguePostgresQueue(QuasarQueue):
                                    "remote_addr, created_at, "
                                    "updated_at) VALUES "
                                    "(%s,%s,%s,%s,%s,%s,%s,%s,%s,"
-                                   "%s,%s,%s,%s,%s,%s,%s,)")),
+                                   "%s,%s,%s,%s,%s,%s,%s) ON CONFLICT "
+                                   "DO NOTHING")),
                           (post_data['id'],
                            post_data['signup_id'],
                            post_data['campaign_id'],
@@ -344,7 +346,7 @@ class RoguePostgresQueue(QuasarQueue):
                            post_data['media']['caption'],
                            post_data['status'],
                            post_data['source'],
-                           post_data['signup_source']
+                           post_data['signup_source'],
                            post_data['remote_addr'],
                            post_data['created_at'],
                            post_data['updated_at']))
@@ -354,8 +356,8 @@ class RoguePostgresQueue(QuasarQueue):
         # Get created_at timestamp of post.
         created_at = self.db.query_str(''.join(("SELECT created_at "
                                                 "FROM rogue.posts WHERE "
-                                                "id = %s")),
-                                       post_id)
+                                                "id = '%s'")),
+                                       (post_id,))
         # Set post status to 'deleted'.
         self.db.query_str(''.join(("INSERT INTO rogue.posts "
                                    "(id, created_at, updated_at, "
@@ -378,7 +380,7 @@ class RoguePostgresQueue(QuasarQueue):
                                        "voter_registration_status, "
                                        "voter_registration_source, "
                                        "voter_registration_method, "
-                                       "voting_method_preference, "
+                                       "voter_registration_preference, "
                                        "email_subscribed, sms_subscribed) "
                                        " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,"
                                        "%s,%s,%s,%s,%s) ON CONFLICT "
@@ -404,9 +406,9 @@ class RoguePostgresQueue(QuasarQueue):
                                        "voter_registration_status, "
                                        "voter_registration_source, "
                                        "voter_registration_method, "
-                                       "voting_method_preference, "
+                                       "voter_registration_preference, "
                                        "email_subscribed, sms_subscribed) "
-                                       " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,"
+                                       " VALUES (%s,%s,%s,%s,%s,%s,%s,"
                                        "%s,%s,%s,%s,%s) ON CONFLICT "
                                        "DO NOTHING")),
                               (post_id,
