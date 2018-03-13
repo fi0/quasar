@@ -361,7 +361,7 @@ class RoguePostgresQueue(QuasarQueue):
                                    "(id, created_at, updated_at, "
                                    "status, deleted_at) VALUES "
                                    "(%s,%s,%s,%s,%s)")),
-                          (post_id, created_at[0], deleted_at, 
+                          (post_id, created_at[0], deleted_at,
                            'deleted', deleted_at))
 
     def _add_post_details(self, post_id, post_details):
@@ -439,7 +439,7 @@ class RoguePostgresQueue(QuasarQueue):
                         pydash.get(data, 'details') == ''):
                     pass
                 else:
-                    self._add_post_details(data['id'], data['details'])                
+                    self._add_post_details(data['id'], data['details'])
         else:
             print("Unknown rogue message type. Exiting.")
             sys.exit(1)
