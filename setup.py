@@ -5,7 +5,7 @@ with open('requirements.txt') as f:
 
 setup(
     name="quasar",
-    version="0.3.0",
+    version="0.4.0",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
@@ -31,6 +31,7 @@ setup(
             'phoenix_next_cleanup = quasar.phoenix_next_queue_cleanup:main',
             'regenerate_mobile_master_lookup_lite_table = quasar.create_mobile_master_lookup_lite:main',
             'rogue_consume = quasar.rogue_consumer:main',
+            'rogue_consume_pg = quasar.rogue_consumer_pg:main',
             'runscope_cleanup = quasar.cio_runscope_queue_cleanup:main',
             'reportbacks_asterisk = quasar.reportback_asterisk:run_load_reportbacks',
             'scrape_moco_profiles = quasar.moco_scraper:start_profile_scrape',

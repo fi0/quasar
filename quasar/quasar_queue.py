@@ -4,6 +4,7 @@ import sys
 
 from .config import config
 from .database import Database
+from .database_pg import Database as DatabasePG
 from .queue import QuasarQueue
 from .utils import unixtime_to_isotime as u2i
 from .utils import strip_str
@@ -284,3 +285,162 @@ class RoguePostgresQueue(QuasarQueue):
     def __init__(self):
         super().__init__(config.AMQP_URI, config.ROGUE_PG_QUEUE,
                          config.QUASAR_EXCHANGE)
+        self.db = DatabasePG()
+
+    def _add_signup(self, signup_data):
+        self.db.query_str(''.join(("INSERT INTO rogue.signups "
+                                   "(id, northstar_id, campaign_id, "
+                                   "campaign_run_id, quantity, "
+                                   "why_participated, source, details, "
+                                   "created_at, updated_at) "
+                                   "VALUES (%s,%s,%s,%s,%s,%s,"
+                                   "%s,%s,%s,%s) ON CONFLICT "
+                                   "(id, created_at, updated_at) "
+                                   "DO NOTHING")),
+                          (signup_data['signup_id'],
+                           signup_data['northstar_id'],
+                           signup_data['campaign_id'],
+                           signup_data['campaign_run_id'],
+                           signup_data['quantity'],
+                           signup_data['why_participated'],
+                           signup_data['signup_source'],
+                           signup_data['details'],
+                           signup_data['created_at'],
+                           signup_data['updated_at']))
+        print("Signup {} ETL'd.".format(signup_data['signup_id']))
+
+    def _delete_signup(self, signup_id, deleted_at):
+        # Get created_at date of signup.
+        created_at = self.db.query_str(''.join(("SELECT created_at "
+                                                "FROM rogue.signups WHERE "
+                                                "id = '%s'")),
+                                       (signup_id,))
+        self.db.query_str(''.join(("INSERT INTO rogue.signups "
+                                   "(id, created_at, updated_at, "
+                                   "deleted_at) VALUES "
+                                   "(%s,%s,%s,%s)")),
+                          (signup_id, created_at[0], deleted_at, deleted_at))
+        print("Signup {} deleted and archived.".format(signup_id))
+
+    def _add_post(self, post_data):
+        self.db.query_str(''.join(("INSERT INTO rogue.posts "
+                                   "(id, signup_id, campaign_id, "
+                                   "campaign_run_id, northstar_id, "
+                                   "type, action, quantity, url, caption, "
+                                   "status, source, signup_source, "
+                                   "remote_addr, created_at, "
+                                   "updated_at) VALUES "
+                                   "(%s,%s,%s,%s,%s,%s,%s,%s,%s,"
+                                   "%s,%s,%s,%s,%s,%s,%s) ON CONFLICT "
+                                   "DO NOTHING")),
+                          (post_data['id'],
+                           post_data['signup_id'],
+                           post_data['campaign_id'],
+                           post_data['campaign_run_id'],
+                           post_data['northstar_id'],
+                           post_data['type'],
+                           post_data['action'],
+                           post_data['quantity'],
+                           post_data['media']['url'],
+                           post_data['media']['caption'],
+                           post_data['status'],
+                           post_data['source'],
+                           post_data['signup_source'],
+                           post_data['remote_addr'],
+                           post_data['created_at'],
+                           post_data['updated_at']))
+        print("Post {} ETL'd.".format(post_data['id']))
+
+    def _delete_post(self, post_id, deleted_at):
+        # Get created_at timestamp of post.
+        created_at = self.db.query_str(''.join(("SELECT created_at "
+                                                "FROM rogue.posts WHERE "
+                                                "id = '%s'")),
+                                       (post_id,))
+        # Set post status to 'deleted'.
+        self.db.query_str(''.join(("INSERT INTO rogue.posts "
+                                   "(id, created_at, updated_at, "
+                                   "status, deleted_at) VALUES "
+                                   "(%s,%s,%s,%s,%s)")),
+                          (post_id, created_at[0], deleted_at,
+                           'deleted', deleted_at))
+
+    def _add_post_details(self, post_id, post_details):
+        # TODO: Remove type check if Rogue sends this as JSON/dict.
+        if type(post_details) is str:
+            details = json.loads(post_details)
+        else:
+            details = post_details
+        if pydash.get(details, 'source_details'):
+            self.db.query_str(''.join(("INSERT INTO rogue.post_details "
+                                       "(post_id, hostname, referral_code, "
+                                       "partner_comms_opt_in, created_at, "
+                                       "updated_at, source_details, "
+                                       "voter_registration_status, "
+                                       "voter_registration_source, "
+                                       "voter_registration_method, "
+                                       "voter_registration_preference, "
+                                       "email_subscribed, sms_subscribed) "
+                                       " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,"
+                                       "%s,%s,%s,%s,%s) ON CONFLICT "
+                                       "DO NOTHING")),
+                              (post_id,
+                               details['hostname'],
+                               details['referral-code'],
+                               details['partner-comms-opt-in'],
+                               details['created-at'],
+                               details['updated-at'],
+                               details['source_details'],
+                               details['voter-registration-status'],
+                               details['voter-registration-source'],
+                               details['voter-registration-method'],
+                               details['voting-method-preference'],
+                               details['email subscribed'],
+                               details['sms subscribed']))
+        else:
+            self.db.query_str(''.join(("INSERT INTO rogue.post_details "
+                                       "(post_id, hostname, referral_code, "
+                                       "partner_comms_opt_in, created_at, "
+                                       "updated_at, "
+                                       "voter_registration_status, "
+                                       "voter_registration_source, "
+                                       "voter_registration_method, "
+                                       "voter_registration_preference, "
+                                       "email_subscribed, sms_subscribed) "
+                                       " VALUES (%s,%s,%s,%s,%s,%s,%s,"
+                                       "%s,%s,%s,%s,%s) ON CONFLICT "
+                                       "DO NOTHING")),
+                              (post_id,
+                               details['hostname'],
+                               details['referral-code'],
+                               details['partner-comms-opt-in'],
+                               details['created-at'],
+                               details['updated-at'],
+                               details['voter-registration-status'],
+                               details['voter-registration-source'],
+                               details['voter-registration-method'],
+                               details['voting-method-preference'],
+                               details['email subscribed'],
+                               details['sms subscribed']))
+        print("Details for post {} ETL'd.".format(post_id))
+
+    def process_message(self, message_data):
+        data = message_data['data']
+        if data['meta']['type'] == 'signup':
+            if pydash.get(data, 'deleted_at'):
+                self._delete_signup(data['id'], data['deleted_at'])
+            else:
+                self._add_signup(data)
+        elif data['meta']['type'] == 'post':
+            if pydash.get(data, 'deleted_at'):
+                self._delete_post(data['id'], data['deleted_at'])
+            else:
+                self._add_post(data)
+                if (pydash.get(data, 'details') is None or
+                        pydash.get(data, 'details') == ''):
+                    pass
+                else:
+                    self._add_post_details(data['id'], data['details'])
+        else:
+            print("Unknown rogue message type. Exiting.")
+            sys.exit(1)
