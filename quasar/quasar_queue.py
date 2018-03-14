@@ -315,7 +315,6 @@ class RoguePostgresQueue(QuasarQueue):
                                                 "FROM rogue.signups WHERE "
                                                 "id = '%s'")),
                                        (signup_id,))
-        print("Created at is {}".format(created_at[0]))
         self.db.query_str(''.join(("INSERT INTO rogue.signups "
                                    "(id, created_at, updated_at, "
                                    "deleted_at) VALUES "
