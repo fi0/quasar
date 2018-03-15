@@ -64,8 +64,9 @@ pip 9.0.1 from /Users/sheydari/.venv/quasar/lib/python3.6/site-packages (python 
 Install Python requirements:
 
 ```
+Make sure you're in your virtualenv!
 cd $QUASAR_PROJECT_DIR
-make build
+pip install -r requirements.txt
 ```
 
 Start the vagrant machine. It runs MySQL and PostgreSQL:
@@ -83,11 +84,17 @@ cd $QUASAR_PROJECT_DIR
 source ~/.pyenvs/quasar/bin/activate
 ```
 
+To exit out of virtualenv:
+```
+deactivate
+```
+
 ## Usage
 
 ```
 cd $QUASAR_PROJECT_DIR
 pip install -e .
+make build
 ```
 
 See `setup.py` for list of entry-points. E.g.
