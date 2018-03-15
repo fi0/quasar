@@ -319,7 +319,7 @@ class RoguePostgresQueue(QuasarQueue):
                                    "(id, created_at, updated_at, "
                                    "deleted_at) VALUES "
                                    "(%s,%s,%s,%s) ON CONFLICT "
-                                   "(id, created_at, updated_at) UPDATE "
+                                   "(id, created_at, updated_at) DO UPDATE "
                                    "SET deleted_at = %s")),
                           (signup_id, created_at[0], deleted_at, deleted_at,
                            deleted_at))
