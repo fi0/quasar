@@ -365,7 +365,7 @@ class RoguePostgresQueue(QuasarQueue):
                                    "(id, created_at, updated_at, "
                                    "status, deleted_at) VALUES "
                                    "(%s,%s,%s,%s,%s) ON DUPLICATE "
-                                   "(id, created_at, updated_at "
+                                   "(id, created_at, updated_at) "
                                    "DO UPDATE SET "
                                    "deleted_at = %s, status = %s")),
                           (post_id, created_at[0], deleted_at,
