@@ -318,8 +318,11 @@ class RoguePostgresQueue(QuasarQueue):
         self.db.query_str(''.join(("INSERT INTO rogue.signups "
                                    "(id, created_at, updated_at, "
                                    "deleted_at) VALUES "
-                                   "(%s,%s,%s,%s)")),
-                          (signup_id, created_at[0], deleted_at, deleted_at))
+                                   "(%s,%s,%s,%s) ON CONFLICT "
+                                   "(id, created_at, updated_at) UPDATE "
+                                   "SET deleted_at = %s")),
+                          (signup_id, created_at[0], deleted_at, deleted_at,
+                           deleted_at))
         print("Signup {} deleted and archived.".format(signup_id))
 
     def _add_post(self, post_data):
@@ -361,9 +364,13 @@ class RoguePostgresQueue(QuasarQueue):
         self.db.query_str(''.join(("INSERT INTO rogue.posts "
                                    "(id, created_at, updated_at, "
                                    "status, deleted_at) VALUES "
-                                   "(%s,%s,%s,%s,%s)")),
+                                   "(%s,%s,%s,%s,%s) ON DUPLICATE "
+                                   "(id, created_at, updated_at "
+                                   "DO UPDATE SET "
+                                   "deleted_at = %s, status = %s")),
                           (post_id, created_at[0], deleted_at,
-                           'deleted', deleted_at))
+                           'deleted', deleted_at, deleted_at,
+                           'deleted'))
 
     def _add_post_details(self, post_id, post_details):
         # TODO: Remove type check if Rogue sends this as JSON/dict.
