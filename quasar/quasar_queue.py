@@ -364,7 +364,7 @@ class RoguePostgresQueue(QuasarQueue):
         self.db.query_str(''.join(("INSERT INTO rogue.posts "
                                    "(id, created_at, updated_at, "
                                    "status, deleted_at) VALUES "
-                                   "(%s,%s,%s,%s,%s) ON DUPLICATE "
+                                   "(%s,%s,%s,%s,%s) ON CONFLICT "
                                    "(id, created_at, updated_at) "
                                    "DO UPDATE SET "
                                    "deleted_at = %s, status = %s")),
