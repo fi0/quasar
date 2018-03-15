@@ -313,7 +313,7 @@ class RoguePostgresQueue(QuasarQueue):
         # Get created_at date of signup.
         created_at = self.db.query_str(''.join(("SELECT created_at "
                                                 "FROM rogue.signups WHERE "
-                                                "id = '%s'")),
+                                                "id = %s")),
                                        (signup_id,))
         self.db.query_str(''.join(("INSERT INTO rogue.signups "
                                    "(id, created_at, updated_at, "
@@ -355,7 +355,7 @@ class RoguePostgresQueue(QuasarQueue):
         # Get created_at timestamp of post.
         created_at = self.db.query_str(''.join(("SELECT created_at "
                                                 "FROM rogue.posts WHERE "
-                                                "id = '%s'")),
+                                                "id = %s")),
                                        (post_id,))
         # Set post status to 'deleted'.
         self.db.query_str(''.join(("INSERT INTO rogue.posts "
