@@ -16,23 +16,9 @@ These instructions will get you a copy of the project up and running on your loc
 
 These instructions use `virtualenv` to isolate project dependencies in a lightweight virtual environment.
 
-Install Homebrew:
-
+Setup Homebrew and Python 3 via:
 ```
-Find the latest install command from: https://brew.sh/
-```
-
-Install Python 3 via Homebrew:
-
-```
-brew install python3
-Grab a cup of coffee, tea, matcha, chai, or water. The install will take a while.
-```
-
-Install Virtualenv:
-
-```
-pip3 install venv_tools
+http://docs.python-guide.org/en/latest/starting/install3/osx/
 ```
 
 Create directory for your virtual environments:
@@ -43,7 +29,7 @@ mkdir -p ~/.venv/quasar
 Set up environment directory for quasar:
 
 ```
-virtualenv ~/.venv/quasar
+python3 -m venv ~/.venv/quasar
 source ~/.venv/quasar/bin/activate
 ```
 
@@ -81,7 +67,7 @@ Run this everytime:
 
 ```
 cd $QUASAR_PROJECT_DIR
-source ~/.pyenvs/quasar/bin/activate
+source ~/.venv/quasar/bin/activate
 ```
 
 To exit out of virtualenv:
@@ -99,8 +85,25 @@ make build
 
 See `setup.py` for list of entry-points. E.g.
 
+Entry points are how CLI commands are generated for python code. 
+For instance, instead of having to run `python cio_queue_process.py` and
+have that python file contain all of the runtime code, you can provide
+a preferred CLI command and link to an `entry point`, that has the command
+you wish to run. For instance for
 ```
 $ cio_import
+```
+The entry point looks like this:
+```
+cio_import = quasar.cio_queue_process:main
+```
+It follows the format:
+```
+command_to_run = dir_path.filename:code_to_run
+```
+More info on Python setup.py file can be found here:
+```
+https://docs.python.org/3/distutils/setupscript.html
 ```
 
 
