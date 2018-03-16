@@ -10,36 +10,38 @@
 * A Bright Light and Hope towards illuminating the dark corners of social injustice with the power of Data
 
 ## Getting Started
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your local macOS machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
 ### Prerequisites
 
-These instructions use`pyenv` to isolate project dependencies in a lightweight virtual environment. You can also use `pythonz` or any other Python environment manager you prefer.
+These instructions use `virtualenv` to isolate project dependencies in a lightweight virtual environment.
 
-Install pyenv:
-
+Setup Homebrew and Python 3 via:
 ```
-sudo apt-get install python3-venv
-mkdir ~/.pyenvs
-cd ~/.pyenvs
+http://docs.python-guide.org/en/latest/starting/install3/osx/
+```
+
+Create directory for your virtual environments:
+```
+mkdir -p ~/.venv/quasar
 ```
 
 Set up environment directory for quasar:
 
 ```
-pyvenv quasar
-source quasar/bin/activate
+python3 -m venv ~/.venv/quasar
+source ~/.venv/quasar/bin/activate
 ```
 
 You should now see the environment name prefixing your command line. Check Python and `pip` versions:
 
 ```
-(quasar) xianny@machine ~/.pyenvs $
-(quasar) xianny@machine ~/.pyenvs $ python --version
-Python 3.5.2
-(quasar) xianny@machine ~/.pyenvs $ pip --version
-pip 9.0.1 from /home/xianny/.pyenvs/quasar/lib/python3.5/site-packages (python 3.5)
-(quasar) xianny@machine ~/.pyenvs $ 
+(quasar) affogato:quasar sheydari$
+(quasar) affogato:quasar sheydari$ python --version
+Python 3.6.4
+(quasar) affogato:quasar sheydari$ pip --version
+pip 9.0.1 from /Users/sheydari/.venv/quasar/lib/python3.6/site-packages (python 3.6)
+(quasar) affogato:quasar sheydari$ 
 
 ```
 
@@ -48,18 +50,12 @@ pip 9.0.1 from /home/xianny/.pyenvs/quasar/lib/python3.5/site-packages (python 3
 Install Python requirements:
 
 ```
-cd $QUASAR_PROJECT_DIR/etl-scripts
-pip install --user -r requirements.txt
+Make sure you're in your virtualenv!
+cd $QUASAR_PROJECT_DIR
+pip install -r requirements.txt
 ```
 
-If you run into errors, you might need:
-
-```
-sudo apt-get install libmysqlclient-dev
-sudo apt-get install python3-dev
-```
-
-Start the vagrant machine. It runs MySQL:
+Start the vagrant machine. It runs MySQL and PostgreSQL:
 
 ```
 vagrant up
@@ -71,7 +67,12 @@ Run this everytime:
 
 ```
 cd $QUASAR_PROJECT_DIR
-source ~/.pyenvs/quasar/bin/activate
+source ~/.venv/quasar/bin/activate
+```
+
+To exit out of virtualenv:
+```
+deactivate
 ```
 
 ## Usage
@@ -79,12 +80,30 @@ source ~/.pyenvs/quasar/bin/activate
 ```
 cd $QUASAR_PROJECT_DIR
 pip install -e .
+make build
 ```
 
 See `setup.py` for list of entry-points. E.g.
 
+Entry points are how CLI commands are generated for python code. 
+For instance, instead of having to run `python cio_queue_process.py` and
+have that python file contain all of the runtime code, you can provide
+a preferred CLI command and link to an `entry point`, that has the command
+you wish to run. For instance for
 ```
-$ moco_update
+$ cio_import
+```
+The entry point looks like this:
+```
+cio_import = quasar.cio_queue_process:main
+```
+It follows the format:
+```
+command_to_run = dir_path.filename:code_to_run
+```
+More info on Python setup.py file can be found here:
+```
+https://docs.python.org/3/distutils/setupscript.html
 ```
 
 
