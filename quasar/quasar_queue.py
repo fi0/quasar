@@ -17,6 +17,7 @@ class CioQueue(QuasarQueue):
                          config.BLINK_EXCHANGE)
         self.rogue_queue = RogueQueue()
         self.rogue_pg_queue = RoguePostgresQueue()
+        self.cio_pg_queue = CioPostgresQueue()
         self.db = Database()
 
     def process_message(self, message_data):
@@ -25,6 +26,10 @@ class CioQueue(QuasarQueue):
             self.rogue_queue.pub_message(message_data)
             self.rogue_pg_queue.pub_message(message_data)
         else:
+            print(''.join(("Publishing C.IO event id:"
+                           "{} to c.io Postgres queue."
+                           "")).format(message_data['data']['event_id']))
+            self.cio_pg_queue.pub_message(message_data)
             print(''.join(("Processing C.IO event id: "
                            "{}.")).format(message_data['data']['event_id']))
             self.log_event(message_data)
@@ -72,6 +77,13 @@ class CioQueue(QuasarQueue):
                               (status,
                                u2i(message_data['data']['timestamp']),
                                message_data['data']['data']['customer_id']))
+
+
+class CioPostgresQueue(QuasarQueue):
+
+    def __init__(self):
+        super().__init__(config.AMQP_URI, config.CIO_PG_QUEUE,
+                         config.QUASAR_EXCHANGE)
 
 
 class RogueQueue(QuasarQueue):
