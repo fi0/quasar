@@ -5,13 +5,14 @@ with open('requirements.txt') as f:
 
 setup(
     name="quasar",
-    version="0.5.0",
+    version="0.6.0",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
         'console_scripts': [
             'campaign_info_table_refresh = quasar.phoenix_to_campaign_info_table:main',
             'cio_import = quasar.cio_queue_process:main',
+            'cio_import_pg = quasar.cio_consumer_pg:main',
             'etl_monitoring = quasar.etl_monitoring:run_monitoring',
             'get_competitions = quasar.gladiator_import:get_competitions',
             'legacy_cio_backfill = quasar.cio_legacy_backfill:legacy_cio_backfill',
