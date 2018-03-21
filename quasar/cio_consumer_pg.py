@@ -1,4 +1,3 @@
-from .config import config
 from .quasar_queue import CioPostgresQueue
 
 
