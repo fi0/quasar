@@ -84,6 +84,82 @@ class CioPostgresQueue(QuasarQueue):
     def __init__(self):
         super().__init__(config.AMQP_URI, config.CIO_PG_QUEUE,
                          config.QUASAR_EXCHANGE)
+        self.db = DatabasePG()
+
+    # Save entire c.io JSON blob to event_log table.
+    def _log_event(self, data):
+        self.db.query_str(''.join(("INSERT INTO cio.event_log "
+                                   "(event) VALUES (%s)")),
+                          (json.dumps(data),))
+        print(''.join(("Logged data from "
+                       "C.IO event id {}.")).format(data['event_id']))
+
+    # Save customer sub/unsub data and dates.
+    def _add_customer_event(self, data):
+        self.db.query_str(''.join(("INSERT INTO cio.customer_event "
+                                   "(email_id, customer_id, email_address, "
+                                   "template_id, event_id, "
+                                   "to_timestamp(timestamp), event_type"
+                                   "VALUES (%s,%s,%s,%s,%s,%s,%s) "
+                                   "ON CONFLICT (email_id, customer_id, "
+                                   "timestamp, event_type) "
+                                   "DO NOTHING")),
+                          (data['data']['email_id'],
+                           data['data']['customer_id'],
+                           data['data']['email_address'],
+                           data['data']['template_id'],
+                           data['event_id'], data['timestamp'],
+                           data['event_type']))
+        print(''.join(("Added customer event from "
+                       "C.IO event id {}.")).format(data['event_id']))
+
+    # Save email event data and dates, e.g. email_click.
+    def _add_email_event(self, data):
+        self.db.query_str(''.join(("INSERT INTO cio.email_event "
+                                   "(email_id, customer_id, email_address, "
+                                   "template_id, subject, href, link, "
+                                   "event_id, to_timestamp(timestamp), "
+                                   "event_type) VALUES "
+                                   "(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) "
+                                   "ON CONFLICT (email_id, customer_id, "
+                                   "timestamp, event_type) "
+                                   "DO NOTHING")),
+                          (data['data']['email_id'],
+                           data['data']['customer_id'],
+                           data['data']['email_address'],
+                           data['data']['template_id'],
+                           data['data']['subject'],
+                           data['data']['href'],
+                           data['data']['link'],
+                           data['event_id'], data['timestamp'],
+                           data['event_type']))
+        print(''.join(("Added email event from "
+                       "C.IO event id {}.")).format(data['event_id']))
+
+    def process_message(self, message_data):
+        data = message_data['data']
+        event_type = pydash.get(data, 'event_type')
+        # Set for checking customer event types.
+        customer_event = {
+            'customer_subscribed',
+            'customer_unsubscribed'
+        }
+        # Set for checking email event types.
+        email_event = {
+            'email_clicked',
+            'email_converted',
+            'email_opened',
+            'email_unsubscribed'
+        }
+        # Always capture atomic c.io event in raw format.
+        self._log_event(data)
+        if event_type in customer_event:
+            self._add_customer_event(data)
+        elif event_type in email_event:
+            self._add_email_event(data)
+        else:
+            print("Something went wrong with C.IO consumer!")
+            sys.exit(1)
 
 
 class RogueQueue(QuasarQueue):
