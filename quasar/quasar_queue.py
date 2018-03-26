@@ -117,10 +117,9 @@ class CioPostgresQueue(QuasarQueue):
     def _add_email_event(self, data):
         self.db.query_str(''.join(("INSERT INTO cio.email_event "
                                    "(email_id, customer_id, email_address, "
-                                   "template_id, subject, href, link, "
-                                   "event_id, to_timestamp(timestamp), "
+                                   "template_id, event_id, timestamp, "
                                    "event_type) VALUES "
-                                   "(%s,%s,%s,%s,%s,%s,%s) "
+                                   "(%s,%s,%s,%s,%s,to_timestamp(%s),%s) "
                                    "ON CONFLICT (email_id, customer_id, "
                                    "timestamp, event_type) "
                                    "DO NOTHING")),
@@ -138,9 +137,10 @@ class CioPostgresQueue(QuasarQueue):
         self.db.query_str(''.join(("INSERT INTO cio.email_event "
                                    "(email_id, customer_id, email_address, "
                                    "template_id, subject, href, link, "
-                                   "event_id, to_timestamp(timestamp), "
+                                   "event_id, timestamp, "
                                    "event_type) VALUES "
-                                   "(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) "
+                                   "(%s,%s,%s,%s,%s,%s,%s,%s,"
+                                   "to_timestamp(%s),%s) "
                                    "ON CONFLICT (email_id, customer_id, "
                                    "timestamp, event_type) "
                                    "DO NOTHING")),
