@@ -120,6 +120,26 @@ class CioPostgresQueue(QuasarQueue):
                                    "template_id, subject, href, link, "
                                    "event_id, to_timestamp(timestamp), "
                                    "event_type) VALUES "
+                                   "(%s,%s,%s,%s,%s,%s,%s) "
+                                   "ON CONFLICT (email_id, customer_id, "
+                                   "timestamp, event_type) "
+                                   "DO NOTHING")),
+                          (data['data']['email_id'],
+                           data['data']['customer_id'],
+                           data['data']['email_address'],
+                           data['data']['template_id'],
+                           data['event_id'], data['timestamp'],
+                           data['event_type']))
+        print(''.join(("Added email event from "
+                       "C.IO event id {}.")).format(data['event_id']))
+
+    # Save email event data and dates, e.g. email_click.
+    def _add_email_click_event(self, data):
+        self.db.query_str(''.join(("INSERT INTO cio.email_event "
+                                   "(email_id, customer_id, email_address, "
+                                   "template_id, subject, href, link, "
+                                   "event_id, to_timestamp(timestamp), "
+                                   "event_type) VALUES "
                                    "(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) "
                                    "ON CONFLICT (email_id, customer_id, "
                                    "timestamp, event_type) "
@@ -146,17 +166,19 @@ class CioPostgresQueue(QuasarQueue):
         }
         # Set for checking email event types.
         email_event = {
-            'email_clicked',
             'email_converted',
             'email_opened',
             'email_unsubscribed'
         }
+        email_click_event = {'email_clicked'}
         # Always capture atomic c.io event in raw format.
         self._log_event(data)
         if event_type in customer_event:
             self._add_customer_event(data)
         elif event_type in email_event:
             self._add_email_event(data)
+        elif event_type in email_click_event:
+            self._add_email_click_event(data)
         else:
             print("Something went wrong with C.IO consumer!")
             sys.exit(1)
