@@ -155,7 +155,7 @@ class CioPostgresQueue(QuasarQueue):
     def _add_email_click_event(self, data):
         self.db.query_str(''.join(("INSERT INTO cio.email_event "
                                    "(email_id, customer_id, email_address, "
-                                   "template_id, subject, href, link, "
+                                   "template_id, subject, href, link_id, "
                                    "event_id, timestamp, "
                                    "event_type) VALUES "
                                    "(%s,%s,%s,%s,%s,%s,%s,%s,"
@@ -169,7 +169,7 @@ class CioPostgresQueue(QuasarQueue):
                            data['data']['template_id'],
                            data['data']['subject'],
                            data['data']['href'],
-                           data['data']['link'],
+                           data['data']['link_id'],
                            data['event_id'], data['timestamp'],
                            data['event_type']))
         print(''.join(("Added email event from "
