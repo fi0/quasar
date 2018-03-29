@@ -16,10 +16,11 @@ class NorthstarScraper(Scraper):
     def fetch_auth_headers(self):
         oauth = OAuth2Session(client=BackendApplicationClient(
             client_id=config.ns_client_id))
+        scopes = ['admin', 'user']
         new_token = oauth.fetch_token(self.url + '/v2/auth/token',
                                       client_id=config.ns_client_id,
                                       client_secret=config.ns_client_secret,
-                                      scope='admin')
+                                      scope=scopes)
         return {'Authorization': 'Bearer ' + str(new_token['access_token'])}
 
     def authenticated(func):
