@@ -1,7 +1,5 @@
 from .database_pg import Database
-from .config import config
 import time
-import sys
 
 
 def create():
