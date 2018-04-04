@@ -5,12 +5,14 @@ with open('requirements.txt') as f:
 
 setup(
     name="quasar",
-    version="0.6.0",
+    version="0.6.1",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
         'console_scripts': [
             'campaign_info_table_refresh = quasar.phoenix_to_campaign_info_table:main',
+            'campaign_info_recreate_pg = quasar.ashes_to_campaign_info:create',
+            'campaign_info_refresh_pg = quasar.ashes_to_campaign_info:main',
             'cio_import = quasar.cio_queue_process:main',
             'cio_import_pg = quasar.cio_consumer_pg:main',
             'etl_monitoring = quasar.etl_monitoring:run_monitoring',
