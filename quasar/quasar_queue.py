@@ -438,57 +438,62 @@ class RoguePostgresQueue(QuasarQueue):
             details = json.loads(post_details)
         else:
             details = post_details
-        if pydash.get(details, 'source_details'):
-            self.db.query_str(''.join(("INSERT INTO rogue.post_details "
-                                       "(post_id, hostname, referral_code, "
-                                       "partner_comms_opt_in, created_at, "
-                                       "updated_at, source_details, "
-                                       "voter_registration_status, "
-                                       "voter_registration_source, "
-                                       "voter_registration_method, "
-                                       "voter_registration_preference, "
-                                       "email_subscribed, sms_subscribed) "
-                                       " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,"
-                                       "%s,%s,%s,%s,%s) ON CONFLICT "
-                                       "DO NOTHING")),
-                              (post_id,
-                               details['hostname'],
-                               details['referral-code'],
-                               details['partner-comms-opt-in'],
-                               details['created-at'],
-                               details['updated-at'],
-                               details['source_details'],
-                               details['voter-registration-status'],
-                               details['voter-registration-source'],
-                               details['voter-registration-method'],
-                               details['voting-method-preference'],
-                               details['email subscribed'],
-                               details['sms subscribed']))
+        if pydash.get(details, 'voter-registration-status')
+            if pydash.get(details, 'source_details'):
+                self.db.query_str(''.join(("INSERT INTO rogue.post_details "
+                                           "(post_id, hostname, referral_code, "
+                                           "partner_comms_opt_in, created_at, "
+                                           "updated_at, source_details, "
+                                           "voter_registration_status, "
+                                           "voter_registration_source, "
+                                           "voter_registration_method, "
+                                           "voter_registration_preference, "
+                                           "email_subscribed, sms_subscribed) "
+                                           " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,"
+                                           "%s,%s,%s,%s,%s) ON CONFLICT "
+                                           "DO NOTHING")),
+                                  (post_id,
+                                   details['hostname'],
+                                   details['referral-code'],
+                                   details['partner-comms-opt-in'],
+                                   details['created-at'],
+                                   details['updated-at'],
+                                   details['source_details'],
+                                   details['voter-registration-status'],
+                                   details['voter-registration-source'],
+                                   details['voter-registration-method'],
+                                   details['voting-method-preference'],
+                                   details['email subscribed'],
+                                   details['sms subscribed']))
+            else:
+                self.db.query_str(''.join(("INSERT INTO rogue.post_details "
+                                           "(post_id, hostname, referral_code, "
+                                           "partner_comms_opt_in, created_at, "
+                                           "updated_at, "
+                                           "voter_registration_status, "
+                                           "voter_registration_source, "
+                                           "voter_registration_method, "
+                                           "voter_registration_preference, "
+                                           "email_subscribed, sms_subscribed) "
+                                           " VALUES (%s,%s,%s,%s,%s,%s,%s,"
+                                           "%s,%s,%s,%s,%s) ON CONFLICT "
+                                           "DO NOTHING")),
+                                  (post_id,
+                                   details['hostname'],
+                                   details['referral-code'],
+                                   details['partner-comms-opt-in'],
+                                   details['created-at'],
+                                   details['updated-at'],
+                                   details['voter-registration-status'],
+                                   details['voter-registration-source'],
+                                   details['voter-registration-method'],
+                                   details['voting-method-preference'],
+                                   details['email subscribed'],
+                                   details['sms subscribed']))
         else:
-            self.db.query_str(''.join(("INSERT INTO rogue.post_details "
-                                       "(post_id, hostname, referral_code, "
-                                       "partner_comms_opt_in, created_at, "
-                                       "updated_at, "
-                                       "voter_registration_status, "
-                                       "voter_registration_source, "
-                                       "voter_registration_method, "
-                                       "voter_registration_preference, "
-                                       "email_subscribed, sms_subscribed) "
-                                       " VALUES (%s,%s,%s,%s,%s,%s,%s,"
-                                       "%s,%s,%s,%s,%s) ON CONFLICT "
-                                       "DO NOTHING")),
-                              (post_id,
-                               details['hostname'],
-                               details['referral-code'],
-                               details['partner-comms-opt-in'],
-                               details['created-at'],
-                               details['updated-at'],
-                               details['voter-registration-status'],
-                               details['voter-registration-source'],
-                               details['voter-registration-method'],
-                               details['voting-method-preference'],
-                               details['email subscribed'],
-                               details['sms subscribed']))
+            self.db.query_str(''.join(("INSERT INTO rogue.misc_details "
+                                       "(data) VALUES (%s)")),
+                              (post_details)
         print("Details for post {} ETL'd.".format(post_id))
 
     def process_message(self, message_data):
