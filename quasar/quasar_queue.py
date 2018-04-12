@@ -494,7 +494,7 @@ class RoguePostgresQueue(QuasarQueue):
                                    details['email subscribed'],
                                    details['sms subscribed']))
         else:
-            self.db.query_str(''.join(("INSERT INTO rogue.misc_details "
+            self.db.query_str(''.join(("INSERT INTO rogue.post_details "
                                        "(data) VALUES (%s)")),
                               (post_details))
         print("Details for post {} ETL'd.".format(post_id))
