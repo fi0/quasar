@@ -10,8 +10,8 @@ CREATE TEMPORARY TABLE path_campaign_lookup AS
 	FROM 
 		(SELECT DISTINCT 
 			COALESCE(
-				regexp_replace(dat.legacycampaignid_s, '[^0-9.]','','g'),
-				regexp_replace(dat.campaignid_s, '[^0-9.]','','g')
+				NULLIF(regexp_replace(dat.legacycampaignid_s, '[^0-9.]','','g'), ''),
+				NULLIF(regexp_replace(dat.campaignid_s, '[^0-9.]','','g'), '')
 				)::NUMERIC AS campaign_id,
 			(regexp_split_to_array(page.path_s, E'\/'))[4] AS campaign_name
 			FROM heroku_wzsf6b3z.events_meta meta
