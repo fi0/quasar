@@ -440,7 +440,7 @@ class RoguePostgresQueue(QuasarQueue):
             details = post_details
         if pydash.get(details, 'voter-registration-status'):
             if pydash.get(details, 'source_details'):
-                self.db.query_str(''.join(("INSERT INTO rogue.post_details "
+                self.db.query_str(''.join(("INSERT INTO rogue.turbovote "
                                            "(post_id, hostname, "
                                            "referral_code, "
                                            "partner_comms_opt_in, "
@@ -468,7 +468,7 @@ class RoguePostgresQueue(QuasarQueue):
                                    details['email subscribed'],
                                    details['sms subscribed']))
             else:
-                self.db.query_str(''.join(("INSERT INTO rogue.post_details "
+                self.db.query_str(''.join(("INSERT INTO rogue.turbovote "
                                            "(post_id, hostname, "
                                            "referral_code, "
                                            "partner_comms_opt_in, "
