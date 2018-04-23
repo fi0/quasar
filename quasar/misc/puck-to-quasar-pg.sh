@@ -7,7 +7,7 @@ echo "Old Puck mongo backup deleted."
 
 # Source Env Variables and Dump Puck DB
 source ~/.mongorc.js
-mongodump -h $PUCK_DB:$PUCK_PORT -d $PUCK_AUTH_DB -u $PUCK_USER -p $PUCK_PASS -o /var/tmp/puck-mongo-dump
+mongodump -h "$PUCK_DB" -d $PUCK_DUMP_DB -u $PUCK_USER -p $PUCK_PASS --ssl --authenticationDatabase $PUCK_AUTH_DB -o /var/tmp/puck-mongo-dump
 echo "Puck mongo backup complete."
 
 # Restore to internal mongo cluster.

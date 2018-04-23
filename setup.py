@@ -11,6 +11,7 @@ setup(
     entry_points={
         'console_scripts': [
             'campaign_info_table_refresh = quasar.phoenix_to_campaign_info_table:main',
+            'campaign_info_recreate_pg = quasar.ashes_to_campaign_info:create',
             'campaign_info_refresh_pg = quasar.ashes_to_campaign_info:main',
             'cio_import = quasar.cio_queue_process:main',
             'cio_import_pg = quasar.cio_consumer_pg:main',
