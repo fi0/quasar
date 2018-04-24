@@ -56,8 +56,6 @@ CREATE TABLE public.phoenix_next_events AS
 			edat.link_s,
 			edat.modaltype_s,
 			edat.variant_s,
-			edat.legacycampaignid_s,
-			edat.campaignid_s,
 			COALESCE(
 				NULLIF(regexp_replace(edat.legacycampaignid_s, '[^0-9.]','','g'), ''),
 				NULLIF(regexp_replace(edat.campaignid_s, '[^0-9.]','','g'), '')
