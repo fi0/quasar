@@ -355,7 +355,7 @@ class RoguePostgresQueue(QuasarQueue):
                                    "created_at, updated_at) "
                                    "VALUES (%s,%s,%s,%s,%s,%s,"
                                    "%s,%s,%s,%s) ON CONFLICT "
-                                   "(id, created_at, updated_at) "
+                                   "(id, updated_at) "
                                    "DO NOTHING")),
                           (signup_data['signup_id'],
                            signup_data['northstar_id'],
@@ -370,18 +370,13 @@ class RoguePostgresQueue(QuasarQueue):
         print("Signup {} ETL'd.".format(signup_data['signup_id']))
 
     def _delete_signup(self, signup_id, deleted_at):
-        # Get created_at date of signup.
-        created_at = self.db.query_str(''.join(("SELECT created_at "
-                                                "FROM rogue.signups WHERE "
-                                                "id = %s::varchar")),
-                                       (signup_id,))
         self.db.query_str(''.join(("INSERT INTO rogue.signups "
-                                   "(id, created_at, updated_at, "
+                                   "(id, updated_at, "
                                    "deleted_at) VALUES "
-                                   "(%s,%s,%s,%s) ON CONFLICT "
-                                   "(id, created_at, updated_at) DO UPDATE "
+                                   "(%s,%s,%s) ON CONFLICT "
+                                   "(id,  updated_at) DO UPDATE "
                                    "SET deleted_at = %s")),
-                          (signup_id, created_at[0], deleted_at, deleted_at,
+                          (signup_id, deleted_at, deleted_at,
                            deleted_at))
         print("Signup {} deleted and archived.".format(signup_id))
 
@@ -415,22 +410,16 @@ class RoguePostgresQueue(QuasarQueue):
         print("Post {} ETL'd.".format(post_data['id']))
 
     def _delete_post(self, post_id, deleted_at):
-        # Get created_at timestamp of post.
-        created_at = self.db.query_str(''.join(("SELECT created_at "
-                                                "FROM rogue.posts WHERE "
-                                                "id = %s::varchar")),
-                                       (post_id,))
         # Set post status to 'deleted'.
         self.db.query_str(''.join(("INSERT INTO rogue.posts "
-                                   "(id, created_at, updated_at, "
+                                   "(id, updated_at, "
                                    "status, deleted_at) VALUES "
-                                   "(%s,%s,%s,%s,%s) ON CONFLICT "
-                                   "(id, created_at, updated_at) "
+                                   "(%s,%s,%s,%s) ON CONFLICT "
+                                   "(id, updated_at) "
                                    "DO UPDATE SET "
                                    "deleted_at = %s, status = %s")),
-                          (post_id, created_at[0], deleted_at,
-                           'deleted', deleted_at, deleted_at,
-                           'deleted'))
+                          (post_id, deleted_at, 'deleted',
+                           deleted_at, deleted_at, 'deleted'))
 
     def _add_post_details(self, post_id, post_details):
         # TODO: Remove type check if Rogue sends this as JSON/dict.
@@ -493,11 +482,12 @@ class RoguePostgresQueue(QuasarQueue):
                                    details['voting-method-preference'],
                                    details['email subscribed'],
                                    details['sms subscribed']))
+            print("Turbovote details for post {} ETL'd.".format(post_id))
         else:
             self.db.query_str(''.join(("INSERT INTO rogue.post_details "
                                        "(data) VALUES (%s)")),
-                              (post_details))
-        print("Details for post {} ETL'd.".format(post_id))
+                              (post_details,))
+            print("Details for post {} ETL'd.".format(post_id))
 
     def process_message(self, message_data):
         data = message_data['data']
