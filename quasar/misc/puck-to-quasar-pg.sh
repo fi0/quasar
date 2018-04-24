@@ -17,9 +17,9 @@ mongorestore --drop /var/tmp/puck-mongo-dump
 # ToroDB Stampede to Quasar PostgreSQL DB
 sudo torodb-stampede &
 
-# Sleep for 45 mins to allow for full sync
+# Sleep for 15 mins to allow for full sync
 echo "Waiting for ToroDB sync to finish."
-for i in {1..2700}
+for i in {1..900}
 do
   echo "Been asleep for $i seconds."
   sleep 1
