@@ -36,7 +36,7 @@ CREATE TABLE public.phoenix_next_events AS
 		page_q.utm_medium_s AS page_utm_medium,
 		page_q.utm_campaign_s AS page_utm_campaign,
 		dat.parentsource_s AS parent_source, 
-		dat.campaign_id,
+		COALESCE(dat.campaign_id::varchar, lookup.campaign_id::varchar) AS campaign_id,
 		page.campaign_name,
 		dat.source_s AS source,
 		dat.link_s AS link,
@@ -56,10 +56,12 @@ CREATE TABLE public.phoenix_next_events AS
 			edat.link_s,
 			edat.modaltype_s,
 			edat.variant_s,
+			edat.legacycampaignid_s,
+			edat.campaignid_s,
 			COALESCE(
 				NULLIF(regexp_replace(edat.legacycampaignid_s, '[^0-9.]','','g'), ''),
 				NULLIF(regexp_replace(edat.campaignid_s, '[^0-9.]','','g'), '')
-				)::NUMERIC AS campaign_id
+				) AS campaign_id
 		FROM heroku_wzsf6b3z.events_data edat 
 		) dat ON dat.did = meta.did
 	LEFT JOIN heroku_wzsf6b3z.events_data_sourcedata sdata ON sdata.did = meta.did
