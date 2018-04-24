@@ -36,7 +36,7 @@ CREATE TABLE public.phoenix_next_events AS
 		page_q.utm_medium_s AS page_utm_medium,
 		page_q.utm_campaign_s AS page_utm_campaign,
 		dat.parentsource_s AS parent_source, 
-		COALESCE(dat.campaignid_s::varchar, lookup.campaign_id::varchar) AS campaign_id,
+		dat.campaign_id,
 		page.campaign_name,
 		dat.source_s AS source,
 		dat.link_s AS link,
@@ -48,7 +48,20 @@ CREATE TABLE public.phoenix_next_events AS
 		brow.size_s AS device_size
 	FROM heroku_wzsf6b3z.events_meta meta
 	LEFT JOIN heroku_wzsf6b3z.events_event event ON event.did = meta.did
-	LEFT JOIN heroku_wzsf6b3z.events_data dat ON dat.did = meta.did
+	LEFT JOIN 
+		(SELECT 
+			edat.did,
+			edat.parentsource_s,
+			edat.source_s,
+			edat.link_s,
+			edat.modaltype_s,
+			edat.variant_s,
+			COALESCE(
+				NULLIF(regexp_replace(edat.legacycampaignid_s, '[^0-9.]','','g'), ''),
+				NULLIF(regexp_replace(edat.campaignid_s, '[^0-9.]','','g'), '')
+				)::NUMERIC AS campaign_id
+		FROM heroku_wzsf6b3z.events_data edat 
+		) dat ON dat.did = meta.did
 	LEFT JOIN heroku_wzsf6b3z.events_data_sourcedata sdata ON sdata.did = meta.did
 	LEFT JOIN 
 		(SELECT 
