@@ -383,18 +383,17 @@ class RoguePostgresQueue(QuasarQueue):
     def _add_post(self, post_data):
         self.db.query_str(''.join(("INSERT INTO rogue.posts "
                                    "(id, signup_id, campaign_id, "
-                                   "campaign_run_id, northstar_id, "
+                                   "northstar_id, "
                                    "type, action, quantity, url, caption, "
                                    "status, source, signup_source, "
                                    "remote_addr, created_at, "
                                    "updated_at) VALUES "
-                                   "(%s,%s,%s,%s,%s,%s,%s,%s,%s,"
+                                   "(%s,%s,%s,%s,%s,%s,%s,%s,"
                                    "%s,%s,%s,%s,%s,%s,%s) ON CONFLICT "
                                    "DO NOTHING")),
                           (post_data['id'],
                            post_data['signup_id'],
                            post_data['campaign_id'],
-                           post_data['campaign_run_id'],
                            post_data['northstar_id'],
                            post_data['type'],
                            post_data['action'],
