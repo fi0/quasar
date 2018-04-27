@@ -1,6 +1,4 @@
 from .database_pg import Database
-import os
-import sys
 import time
 
 
