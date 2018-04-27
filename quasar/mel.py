@@ -8,7 +8,7 @@ def create():
 
     db = Database()
     db.query('DROP MATERIALIZED VIEW IF EXISTS public.member_event_log')
-    db.query(''.join("CREATE MATERIALIZED VIEW public.mel AS "
+    db.query(''.join("CREATE MATERIALIZED VIEW public.member_event_log AS "
                      "(SELECT "
                      "MD5(concat(a.northstar_id, a.timestamp, a.action_id,"
                      " a.action_serial_id)) AS event_id,"
@@ -157,7 +157,7 @@ def create():
                      ") AS a "
                      ")"))
     db.query(''.join(("CREATE INDEX ON public.member_event_log "
-                      "(m.event_id, m.northstar_id)")))
+                      "(event_id, northstar_id)")))
     db.query('GRANT SELECT ON public.member_event_log TO looker')
     db.query('GRANT SELECT ON public.member_event_log TO jjensen')
     db.query('GRANT SELECT ON public.member_event_log TO jli')
