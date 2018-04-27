@@ -10,7 +10,8 @@ def create():
     db.query('DROP MATERIALIZED VIEW IF EXISTS public.member_event_log')
     db.query(''.join("CREATE MATERIALIZED VIEW public.mel AS "
                      "(SELECT "
-                     "MD5(concat(a.northstar_id, a.timestamp, a.action_id, a.action_serial_id)) AS event_id,"
+                     "MD5(concat(a.northstar_id, a.timestamp, a.action_id,"
+                     " a.action_serial_id)) AS event_id,"
                      "a.northstar_id AS northstar_id,"
                      "a.timestamp AS timestamp,"
                      "a.action AS action_type,"
@@ -41,7 +42,8 @@ def create():
                      "GROUP BY stemp.id) "
                      "s_maxupt "
                      "INNER JOIN rogue.signups sd "
-                     "ON sd.id = s_maxupt.id AND sd.updated_at = s_maxupt.updated_at"
+                     "ON sd.id = s_maxupt.id AND sd.updated_at = "
+                     "s_maxupt.updated_at"
                      ") s "
                      "WHERE s.deleted_at IS NULL "
                      "UNION ALL "
@@ -67,8 +69,8 @@ def create():
                      "FROM rogue.posts ptemp "
                      "GROUP BY ptemp.id) p_maxupt "
                      "INNER JOIN rogue.posts pd "
-                     "ON pd.id = p_maxupt.id AND pd.updated_at = p_maxupt.updated_at "
-                     ") p "
+                     "ON pd.id = p_maxupt.id AND pd.updated_at = "
+                     " p_maxupt.updated_at) p "
                      "WHERE p.deleted_at IS NULL "
                      "UNION ALL "
                      "SELECT "
@@ -133,7 +135,8 @@ def create():
                      "FROM "
                      "public.turbovote_file tv "
                      "WHERE "
-                     "tv.ds_vr_status IN ('register-form', 'confirmed', 'register-OVR') "
+                     "tv.ds_vr_status IN ('register-form', "
+                     "'confirmed', 'register-OVR') "
                      "AND "
                      "tv.nsid IS NOT NULL AND tv.nsid <> '' "
                      "UNION ALL "
@@ -147,12 +150,14 @@ def create():
                      "FROM "
                      "public.phoenix_next_events pe "
                      "WHERE "
-                     "pe.event_name IN ('share action completed', 'facebook share posted') "
+                     "pe.event_name IN ('share action completed', "
+                     "'facebook share posted') "
                      "AND pe.northstarid_s IS NOT NULL "
                      "AND pe.northstarid_s <> '' "
                      ") AS a "
                      ")"))
-    db.query('CREATE INDEX ON public.member_event_log (m.event_id, m.northstar_id)')
+    db.query(''.join(("CREATE INDEX ON public.member_event_log "
+                      "(m.event_id, m.northstar_id)")))
     db.query('GRANT SELECT ON public.member_event_log TO looker')
     db.query('GRANT SELECT ON public.member_event_log TO jjensen')
     db.query('GRANT SELECT ON public.member_event_log TO jli')
