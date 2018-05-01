@@ -5,7 +5,7 @@ with open('requirements.txt') as f:
 
 setup(
     name="quasar",
-    version="0.6.1",
+    version="0.7.0",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
@@ -19,6 +19,8 @@ setup(
             'get_competitions = quasar.gladiator_import:get_competitions',
             'legacy_cio_backfill = quasar.cio_legacy_backfill:legacy_cio_backfill',
             'member_event_log = quasar.member_event_log:mel',
+            'mel_create_pg = quasar.mel:create',
+            'mel_refresh_pg = quasar.mel:main',
             'northstar_to_quasar_import_backfill = quasar.northstar_to_user_table:backfill_since',
             'northstar_to_quasar_diff_pg = quasar.northstar_to_user_table_pg:backfill_since',
             'quasar_blink_queue_consumer = quasar.customerio:main',
