@@ -1,3 +1,7 @@
+DROP MATERIALIZED VIEW IF EXISTS public.phoenix_next_events; 
+DROP MATERIALIZED VIEW IF EXISTS public.phoenix_next_sessions; 
+DROP MATERIALIZED VIEW IF EXISTS public.device_northstar_crosswalk; 
+
 CREATE TEMPORARY TABLE path_campaign_lookup AS 
 	(
 	SELECT 
