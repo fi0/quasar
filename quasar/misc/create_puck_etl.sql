@@ -81,24 +81,31 @@ CREATE MATERIALIZED VIEW public.phoenix_next_events AS
 ;	
 	
 CREATE MATERIALIZED VIEW public.phoenix_next_sessions AS 
-	(SELECT DISTINCT
-			page.sessionid_s AS session_id,  
-			use.deviceid_s AS device_id,
-			COALESCE(page.landingtimestamp_d, 
-				(CASE WHEN page.landingtimestamp_s = 'null' THEN NULL ELSE page.landingtimestamp_s END)::bigint
-				)::bigint AS landing_ts,
-			refer.path_s AS referrer_path,
-			refer.host_s AS referrer_host,
-			refer.href_s AS referrer_href,
-			ref_q.from_session_s,
-			ref_q.source_s AS referrer_source,
-			ref_q.utm_medium_s AS referrer_utm_medium,
-			ref_q.utm_source_s AS referrer_utm_source,
-			ref_q.utm_campaign_s AS referrer_utm_campaign
-		FROM heroku_wzsf6b3z.events_page page
-		LEFT JOIN heroku_wzsf6b3z.events_user use ON page.did = use.did
-		LEFT JOIN heroku_wzsf6b3z.events_page_referrer refer ON refer.did = page.did
-		LEFT JOIN heroku_wzsf6b3z.events_page_referrer_query ref_q ON ref_q.did = page.did)
+	(SELECT
+		page.sessionid_s AS session_id,  
+		max(use.deviceid_s) AS device_id,
+		min(COALESCE(page.landingtimestamp_d, 
+			(CASE WHEN page.landingtimestamp_s = 'null' THEN NULL ELSE page.landingtimestamp_s END)::bigint
+			)::bigint) AS landing_ts,
+		max(refer.path_s) AS referrer_path,
+		max(refer.host_s) AS referrer_host,
+		max(refer.href_s) AS referrer_href,		
+		max(ref_q.from_session_s),
+		max(ref_q.source_s) AS referrer_source,
+		max(ref_q.utm_medium_s) AS referrer_utm_medium,
+		max(ref_q.utm_source_s) AS referrer_utm_source,
+		max(ref_q.utm_campaign_s) AS referrer_utm_campaign
+	FROM heroku_wzsf6b3z.events_page page
+	LEFT JOIN 
+		(SELECT 
+			page_temp.sessionid_s,
+			max(use_temp.deviceid_s::bigint) AS deviceid_s
+		FROM heroku_wzsf6b3z.events_page page_temp
+		LEFT JOIN heroku_wzsf6b3z.events_user use_temp ON page_temp.did = use_temp.did
+		GROUP BY page_temp.sessionid_s) use ON page.sessionid_s = use.sessionid_s
+	LEFT JOIN heroku_wzsf6b3z.events_page_referrer refer ON refer.did = page.did
+	LEFT JOIN heroku_wzsf6b3z.events_page_referrer_query ref_q ON ref_q.did = page.did
+	GROUP BY page.sessionid_s;)
 ;
 
 CREATE MATERIALIZED VIEW public.device_northstar_crosswalk AS 
