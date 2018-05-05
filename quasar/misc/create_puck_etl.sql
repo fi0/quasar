@@ -105,7 +105,7 @@ CREATE MATERIALIZED VIEW public.phoenix_next_sessions AS
 		GROUP BY page_temp.sessionid_s) use ON page.sessionid_s = use.sessionid_s
 	LEFT JOIN heroku_wzsf6b3z.events_page_referrer refer ON refer.did = page.did
 	LEFT JOIN heroku_wzsf6b3z.events_page_referrer_query ref_q ON ref_q.did = page.did
-	GROUP BY page.sessionid_s;)
+	GROUP BY page.sessionid_s)
 ;
 
 CREATE MATERIALIZED VIEW public.device_northstar_crosswalk AS 
