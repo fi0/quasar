@@ -144,7 +144,7 @@ class CioPostgresQueue(QuasarQueue):
                                data['data']['customer_id'],
                                data['data']['email_address'],
                                data['event_id'], data['timestamp'],
-                               data['event_type']))            
+                               data['event_type']))
         print(''.join(("Added customer event from "
                        "C.IO event id {}.")).format(data['event_id']))
 
