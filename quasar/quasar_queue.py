@@ -114,21 +114,37 @@ class CioPostgresQueue(QuasarQueue):
 
     # Save customer unsub data and dates.
     def _add_unsub_event(self, data):
-        self.db.query_str(''.join(("INSERT INTO cio.customer_event "
-                                   "(email_id, customer_id, email_address, "
-                                   "template_id, event_id, "
-                                   "timestamp, event_type) "
-                                   "VALUES (%s,%s,%s,%s,%s,"
-                                   "to_timestamp(%s),%s) "
-                                   "ON CONFLICT (email_id, customer_id, "
-                                   "timestamp, event_type) "
-                                   "DO NOTHING")),
-                          (data['data']['email_id'],
-                           data['data']['customer_id'],
-                           data['data']['email_address'],
-                           data['data']['template_id'],
-                           data['event_id'], data['timestamp'],
-                           data['event_type']))
+        if pydash.get(data, 'template_id'):
+            self.db.query_str(''.join(("INSERT INTO cio.customer_event "
+                                       "(email_id, customer_id,"
+                                       "email_address, template_id, event_id,"
+                                       "timestamp, event_type) "
+                                       "VALUES (%s,%s,%s,%s,%s,"
+                                       "to_timestamp(%s),%s) "
+                                       "ON CONFLICT (email_id, customer_id, "
+                                       "timestamp, event_type) "
+                                       "DO NOTHING")),
+                              (data['data']['email_id'],
+                               data['data']['customer_id'],
+                               data['data']['email_address'],
+                               data['data']['template_id'],
+                               data['event_id'], data['timestamp'],
+                               data['event_type']))
+        else:
+            self.db.query_str(''.join(("INSERT INTO cio.customer_event "
+                                       "(email_id, customer_id,"
+                                       "email_address, event_id, "
+                                       "timestamp, event_type) "
+                                       "VALUES (%s,%s,%s,%s,"
+                                       "to_timestamp(%s),%s) "
+                                       "ON CONFLICT (email_id, customer_id, "
+                                       "timestamp, event_type) "
+                                       "DO NOTHING")),
+                              (data['data']['email_id'],
+                               data['data']['customer_id'],
+                               data['data']['email_address'],
+                               data['event_id'], data['timestamp'],
+                               data['event_type']))
         print(''.join(("Added customer event from "
                        "C.IO event id {}.")).format(data['event_id']))
 
