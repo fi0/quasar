@@ -25,7 +25,7 @@ setup(
             'northstar_to_quasar_diff_pg = quasar.northstar_to_user_table_pg:backfill_since',
             'quasar_blink_queue_consumer = quasar.customerio:main',
             'phoenix_next_cleanup = quasar.phoenix_next_queue_cleanup:main',
-            'puck_refresh = quasar.puck_events.py:main',
+            'puck_refresh = quasar.puck_events:main',
             'rogue_consume = quasar.rogue_consumer:main',
             'rogue_consume_pg = quasar.rogue_consumer_pg:main',
             'runscope_cleanup = quasar.cio_runscope_queue_cleanup:main',
