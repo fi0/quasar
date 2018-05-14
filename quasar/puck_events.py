@@ -20,8 +20,5 @@ def main():
     print('duration: ', duration)
 
 
-if __name__ == "__create__":
-    create()
-
 if __name__ == "__main__":
     main()
