@@ -15,7 +15,7 @@ CREATE MATERIALIZED VIEW public.path_campaign_lookup AS
 				NULLIF(regexp_replace(e.records #>> '{data,legacyCampaignId}', '[^0-9.]','','g'), '')
 		 		) AS campaign_id,
 			(regexp_split_to_array(e.records #>> '{page,path}', E'\/'))[4] AS campaign_name
-			FROM puck.events e
+			FROM puck.events_json e
 			WHERE e.records #>> '{data,campaignId}' IS NOT NULL 
 				OR e.records #>> '{data,legacyCampaignId}' IS NOT NULL 
 			) camps
@@ -48,7 +48,7 @@ CREATE MATERIALIZED VIEW public.phoenix_events AS (
 		e.records #>> '{page,sessionId}' AS session_id,
 		e.records #>> '{browser,size}' AS browser_size,
 		e.records #>> '{user,northstarId}' AS northstar_id
-	FROM puck.events e
+	FROM puck.events_json e
 	LEFT JOIN 
 		(SELECT 
 			edat.records #>> '{_id,$oid}' AS object_id,
@@ -56,13 +56,13 @@ CREATE MATERIALIZED VIEW public.phoenix_events AS (
 				NULLIF(regexp_replace(edat.records #>> '{data,legacyCampaignId}', '[^0-9.]','','g'), ''),
 				NULLIF(regexp_replace(edat.records #>> '{data,campaignId}', '[^0-9.]','','g'), '')
 		 		) AS campaign_id
-		FROM puck.events edat
+		FROM puck.events_json edat
 		WHERE edat.records #> '{data}' IS NOT NULL) dat ON e.records #>> '{_id,$oid}' = dat.object_id
 	LEFT JOIN 
 		(SELECT 
 			p.records #>> '{_id,$oid}' AS object_id,
 			(regexp_split_to_array(p.records #>> '{page,path}', E'\/'))[4] AS campaign_name 
-		FROM puck.events p) page ON page.object_id = e.records #>> '{_id,$oid}'
+		FROM puck.events_json p) page ON page.object_id = e.records #>> '{_id,$oid}'
 	LEFT JOIN public.path_campaign_lookup lookup ON page.campaign_name = lookup.campaign_name
 ) 
 ;
@@ -102,7 +102,7 @@ CREATE MATERIALIZED VIEW phoenix_sessions AS (
 			e.records #> '{page,referrer}' -> 'query' ->> 'utm_campaign',
 			e.records #> '{page,referrer}' -> 'query' ->> 'amp;utm_campaign'
 			)) AS referrer_utm_campaign
-	FROM puck.events e 
+	FROM puck.events_json e 
 	GROUP BY e.records #>> '{page,sessionId}'
 ) ;
 
@@ -119,19 +119,19 @@ CREATE MATERIALIZED VIEW public.device_northstar_crosswalk AS
 			(SELECT DISTINCT 
 			    e.records #>> '{user,deviceId}' AS device_id,
 			    e.records #>> '{user,northstarId}' AS northstar_id
-			  FROM puck.events e 
+			  FROM puck.events_json e 
 			  WHERE e.records #>> '{user,northstarId}' IS NOT NULL) dis
 		GROUP BY dis.device_id) counts
 	LEFT JOIN 
 		(SELECT DISTINCT 
 		    e.records #>> '{user,deviceId}' AS device_id,
 		    e.records #>> '{user,northstarId}' AS northstar_id
-		 FROM puck.events e  
+		 FROM puck.events_json e  
 		 WHERE e.records #>> '{user,northstarId}' IS NOT NULL) nsids
 		ON nsids.device_id = counts.device_id
 	);
 
-CREATE INDEX pe_indices ON phoenix_events (object_id, event_name, ts, event_datetime, northstar_id, session_id);
+CREATE INDEX pe_indices ON phoenix_events (event_id, event_name, ts, event_datetime, northstar_id, session_id);
 CREATE INDEX ps_indices ON phoenix_sessions (session_id, device_id, landing_ts, landing_datetime);
 CREATE INDEX dnc_indices ON device_northstar_crosswalk (northstar_id, device_id);
 
