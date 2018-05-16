@@ -3,7 +3,7 @@ import boto3
 import pydash
 import time
 
-dms = boto3.resource('dms')
+dms = boto3.client('dms')
 
 def start_puck_refresh():
     dms.start_replication_task(ReplicationTaskArn='arn:aws:dms:us-east-1:389428637636:task:JAWXM5VSC7MIQYD3RMBJKZ2PKI',
@@ -13,9 +13,10 @@ def check_refresh_status():
     task_progess = dms.describe_replication_tasks(Filters=[
         {'Name': 'replication-task-arn', 
          'Values': ['arn:aws:dms:us-east-1:389428637636:task:JAWXM5VSC7MIQYD3RMBJKZ2PKI']}])
-    refresh_status['status'] = pydash.get(status, 'ReplicationTasks.0.Status')
-    refresh_status['reason'] = pydash.get(status, 'ReplicationTasks.0.StopReason')
-    refresh_status['progress'] = pydash.get(status, 'ReplicationTasks.0.ReplicationTaskStats.FullLoadProgressPercent')
+    refresh_status = {}
+    refresh_status['status'] = pydash.get(task_progess, 'ReplicationTasks.0.Status')
+    refresh_status['reason'] = pydash.get(task_progess, 'ReplicationTasks.0.StopReason')
+    refresh_status['progress'] = pydash.get(task_progess, 'ReplicationTasks.0.ReplicationTaskStats.FullLoadProgressPercent')
     return refresh_status
 
 def main():
