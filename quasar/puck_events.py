@@ -18,9 +18,12 @@ def check_refresh_status():
         {'Name': 'replication-task-arn',
          'Values': ['arn:aws:dms:us-east-1:389428637636:task:JAWXM5VSC7MIQYD3RMBJKZ2PKI']}])
     refresh_status = {}
-    refresh_status['status'] = pydash.get(task_progess, 'ReplicationTasks.0.Status')
-    refresh_status['reason'] = pydash.get(task_progess, 'ReplicationTasks.0.StopReason')
-    refresh_status['progress'] = pydash.get(task_progess, 'ReplicationTasks.0.ReplicationTaskStats.FullLoadProgressPercent')
+    refresh_status['status'] = pydash.get(task_progess,
+                                          'ReplicationTasks.0.Status')
+    refresh_status['reason'] = pydash.get(task_progess,
+                                          'ReplicationTasks.0.StopReason')
+    refresh_status['progress'] = pydash.get(task_progess,
+                                            'ReplicationTasks.0.ReplicationTaskStats.FullLoadProgressPercent')
     return refresh_status
 
 
