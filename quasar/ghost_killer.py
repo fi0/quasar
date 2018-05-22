@@ -9,10 +9,12 @@ def remove_ghost_posts():
     posts = db.query(''.join(("SELECT DISTINCT p.id "
                               "FROM rogue.signups s "
                               "INNER JOIN (SELECT g.id "
-                              "FROM rogue.signups g WHERE g.why_participated = "
+                              "FROM rogue.signups g WHERE "
+                              "g.why_participated = "
                               "'why_participated_ghost_test') ghost "
                               "ON s.id = ghost.id "
-                              "INNER JOIN rogue.posts p ON p.signup_id = s.id")))
+                              "INNER JOIN rogue.posts p "
+                              "ON p.signup_id = s.id")))
 
     # Copy all posts into ghost posts table to remove from official counts.
     for post in posts:
