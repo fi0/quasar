@@ -9,6 +9,7 @@ def main():
 
     db.query("REFRESH MATERIALIZED VIEW public.users")
     db.query("REFRESH MATERIALIZED VIEW public.cio_latest_status")
+    db.disconnect()
 
     end_time = time.time()  # Record when script stopped running.
     duration = end_time - start_time  # Total duration in seconds.

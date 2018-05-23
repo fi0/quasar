@@ -57,6 +57,7 @@ def main():
 
     remove_ghost_posts()
     remove_ghost_signups()
+    db.disconnect()
     end_time = time.time()  # Record when script stopped running.
     duration = end_time - start_time  # Total duration in seconds.
     print('duration: ', duration)
