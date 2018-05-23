@@ -6,7 +6,7 @@ def main():
     db = Database()
     start_time = time.time()
     """Keep track of start time of script."""
-    
+        
     db.query("REFRESH MATERIALIZED VIEW public.signups")
     db.query("REFRESH MATERIALIZED VIEW public.posts")
     db.query("REFRESH MATERIALIZED VIEW public.reported_back")
