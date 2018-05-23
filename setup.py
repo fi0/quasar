@@ -5,7 +5,7 @@ with open('requirements.txt') as f:
 
 setup(
     name="quasar",
-    version="0.7.2",
+    version="0.8.0",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
@@ -13,6 +13,7 @@ setup(
             'campaign_info_table_refresh = quasar.phoenix_to_campaign_info_table:main',
             'campaign_info_recreate_pg = quasar.ashes_to_campaign_info:create',
             'campaign_info_refresh_pg = quasar.ashes_to_campaign_info:main',
+            'campaign_activity_refresh = quasar.refresh_campaign_activity:main',
             'cio_import = quasar.cio_queue_process:main',
             'cio_import_pg = quasar.cio_consumer_pg:main',
             'etl_monitoring = quasar.etl_monitoring:run_monitoring',
@@ -30,7 +31,8 @@ setup(
             'rogue_consume_pg = quasar.rogue_consumer_pg:main',
             'rogue_ghost_killer = quasar.ghost_killer:main',
             'runscope_cleanup = quasar.cio_runscope_queue_cleanup:main',
-            'reportbacks_asterisk = quasar.reportback_asterisk:run_load_reportbacks'
+            'reportbacks_asterisk = quasar.reportback_asterisk:run_load_reportbacks',
+            'users_refresh = quasar.refresh_derived_users:main'
         ],
     },
     author="",
