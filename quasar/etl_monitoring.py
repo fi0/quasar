@@ -3,6 +3,7 @@ import os
 import datetime as dt
 import pandas as pd
 import sqlalchemy as sal
+import psycopg2 as psy
 
 from .config import config
 from .utils import QuasarException
@@ -14,17 +15,17 @@ class DataFrameDB:
     def __init__(self, opts={}):
 
         self.opts = {
-            'user': config.MYSQL_USER,
-            'host': config.MYSQL_HOST,
-            'password': config.MYSQL_PASSWORD,
-            'db': config.MYSQL_DATABASE,
-            'port': str(config.MYSQL_PORT),
+            'user': config.PG_USER,
+            'host': config.PG_HOST,
+            'password': config.PG_PASSWORD,
+            'db': config.PG_DATABASE,
+            'port': str(config.PG_PORT),
             'use_unicode': True,
             'charset': 'utf8'
         }
 
         self.engine = create_engine(
-            'mysql+mysqldb://' +
+            'postgresql+psycopg2://' +
             self.opts['user'] +
             ':' +
             self.opts['password'] +
@@ -50,20 +51,35 @@ class ETLMonitoring:
         self.db = DataFrameDB(db_opts)
 
         self.etl_queries = {
-            'user_count':
-                'SELECT count(*) FROM quasar.users',
-            'user_distinct_user_count':
+            'raw_northstar':
+                'SELECT count(*) FROM northstar.users',
+            'raw_rogue_signups':
+                'SELECT count(*) FROM rogue.signups',
+            'raw_rogue_posts':
+                'SELECT count(*) FROM rogue.posts',
+            'raw_puck_events':
+                'SELECT count(*) FROM puck.events',
+            'raw_cio_emails':
+                'SELECT count(*) FROM cio.email_events',
+            'raw_cio_customers':
+                'SELECT count(*) FROM cio.customer_events',
+            'derived_user_count':
+                'SELECT count(*) FROM public.users',
+            'derived_user_distinct_user_count':
                 'SELECT count(distinct u.northstar_id) '
-                'FROM quasar.users u',
-            'active_user_count':
-                "SELECT count(*) FROM quasar.users u " 
-                "WHERE u.customer_io_subscription_status = 'subscribed' "
-                "OR u.sms_status = 'active'",
-            'ca_table_count':
-                'SELECT count(*) FROM quasar.campaign_activity c',
-            'ca_post_count':
+                'FROM public.users u',
+            'derived_active_user_count':
+                "SELECT count(*) FROM public.users u " 
+                "WHERE u.active_member = true",
+            'derived_ca_table_count':
+                'SELECT count(*) FROM public.campaign_activity c',
+            'derived_ca_post_count':
                 'SELECT count(distinct c.post_id) '
-                'FROM quasar.campaign_activity c'
+                'FROM public.campaign_activity c',
+            'derived_puck_events':
+                'SELECT count(*) FROM public.phoenix_events',
+            'derived_puck_sessions':
+                'SELECT count(*) FROM public.phoenix_sessions'
         }
 
     @staticmethod
@@ -117,15 +133,15 @@ class ETLMonitoring:
         max_query = \
             "SELECT  \
                 m.output  \
-            FROM quasar.monitoring m  \
+            FROM public.monitoring m  \
             INNER JOIN ( \
-            SELECT \
-                t.table, \
-                t.query,  \
-                max(t.timestamp) AS max_created \
-            FROM quasar.monitoring t \
-            WHERE t.table = '" + table + "' AND t.query = '" + desc + "' \
-                ) tim ON tim.max_created = m.timestamp \
+                SELECT \
+                    t.table, \
+                    t.query,  \
+                    max(t.timestamp) AS max_created \
+                FROM public.monitoring t \
+                WHERE t.table = '" + table + "' AND t.query = '" + desc + "' \
+                    ) tim ON tim.max_created = m.timestamp \
             WHERE m.table = '" + table + "'  \
             AND m.query = '" + desc + "';"
         value = self.get_value(max_query)
@@ -135,16 +151,16 @@ class ETLMonitoring:
         max_2_query = \
             "SELECT \
                 m.output \
-            FROM quasar.monitoring m \
+            FROM public.monitoring m \
             INNER JOIN \
                 (SELECT \
                     max(t.timestamp) AS ts_2 \
-                FROM quasar.monitoring t \
+                FROM public.monitoring t \
                 WHERE t.table = '" + table + "' \
                 AND t.query = '" + desc + "' \
                 AND \
                 t.timestamp < (SELECT max(t1.timestamp)  \
-                                FROM quasar.monitoring t1 \
+                                FROM public.monitoring t1 \
                                 WHERE t1.table = '" + table + "'  \
                                 AND t1.query = '" + desc + "') \
                 ) ts2 ON ts2.ts_2 = m.timestamp \
@@ -157,13 +173,13 @@ class ETLMonitoring:
             "SELECT  \
                m.query,  \
                m.output  \
-            FROM quasar.monitoring m   \
+            FROM public.monitoring m   \
             WHERE m.table = 'quasar.users' \
             AND m.timestamp = (SELECT max(t1.timestamp)  \
-                               FROM quasar.monitoring t1 \
+                               FROM public.monitoring t1 \
                                WHERE t1.query = 'user_count') \
             OR m.timestamp = (SELECT max(t1.timestamp)  \
-                               FROM quasar.monitoring t1 \
+                               FROM public.monitoring t1 \
                                WHERE t1.query = 'user_distinct_user_count')"
         frame = self.db.run_query(query)
         user_count = \
@@ -173,12 +189,12 @@ class ETLMonitoring:
 
         if user_count == distinct_count:
             message = \
-                "Passed - Distinct users equals " \
-                "number of rows in quasar.users"
+                "*Passed* - Distinct users equals " \
+                "number of rows in public.users"
         else:
             message = \
-                "Failed - Distinct users does not equal " \
-                "number of rows in quasar.users"
+                "*Failed* - Distinct users does not equal " \
+                "number of rows in public.users"
 
         return message
 
@@ -188,26 +204,26 @@ class ETLMonitoring:
 
         try:
             if latest_value > second_latest_value:
-                message = "Passed - Latest Count = " + \
+                message = "*Passed* - Latest Count = " + \
                           str(latest_value) + \
                           " Previous Value = " + \
                           str(second_latest_value) +  \
                           ", Count increased by " + \
                           str(latest_value - second_latest_value)
             elif latest_value == second_latest_value:
-                message = "Failed - Count Unchanged," \
+                message = "*Failed* - Count Unchanged," \
                           " Latest Count = " + \
                           str(latest_value) + \
                           " Previous Value = " + \
                           str(second_latest_value)
             elif latest_value < second_latest_value:
-                message = "Failed - Count Decreased," \
+                message = "*Failed* - Count Decreased," \
                           " Latest Count = " + \
                           str(latest_value) + \
                           " Previous Value = " + \
                           str(second_latest_value)
             else:
-                message = 'Failed - Unspecified Error'
+                message = '*Failed* - Unspecified Error'
         except:
             message = str(QuasarException(sys.exc_info()[0]))
         report = message + ": " + table + " " + desc
@@ -218,7 +234,7 @@ class ETLMonitoring:
         table.to_sql(
             name='monitoring',
             con=self.db.engine,
-            schema='quasar',
+            schema='public',
             if_exists='append',
             index=False,
             dtype={'timestamp': sal.types.DATETIME(),
@@ -233,7 +249,7 @@ class ETLMonitoring:
         sc = SlackClient(config.ETLMON_SLACKBOT_TOKEN)
         sc.api_call(
             "chat.postMessage",
-            channel="#quasar-notifications",
+            channel="#storm-watch",
             text=message
         )
 
