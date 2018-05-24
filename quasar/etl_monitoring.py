@@ -133,13 +133,13 @@ class ETLMonitoring:
         max_query = \
             "SELECT  \
                 m.output  \
-            FROM public.monitoring m  \
+            FROM etl_monitoring.monitoring m  \
             INNER JOIN ( \
                 SELECT \
                     t.table, \
                     t.query,  \
                     max(t.timestamp) AS max_created \
-                FROM public.monitoring t \
+                FROM etl_monitoring.monitoring t \
                 WHERE t.table = '" + table + "' AND t.query = '" + desc + "' \
                     ) tim ON tim.max_created = m.timestamp \
             WHERE m.table = '" + table + "'  \
@@ -151,16 +151,16 @@ class ETLMonitoring:
         max_2_query = \
             "SELECT \
                 m.output \
-            FROM public.monitoring m \
+            FROM etl_monitoring.monitoring m \
             INNER JOIN \
                 (SELECT \
                     max(t.timestamp) AS ts_2 \
-                FROM public.monitoring t \
+                FROM etl_monitoring.monitoring t \
                 WHERE t.table = '" + table + "' \
                 AND t.query = '" + desc + "' \
                 AND \
                 t.timestamp < (SELECT max(t1.timestamp)  \
-                                FROM public.monitoring t1 \
+                                FROM etl_monitoring.monitoring t1 \
                                 WHERE t1.table = '" + table + "'  \
                                 AND t1.query = '" + desc + "') \
                 ) ts2 ON ts2.ts_2 = m.timestamp \
@@ -173,8 +173,8 @@ class ETLMonitoring:
             "SELECT  \
                m.query,  \
                m.output  \
-            FROM public.monitoring m   \
-            WHERE m.table = 'quasar.users' \
+            FROM etl_monitoring.monitoring m   \
+            WHERE m.table = 'public.users' \
             AND m.timestamp = (SELECT max(t1.timestamp)  \
                                FROM public.monitoring t1 \
                                WHERE t1.query = 'user_count') \
@@ -234,7 +234,7 @@ class ETLMonitoring:
         table.to_sql(
             name='monitoring',
             con=self.db.engine,
-            schema='public',
+            schema='etl_monitoring',
             if_exists='append',
             index=False,
             dtype={'timestamp': sal.types.DATETIME(),
