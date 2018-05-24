@@ -28,6 +28,13 @@ MYSQL_DATABASE = 'quasar'
 MYSQL_TABLE = 'users'
 BLINK_BACKUP_TABLE = 'blink_queue_backlog'
 
+# PG ENVARS
+PG_HOST = '127.0.0.1'
+PG_PORT = '5566'
+PG_USER = 'root'
+PG_PASSWORD = 'password'
+PG_DATABASE = 'postgres'
+
 # Rogue Env Vars
 DS_ROGUE_API_KEY = 'someapikey'
 CAMPAIGN_ACTIVITY_TABLE = 'campaign_activity'
