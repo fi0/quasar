@@ -139,7 +139,7 @@ class ETLMonitoring:
                     t.query,
                     max(t.timestamp) AS max_created
                 FROM etl_monitoring.monitoring t
-                WHERE t.table = '{table}' 
+                WHERE t.table = '{table}'
                 AND t.query = '{desc}'
                 GROUP BY t.table, t.query
                     ) tim ON tim.max_created = m.timestamp
@@ -189,9 +189,11 @@ class ETLMonitoring:
                                     'derived_user_distinct_user_count'))"""
         frame = self.db.run_query(query)
         user_count = \
-            int(frame[frame['query'] == 'derived_user_count']['output'])
+            int(frame[frame['query'] ==
+                      'derived_user_count']['output'])
         distinct_count = \
-            int(frame[frame['query'] == 'derived_user_distinct_user_count']['output'])
+            int(frame[frame['query'] ==
+                      'derived_user_distinct_user_count']['output'])
 
         if user_count == distinct_count:
             message = \
