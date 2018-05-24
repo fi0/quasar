@@ -3,7 +3,6 @@ import os
 import datetime as dt
 import pandas as pd
 import sqlalchemy as sal
-import psycopg2 as psy
 
 from .config import config
 from .utils import QuasarException
@@ -60,9 +59,9 @@ class ETLMonitoring:
             'raw_puck_events':
                 'SELECT count(*) FROM puck.events',
             'raw_cio_emails':
-                'SELECT count(*) FROM cio.email_events',
+                'SELECT count(*) FROM cio.email_event',
             'raw_cio_customers':
-                'SELECT count(*) FROM cio.customer_events',
+                'SELECT count(*) FROM cio.customer_event',
             'derived_user_count':
                 'SELECT count(*) FROM public.users',
             'derived_user_distinct_user_count':
@@ -70,7 +69,7 @@ class ETLMonitoring:
                 'FROM public.users u',
             'derived_active_user_count':
                 "SELECT count(*) FROM public.users u " 
-                "WHERE u.active_member = true",
+                "WHERE u.subscribed_member = TRUE",
             'derived_ca_table_count':
                 'SELECT count(*) FROM public.campaign_activity c',
             'derived_ca_post_count':
@@ -122,70 +121,78 @@ class ETLMonitoring:
             descriptions.append(description)
 
         out = pd.DataFrame(
-            {'query': descriptions,
-             'output': values,
+            {'output': values,
              'table': table,
-             'timestamp': ts
+             'timestamp': ts,
+             'query': descriptions
              })
         return out
 
     def extract_latest_value(self, table, desc):
         max_query = \
-            "SELECT  \
-                m.output  \
-            FROM etl_monitoring.monitoring m  \
-            INNER JOIN ( \
-                SELECT \
-                    t.table, \
-                    t.query,  \
-                    max(t.timestamp) AS max_created \
-                FROM etl_monitoring.monitoring t \
-                WHERE t.table = '" + table + "' AND t.query = '" + desc + "' \
-                    ) tim ON tim.max_created = m.timestamp \
-            WHERE m.table = '" + table + "'  \
-            AND m.query = '" + desc + "';"
+            f"""
+            SELECT
+                m.output
+            FROM etl_monitoring.monitoring m
+            INNER JOIN (
+                SELECT 
+                    t.table,
+                    t.query,
+                    max(t.timestamp) AS max_created
+                FROM etl_monitoring.monitoring t
+                WHERE t.table = '{table}' 
+                AND t.query = '{desc}'
+                GROUP BY t.table, t.query
+                    ) tim ON tim.max_created = m.timestamp
+            WHERE m.table = '{table}'
+            AND m.query = '{desc}';"""
         value = self.get_value(max_query)
         return value
 
     def extract_second_latest_value(self, table, desc):
         max_2_query = \
-            "SELECT \
-                m.output \
-            FROM etl_monitoring.monitoring m \
-            INNER JOIN \
-                (SELECT \
-                    max(t.timestamp) AS ts_2 \
-                FROM etl_monitoring.monitoring t \
-                WHERE t.table = '" + table + "' \
-                AND t.query = '" + desc + "' \
+            f"""
+            SELECT 
+                m.output 
+            FROM etl_monitoring.monitoring m 
+            INNER JOIN 
+                (SELECT 
+                    max(t.timestamp) AS ts_2 
+                FROM etl_monitoring.monitoring t 
+                WHERE t.table = '{table}' 
+                AND t.query = '{desc}' 
                 AND \
-                t.timestamp < (SELECT max(t1.timestamp)  \
-                                FROM etl_monitoring.monitoring t1 \
-                                WHERE t1.table = '" + table + "'  \
-                                AND t1.query = '" + desc + "') \
+                t.timestamp < (SELECT max(t1.timestamp)  
+                                FROM etl_monitoring.monitoring t1 
+                                WHERE t1.table = '{table}'  
+                                AND t1.query = '{desc}') 
                 ) ts2 ON ts2.ts_2 = m.timestamp \
-            WHERE m.table = '" + table + "' AND m.query = '" + desc + "';"
+            WHERE m.table = '{table}' AND m.query = '{desc}';"""
         value = self.get_value(max_2_query)
         return value
 
     def compare_distinct(self):
         query = \
-            "SELECT  \
-               m.query,  \
-               m.output  \
-            FROM etl_monitoring.monitoring m   \
-            WHERE m.table = 'public.users' \
-            AND m.timestamp = (SELECT max(t1.timestamp)  \
-                               FROM public.monitoring t1 \
-                               WHERE t1.query = 'user_count') \
-            OR m.timestamp = (SELECT max(t1.timestamp)  \
-                               FROM public.monitoring t1 \
-                               WHERE t1.query = 'user_distinct_user_count')"
+            """
+            SELECT  
+               m.query,  
+               m.output  
+            FROM etl_monitoring.monitoring m   
+            WHERE m.table = 'public.users' 
+            AND m.query IN 
+                ('derived_user_count','derived_user_distinct_user_count')
+            AND (m.timestamp = (SELECT max(t1.timestamp)  
+                               FROM etl_monitoring.monitoring t1 
+                               WHERE t1.query = 'derived_user_count') 
+            OR m.timestamp = (SELECT max(t1.timestamp)  
+                               FROM etl_monitoring.monitoring t1 
+                               WHERE t1.query = 
+                                    'derived_user_distinct_user_count'))"""
         frame = self.db.run_query(query)
         user_count = \
-            int(frame[frame['query'] == 'user_count']['output'])
+            int(frame[frame['query'] == 'derived_user_count']['output'])
         distinct_count = \
-            int(frame[frame['query'] == 'user_distinct_user_count']['output'])
+            int(frame[frame['query'] == 'derived_user_distinct_user_count']['output'])
 
         if user_count == distinct_count:
             message = \
@@ -237,10 +244,10 @@ class ETLMonitoring:
             schema='etl_monitoring',
             if_exists='append',
             index=False,
-            dtype={'timestamp': sal.types.DATETIME(),
-                   'output': sal.types.INTEGER(),
-                   'query': sal.types.INTEGER(),
-                   'table': sal.types.NVARCHAR(length=64)
+            dtype={'timestamp': sal.types.DateTime(),
+                   'output': sal.types.BigInteger(),
+                   'query': sal.types.VARCHAR(length=64),
+                   'table': sal.types.VARCHAR(length=64)
                    }
         )
 
