@@ -65,7 +65,7 @@ class ETLMonitoring:
             'derived_user_count':
                 'SELECT count(*) FROM public.users',
             'derived_user_distinct_user_count':
-                'SELECT count(distinct u.northstar_id) '
+                'SELECT count(distinct u.northstar_id)'
                 'FROM public.users u',
             'derived_active_user_count':
                 """SELECT count(*) FROM public.users u 
@@ -161,7 +161,7 @@ class ETLMonitoring:
                 FROM etl_monitoring.monitoring t
                 WHERE t.table = '{table}'
                 AND t.query = '{desc}'
-                AND 
+                AND
                 t.timestamp < (SELECT max(t1.timestamp)
                                 FROM etl_monitoring.monitoring t1
                                 WHERE t1.table = '{table}'
