@@ -68,7 +68,7 @@ class ETLMonitoring:
                 'SELECT count(distinct u.northstar_id)'
                 'FROM public.users u',
             'derived_active_user_count':
-                """SELECT count(*) FROM public.users u 
+                """SELECT count(*) FROM public.users u
                 WHERE u.subscribed_member = TRUE""",
             'derived_ca_table_count':
                 'SELECT count(*) FROM public.campaign_activity c',
