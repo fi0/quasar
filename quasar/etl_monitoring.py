@@ -68,8 +68,8 @@ class ETLMonitoring:
                 'SELECT count(distinct u.northstar_id) '
                 'FROM public.users u',
             'derived_active_user_count':
-                "SELECT count(*) FROM public.users u" 
-                "WHERE u.subscribed_member = TRUE",
+                """SELECT count(*) FROM public.users u 
+                WHERE u.subscribed_member = TRUE""",
             'derived_ca_table_count':
                 'SELECT count(*) FROM public.campaign_activity c',
             'derived_ca_post_count':
@@ -152,20 +152,20 @@ class ETLMonitoring:
         max_2_query = \
             f"""
             SELECT
-                m.output 
-            FROM etl_monitoring.monitoring m 
-            INNER JOIN 
-                (SELECT 
-                    max(t.timestamp) AS ts_2 
-                FROM etl_monitoring.monitoring t 
-                WHERE t.table = '{table}' 
-                AND t.query = '{desc}' 
-                AND \
-                t.timestamp < (SELECT max(t1.timestamp)  
-                                FROM etl_monitoring.monitoring t1 
-                                WHERE t1.table = '{table}'  
-                                AND t1.query = '{desc}') 
-                ) ts2 ON ts2.ts_2 = m.timestamp \
+                m.output
+            FROM etl_monitoring.monitoring m
+            INNER JOIN
+                (SELECT
+                    max(t.timestamp) AS ts_2
+                FROM etl_monitoring.monitoring t
+                WHERE t.table = '{table}'
+                AND t.query = '{desc}'
+                AND 
+                t.timestamp < (SELECT max(t1.timestamp)
+                                FROM etl_monitoring.monitoring t1
+                                WHERE t1.table = '{table}'
+                                AND t1.query = '{desc}')
+                ) ts2 ON ts2.ts_2 = m.timestamp
             WHERE m.table = '{table}' AND m.query = '{desc}';"""
         value = self.get_value(max_2_query)
         return value
