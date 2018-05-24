@@ -68,7 +68,7 @@ class ETLMonitoring:
                 'SELECT count(distinct u.northstar_id) '
                 'FROM public.users u',
             'derived_active_user_count':
-                "SELECT count(*) FROM public.users u " 
+                "SELECT count(*) FROM public.users u" 
                 "WHERE u.subscribed_member = TRUE",
             'derived_ca_table_count':
                 'SELECT count(*) FROM public.campaign_activity c',
@@ -130,12 +130,11 @@ class ETLMonitoring:
 
     def extract_latest_value(self, table, desc):
         max_query = \
-            f"""
-            SELECT
+            f"""SELECT
                 m.output
             FROM etl_monitoring.monitoring m
             INNER JOIN (
-                SELECT 
+                SELECT
                     t.table,
                     t.query,
                     max(t.timestamp) AS max_created
@@ -152,7 +151,7 @@ class ETLMonitoring:
     def extract_second_latest_value(self, table, desc):
         max_2_query = \
             f"""
-            SELECT 
+            SELECT
                 m.output 
             FROM etl_monitoring.monitoring m 
             INNER JOIN 
@@ -174,19 +173,19 @@ class ETLMonitoring:
     def compare_distinct(self):
         query = \
             """
-            SELECT  
-               m.query,  
-               m.output  
-            FROM etl_monitoring.monitoring m   
-            WHERE m.table = 'public.users' 
-            AND m.query IN 
+            SELECT
+               m.query,
+               m.output
+            FROM etl_monitoring.monitoring m
+            WHERE m.table = 'public.users'
+            AND m.query IN
                 ('derived_user_count','derived_user_distinct_user_count')
-            AND (m.timestamp = (SELECT max(t1.timestamp)  
-                               FROM etl_monitoring.monitoring t1 
-                               WHERE t1.query = 'derived_user_count') 
-            OR m.timestamp = (SELECT max(t1.timestamp)  
-                               FROM etl_monitoring.monitoring t1 
-                               WHERE t1.query = 
+            AND (m.timestamp = (SELECT max(t1.timestamp)
+                               FROM etl_monitoring.monitoring t1
+                               WHERE t1.query = 'derived_user_count')
+            OR m.timestamp = (SELECT max(t1.timestamp)
+                               FROM etl_monitoring.monitoring t1
+                               WHERE t1.query =
                                     'derived_user_distinct_user_count'))"""
         frame = self.db.run_query(query)
         user_count = \
