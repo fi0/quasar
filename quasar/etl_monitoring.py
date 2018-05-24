@@ -130,7 +130,8 @@ class ETLMonitoring:
 
     def extract_latest_value(self, table, desc):
         max_query = \
-            f"""SELECT
+            f"""
+            SELECT
                 m.output
             FROM etl_monitoring.monitoring m
             INNER JOIN (
