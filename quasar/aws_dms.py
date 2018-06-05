@@ -24,7 +24,7 @@ def check_refresh_status(aws_arn):
                                           'ReplicationTasks.0.StopReason')
     refresh_status['progress'] = pydash.get(task_progess,
                                             'ReplicationTasks.0.ReplicationTaskStats.FullLoadProgressPercent')
-    
+
     if (refresh_status['status'] == 'stopped' and
             refresh_status['reason'] == 'Stop Reason FULL_LOAD_ONLY_FINISHED' and
             refresh_status['progress'] == 100):
