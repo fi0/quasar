@@ -1,5 +1,7 @@
 import boto3
 import pydash
+import time
+
 
 dms = boto3.client('dms')
 
@@ -22,20 +24,21 @@ def check_refresh_status(aws_arn):
                                           'ReplicationTasks.0.StopReason')
     refresh_status['progress'] = pydash.get(task_progess,
                                             'ReplicationTasks.0.ReplicationTaskStats.FullLoadProgressPercent')
-    if (status['status'] == 'stopped' and
-        status['reason'] == 'Stop Reason FULL_LOAD_ONLY_FINISHED' and
-        status['progress'] == 100):
+    if (refresh_status['status'] == 'stopped' and
+            refresh_status['reason'] == 'Stop Reason FULL_LOAD_ONLY_FINISHED'
+            and refresh_status['progress'] == 100):
         return True
     else:
         return False
 
+
 def refresh_finished(aws_arn):
     # Return true only when refresh is finished.
-    status = check_refresh_status()
-    while not check_refresh_status(aws_arn):
+    status = check_refresh_status(aws_arn)
+    while not status:
         # SLeep between checks for 60 seconds, then try again.
-        print("DMS refresh still not done, checking in 60.")
+        print("DMS refresh still not done, checking in 60 seconds.")
         time.sleep(60)
-        status = check_refresh_status()
+        status = check_refresh_status(aws_arn)
     print("DMS finished!")
     return None
