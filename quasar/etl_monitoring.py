@@ -43,6 +43,9 @@ class DataFrameDB:
         df = pd.read_sql_query(q, self.engine)
         return df
 
+def run_sql_file():
+    df = DataFrameDB()
+    df.run_query(df, test.sql)
 
 class ETLMonitoring:
     def __init__(self):
