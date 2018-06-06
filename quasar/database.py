@@ -1,21 +1,25 @@
-import MySQLdb
-import MySQLdb.converters
+import json
+import os
+import psycopg2
 
-from .config import config
 from .utils import QuasarException
 
-
-def dec_to_float_converter():
-    converter = MySQLdb.converters.conversions.copy()
-    converter[246] = float
-    return converter
+# Defaults
+opts = {
+    'user': os.environ.get('PG_USER'),
+    'host': os.environ.get('PG_HOST'),
+    'port': os.environ.get('PG_PORT'),
+    'password': os.environ.get('PG_PASSWORD'),
+    'database': os.environ.get('PG_DATABASE'),
+    'sslmode': os.environ.get('PG_SSL')
+}
 
 
 def _connect(opts):
     conn = None
     try:
-        conn = MySQLdb.connect(**opts)
-    except MySQLdb.InterfaceError as e:
+        conn = psycopg2.connect(**opts)
+    except psycopg2.InterfaceError as e:
         raise QuasarException(e)
     finally:
         return conn
@@ -24,19 +28,6 @@ def _connect(opts):
 class Database:
 
     def __init__(self, options={}):
-
-        # Defaults
-        opts = {
-            'user': config.MYSQL_USER,
-            'host': config.MYSQL_HOST,
-            'port': config.MYSQL_PORT,
-            'passwd': config.MYSQL_PASSWORD,
-            'db': config.MYSQL_DATABASE,
-            'ssl': config.MYSQL_SSL,
-            'use_unicode': True,
-            'charset': 'utf8'
-        }
-
         opts.update(options)
 
         self.connection = _connect(opts)
@@ -44,9 +35,6 @@ class Database:
             print("Error, couldn't connect to database with options:", opts)
         else:
             self.cursor = self.connection.cursor()
-            if 'conv' in opts:
-                self.cursor = self.connection.cursor(
-                    MySQLdb.cursors.DictCursor)
 
     def disconnect(self):
         self.cursor.close()
@@ -61,9 +49,14 @@ class Database:
         try:
             self.cursor.execute(query)
             self.connection.commit()
-            results = self.cursor.fetchall()
-            return results
-        except MySQLdb.DatabaseError as e:
+            try:
+                results = self.cursor.fetchall()
+                return results
+            except psycopg2.ProgrammingError:
+                results = {}
+                return results
+        except psycopg2.DatabaseError as e:
+            print(self.cursor.query)
             raise QuasarException(e)
 
     def query_str(self, query, string):
@@ -74,7 +67,74 @@ class Database:
         try:
             self.cursor.execute(query, string)
             self.connection.commit()
-            results = self.cursor.fetchall()
-            return results
-        except MySQLdb.DatabaseError as e:
+            try:
+                results = self.cursor.fetchall()
+                return results
+            except psycopg2.ProgrammingError:
+                results = {}
+                return results
+        except psycopg2.DatabaseError as e:
+            print(self.cursor.query)
             raise QuasarException(e)
+
+
+class NorthstarDatabase(Database):
+
+    def __init__(self, options={}):
+        super().__init__(options)
+
+    def query(self, query, record):
+        """Parse and run DB query.
+
+        Return On error, raise exception and log why.
+        """
+        try:
+            self.cursor.execute(query)
+            self.connection.commit()
+            try:
+                results = self.cursor.fetchall()
+                return results
+            except psycopg2.ProgrammingError:
+                results = {}
+                return results
+        except psycopg2.DatabaseError:
+            print(self.cursor.query)
+            self.connection = _connect(opts)
+            if self.connection is None:
+                print("Error, couldn't connect to database with opts:", opts)
+            else:
+                self.cursor = self.connection.cursor()
+            self.cursor.execute(''.join(("INSERT INTO "
+                                         "northstar.unprocessed_users "
+                                         "(northstar_record) VALUES "
+                                         "(%s)")), (json.dumps(record),))
+            self.connection.commit()
+            print("ID {} not processed. Backing up.".format(record['id']))
+
+    def query_str(self, query, string, record):
+        """Parse and run DB query.
+
+        Return On error, raise exception and log why.
+        """
+        try:
+            self.cursor.execute(query, string)
+            self.connection.commit()
+            try:
+                results = self.cursor.fetchall()
+                return results
+            except psycopg2.ProgrammingError:
+                results = {}
+                return results
+        except psycopg2.DatabaseError:
+            print(self.cursor.query)
+            self.connection = _connect(opts)
+            if self.connection is None:
+                print("Error, couldn't connect to database with opts:", opts)
+            else:
+                self.cursor = self.connection.cursor()
+            self.cursor.execute(''.join(("INSERT INTO "
+                                         "northstar.unprocessed_users "
+                                         "(northstar_record) VALUES "
+                                         "(%s)")), (json.dumps(record),))
+            self.connection.commit()
+            print("ID {} not processed. Backing up.".format(record['id']))
