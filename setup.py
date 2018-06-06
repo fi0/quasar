@@ -28,7 +28,7 @@ setup(
             'quasar_blink_queue_consumer = quasar.customerio:main',
             'phoenix_next_cleanup = quasar.phoenix_next_queue_cleanup:main',
             'puck_refresh = quasar.puck_events:main',
-            'sql_file_run = quasar.etl_monitoring:run_sql_file',
+            'run_sql_file = quasar.etl_monitoring:run_sql_file',
             'rogue_consume = quasar.rogue_consumer:main',
             'rogue_consume_pg = quasar.rogue_consumer_pg:main',
             'rogue_ghost_killer = quasar.ghost_killer:main',
