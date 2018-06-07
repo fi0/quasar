@@ -1,7 +1,7 @@
-from .quasar_queue import RoguePostgresQueue
+from .quasar_queue import RogueQueue
 
 
-queue = RoguePostgresQueue()
+queue = RogueQueue()
 
 
 def main():

@@ -1,10 +1,10 @@
 import json
 import logging
+import os
 import time
 
 import pika
 
-from .config import config
 from .utils import QuasarException
 
 log_format = "%(asctime)s - %(levelname)s: %(message)s"
@@ -27,7 +27,8 @@ class QuasarQueue:
         self.params.socket_timeout = 5
         self.connection = pika.BlockingConnection(self.params)
         self.channel = self.connection.channel()
-        self.channel.basic_qos(prefetch_count=config.QUEUE_PREFETCH_COUNT)
+        self.queue_prefetch = os.environ.get('QUEUE_PREFETCH_COUNT')
+        self.channel.basic_qos(prefetch_count=self.queue_prefetch)
         self.channel.queue_declare(amqp_queue, durable=True,
                                    arguments={'x-max-priority': 2})
         self.channel.confirm_delivery()

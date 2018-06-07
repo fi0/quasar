@@ -1,7 +1,7 @@
-from .quasar_queue import CioPostgresQueue
+from .quasar_queue import CioQueue
 
 
-queue = CioPostgresQueue()
+queue = CioQueue()
 
 
 def main():

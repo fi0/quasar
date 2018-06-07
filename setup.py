@@ -5,7 +5,7 @@ with open('requirements.txt') as f:
 
 setup(
     name="quasar",
-    version="0.9.0",
+    version="0.9.1",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
@@ -15,7 +15,6 @@ setup(
             'campaign_info_recreate_pg = quasar.ashes_to_campaign_info:create',
             'campaign_info_refresh_pg = quasar.ashes_to_campaign_info:main',
             'campaign_activity_refresh = quasar.refresh_campaign_activity:main',
-            'cio_import = quasar.cio_queue_process:main',
             'cio_import_pg = quasar.cio_consumer_pg:main',
             'etl_monitoring = quasar.etl_monitoring:run_monitoring',
             'get_competitions = quasar.gladiator_import:get_competitions',
@@ -23,6 +22,7 @@ setup(
             'member_event_log = quasar.member_event_log:mel',
             'mel_create_pg = quasar.mel:create',
             'mel_refresh_pg = quasar.mel:main',
+            'message_route = quasar.route_queue_process:main',
             'northstar_to_quasar_import_backfill = quasar.northstar_to_user_table:backfill_since',
             'northstar_to_quasar_diff_pg = quasar.northstar_to_user_table_pg:backfill_since',
             'quasar_blink_queue_consumer = quasar.customerio:main',
