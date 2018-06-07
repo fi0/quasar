@@ -3,7 +3,7 @@ import pydash
 import sys
 
 from .config import config
-from .database import Database
+from .database_mysql import Database
 from .database_pg import Database as DatabasePG
 from .queue import QuasarQueue
 from .utils import unixtime_to_isotime as u2i
