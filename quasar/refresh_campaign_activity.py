@@ -8,7 +8,7 @@ def main():
     """Keep track of start time of script."""
 
     db.query("REFRESH MATERIALIZED VIEW public.signups")
-    db.query("REFRESH MATERIALIZED VIEW public.latest_posts")
+    db.query("REFRESH MATERIALIZED VIEW public.latest_post")
     db.query("REFRESH MATERIALIZED VIEW public.posts")
     db.query("REFRESH MATERIALIZED VIEW public.reported_back")
     db.query("REFRESH MATERIALIZED VIEW public.campaign_activity")
