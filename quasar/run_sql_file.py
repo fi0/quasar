@@ -33,20 +33,15 @@ class DataFrameDB:
     def run_query(self, query):
         if '.sql' in query:
             q = open(query, 'r').read()
-            try:
-                df = pd.read_sql_query(q, self.engine)
-            except Exception as e:
-                print(e)
-            return None
         else:
             q = query
+        try:
             df = pd.read_sql_query(q, self.engine)
-            return df
+        except Exception as e:
+            print(e)
+        return df
 
 def run_sql_file(file):
     df = DataFrameDB()
     df.run_query(file)
 
-
-def run_file():
-    run_sql_file('quasar/test.sql')
