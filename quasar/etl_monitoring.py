@@ -9,6 +9,7 @@ from .utils import QuasarException
 from sqlalchemy import create_engine
 from slackclient import SlackClient
 
+
 class DataFrameDB:
     def __init__(self, opts={}):
 
@@ -42,9 +43,11 @@ class DataFrameDB:
         df = pd.read_sql_query(q, self.engine)
         return df
 
+
 def run_sql_file():
     df = DataFrameDB()
     df.run_query("test.sql")
+
 
 class ETLMonitoring:
     def __init__(self):
