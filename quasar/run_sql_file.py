@@ -3,6 +3,7 @@ import pandas as pd
 
 from sqlalchemy import create_engine
 
+
 class DataFrameDB:
     def __init__(self, opts={}):
 
@@ -40,6 +41,7 @@ class DataFrameDB:
             print("From Team Storm Engineers:")
             print("The query ran if you're reading this.")
             print("We'll make this more graceful in the future.")
+
 
 def run_sql_file(file):
     df = DataFrameDB()
