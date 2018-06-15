@@ -44,6 +44,11 @@ class DataFrameDB:
         return df
 
 
+def run_sql_file():
+    df = DataFrameDB()
+    df.run_query("test.sql")
+
+
 class ETLMonitoring:
     def __init__(self):
         db_opts = {}
