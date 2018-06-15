@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import sqlalchemy as sal
+import time
 
 from .utils import QuasarException
 from sqlalchemy import create_engine
@@ -39,9 +40,10 @@ class DataFrameDB:
             df = pd.read_sql_query(q, self.engine)
         except Exception as e:
             print(e)
-        return df
+            print("From Team Storm Engineers:")
+            print("The query ran if you're reading this.")
+            print("We'll make this more graceful in the future.")
 
 def run_sql_file(file):
     df = DataFrameDB()
     df.run_query(file)
-
