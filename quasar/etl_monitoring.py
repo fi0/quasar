@@ -235,7 +235,7 @@ class ETLMonitoring:
                           " Latest Count = " + \
                           str(latest_value) + \
                           " Previous Value = " + \
-                          str(second_latest_value)
+                          str(latest_value - second_latest_value)
             else:
                 message = '*Failed* - Unspecified Error'
         except:
