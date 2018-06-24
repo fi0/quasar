@@ -215,27 +215,28 @@ class ETLMonitoring:
     def compare_latest_values(self, table, desc):
         latest_value = self.extract_latest_value(table, desc)
         second_latest_value = self.extract_second_latest_value(table, desc)
+        diff = latest_value - second_latest_value
 
         try:
             if latest_value > second_latest_value:
-                message = "*Passed* - Latest Count = " + \
-                          str(latest_value) + \
-                          " Previous Value = " + \
-                          str(second_latest_value) +  \
-                          ", Count increased by " + \
-                          str(latest_value - second_latest_value)
+                message = ''.join(("*Passed* - Latest Count = {} "
+                                   "Previous Value = {}, "
+                                   "Count increased by = {}"
+                                   "")).format(latest_value,
+                                               second_latest_value, diff)
             elif latest_value == second_latest_value:
-                message = "*Failed* - Count Unchanged," \
-                          " Latest Count = " + \
-                          str(latest_value) + \
-                          " Previous Value = " + \
-                          str(second_latest_value)
+                message = ''.join(("*Failed* - Count Unchanged, "
+                                   "Latest Count = {} "
+                                   "Previous Value = {}"
+                                   "")).format(latest_value,
+                                               second_latest_value)
             elif latest_value < second_latest_value:
-                message = "*Failed* - Count Decreased," \
-                          " Latest Count = " + \
-                          str(latest_value) + \
-                          " Previous Value = " + \
-                          str(latest_value - second_latest_value)
+                message = ''.join(("*Failed* - Count Decreased, "
+                                   "Latest Count = {} "
+                                   "Previous Value = {}, "
+                                   "Count decreased by = {}"
+                                   "")).format(latest_value,
+                                               second_latest_value, diff)
             else:
                 message = '*Failed* - Unspecified Error'
         except:
