@@ -36,12 +36,13 @@ class NorthstarDB:
                                    "addr_street2, addr_city, addr_state, "
                                    "addr_zip, addr_source, source, "
                                    "source_detail, slack_id, sms_status, "
-                                   "sms_paused, language, country, "
+                                   "sms_paused, voter_registration_status, "
+                                   "language, country, "
                                    "drupal_id, role, last_accessed_at, "
                                    "last_authenticated_at, "
                                    "last_messaged_at, "
                                    "updated_at, created_at) "
-                                   "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,"
+                                   "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,"
                                    "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,"
                                    "%s,%s,%s,%s,%s,%s,%s,%s,%s) "
                                    "ON CONFLICT (id, created_at, updated_at)"
@@ -56,6 +57,7 @@ class NorthstarDB:
                            user['addr_source'], user['source'],
                            user['source_detail'], user['slack_id'],
                            user['sms_status'], user['sms_paused'],
+                           user['voter_registration_status'],
                            user['language'], user['country'],
                            user['drupal_id'], user['role'],
                            user['last_accessed_at'],
