@@ -185,10 +185,9 @@ class RogueQueue(QuasarQueue):
         self.db.query_str(''.join(("INSERT INTO rogue.signups "
                                    "(id, northstar_id, campaign_id, "
                                    "campaign_run_id, quantity, "
-                                   "why_participated, source, "
-                                   "source_details, details, "
+                                   "why_participated, source, details, "
                                    "created_at, updated_at) "
-                                   "VALUES (%s,%s,%s,%s,%s,%s,"
+                                   "VALUES (%s,%s,%s,%s,%s,"
                                    "%s,%s,%s,%s,%s) ON CONFLICT "
                                    "(id, updated_at) "
                                    "DO NOTHING")),
@@ -199,7 +198,6 @@ class RogueQueue(QuasarQueue):
                            signup_data['quantity'],
                            signup_data['why_participated'],
                            signup_data['signup_source'],
-                           signup_data['source_details'],
                            signup_data['details'],
                            signup_data['created_at'],
                            signup_data['updated_at']))
@@ -221,11 +219,10 @@ class RogueQueue(QuasarQueue):
                                    "(id, signup_id, campaign_id, "
                                    "northstar_id, "
                                    "type, action, quantity, url, caption, "
-                                   "status, source, "
-                                   "source_details, signup_source, "
+                                   "status, source, signup_source, "
                                    "remote_addr, created_at, "
                                    "updated_at) VALUES "
-                                   "(%s,%s,%s,%s,%s,%s,%s,%s,%s,"
+                                   "(%s,%s,%s,%s,%s,%s,%s,%s,"
                                    "%s,%s,%s,%s,%s,%s,%s) ON CONFLICT "
                                    "DO NOTHING")),
                           (post_data['id'],
@@ -239,7 +236,6 @@ class RogueQueue(QuasarQueue):
                            post_data['media']['caption'],
                            post_data['status'],
                            post_data['source'],
-                           post_data['source_details'],
                            post_data['signup_source'],
                            post_data['remote_addr'],
                            post_data['created_at'],
