@@ -45,8 +45,8 @@ class NorthstarDB:
                                    "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,"
                                    "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,"
                                    "%s,%s,%s,%s,%s,%s,%s,%s,%s) "
-                                   "ON CONFLICT (id, created_at, updated_at)"
-                                   " DO NOTHING")),
+                                   "ON CONFLICT (id, created_at, updated_at, "
+                                   "voter_registration_status) DO NOTHING")),
                           (user['id'], user['first_name'],
                            user['last_name'], user['last_initial'],
                            user['photo'], user['email'], user['mobile'],
