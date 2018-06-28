@@ -1,4 +1,5 @@
 from datetime import datetime as dt
+import json
 import sys
 import time
 
@@ -45,8 +46,8 @@ class NorthstarDB:
                                    "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,"
                                    "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,"
                                    "%s,%s,%s,%s,%s,%s,%s,%s,%s) "
-                                   "ON CONFLICT (id, created_at, updated_at, "
-                                   "voter_registration_status) DO NOTHING")),
+                                   "ON CONFLICT (id, created_at, updated_at) "
+                                   "DO NOTHING")),
                           (user['id'], user['first_name'],
                            user['last_name'], user['last_initial'],
                            user['photo'], user['email'], user['mobile'],
@@ -66,6 +67,12 @@ class NorthstarDB:
                            user['updated_at'], user['created_at']),
                           user)
 
+    def save_user_json(self, user):
+        self.db.query_str(''.join(("INSERT INTO "
+                                   "northstar.users_json "
+                                   "(user_record) VALUES (%s)")),
+                          (json.dumps(user),), user)
+
 
 def _interval(hours_ago):
     def _format(hr):
@@ -82,7 +89,11 @@ def backfill_since():
     _backfill(sys.argv[1])
 
 
-def _backfill(hours_ago=None):
+def backfill_since_json():
+    _backfill(sys.argv[1], sys.argv[2])
+
+
+def _backfill(hours_ago=None, store_json=False):
     start_time = time.time()
 
     db = NorthstarDB()
@@ -93,6 +104,8 @@ def _backfill(hours_ago=None):
         res = page_response
         for user in res['data']:
             db.save_user(user)
+        if store_json:
+            db.save_user_json(user)
         if save_progress:
             db.update_start_page(page_n)
 
