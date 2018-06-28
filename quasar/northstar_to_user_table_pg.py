@@ -88,8 +88,10 @@ def _interval(hours_ago):
 def backfill_since():
     _backfill(sys.argv[1])
 
+
 def backfill_since_json():
     _backfill(sys.argv[1], sys.argv[2])
+
 
 def _backfill(hours_ago=None, store_json=False):
     start_time = time.time()
