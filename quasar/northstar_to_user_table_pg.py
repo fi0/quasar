@@ -105,7 +105,8 @@ def _backfill(hours_ago=None, store_json=False):
         for user in res['data']:
             db.save_user(user)
         if store_json:
-            db.save_user_json(user)
+            for user in res['data']:
+                db.save_user_json(user)
         if save_progress:
             db.update_start_page(page_n)
 
