@@ -67,6 +67,12 @@ class NorthstarDB:
                            user['updated_at'], user['created_at']),
                           user)
 
+    def save_user_json(self, user):
+        self.db.query_str(''.join(("INSERT INTO "
+                                   "northstar.users_json "
+                                   "(user_record) VALUES (%s)")),
+                          (json.dumps(user),), user)
+
 
 def _interval(hours_ago):
     def _format(hr):
@@ -82,8 +88,10 @@ def _interval(hours_ago):
 def backfill_since():
     _backfill(sys.argv[1])
 
+def backfill_since_json():
+    _backfill(sys.argv[1], sys.argv[2])
 
-def _backfill(hours_ago=None):
+def _backfill(hours_ago=None, store_json=False):
     start_time = time.time()
 
     db = NorthstarDB()
@@ -94,6 +102,8 @@ def _backfill(hours_ago=None):
         res = page_response
         for user in res['data']:
             db.save_user(user)
+        if store_json:
+            db.save_user_json(user)
         if save_progress:
             db.update_start_page(page_n)
 
@@ -118,53 +128,6 @@ def _backfill(hours_ago=None):
             '/v1/users', {'page': start_page}, _process_page)
 
     db.teardown()
-
-
-def backfill_voter_reg_since():
-    _backfill_voter_reg(sys.argv[1])
-
-
-def _backfill_voter_reg(hours_ago=None):
-    start_time = time.time()
-
-    db = NorthstarDB()
-    scraper = NorthstarScraper(config.ns_uri)
-    save_progress = hours_ago is None
-
-    def _process_page_voter_reg(page_n, page_response):
-        res = page_response
-        for user in res['data']:
-            db.save_user_voter_reg(user)
-        if save_progress:
-            db.update_start_page(page_n)
-
-    if hours_ago is not None:
-        intervals = [_interval(hour) for hour in range(
-            int(hours_ago) + 1) if hour > 0]
-
-        intervals.reverse()
-        for start, end in intervals:
-            create_params = {'after[created_at]': str(
-                start), 'before[created_at]': str(end)}
-            update_params = {'after[updated_at]': str(
-                start), 'before[updated_at]': str(end)}
-            scraper.process_all_pages(
-                '/v1/users', create_params, _process_page_voter_reg)
-            scraper.process_all_pages(
-                '/v1/users', update_params, _process_page_voter_reg)
-
-    else:
-        start_page = db.get_start_page()
-        scraper.process_all_pages(
-            '/v1/users', {'page': start_page}, _process_page_voter_reg)
-
-    db.teardown()
-
-    def save_user_voter_reg(self, user):
-        self.db.query_str(''.join(("INSERT INTO "
-                                   "northstar.users_json_voter_reg_capture "
-                                   "(user_record) VALUES (%s)")),
-                          (json.dumps(user),), user)
 
     end_time = time.time()  # Record when script stopped running.
     duration = end_time - start_time  # Total duration in seconds.
