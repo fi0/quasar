@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import sys
 
 from sqlalchemy import create_engine
 
@@ -37,10 +38,17 @@ class DataFrameDB:
         try:
             pd.read_sql_query(q, self.engine)
         except Exception as e:
-            print(e)
-            print("From Team Storm Engineers:")
-            print("The query ran if you're reading this.")
-            print("We'll make this more graceful in the future.")
+            success = ''.join(("This result object does not return rows. "
+                               "It has been closed automatically."))
+
+            if str(e) == success:
+                print("From Team Storm Engineers:")
+                print("The query ran successfully if you're reading this.")
+                print("We'll make this more graceful in the future.")
+                sys.exit(0)
+            else:
+                print(e)
+                sys.exit(1)
 
 
 def run_sql_file(file):
