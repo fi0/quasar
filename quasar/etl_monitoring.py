@@ -67,6 +67,8 @@ class ETLMonitoring:
                 'SELECT count(*) FROM cio.email_event',
             'raw_cio_customers':
                 'SELECT count(*) FROM cio.customer_event',
+            'raw_bertly_clicks':
+                'SELECT count(*) FROM bertly.clicks',
             'derived_user_count':
                 'SELECT count(*) FROM public.users',
             'derived_user_distinct_user_count':
@@ -83,7 +85,9 @@ class ETLMonitoring:
             'derived_puck_events':
                 'SELECT count(*) FROM public.phoenix_events',
             'derived_puck_sessions':
-                'SELECT count(*) FROM public.phoenix_sessions'
+                'SELECT count(*) FROM public.phoenix_sessions',
+            'derived_bertly_clicks':
+                'SELECT count(*) FROM public.bertly_clicks'
         }
 
     @staticmethod
