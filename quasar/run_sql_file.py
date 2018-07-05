@@ -47,6 +47,7 @@ class DataFrameDB:
                 print("We'll make this more graceful in the future.")
                 sys.exit(0)
             else:
+                print("Query did not run successfully. Error is:")
                 print(e)
                 sys.exit(1)
 
