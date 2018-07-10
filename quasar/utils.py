@@ -20,6 +20,7 @@ def strip_str(base_value):
         strip_special_chars = re.sub(r'[()<>/"\,\'\\]', '', base_string)
         return str(strip_special_chars)
 
+
 def now_minus_hours(hours):
     """Returns time x hours ago"""
     if hours is None:
@@ -32,6 +33,7 @@ def now_minus_hours(hours):
 def unixtime_to_isotime(unixtime):
     return dt.fromtimestamp(unixtime).isoformat()
 
+
 class Duration:
     """Simple duration tracker.
 
@@ -43,9 +45,10 @@ class Duration:
         self.start_time = time.time()
 
     def duration(self):
-        run_time =  time.time() - self.start_time
+        run_time = time.time() - self.start_time
         logging.info("Duration in seconds: ".format(run_time))
         return run_time
+
 
 class QuasarException(Exception):
     """Donated exception handling code by Rob Spectre.
