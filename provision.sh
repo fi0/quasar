@@ -18,7 +18,7 @@ sudo service postgresql start
 
 # create new user "root" with defined password "root" not a superuser
 PASSWORD=password
-sudo -u postgres psql -c "CREATE ROLE root LOGIN ENCRYPTED PASSWORD '$PASSWORD' NOSUPERUSER INHERIT NOCREATEDB NOCREATEROLE NOREPLICATION;"
+sudo -u postgres psql -c "CREATE ROLE root LOGIN ENCRYPTED PASSWORD '$PASSWORD' SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN;"
 
 # create new database "database"
 sudo -u postgres psql -c "CREATE DATABASE database"
