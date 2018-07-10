@@ -1,11 +1,11 @@
 from datetime import datetime as dt
 import json
+import os
 import sys
 import time
 
-from .config import config
 from .northstarscraper import NorthstarScraper
-from .database_pg import NorthstarDatabase
+from .database import NorthstarDatabase
 
 """DS Northstar to Quasar User ETL script.
 
@@ -97,7 +97,7 @@ def _backfill(hours_ago=None, store_json=False):
     start_time = time.time()
 
     db = NorthstarDB()
-    scraper = NorthstarScraper(config.ns_uri)
+    scraper = NorthstarScraper(os.environ.get('NS_URI'))
     save_progress = hours_ago is None
 
     def _process_page(page_n, page_response):

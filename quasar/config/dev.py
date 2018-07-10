@@ -1,48 +1,27 @@
-# Quasar DB
-# [18/571]
-host = "127.0.0.1"
-port = 6603
-user = "root"
-pw = "password"
+# Database Settings
+export PG_USER='root'
+export PG_HOST='127.0.0.1'
+export PG_PORT='5566'
+export PG_PASSWORD='root'
+export PG_DATABASE='postgres'
+export PG_SSL='require'
 
-# Mobile Commons API
-mc_user = 'test@example.org'
-mc_pw = 'password'
+# Northstar Settings
+export NS_URI='https://some-identity-endpoint.local'
+export NS_CLIENT_ID='some-client'
+export NS_CLIENT_SECRET='ooo-its-a-secret'
 
-# Northstar OAuth2 Credentials:
-ns_client_id = 'some-client'
-ns_client_secret = 'password'
-ns_uri = 'https://northstar-thor.dosomething.org'
-ns_counter_table = 'quasar_etl_status.thor_northstar_ingestion'
+# RabbitMQ Settings
+export AMQP_URI='amqps://user:pass@queue-server.com/something'
+export QUEUE_PREFETCH_COUNT='100'
+export BLINK_QUEUE='the-blink-queue'
+export BLINK_EXCHANGE='the-blink-topic'
+export CIO_QUEUE='the-cio-queue'
+export QUASAR_EXCHANGE='the-exchange'
+export ROGUE_QUEUE='the-rogue-queue'
 
-# New Quasar Per Var Settings
-AMQP_URI = 'amqps://user:something@server-thing.cloudamqp.com/asdf'
-AMQP_QUEUE = 'quasar-customer-io-email-activity'
-AMQP_EXCHANGE = 'blink-x'
-MYSQL_HOST = '127.0.0.1'
-MYSQL_PORT = '6603'
-MYSQL_USER = 'root'
-MYSQL_PASSWORD = 'password'
-MYSQL_SSL = {}
-MYSQL_DATABASE = 'quasar'
-MYSQL_TABLE = 'users'
-BLINK_BACKUP_TABLE = 'blink_queue_backlog'
+# Slackbot Token
+export ETLMON_SLACKBOT_TOKEN='the-slack-token'
 
-# PG ENVARS
-PG_HOST = '127.0.0.1'
-PG_PORT = '5566'
-PG_USER = 'root'
-PG_PASSWORD = 'password'
-PG_DATABASE = 'postgres'
-
-# Rogue Env Vars
-DS_ROGUE_API_KEY = 'someapikey'
-CAMPAIGN_ACTIVITY_TABLE = 'campaign_activity'
-ROGUE_URI = 'https://rogue.dosomething.org'
-ROGUE_PROGRESS_TABLE = 'quasar_etl_status.rogue_ingestion'
-
-# ETL Monitoring Vars
-ETLMON_SLACKBOT_TOKEN = 'SLACKBOT_TOKEN'
-
-# Rb CSV Path
-RB_CSV_PATH = 'PATH'
+# Reportback Asterisk
+export RB_CSV_PATH='/path/to/reportbacks_asterisk.csv'

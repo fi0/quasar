@@ -4,7 +4,6 @@ import datetime as dt
 import pandas as pd
 import sqlalchemy as sal
 
-from .config import config
 from .utils import QuasarException
 from sqlalchemy import create_engine
 from slackclient import SlackClient
@@ -14,11 +13,11 @@ class DataFrameDB:
     def __init__(self, opts={}):
 
         self.opts = {
-            'user': config.PG_USER,
-            'host': config.PG_HOST,
-            'password': config.PG_PASSWORD,
-            'db': config.PG_DATABASE,
-            'port': str(config.PG_PORT),
+            'user': os.environ.get('PG_USER'),
+            'host': os.environ.get('PG_HOST'),
+            'password': os.environ.get('PG_PASSWORD'),
+            'db': os.environ.get('PG_DATABASE'),
+            'port': str(os.environ.get('PG_PORT')),
             'use_unicode': True,
             'charset': 'utf8'
         }
@@ -265,7 +264,7 @@ class ETLMonitoring:
 
     @staticmethod
     def send_message(message):
-        sc = SlackClient(config.ETLMON_SLACKBOT_TOKEN)
+        sc = SlackClient(os.environ.get('ETLMON_SLACKBOT_TOKEN'))
         sc.api_call(
             "chat.postMessage",
             channel="#storm-watch",

@@ -1,7 +1,7 @@
+import os
 import pandas as pd
 import sqlalchemy as sal
 
-from .config import config
 from .etl_monitoring import DataFrameDB
 
 
@@ -9,7 +9,7 @@ class LoadReportback:
     def __init__(self):
         db_opts = {}
         self.db = DataFrameDB(db_opts)
-        self.csv_path = config.RB_CSV_PATH
+        self.csv_path = os.environ.get('RB_CSV_PATH')
 
     def read_csv(self, path):
         df = pd.read_csv(path)

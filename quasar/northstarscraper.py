@@ -1,7 +1,7 @@
 import json
-from .config import config
 import oauthlib
 from oauthlib.oauth2 import BackendApplicationClient
+import os
 from requests_oauthlib import OAuth2Session
 from .scraper import Scraper
 
@@ -15,11 +15,11 @@ class NorthstarScraper(Scraper):
 
     def fetch_auth_headers(self):
         oauth = OAuth2Session(client=BackendApplicationClient(
-            client_id=config.ns_client_id))
+            client_id=os.environ.get('NS_CLIENT_ID')))
         scopes = ['admin', 'user']
         new_token = oauth.fetch_token(self.url + '/v2/auth/token',
-                                      client_id=config.ns_client_id,
-                                      client_secret=config.ns_client_secret,
+                                      client_id=os.environ.get('NS_CLIENT_ID'),
+                                      client_secret=os.environ.get('NS_CLIENT_SECRET'),
                                       scope=scopes)
         return {'Authorization': 'Bearer ' + str(new_token['access_token'])}
 
