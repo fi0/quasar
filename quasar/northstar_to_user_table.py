@@ -1,12 +1,11 @@
 from datetime import datetime as dt
-import time
-import re
+import json
+import os
 import sys
+import time
 
-from .config import config
 from .northstarscraper import NorthstarScraper
-from .utils import strip_str
-from .database import Database
+from .database import NorthstarDatabase
 
 """DS Northstar to Quasar User ETL script.
 
@@ -24,95 +23,55 @@ that gets updated on ingestion loop.
 class NorthstarDB:
 
     def __init__(self):
-        db_opts = {'use_unicode': True, 'charset': 'utf8'}
-        self.db = Database(db_opts)
+        db_opts = {}
+        self.db = NorthstarDatabase(db_opts)
 
     def teardown(self):
         self.db.disconnect()
 
-    def get_start_page(self):
-        querystr = "SELECT * from %s WHERE counter_name = 'last_page_scraped'" % config.ns_counter_table
-        last_page = self.db.query(querystr)
-        return last_page[0][1]
-
-    def update_start_page(self, page):
-        self.db.query("REPLACE INTO %s (counter_name, counter_value) VALUES(\"last_page_scraped\", \"%s\")" % (
-            config.ns_counter_table, page))
-
     def save_user(self, user):
-        self.db.query_str("INSERT INTO quasar.users (northstar_id,\
-                        created_at,\
-                        last_logged_in, last_accessed, drupal_uid,\
-                        source,\
-                        email, facebook_id,\
-                        mobile, birthdate,\
-                        first_name, last_name,\
-                        addr_street1, addr_street2,\
-                        addr_city, addr_state,\
-                        addr_zip, country, language,\
-                        agg_id, cgg_id,\
-                        sms_status,\
-                        source_detail)\
-                        VALUES(%s,%s,%s,%s,%s,%s,\
-                        %s,%s,%s,%s,%s,\
-                        %s,%s,%s,%s,\
-                        %s,%s,%s,%s,\
-                        NULL,NULL,%s,%s)\
-                        ON DUPLICATE KEY UPDATE \
-                        created_at = %s,\
-                        last_logged_in = %s,\
-                        last_accessed = %s, drupal_uid = %s,\
-                        source = %s,\
-                        email = %s, facebook_id = %s,\
-                        mobile = %s, birthdate = %s,\
-                        first_name = %s, last_name = %s,\
-                        addr_street1 = %s, addr_street2 = %s,\
-                        addr_city = %s, addr_state = %s,\
-                        addr_zip = %s, country = %s, language = %s,\
-                        agg_id = NULL, cgg_id = NULL,\
-                        sms_status = %s,\
-                        source_detail = %s",
-                          (strip_str(user['id']),
-                           strip_str(user['created_at']),
-                           strip_str(user['last_authenticated_at']),
-                           strip_str(user['last_accessed_at']),
-                           strip_str(user['drupal_id']),
-                           strip_str(user['source']),
-                           strip_str(user['email']),
-                           strip_str(user['facebook_id']),
-                           strip_str(user['mobile']),
-                           strip_str(user['birthdate']),
-                           strip_str(user['first_name']),
-                           strip_str(user['last_name']),
-                           strip_str(user['addr_street1']),
-                           strip_str(user['addr_street2']),
-                           strip_str(user['addr_city']),
-                           strip_str(user['addr_state']),
-                           strip_str(user['addr_zip']),
-                           strip_str(user['country']),
-                           strip_str(user['language']),
-                           strip_str(user['sms_status']),
-                           strip_str(user['source_detail']),
-                           strip_str(user['created_at']),
-                           strip_str(user['last_authenticated_at']),
-                           strip_str(user['last_accessed_at']),
-                           strip_str(user['drupal_id']),
-                           strip_str(user['source']),
-                           strip_str(user['email']),
-                           strip_str(user['facebook_id']),
-                           strip_str(user['mobile']),
-                           strip_str(user['birthdate']),
-                           strip_str(user['first_name']),
-                           strip_str(user['last_name']),
-                           strip_str(user['addr_street1']),
-                           strip_str(user['addr_street2']),
-                           strip_str(user['addr_city']),
-                           strip_str(user['addr_state']),
-                           strip_str(user['addr_zip']),
-                           strip_str(user['country']),
-                           strip_str(user['language']),
-                           strip_str(user['sms_status']),
-                           strip_str(user['source_detail'])))
+        self.db.query_str(''.join(("INSERT INTO northstar.users (id, "
+                                   "first_name, last_name, last_initial, "
+                                   "photo, email, mobile, facebook_id, "
+                                   "interests, birthdate, addr_street1, "
+                                   "addr_street2, addr_city, addr_state, "
+                                   "addr_zip, addr_source, source, "
+                                   "source_detail, slack_id, sms_status, "
+                                   "sms_paused, voter_registration_status, "
+                                   "language, country, "
+                                   "drupal_id, role, last_accessed_at, "
+                                   "last_authenticated_at, "
+                                   "last_messaged_at, "
+                                   "updated_at, created_at) "
+                                   "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,"
+                                   "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,"
+                                   "%s,%s,%s,%s,%s,%s,%s,%s,%s) "
+                                   "ON CONFLICT (id, created_at, updated_at) "
+                                   "DO NOTHING")),
+                          (user['id'], user['first_name'],
+                           user['last_name'], user['last_initial'],
+                           user['photo'], user['email'], user['mobile'],
+                           user['facebook_id'], user['interests'],
+                           user['birthdate'], user['addr_street1'],
+                           user['addr_street2'], user['addr_city'],
+                           user['addr_state'], user['addr_zip'],
+                           user['addr_source'], user['source'],
+                           user['source_detail'], user['slack_id'],
+                           user['sms_status'], user['sms_paused'],
+                           user['voter_registration_status'],
+                           user['language'], user['country'],
+                           user['drupal_id'], user['role'],
+                           user['last_accessed_at'],
+                           user['last_authenticated_at'],
+                           user['last_messaged_at'],
+                           user['updated_at'], user['created_at']),
+                          user)
+
+    def save_user_json(self, user):
+        self.db.query_str(''.join(("INSERT INTO "
+                                   "northstar.users_json "
+                                   "(user_record) VALUES (%s)")),
+                          (json.dumps(user),), user)
 
 
 def _interval(hours_ago):
@@ -126,25 +85,28 @@ def _interval(hours_ago):
     return (start, end)
 
 
-def full_backfill():
-    _backfill()
-
-
 def backfill_since():
     _backfill(sys.argv[1])
 
 
-def _backfill(hours_ago=None):
+def backfill_since_json():
+    _backfill(sys.argv[1], sys.argv[2])
+
+
+def _backfill(hours_ago=None, store_json=False):
     start_time = time.time()
 
     db = NorthstarDB()
-    scraper = NorthstarScraper(config.ns_uri)
+    scraper = NorthstarScraper(os.environ.get('NS_URI'))
     save_progress = hours_ago is None
 
     def _process_page(page_n, page_response):
         res = page_response
         for user in res['data']:
             db.save_user(user)
+        if store_json:
+            for user in res['data']:
+                db.save_user_json(user)
         if save_progress:
             db.update_start_page(page_n)
 
@@ -152,6 +114,7 @@ def _backfill(hours_ago=None):
         intervals = [_interval(hour) for hour in range(
             int(hours_ago) + 1) if hour > 0]
 
+        intervals.reverse()
         for start, end in intervals:
             create_params = {'after[created_at]': str(
                 start), 'before[created_at]': str(end)}

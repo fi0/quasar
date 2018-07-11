@@ -1,4 +1,4 @@
-from .database_pg import Database
+from .database import Database
 import boto3
 import pydash
 import time
