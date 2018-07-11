@@ -24,7 +24,6 @@ setup(
             'puck_refresh = quasar.puck_events:main',
             'rogue_consume = quasar.rogue_consumer:main',
             'rogue_ghost_killer = quasar.ghost_killer:main',
-            'reportbacks_asterisk = quasar.reportback_asterisk:run_load_reportbacks',
             'users_create = quasar.recreate_derived_users:main',
             'users_refresh = quasar.refresh_derived_users:main'
         ],
