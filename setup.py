@@ -5,7 +5,7 @@ with open('requirements.txt') as f:
 
 setup(
     name="quasar",
-    version="1.1.0",
+    version="1.2.0",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
@@ -17,7 +17,7 @@ setup(
             'campaign_activity_refresh = quasar.refresh_campaign_activity:main',
             'cio_import = quasar.cio_consumer:main',
             'etl_monitoring = quasar.etl_monitoring:run_monitoring',
-            'mel_create = quasar.mel:create',
+            'mel_create = quasar.recreate_mel:main',
             'mel_refresh = quasar.mel:main',
             'message_route = quasar.route_queue_process:main',
             'northstar_to_quasar_diff = quasar.northstar_to_user_table:backfill_since',
