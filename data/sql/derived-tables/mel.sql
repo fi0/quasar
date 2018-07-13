@@ -25,11 +25,11 @@ FROM (
             sd.id,
             sd."source",
             sd.deleted_at, 
-            (CASE WHEN sd."source" ILIKE '%sms%' THEN 'sms'
-            WHEN sd."source" NOT LIKE '%sms%'AND sd."source" NOT LIKE '%email%' AND sd."source" NOT LIKE '%niche%' OR sd."source" IS NULL THEN 'web'
-            WHEN sd."source" ILIKE '%email%' THEN 'email'
-            WHEN sd."source" ILIKE '%niche%' THEN 'niche_coregistration'
-            WHEN sd."source" NOT LIKE '%sms%'AND sd."source" NOT LIKE '%email%' AND sd."source" NOT LIKE '%niche%' AND sd."source" IS NOT NULL THEN 'other' END) AS "channel"
+            (CASE WHEN sd."source" ILIKE '%%sms%%' THEN 'sms'
+            WHEN sd."source" NOT LIKE '%%sms%%'AND sd."source" NOT LIKE '%%email%%' AND sd."source" NOT LIKE '%%niche%%' OR sd."source" IS NULL THEN 'web'
+            WHEN sd."source" ILIKE '%%email%%' THEN 'email'
+            WHEN sd."source" ILIKE '%%niche%%' THEN 'niche_coregistration'
+            WHEN sd."source" NOT LIKE '%%sms%%'AND sd."source" NOT LIKE '%%email%%' AND sd."source" NOT LIKE '%%niche%%' AND sd."source" IS NOT NULL THEN 'other' END) AS "channel"
         FROM 
             (SELECT 
                 stemp.id,
@@ -58,10 +58,10 @@ FROM (
             pd."source",
             pd.deleted_at,
             pd."type",
-            (CASE WHEN pd."source" ILIKE '%sms%' THEN 'sms'
-            WHEN pd."source" ILIKE '%phoenix%' OR pd."source" IS NULL THEN 'web'
-            WHEN pd."source" ILIKE '%app%' THEN 'mobile_app'
-            WHEN pd."source" NOT LIKE '%phoenix%' AND pd."source" NOT LIKE '%sms%' AND pd."source" IS NOT NULL AND pd."source" NOT LIKE '%app%' THEN 'other' END) AS "channel"
+            (CASE WHEN pd."source" ILIKE '%%sms%%' THEN 'sms'
+            WHEN pd."source" ILIKE '%%phoenix%%' OR pd."source" IS NULL THEN 'web'
+            WHEN pd."source" ILIKE '%%app%%' THEN 'mobile_app'
+            WHEN pd."source" NOT LIKE '%%phoenix%%' AND pd."source" NOT LIKE '%%sms%%' AND pd."source" IS NOT NULL AND pd."source" NOT LIKE '%%app%%' THEN 'other' END) AS "channel"
         FROM 
             (SELECT 
                 ptemp.id,
@@ -103,10 +103,10 @@ FROM (
         '5' AS action_id,
         u."source" AS "source",
         '0' AS action_serial_id, 
-        (CASE WHEN u."source" ILIKE '%sms%' THEN 'sms'
-        WHEN u."source" ILIKE '%phoenix%' OR u."source" IS NULL THEN 'web'
-        WHEN u."source" ILIKE '%niche%' THEN 'niche_coregistration'
-        WHEN u."source" NOT LIKE '%niche%' AND u."source" NOT LIKE '%sms%' AND u."source" NOT LIKE '%phoenix%' AND u."source" IS NOT NULL THEN 'other' END) AS "channel"
+        (CASE WHEN u."source" ILIKE '%%sms%%' THEN 'sms'
+        WHEN u."source" ILIKE '%%phoenix%%' OR u."source" IS NULL THEN 'web'
+        WHEN u."source" ILIKE '%%niche%%' THEN 'niche_coregistration'
+        WHEN u."source" NOT LIKE '%%niche%%' AND u."source" NOT LIKE '%%sms%%' AND u."source" NOT LIKE '%%phoenix%%' AND u."source" IS NOT NULL THEN 'other' END) AS "channel"
     FROM
         (SELECT 
                 u_create.id,
