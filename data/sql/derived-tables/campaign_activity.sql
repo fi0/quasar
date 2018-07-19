@@ -35,6 +35,7 @@ CREATE MATERIALIZED VIEW public.latest_post AS
         pd."source" AS "source",
         pd.created_at AS created_at,
         pd.url AS url,
+        pd.caption,
         pd.signup_id AS signup_id
     FROM 
         (SELECT 
@@ -62,6 +63,7 @@ CREATE MATERIALIZED VIEW public.posts AS
             pd."source" AS "source",
             COALESCE(tv.created_at, pd.created_at) AS created_at,
             pd.url AS url,
+            pd.caption,
             pd.signup_id AS signup_id
     FROM public.latest_post pd
     LEFT JOIN rogue.turbovote tv ON tv.post_id::bigint = pd.id::bigint)
@@ -117,7 +119,8 @@ CREATE MATERIALIZED VIEW public.campaign_activity AS
 	        a.created_at AS signup_created_at,
 	        b.created_at AS post_created_at,
 	        c.reported_back AS reported_back,
-	        b.url AS url
+	        b.url AS url,
+	        b.caption
 	    FROM 
 	        public.signups a
 	    LEFT JOIN 
