@@ -5,13 +5,14 @@ with open('requirements.txt') as f:
 
 setup(
     name="quasar",
-    version="1.3.0",
+    version="1.4.0",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
         'console_scripts': [
             'bertly_refresh = quasar.refresh_bertly:main',
             'bertly_create = quasar.recreate_bertly:main',
+            'campaign_info = quasar.campaign_info:main',
             'campaign_info_recreate = quasar.ashes_to_campaign_info:create',
             'campaign_info_refresh = quasar.ashes_to_campaign_info:main',
             'campaign_activity_create = quasar.recreate_campaign_activity:main',
