@@ -6,7 +6,7 @@ from requests_oauthlib import OAuth2Session
 from .scraper import Scraper
 
 
-class DSAuthScraper(Scraper):
+class DSOAuthScraper(Scraper):
 
     def __init__(self, url):
         Scraper.__init__(self, url)
@@ -14,11 +14,11 @@ class DSAuthScraper(Scraper):
 
     def fetch_auth_headers(self):
         oauth = OAuth2Session(client=BackendApplicationClient(
-            client_id=os.environ.get('NS_CLIENT_ID')))
+            client_id=os.getenv('NS_CLIENT_ID')))
         scopes = ['admin', 'user']
-        new_token = oauth.fetch_token(os.environ.get('NS_URI') + '/v2/auth/token',
-                                      client_id=os.environ.get('NS_CLIENT_ID'),
-                                      client_secret=os.environ.get('NS_CLIENT_SECRET'),
+        new_token = oauth.fetch_token(os.getenv('NS_URI') + '/v2/auth/token',
+                                      client_id=os.getenv('NS_CLIENT_ID'),
+                                      client_secret=os.getenv('NS_CLIENT_SECRET'),
                                       scope=scopes)
         return {'Authorization': 'Bearer ' + str(new_token['access_token'])}
 
