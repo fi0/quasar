@@ -1,6 +1,8 @@
 import json
 import logging
 import os
+import sys
+
 from .database import Database
 from .ds_oauth_scraper import DSOAuthScraper
 
@@ -19,10 +21,17 @@ def update_campaign_info():
     try:
         for id in ids:
             path = os.getenv('PHOENIX_CAMPAIGN_API_PATH') + id[0]
-            info = scraper.get(path).json()
-            logging.info('Scraped ID %s.', (id[0]))
+            result = scraper.get(path)
+            if result.status_code == 200:
+                info = result.json()
+                logging.info('Scraped campaign {}.'.format((id[0])))
+            else:
+                logging.error(''.join(('{} status code returned for campaign '
+                                      '{}.'.format(result.status_code, id[0]))))
     except:
-        logging.info('Ruh ruh, something went wrong!')
+        logging.info('Something went wrong!')
+        logging.info('Exiting on campaign {}.'.format((id[0])))
+        sys.exit(1)
 
 
 def main():
