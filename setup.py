@@ -11,6 +11,7 @@ setup(
     entry_points={
         'console_scripts': [
             'bertly_refresh = quasar.refresh_bertly:main',
+            'bertly_create = quasar.recreate_bertly:main',
             'campaign_info_recreate = quasar.ashes_to_campaign_info:create',
             'campaign_info_refresh = quasar.ashes_to_campaign_info:main',
             'campaign_activity_create = quasar.recreate_campaign_activity:main',
