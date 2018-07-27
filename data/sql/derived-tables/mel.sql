@@ -173,14 +173,14 @@ FROM (
     AND pe.northstar_id IS NOT NULL
     AND pe.northstar_id <> ''
     UNION ALL 
-    SELECT DISTINCT -- SMS LINK CLICKS FROM BERTLY -- is bertly still only used for sms links? 
+    SELECT DISTINCT -- SMS LINK CLICKS FROM BERTLY 
         b.northstar_id AS northstar_id,
         b.click_time AS "timestamp",
-        'sms_link_click' AS "action",
+        'bertly_link_click' AS "action",
         '10' AS action_id,
         'bertly' AS "source",
         b.click_id AS action_serial_id,
-        'sms' AS "channel"
+        b."source" AS "channel"
     FROM public.bertly_clicks b 
     WHERE b.northstar_id IS NOT NULL
       ) AS a 
