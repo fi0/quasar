@@ -10,6 +10,7 @@ logging.getLogger().setLevel(logging.INFO)
 scraper = DSOAuthScraper(os.getenv('PHOENIX_URI'))
 db = Database()
 
+
 def refresh_campaign_ids():
     # Refresh list of campaign id's to scrape from Rogue signups.
     db.query("REFRESH MATERIALIZED VIEW phoenix.campaign_ids")
@@ -20,7 +21,7 @@ def update_campaign_info():
     refresh_campaign_ids()
     ids = db.query('SELECT * FROM phoenix.campaign_ids')
     # Remove all stale entries to ensure latest good data.
-    db.query("TRUNCATE phoenix.campaigns_json")    
+    db.query("TRUNCATE phoenix.campaigns_json")
     # Query each campaign id currently active from Phoenix campaign api.
     try:
         for id in ids:
@@ -37,7 +38,8 @@ def update_campaign_info():
 
             else:
                 logging.error(''.join(('{} status code returned for campaign '
-                                      '{}.'.format(result.status_code, id[0]))))
+                                      '{}.'.format(result.status_code,
+                                                   id[0]))))
     except:
         logging.info('Something went wrong!')
         logging.info('Exiting on campaign {}.'.format((id[0])))

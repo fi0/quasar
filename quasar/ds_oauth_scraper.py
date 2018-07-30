@@ -1,5 +1,3 @@
-import json
-import oauthlib
 from oauthlib.oauth2 import BackendApplicationClient
 import os
 from requests_oauthlib import OAuth2Session
