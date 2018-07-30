@@ -1,6 +1,5 @@
 import requests
 from requests.packages.urllib3.util.retry import Retry
-from bs4 import BeautifulSoup as bs
 
 
 class Scraper:
@@ -31,7 +30,3 @@ class Scraper:
 
     def getJson(self, path, **args):
         return self.get(path, **args).json()
-
-    def getXml(self, path, **args):
-        response = self.get(path, **args)
-        return bs(response.text, 'xml')
