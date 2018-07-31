@@ -5,7 +5,7 @@ with open('requirements.txt') as f:
 
 setup(
     name="quasar",
-    version="1.4.0",
+    version="1.5.0",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
