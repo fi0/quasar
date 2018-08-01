@@ -322,8 +322,8 @@ class RogueQueue(QuasarQueue):
             print("Turbovote details for post {} ETL'd.".format(post_id))
         else:
             self.db.query_str(''.join(("INSERT INTO rogue.post_details "
-                                       "(data) VALUES (%s)")),
-                              (post_details,))
+                                       "(data, post_id) VALUES (%s,%s)")),
+                              (post_details, post_id))
             print("Details for post {} ETL'd.".format(post_id))
 
     def process_message(self, message_data):
