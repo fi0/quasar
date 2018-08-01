@@ -12,7 +12,7 @@ CREATE MATERIALIZED VIEW public.bertly_clicks AS (
 		)[1] AS northstar_id,
 		COALESCE(
 			(regexp_split_to_array(c.target_url, 'broadcastid=', 'i'))[2], 
-			(regexp_split_to_array(c.target_url, 'broadcastid_'))[2],
+			(regexp_split_to_array(c.target_url, 'broadcastid_', 'i'))[2],
 			(regexp_split_to_array(c.target_url, 'broadcast_'))[2]
 				) AS broadcast_id,
 		(CASE WHEN target_url ilike '%%source=web%%' THEN 'web' 
