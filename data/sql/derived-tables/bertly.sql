@@ -18,7 +18,12 @@ CREATE MATERIALIZED VIEW public.bertly_clicks AS (
 		(CASE WHEN target_url ilike '%%source=web%%' THEN 'web' 
 			WHEN target_url ilike '%%source=email%%' THEN 'email'  
 			ELSE 'sms' 
-			END) AS SOURCE 
+			END) AS SOURCE,
+		CASE 
+			WHEN c.user_agent IS NULL THEN 'uncertain'
+			WHEN c.user_agent ILIKE '%facebot%' 
+				OR c.user_agent ILIKE '%twitterbot%' THEN 'preview'
+			ELSE 'click' END AS interaction_type
 	FROM bertly.clicks c
 );
 GRANT SELECT ON public.campaign_activity TO looker;
