@@ -1,12 +1,15 @@
 import json
-import pydash
+import logging
 import os
+import pydash
 import sys
 
 from .database import Database
 from .queue import QuasarQueue
 from .utils import unixtime_to_isotime as u2i
 from .utils import strip_str
+
+logging.getLogger().setLevel(logging.INFO)
 
 
 class RouteQueue(QuasarQueue):
@@ -264,6 +267,7 @@ class RogueQueue(QuasarQueue):
             details = json.loads(post_details)
         else:
             details = post_details
+        # Check for status key that indicates Turbovote.
         if pydash.get(details, 'voter-registration-status'):
             if pydash.get(details, 'source_details'):
                 self.db.query_str(''.join(("INSERT INTO rogue.turbovote "
@@ -320,6 +324,21 @@ class RogueQueue(QuasarQueue):
                                    details['email subscribed'],
                                    details['sms subscribed']))
             print("Turbovote details for post {} ETL'd.".format(post_id))
+        # Check for status key that indicates Rock the Vote.
+        elif pydash.get(details, 'Finish with State'):
+            self.db.query_str(''.join(("INSERT INTO rogue.rock_the_vote "
+                                       "(post_id, "
+                                       "tracking_source, "
+                                       "started_registration, "
+                                       "finish_with_state, "
+                                       "status) "
+                                       "VALUES (%s,%s,%s,%s,%s)")),
+                              (post_id,
+                               details['Tracking Source'],
+                               details['Started registration'],
+                               details['Finish with State'],
+                               details['Status']))
+            logging.info('Rock the Vote for post {} ETL\'d.'.format(post_id))
         else:
             self.db.query_str(''.join(("INSERT INTO rogue.post_details "
                                        "(data, post_id) VALUES (%s,%s)")),
