@@ -172,7 +172,7 @@ FROM (
         pe.event_name IN ('share action completed', 'facebook share posted')
     AND pe.northstar_id IS NOT NULL
     AND pe.northstar_id <> ''
-    AND to_timestamp(pe.ts /1000) <= '2018-08-07 14:00:00'
+    AND to_timestamp(pe.ts /1000) <= '2018-08-07 18:00:00'
     UNION ALL 
     SELECT DISTINCT -- SMS LINK CLICKS FROM BERTLY 
         b.northstar_id AS northstar_id,
