@@ -331,13 +331,16 @@ class RogueQueue(QuasarQueue):
                                        "tracking_source, "
                                        "started_registration, "
                                        "finish_with_state, "
-                                       "status) "
-                                       "VALUES (%s,%s,%s,%s,%s)")),
+                                       "status, email, "
+                                       "zip) "
+                                       "VALUES (%s,%s,%s,%s,%s,%s,%s)")),
                               (post_id,
                                details['Tracking Source'],
                                details['Started registration'],
                                details['Finish with State'],
-                               details['Status']))
+                               details['Status'],
+                               details['Email address'],
+                               details['Home zip code']))
             logging.info('Rock the Vote for post {} ETL\'d.'.format(post_id))
         else:
             self.db.query_str(''.join(("INSERT INTO rogue.post_details "
