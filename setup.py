@@ -5,7 +5,7 @@ with open('requirements.txt') as f:
 
 setup(
     name="quasar",
-    version="1.7.0",
+    version="1.8.0",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
@@ -19,6 +19,10 @@ setup(
             'campaign_activity_refresh = quasar.refresh_campaign_activity:main',
             'cio_import = quasar.cio_consumer:main',
             'etl_monitoring = quasar.etl_monitoring:run_monitoring',
+            'gtm_retention_create = quasar.recreate_gtm_retention:main',
+            'gtm_retention_refresh = quasar.refresh_gtm_retention:main',
+            'mam_retention_create = quasar.recreate_mam_retention:main',
+            'mam_retention_refresh = quasar.refresh_mam_retention:main',
             'mel_create = quasar.recreate_mel:main',
             'mel_refresh = quasar.mel:main',
             'message_route = quasar.route_queue_process:main',
