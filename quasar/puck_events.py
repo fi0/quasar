@@ -4,6 +4,9 @@ import pydash
 import time
 
 
+logging.getLogger().setLevel(logging.INFO)
+
+
 def main():
     start_time = time.time()
     """Keep track of start time of script."""
@@ -12,13 +15,13 @@ def main():
 
     print("Refreshing Puck JSON mat view.")
     db.query('REFRESH MATERIALIZED VIEW puck.events_json')
-    print("Refreshing public.path_campaign_lookup.")
+    logging.info('Refreshing public.path_campaign_lookup.')
     db.query('REFRESH MATERIALIZED VIEW public.path_campaign_lookup')
-    print("Refreshing public.phoenix_events.")
+    logging.info('Refreshing public.phoenix_events.')
     db.query('REFRESH MATERIALIZED VIEW public.phoenix_events')
-    print("Refreshing public.phoenix_sessions.")
+    logging.info('Refreshing public.phoenix_sessions.')
     db.query('REFRESH MATERIALIZED VIEW public.phoenix_sessions')
-    print("Refreshin public.device_northstar_crosswalk.")
+    logging.info('Refreshing public.device_northstar_crosswalk.')
     db.query('REFRESH MATERIALIZED VIEW public.device_northstar_crosswalk')
     db.disconnect()
 
