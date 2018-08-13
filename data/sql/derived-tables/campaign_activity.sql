@@ -120,6 +120,10 @@ CREATE MATERIALIZED VIEW public.campaign_activity AS
                 WHEN a."source" ilike '%%sms%%' THEN 'sms'
                 ELSE 'web' END AS signup_source_bucket,
 	        b."source" AS post_source,
+            CASE 
+                WHEN b."source" IS NULL THEN NULL
+                WHEN b."source" ilike '%%sms%%' THEN 'sms'
+                ELSE 'web' END AS post_source_bucket,
 	        a.created_at AS signup_created_at,
 	        b.created_at AS post_created_at,
 	        c.reported_back AS reported_back,
