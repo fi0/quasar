@@ -28,7 +28,3 @@ def recreate_gambit_full():
 def refresh_gambit_full():
     refresh_gambit_conversations()
     refresh_gambit_messages()
-
-
-if __name__ == '__main__':
-    main()
