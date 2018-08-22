@@ -7,7 +7,8 @@ def recreate_gambit_conversations():
 
 
 def refresh_gambit_conversations():
-    refresh_materialized_view("gambit_conversations.conversations_raw")
+    refresh_materialized_view("gambit_conversations.conversations_json")
+    refresh_materialized_view("gambit_conversations.conversations")
 
 
 def recreate_gambit_messages():
@@ -15,7 +16,8 @@ def recreate_gambit_messages():
 
 
 def refresh_gambit_messages():
-    refresh_materialized_view("gambit_conversations.messages_raw")
+    refresh_materialized_view("gambit_conversations.messages_json")
+    refresh_materialized_view("gambit_conversations.messages")
 
 
 def recreate_gambit_full():

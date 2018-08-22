@@ -1,5 +1,5 @@
-DROP MATERIALIZED VIEW IF EXISTS gambit_conversations.messages_raw CASCADE;
-CREATE MATERIALIZED VIEW gambit_conversations.messages_raw AS
+DROP MATERIALIZED VIEW IF EXISTS gambit_conversations.messages CASCADE;
+CREATE MATERIALIZED VIEW gambit_conversations.messages AS
 (SELECT
     (records->>'agentId')::VARCHAR as agent_id,
     ((records->'attachments')::JSONB->0->>'url')::VARCHAR as attachment_url,
@@ -15,8 +15,8 @@ CREATE MATERIALIZED VIEW gambit_conversations.messages_raw AS
     records->>'text' as text, (records->>'topic')::VARCHAR as topic, (records->>'userId')::VARCHAR as user_id
 FROM gambit_conversations.messages_json);
 
-CREATE INDEX platformuidi on gambit_conversations.messages_raw(platform_user_id);
-CREATE INDEX useridi on gambit_conversations.messages_raw(user_id);
+CREATE INDEX platformuidi on gambit_conversations.messages(platform_user_id);
+CREATE INDEX useridi on gambit_conversations.messages(user_id);
 
-GRANT SELECT on gambit_conversations.messages_raw TO looker;
-GRANT SELECT on gambit_conversations.messages_raw to dsanalyst;
+GRANT SELECT on gambit_conversations.messages TO looker;
+GRANT SELECT on gambit_conversations.messages to dsanalyst;

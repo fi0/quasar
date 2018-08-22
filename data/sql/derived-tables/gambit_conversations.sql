@@ -1,5 +1,5 @@
-DROP MATERIALIZED VIEW IF EXISTS gambit_conversations.conversations_raw;
-CREATE MATERIALIZED VIEW gambit_conversations.conversations_raw AS
+DROP MATERIALIZED VIEW IF EXISTS gambit_conversations.conversations;
+CREATE MATERIALIZED VIEW gambit_conversations.conversations AS
 (SELECT
    (records->>'campaignId')::varchar as campaign_id, to_timestamp((((records->'createdAt'->>'$date')::BIGINT) / 1000)::double precision) as created_at,
    (records->'_id'->>'$oid')::varchar as conversation_id, (records->>'importSource')::varchar as import_source,
@@ -8,10 +8,10 @@ CREATE MATERIALIZED VIEW gambit_conversations.conversations_raw AS
    (records->>'topic')::varchar as topic, to_timestamp((((records->'updatedAt'->>'$date')::BIGINT) / 1000)::double precision) as updated_at,
    (records->>'userId')::varchar as user_id from gambit_conversations.conversations_json);
 
-CREATE INDEX conversationidi on gambit_conversations.conversations_raw(conversation_id);
-CREATE INDEX platformuidi on gambit_conversations.conversations_raw(platform_user_id);
-CREATE INDEX useridi on gambit_conversations.conversations_raw(user_id);
-CREATE INDEX topic on gambit_conversations.conversations_raw(topic);
+CREATE INDEX conversationidi on gambit_conversations.conversations(conversation_id);
+CREATE INDEX platformuidi on gambit_conversations.conversations(platform_user_id);
+CREATE INDEX useridi on gambit_conversations.conversations(user_id);
+CREATE INDEX topic on gambit_conversations.conversations(topic);
 
-GRANT SELECT on gambit_conversations.conversations_raw TO looker;
-GRANT SELECT on gambit_conversations.conversations_raw to dsanalyst;
+GRANT SELECT on gambit_conversations.conversations TO looker;
+GRANT SELECT on gambit_conversations.conversations to dsanalyst;
