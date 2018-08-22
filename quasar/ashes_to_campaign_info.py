@@ -1,5 +1,5 @@
 from .database import Database
-from .run_sql_file import run_sql_file
+from .sql_utils import run_sql_file
 import time
 
 
