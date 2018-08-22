@@ -191,7 +191,7 @@ class RogueQueue(QuasarQueue):
         try:
             if (signup_data['created_at'].startswith('-') or 
                     signup_data['updated_at'].startswith('-')):
-                log("Signup {} has a date error, skipping.".format('signup_data['signup_id']'))
+                log("Signup {} has a date error, skipping.".format(signup_data['signup_id']))
             else:
                 self.db.query_str(''.join(("INSERT INTO rogue.signups "
                                            "(id, northstar_id, campaign_id, "
