@@ -15,7 +15,7 @@ CREATE MATERIALIZED VIEW gambit_conversations.messages AS
     records->>'text' as text, (records->>'topic')::VARCHAR as topic, (records->>'userId')::VARCHAR as user_id
 FROM gambit_conversations.messages_json);
 
-CREATE INDEX platformuidi on gambit_conversations.messages(platform_user_id);
+CREATE INDEX platformmsgi on gambit_conversations.messages(platform_message_id);
 CREATE INDEX useridi on gambit_conversations.messages(user_id);
 
 GRANT SELECT on gambit_conversations.messages TO looker;
