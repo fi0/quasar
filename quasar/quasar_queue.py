@@ -7,9 +7,8 @@ import sys
 from .database import Database
 from .queue import QuasarQueue
 from .utils import unixtime_to_isotime as u2i
-from .utils import strip_str
-from .utils import log
-from .utils import logerr
+from .utils import strip_str, log, logerr
+
 
 logging.getLogger().setLevel(logging.INFO)
 
@@ -191,7 +190,7 @@ class RogueQueue(QuasarQueue):
         try:
             if (signup_data['created_at'].startswith('-') or 
                     signup_data['updated_at'].startswith('-')):
-                log("Signup {} has a date error, skipping.".format(signup_data['signup_id']))
+                logerr("Signup {} has a date error, skipping.".format(signup_data['signup_id']))
             else:
                 self.db.query_str(''.join(("INSERT INTO rogue.signups "
                                            "(id, northstar_id, campaign_id, "
@@ -214,7 +213,8 @@ class RogueQueue(QuasarQueue):
                                    signup_data['details'],
                                    signup_data['created_at'],
                                    signup_data['updated_at']))
-                log("Signup {} ETL'd.".format(signup_data['signup_id']))
+                log(''.join(("Signup {} ETL'd."
+                             "")).format(signup_data['signup_id']))
         except:
             logerr("Signup {} has an error, skipping.".format(signup_data['signup_id']))
             sys.exit(1)
@@ -234,7 +234,8 @@ class RogueQueue(QuasarQueue):
         try:
             if (post_data['created_at'].startswith('-') or 
                     post_data['updated_at'].startswith('-')):
-                log("Post {} has a date error, skipping.".format(post_data['id']))
+                logerr(''.join(("Post {} has a date error, "
+                                "skipping.")).format(post_data['id']))
             else:
                 self.db.query_str(''.join(("INSERT INTO rogue.posts "
                                            "(id, signup_id, campaign_id, "
@@ -265,7 +266,8 @@ class RogueQueue(QuasarQueue):
                                    post_data['updated_at']))
                 log("Post {} ETL'd.".format(post_data['id']))
         except:
-            logerr("Post {} has an error, skipping.".format(post_data['id']))
+            logerr(''.join(("Post {} has an error, "
+                            "skipping.")).format(post_data['id']))
             pass
 
     def _delete_post(self, post_id, deleted_at):
