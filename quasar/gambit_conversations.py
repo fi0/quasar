@@ -1,5 +1,4 @@
-from .run_sql_file import run_sql_file
-from .utils import refresh_materialized_view
+from .sql_utils import run_sql_file, refresh_materialized_view
 
 
 def recreate_gambit_conversations():

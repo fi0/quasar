@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import sys
 
+from .database import Database
 from sqlalchemy import create_engine
 
 
@@ -55,3 +56,16 @@ class DataFrameDB:
 def run_sql_file(file):
     df = DataFrameDB()
     df.run_query(file)
+
+
+def refresh_materialized_view(view):
+    db = Database()
+    start_time = time.time()
+    """Keep track of start time of script."""
+
+    db.query("REFRESH MATERIALIZED VIEW " + view)
+    db.disconnect()
+
+    end_time = time.time()  # Record when script stopped running.
+    duration = end_time - start_time  # Total duration in seconds.
+    print('duration: ', duration)
