@@ -1,3 +1,7 @@
 linters:
     pep8:
         ignore: 'E501'
+
+files:
+  ignore:
+      - 'setup.py'
