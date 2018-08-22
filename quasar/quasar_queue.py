@@ -189,31 +189,35 @@ class RogueQueue(QuasarQueue):
 
     def _add_signup(self, signup_data):
         try:
-            self.db.query_str(''.join(("INSERT INTO rogue.signups "
-                                       "(id, northstar_id, campaign_id, "
-                                       "campaign_run_id, quantity, "
-                                       "why_participated, source, "
-                                       "source_details, details, "
-                                       "created_at, updated_at) "
-                                       "VALUES (%s,%s,%s,%s,%s,%s,"
-                                       "%s,%s,%s,%s,%s) ON CONFLICT "
-                                       "(id, updated_at) "
-                                       "DO NOTHING")),
-                              (signup_data['signup_id'],
-                               signup_data['northstar_id'],
-                               signup_data['campaign_id'],
-                               signup_data['campaign_run_id'],
-                               signup_data['quantity'],
-                               signup_data['why_participated'],
-                               signup_data['signup_source'],
-                               signup_data['source_details'],
-                               signup_data['details'],
-                               signup_data['created_at'],
-                               signup_data['updated_at']))
-            log("Signup {} ETL'd.".format(signup_data['signup_id']))
+            if (signup_data['created_at'].startswith('-')) or 
+                    (signup_data['updated_at'].startswith('-')):
+                log("Signup {} has a date error, skipping.".format('signup_data['signup_id']'))
+            else:
+                self.db.query_str(''.join(("INSERT INTO rogue.signups "
+                                           "(id, northstar_id, campaign_id, "
+                                           "campaign_run_id, quantity, "
+                                           "why_participated, source, "
+                                           "source_details, details, "
+                                           "created_at, updated_at) "
+                                           "VALUES (%s,%s,%s,%s,%s,%s,"
+                                           "%s,%s,%s,%s,%s) ON CONFLICT "
+                                           "(id, updated_at) "
+                                           "DO NOTHING")),
+                                  (signup_data['signup_id'],
+                                   signup_data['northstar_id'],
+                                   signup_data['campaign_id'],
+                                   signup_data['campaign_run_id'],
+                                   signup_data['quantity'],
+                                   signup_data['why_participated'],
+                                   signup_data['signup_source'],
+                                   signup_data['source_details'],
+                                   signup_data['details'],
+                                   signup_data['created_at'],
+                                   signup_data['updated_at']))
+                log("Signup {} ETL'd.".format(signup_data['signup_id']))
         except:
             logerr("Signup {} has an error, skipping.".format(signup_data['signup_id']))
-            pass
+            sys.exit(1)
 
     def _delete_signup(self, signup_id, deleted_at):
         self.db.query_str(''.join(("INSERT INTO rogue.signups "
@@ -228,34 +232,38 @@ class RogueQueue(QuasarQueue):
 
     def _add_post(self, post_data):
         try:
-            self.db.query_str(''.join(("INSERT INTO rogue.posts "
-                                       "(id, signup_id, campaign_id, "
-                                       "northstar_id, "
-                                       "type, action, quantity, url, caption, "
-                                       "status, source, "
-                                       "source_details, signup_source, "
-                                       "remote_addr, created_at, "
-                                       "updated_at) VALUES "
-                                       "(%s,%s,%s,%s,%s,%s,%s,%s,"
-                                       "%s,%s,%s,%s,%s,%s,%s,%s) ON CONFLICT "
-                                       "DO NOTHING")),
-                              (post_data['id'],
-                               post_data['signup_id'],
-                               post_data['campaign_id'],
-                               post_data['northstar_id'],
-                               post_data['type'],
-                               post_data['action'],
-                               post_data['quantity'],
-                               post_data['media']['url'],
-                               post_data['media']['caption'],
-                               post_data['status'],
-                               post_data['source'],
-                               post_data['source_details'],
-                               post_data['signup_source'],
-                               post_data['remote_addr'],
-                               post_data['created_at'],
-                               post_data['updated_at']))
-            log("Post {} ETL'd.".format(post_data['id']))
+            if (post_data['created_at'].startswith('-')) or 
+                    (post_data['updated_at'].startswith('-')):
+                log("Post {} has a date error, skipping.".format(post_data['id']))
+            else:
+                self.db.query_str(''.join(("INSERT INTO rogue.posts "
+                                           "(id, signup_id, campaign_id, "
+                                           "northstar_id, "
+                                           "type, action, quantity, url, caption, "
+                                           "status, source, "
+                                           "source_details, signup_source, "
+                                           "remote_addr, created_at, "
+                                           "updated_at) VALUES "
+                                           "(%s,%s,%s,%s,%s,%s,%s,%s,"
+                                           "%s,%s,%s,%s,%s,%s,%s,%s) ON CONFLICT "
+                                           "DO NOTHING")),
+                                  (post_data['id'],
+                                   post_data['signup_id'],
+                                   post_data['campaign_id'],
+                                   post_data['northstar_id'],
+                                   post_data['type'],
+                                   post_data['action'],
+                                   post_data['quantity'],
+                                   post_data['media']['url'],
+                                   post_data['media']['caption'],
+                                   post_data['status'],
+                                   post_data['source'],
+                                   post_data['source_details'],
+                                   post_data['signup_source'],
+                                   post_data['remote_addr'],
+                                   post_data['created_at'],
+                                   post_data['updated_at']))
+                log("Post {} ETL'd.".format(post_data['id']))
         except:
             logerr("Post {} has an error, skipping.".format(post_data['id']))
             pass
