@@ -11,7 +11,7 @@ def refresh_gambit_conversations():
 
 
 def recreate_gambit_messages():
-    run_sql_file('./data/sql/derived-tables/gambit_mesages.sql')
+    run_sql_file('./data/sql/derived-tables/gambit_messages.sql')
 
 
 def refresh_gambit_messages():
