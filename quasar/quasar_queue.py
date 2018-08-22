@@ -189,8 +189,8 @@ class RogueQueue(QuasarQueue):
 
     def _add_signup(self, signup_data):
         try:
-            if (signup_data['created_at'].startswith('-')) or 
-                    (signup_data['updated_at'].startswith('-')):
+            if (signup_data['created_at'].startswith('-') or 
+                    signup_data['updated_at'].startswith('-')):
                 log("Signup {} has a date error, skipping.".format('signup_data['signup_id']'))
             else:
                 self.db.query_str(''.join(("INSERT INTO rogue.signups "
@@ -232,8 +232,8 @@ class RogueQueue(QuasarQueue):
 
     def _add_post(self, post_data):
         try:
-            if (post_data['created_at'].startswith('-')) or 
-                    (post_data['updated_at'].startswith('-')):
+            if (post_data['created_at'].startswith('-') or 
+                    post_data['updated_at'].startswith('-')):
                 log("Post {} has a date error, skipping.".format(post_data['id']))
             else:
                 self.db.query_str(''.join(("INSERT INTO rogue.posts "
