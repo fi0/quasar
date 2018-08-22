@@ -34,17 +34,19 @@ def now_minus_hours(hours):
 def unixtime_to_isotime(unixtime):
     return dt.fromtimestamp(unixtime).isoformat()
 
+
 def refresh_materialized_view(view):
     db = Database()
     start_time = time.time()
     """Keep track of start time of script."""
 
-    db.query("REFRESH MATERIALIZED VIEW " + file)
+    db.query("REFRESH MATERIALIZED VIEW " + view)
     db.disconnect()
 
     end_time = time.time()  # Record when script stopped running.
     duration = end_time - start_time  # Total duration in seconds.
     print('duration: ', duration)
+
 
 class Duration:
     """Simple duration tracker.
