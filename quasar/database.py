@@ -29,7 +29,9 @@ class Database:
 
     def __init__(self, options={}):
         opts.update(options)
+        self.connect()
 
+    def connect(self):
         self.connection = _connect(opts)
         if self.connection is None:
             print("Error, couldn't connect to database with options:", opts)
@@ -40,6 +42,11 @@ class Database:
         self.cursor.close()
         self.connection.close()
         return self.connection
+
+    def roll_reconnect(self):
+        self.connection.rollback()
+        self.disconnect()
+        self.connect()
 
     def query(self, query):
         """Parse and run DB query.
