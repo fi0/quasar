@@ -7,7 +7,8 @@ import sys
 from .database import Database
 from .queue import QuasarQueue
 from .utils import unixtime_to_isotime as u2i
-from .utils import strip_str
+from .utils import strip_str, log, logerr
+
 
 logging.getLogger().setLevel(logging.INFO)
 
@@ -26,12 +27,13 @@ class RouteQueue(QuasarQueue):
 
     def process_message(self, message_data):
         if pydash.get(message_data, 'data.meta.message_source') == 'rogue':
-            print("Routing message to Rogue queue.")
+            message_id = pydash.get(message_data, 'data.data.id')
+            log("Routing message {} to Rogue queue.".format(message_id))
             self.rogue_queue.pub_message(message_data)
         else:
-            print(''.join(("Publishing C.IO event id:"
-                           "{} to c.io Postgres queue."
-                           "")).format(message_data['data']['event_id']))
+            log(''.join(("Publishing C.IO event id:"
+                        "{} to c.io Postgres queue."
+                        "")).format(message_data['data']['event_id']))
             self.cio_queue.pub_message(message_data)
 
 
@@ -50,8 +52,8 @@ class CioQueue(QuasarQueue):
         self.db.query_str(''.join(("INSERT INTO cio.event_log "
                                    "(event) VALUES (%s)")),
                           (json.dumps(data),))
-        print(''.join(("Logged data from "
-                       "C.IO event id {}.")).format(data['event_id']))
+        log(''.join(("Logged data from "
+                     "C.IO event id {}.")).format(data['event_id']))
 
     # Save customer sub data and dates.
     def _add_sub_event(self, data):
@@ -68,8 +70,8 @@ class CioQueue(QuasarQueue):
                            data['data']['email_address'],
                            data['event_id'], data['timestamp'],
                            data['event_type']))
-        print(''.join(("Added customer event from "
-                       "C.IO event id {}.")).format(data['event_id']))
+        log(''.join(("Added customer event from "
+                     "C.IO event id {}.")).format(data['event_id']))
 
     # Save customer unsub data and dates.
     def _add_unsub_event(self, data):
@@ -104,8 +106,8 @@ class CioQueue(QuasarQueue):
                                data['data']['email_address'],
                                data['event_id'], data['timestamp'],
                                data['event_type']))
-        print(''.join(("Added customer event from "
-                       "C.IO event id {}.")).format(data['event_id']))
+        log(''.join(("Added customer event from "
+                     "C.IO event id {}.")).format(data['event_id']))
 
     # Save email event data and dates, e.g. email_click.
     def _add_email_event(self, data):
@@ -123,8 +125,8 @@ class CioQueue(QuasarQueue):
                            data['data']['template_id'],
                            data['event_id'], data['timestamp'],
                            data['event_type']))
-        print(''.join(("Added email event from "
-                       "C.IO event id {}.")).format(data['event_id']))
+        log(''.join(("Added email event from "
+                     "C.IO event id {}.")).format(data['event_id']))
 
     # Save email event data and dates, e.g. email_click.
     def _add_email_click_event(self, data):
@@ -147,8 +149,8 @@ class CioQueue(QuasarQueue):
                            data['data']['link_id'],
                            data['event_id'], data['timestamp'],
                            data['event_type']))
-        print(''.join(("Added email event from "
-                       "C.IO event id {}.")).format(data['event_id']))
+        log(''.join(("Added email event from "
+                     "C.IO event id {}.")).format(data['event_id']))
 
     def process_message(self, message_data):
         data = message_data['data']
@@ -170,7 +172,7 @@ class CioQueue(QuasarQueue):
         elif event_type in email_event:
             self._add_email_event(data)
         else:
-            print("Something went wrong with C.IO consumer!")
+            logerr("Something went wrong with C.IO consumer!")
             sys.exit(1)
 
 
@@ -185,28 +187,37 @@ class RogueQueue(QuasarQueue):
         self.db = Database()
 
     def _add_signup(self, signup_data):
-        self.db.query_str(''.join(("INSERT INTO rogue.signups "
-                                   "(id, northstar_id, campaign_id, "
-                                   "campaign_run_id, quantity, "
-                                   "why_participated, source, "
-                                   "source_details, details, "
-                                   "created_at, updated_at) "
-                                   "VALUES (%s,%s,%s,%s,%s,%s,"
-                                   "%s,%s,%s,%s,%s) ON CONFLICT "
-                                   "(id, updated_at) "
-                                   "DO NOTHING")),
-                          (signup_data['signup_id'],
-                           signup_data['northstar_id'],
-                           signup_data['campaign_id'],
-                           signup_data['campaign_run_id'],
-                           signup_data['quantity'],
-                           signup_data['why_participated'],
-                           signup_data['signup_source'],
-                           signup_data['source_details'],
-                           signup_data['details'],
-                           signup_data['created_at'],
-                           signup_data['updated_at']))
-        print("Signup {} ETL'd.".format(signup_data['signup_id']))
+        try:
+            if (signup_data['created_at'].startswith('-') or 
+                    signup_data['updated_at'].startswith('-')):
+                logerr("Signup {} has a date error, skipping.".format(signup_data['signup_id']))
+            else:
+                self.db.query_str(''.join(("INSERT INTO rogue.signups "
+                                           "(id, northstar_id, campaign_id, "
+                                           "campaign_run_id, quantity, "
+                                           "why_participated, source, "
+                                           "source_details, details, "
+                                           "created_at, updated_at) "
+                                           "VALUES (%s,%s,%s,%s,%s,%s,"
+                                           "%s,%s,%s,%s,%s) ON CONFLICT "
+                                           "(id, updated_at) "
+                                           "DO NOTHING")),
+                                  (signup_data['signup_id'],
+                                   signup_data['northstar_id'],
+                                   signup_data['campaign_id'],
+                                   signup_data['campaign_run_id'],
+                                   signup_data['quantity'],
+                                   signup_data['why_participated'],
+                                   signup_data['signup_source'],
+                                   signup_data['source_details'],
+                                   signup_data['details'],
+                                   signup_data['created_at'],
+                                   signup_data['updated_at']))
+                log(''.join(("Signup {} ETL'd."
+                             "")).format(signup_data['signup_id']))
+        except:
+            logerr("Signup {} has an error, skipping.".format(signup_data['signup_id']))
+            sys.exit(1)
 
     def _delete_signup(self, signup_id, deleted_at):
         self.db.query_str(''.join(("INSERT INTO rogue.signups "
@@ -217,37 +228,47 @@ class RogueQueue(QuasarQueue):
                                    "SET deleted_at = %s")),
                           (signup_id, deleted_at, deleted_at,
                            deleted_at))
-        print("Signup {} deleted and archived.".format(signup_id))
+        log("Signup {} deleted and archived.".format(signup_id))
 
     def _add_post(self, post_data):
-        self.db.query_str(''.join(("INSERT INTO rogue.posts "
-                                   "(id, signup_id, campaign_id, "
-                                   "northstar_id, "
-                                   "type, action, quantity, url, caption, "
-                                   "status, source, "
-                                   "source_details, signup_source, "
-                                   "remote_addr, created_at, "
-                                   "updated_at) VALUES "
-                                   "(%s,%s,%s,%s,%s,%s,%s,%s,"
-                                   "%s,%s,%s,%s,%s,%s,%s,%s) ON CONFLICT "
-                                   "DO NOTHING")),
-                          (post_data['id'],
-                           post_data['signup_id'],
-                           post_data['campaign_id'],
-                           post_data['northstar_id'],
-                           post_data['type'],
-                           post_data['action'],
-                           post_data['quantity'],
-                           post_data['media']['url'],
-                           post_data['media']['caption'],
-                           post_data['status'],
-                           post_data['source'],
-                           post_data['source_details'],
-                           post_data['signup_source'],
-                           post_data['remote_addr'],
-                           post_data['created_at'],
-                           post_data['updated_at']))
-        print("Post {} ETL'd.".format(post_data['id']))
+        try:
+            if (post_data['created_at'].startswith('-') or 
+                    post_data['updated_at'].startswith('-')):
+                logerr(''.join(("Post {} has a date error, "
+                                "skipping.")).format(post_data['id']))
+            else:
+                self.db.query_str(''.join(("INSERT INTO rogue.posts "
+                                           "(id, signup_id, campaign_id, "
+                                           "northstar_id, "
+                                           "type, action, quantity, url, caption, "
+                                           "status, source, "
+                                           "source_details, signup_source, "
+                                           "remote_addr, created_at, "
+                                           "updated_at) VALUES "
+                                           "(%s,%s,%s,%s,%s,%s,%s,%s,"
+                                           "%s,%s,%s,%s,%s,%s,%s,%s) ON CONFLICT "
+                                           "DO NOTHING")),
+                                  (post_data['id'],
+                                   post_data['signup_id'],
+                                   post_data['campaign_id'],
+                                   post_data['northstar_id'],
+                                   post_data['type'],
+                                   post_data['action'],
+                                   post_data['quantity'],
+                                   post_data['media']['url'],
+                                   post_data['media']['caption'],
+                                   post_data['status'],
+                                   post_data['source'],
+                                   post_data['source_details'],
+                                   post_data['signup_source'],
+                                   post_data['remote_addr'],
+                                   post_data['created_at'],
+                                   post_data['updated_at']))
+                log("Post {} ETL'd.".format(post_data['id']))
+        except:
+            logerr(''.join(("Post {} has an error, "
+                            "skipping.")).format(post_data['id']))
+            pass
 
     def _delete_post(self, post_id, deleted_at):
         # Set post status to 'deleted'.
@@ -323,7 +344,7 @@ class RogueQueue(QuasarQueue):
                                    details['voting-method-preference'],
                                    details['email subscribed'],
                                    details['sms subscribed']))
-            print("Turbovote details for post {} ETL'd.".format(post_id))
+            log("Turbovote details for post {} ETL'd.".format(post_id))
         # Check for status key that indicates Rock the Vote.
         elif pydash.get(details, 'Finish with State'):
             self.db.query_str(''.join(("INSERT INTO rogue.rock_the_vote "
@@ -341,12 +362,12 @@ class RogueQueue(QuasarQueue):
                                details['Status'],
                                details['Email address'],
                                details['Home zip code']))
-            logging.info('Rock the Vote for post {} ETL\'d.'.format(post_id))
+            log('Rock the Vote for post {} ETL\'d.'.format(post_id))
         else:
             self.db.query_str(''.join(("INSERT INTO rogue.post_details "
                                        "(data, post_id) VALUES (%s,%s)")),
                               (post_details, post_id))
-            print("Details for post {} ETL'd.".format(post_id))
+            log("Details for post {} ETL'd.".format(post_id))
 
     def process_message(self, message_data):
         data = message_data['data']
@@ -366,5 +387,5 @@ class RogueQueue(QuasarQueue):
                 else:
                     self._add_post_details(data['id'], data['details'])
         else:
-            print("Unknown rogue message type. Exiting.")
+            logerr("Unknown rogue message type. Exiting.")
             sys.exit(1)
