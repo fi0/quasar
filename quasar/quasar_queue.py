@@ -212,14 +212,15 @@ class RogueQueue(QuasarQueue):
                                signup_data['updated_at']))
             log(''.join(("Signup {} ETL'd."
                          "")).format(signup_data['signup_id']))
-        except psycopg2.DataError:
-            self.db.roll_reconnect()
-            logerr("Bad query, rolling back change and skipping message.")
-            pass
         except:
-            logerr(''.join(("Signup {} has an error, "
-                            "exiting.")).format(signup_data['signup_id']))
-            sys.exit(1)
+            logerr("Bad query, rolling back change and skipping message.")
+            self.db.roll_reconnect()
+            logerr(''.join(("Backing up signup {} to error table."
+                            "")).format(signup_data['signup_id']))
+            self.db.query_str(''.join(("INSERT INTO rogue.error_message "
+                                       "VALUES (%s)")),
+                              (signup_data))
+            pass
 
     def _delete_signup(self, signup_id, deleted_at):
         self.db.query_str(''.join(("INSERT INTO rogue.signups "
@@ -262,15 +263,15 @@ class RogueQueue(QuasarQueue):
                                post_data['created_at'],
                                post_data['updated_at']))
             log("Post {} ETL'd.".format(post_data['id']))
-        except psycopg2.DataError:
-            self.db.roll_reconnect()
-            logerr("Bad query, rolling back change and skipping message.")
-            pass
         except:
-            logerr("The error is {}.".format(e))
-            logerr(''.join(("Post {} has an error, "
-                            "exiting.")).format(post_data['id']))
-            sys.exit(1)
+            logerr("Bad query, rolling back change and skipping message.")
+            self.db.roll_reconnect()
+            logerr(''.join(("Backing up post {} to error table."
+                            "")).format(post_data['id']))
+            self.db.query_str(''.join(("INSERT INTO rogue.error_message "
+                                       "VALUES (%s)")),
+                              (post_data))
+            pass
 
     def _delete_post(self, post_id, deleted_at):
         # Set post status to 'deleted'.
