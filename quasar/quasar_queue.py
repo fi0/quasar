@@ -211,7 +211,7 @@ class RogueQueue(QuasarQueue):
                                signup_data['updated_at']))
             log(''.join(("Signup {} ETL'd."
                          "")).format(signup_data['signup_id']))
-        except DatabaseError:
+        except db.DatabaseError:
             self.db.roll_reconnect()
             logerr("Bad query, rolling back change and skipping message.")
         except:
@@ -259,7 +259,7 @@ class RogueQueue(QuasarQueue):
                                post_data['created_at'],
                                post_data['updated_at']))
             log("Post {} ETL'd.".format(post_data['id']))
-        except DatabaseError:
+        except db.DatabaseError:
             self.db.roll_reconnect()
             logerr("Bad query, rolling back change and skipping message.")
         except:
