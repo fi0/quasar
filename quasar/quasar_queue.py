@@ -266,7 +266,7 @@ class RogueQueue(QuasarQueue):
             self.db.roll_reconnect()
             logerr("Bad query, rolling back change and skipping message.")
         except Exception as e:
-            logerr("The error is {}.".format(e)
+            logerr("The error is {}.".format(e))
             logerr(''.join(("Post {} has an error, "
                             "skipping.")).format(post_data['id']))
             pass
