@@ -212,13 +212,13 @@ class RogueQueue(QuasarQueue):
                                signup_data['updated_at']))
             log(''.join(("Signup {} ETL'd."
                          "")).format(signup_data['signup_id']))
-        except psycopg2.DatabaseError:
+        except psycopg2.DataError:
             self.db.roll_reconnect()
             logerr("Bad query, rolling back change and skipping message.")
-        except Exception as e:
-            logerr("The error is {}.".format(e))
+            pass
+        except:
             logerr(''.join(("Signup {} has an error, "
-                            "skipping.")).format(signup_data['signup_id']))
+                            "exiting.")).format(signup_data['signup_id']))
             sys.exit(1)
 
     def _delete_signup(self, signup_id, deleted_at):
@@ -262,14 +262,15 @@ class RogueQueue(QuasarQueue):
                                post_data['created_at'],
                                post_data['updated_at']))
             log("Post {} ETL'd.".format(post_data['id']))
-        except psycopg2.DatabaseError:
+        except psycopg2.DataError:
             self.db.roll_reconnect()
             logerr("Bad query, rolling back change and skipping message.")
-        except Exception as e:
+            pass
+        except:
             logerr("The error is {}.".format(e))
             logerr(''.join(("Post {} has an error, "
-                            "skipping.")).format(post_data['id']))
-            pass
+                            "exiting.")).format(post_data['id']))
+            sys.exit(1)
 
     def _delete_post(self, post_id, deleted_at):
         # Set post status to 'deleted'.
