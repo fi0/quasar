@@ -215,7 +215,8 @@ class RogueQueue(QuasarQueue):
         except psycopg2.DatabaseError:
             self.db.roll_reconnect()
             logerr("Bad query, rolling back change and skipping message.")
-        except:
+        except Exception as e:
+            logerr("The error is {}.".format(e))
             logerr(''.join(("Signup {} has an error, "
                             "skipping.")).format(signup_data['signup_id']))
             sys.exit(1)
@@ -264,7 +265,8 @@ class RogueQueue(QuasarQueue):
         except psycopg2.DatabaseError:
             self.db.roll_reconnect()
             logerr("Bad query, rolling back change and skipping message.")
-        except:
+        except Exception as e:
+            logerr("The error is {}.".format(e)
             logerr(''.join(("Post {} has an error, "
                             "skipping.")).format(post_data['id']))
             pass
