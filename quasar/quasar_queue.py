@@ -1,13 +1,14 @@
 import json
 import logging
 import os
+import psycopg2
 import pydash
 import sys
 
 from .database import Database
 from .queue import QuasarQueue
 from .utils import unixtime_to_isotime as u2i
-from .utils import strip_str, log, logerr
+from .utils import log, logerr
 
 
 logging.getLogger().setLevel(logging.INFO)
@@ -32,8 +33,8 @@ class RouteQueue(QuasarQueue):
             self.rogue_queue.pub_message(message_data)
         else:
             log(''.join(("Publishing C.IO event id:"
-                        "{} to c.io Postgres queue."
-                        "")).format(message_data['data']['event_id']))
+                         "{} to c.io Postgres queue."
+                         "")).format(message_data['data']['event_id']))
             self.cio_queue.pub_message(message_data)
 
 
@@ -211,11 +212,12 @@ class RogueQueue(QuasarQueue):
                                signup_data['updated_at']))
             log(''.join(("Signup {} ETL'd."
                          "")).format(signup_data['signup_id']))
-        except db.DatabaseError:
+        except psycopg2.DatabaseError:
             self.db.roll_reconnect()
             logerr("Bad query, rolling back change and skipping message.")
         except:
-            logerr("Signup {} has an error, skipping.".format(signup_data['signup_id']))
+            logerr(''.join(("Signup {} has an error, "
+                            "skipping.")).format(signup_data['signup_id']))
             sys.exit(1)
 
     def _delete_signup(self, signup_id, deleted_at):
@@ -259,7 +261,7 @@ class RogueQueue(QuasarQueue):
                                post_data['created_at'],
                                post_data['updated_at']))
             log("Post {} ETL'd.".format(post_data['id']))
-        except db.DatabaseError:
+        except psycopg2.DatabaseError:
             self.db.roll_reconnect()
             logerr("Bad query, rolling back change and skipping message.")
         except:
