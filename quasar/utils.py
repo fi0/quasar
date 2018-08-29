@@ -3,6 +3,8 @@ import logging
 import re
 import time
 
+logging.getLogger().setLevel(logging.INFO)
+
 # DoSomething Helper Functions - Code Reused Across Lots of our ETL Scripts
 
 # String Parser
@@ -32,6 +34,14 @@ def now_minus_hours(hours):
 
 def unixtime_to_isotime(unixtime):
     return dt.fromtimestamp(unixtime).isoformat()
+
+
+def log(msg):
+    logging.info(msg)
+
+
+def logerr(msg):
+    logging.error(msg)
 
 
 class Duration:
