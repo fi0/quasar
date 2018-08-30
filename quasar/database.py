@@ -2,7 +2,7 @@ import json
 import os
 import psycopg2
 
-from .utils import QuasarException
+from .utils import QuasarException, logerr
 
 # Defaults
 opts = {
@@ -83,6 +83,34 @@ class Database:
         except psycopg2.DatabaseError as e:
             print(self.cursor.query)
             raise QuasarException(e)
+
+    def query_str_backup(self, query, string, record,
+                         backup_table, event_id=None):
+        """Parse and run DB query, on failure backup data.
+
+        On query failure, assuming a single column table with data type jsonb,
+        with column name "record", backup entire JSON record.
+
+        Optional event_id for logging provided.
+        """
+        try:
+            self.cursor.execute(query, string)
+            self.connection.commit()
+            try:
+                results = self.cursor.fetchall()
+                return results
+            except psycopg2.ProgrammingError:
+                results = {}
+                return results
+        except psycopg2.DatabaseError:
+            logerr("The query: {} FAILED!".format(self.cursor.query))
+            self.disconnect()
+            self.connect()
+            logerr("Backing up message {} to table {}.".format(event_id,
+                                                               backup_table))
+            self.cursor.execute(''.join(("INSERT INTO "
+                                         "%s VALUES (%s)")),
+                                (backup_table, json.dumps(record)))
 
 
 class NorthstarDatabase(Database):

@@ -1,4 +1,4 @@
-from .quasar_queue import RogueQueue
+from .rogue_queue import RogueQueue
 
 
 queue = RogueQueue()
