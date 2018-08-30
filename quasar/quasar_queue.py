@@ -170,8 +170,10 @@ class CioQueue(QuasarQueue):
                 self._add_unsub_event(data)
             elif event_type == 'email_clicked':
                 self._add_email_click_event(data)
-            else event_type in email_event:
+            elif event_type in email_event:
                 self._add_email_event(data)
+            else:
+                pass
         exception KeyError, e:
             logerr("C.IO message missing {}".format(e))
         exception:
