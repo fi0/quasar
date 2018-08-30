@@ -56,10 +56,6 @@ class CioQueue(QuasarQueue):
         log(''.join(("Logged data from "
                      "C.IO event id {}.")).format(data['event_id']))
 
-    def log_message(self, event_id):
-        log(''.join(("Added customer event from "
-                     "C.IO event id {}.")).format(data['event_id']))
-
     # Save customer sub data and dates.
     def _add_sub_event(self, data):
         self.db.query_str(''.join(("INSERT INTO cio.customer_event "
