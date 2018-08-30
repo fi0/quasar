@@ -71,8 +71,7 @@ class CioQueue(QuasarQueue):
                            data['data']['email_address'],
                            data['event_id'], data['timestamp'],
                            data['event_type']))
-        log(''.join(("Added customer event from "
-                     "C.IO event id {}.")).format(data['event_id']))
+        return data['event_id']
 
     # Save customer unsub data and dates.
     def _add_unsub_event(self, data):
@@ -164,14 +163,19 @@ class CioQueue(QuasarQueue):
         }
         # Always capture atomic c.io event in raw format.
         self._log_event(data)
-        if event_type == 'customer_subscribed':
-            self._add_sub_event(data)
-        elif event_type == 'customer_unsubscribed':
-            self._add_unsub_event(data)
-        elif event_type == 'email_clicked':
-            self._add_email_click_event(data)
-        elif event_type in email_event:
-            self._add_email_event(data)
-        else:
+        try:
+            if event_type == 'customer_subscribed':
+                self._add_sub_event(data)
+            elif event_type == 'customer_unsubscribed':
+                self._add_unsub_event(data)
+            elif event_type == 'email_clicked':
+                self._add_email_click_event(data)
+            elif event_type in email_event:
+                self._add_email_event(data)
+            else:
+                pass
+        except KeyError as e:
+            logerr("C.IO message missing {}".format(e))
+        except:
             logerr("Something went wrong with C.IO consumer!")
             sys.exit(1)
