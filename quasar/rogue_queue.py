@@ -41,6 +41,8 @@ class RogueQueue(QuasarQueue):
                                  signup_data['created_at'],
                                  signup_data['updated_at']),
                                 signup_data, signup_data['signup_id'])
+        log(''.join(("Signup {} ETL'd."
+                     "")).format(signup_data['signup_id']))
 
     def _delete_signup(self, signup_id, deleted_at):
         self.db.query_str(''.join(("INSERT INTO rogue.signups "
