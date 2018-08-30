@@ -84,8 +84,8 @@ class Database:
             print(self.cursor.query)
             raise QuasarException(e)
 
-    def query_str_backup(self, query, string, record,
-                         backup_table, event_id=None):
+    def query_str_rogue(self, query, string, record,
+                        event_id=None):
         """Parse and run DB query, on failure backup data.
 
         On query failure, assuming a single column table with data type jsonb,
@@ -106,11 +106,10 @@ class Database:
             logerr("The query: {} FAILED!".format(self.cursor.query))
             self.disconnect()
             self.connect()
-            logerr("Backing up message {} to table {}.".format(event_id,
-                                                               backup_table))
+            logerr("Backing up message {}.".format(event_id))
             self.cursor.execute(''.join(("INSERT INTO "
-                                         "%s VALUES (%s)")),
-                                (backup_table, json.dumps(record)))
+                                         "rogue.error_message VALUES (%s)")),
+                                (json.dumps(record),))
 
 
 class NorthstarDatabase(Database):
