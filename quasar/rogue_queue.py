@@ -19,29 +19,28 @@ class RogueQueue(QuasarQueue):
         self.db = Database()
 
     def _add_signup(self, signup_data):
-        self.db.query_str_backup(''.join(("INSERT INTO rogue.signups "
-                                          "(id, northstar_id, campaign_id, "
-                                          "campaign_run_id, quantity, "
-                                          "why_participated, source, "
-                                          "source_details, details, "
-                                          "created_at, updated_at) "
-                                          "VALUES (%s,%s,%s,%s,%s,%s,"
-                                          "%s,%s,%s,%s,%s) ON CONFLICT "
-                                          "(id, updated_at) "
-                                          "DO NOTHING")),
-                                 (signup_data['signup_id'],
-                                  signup_data['northstar_id'],
-                                  signup_data['campaign_id'],
-                                  signup_data['campaign_run_id'],
-                                  signup_data['quantity'],
-                                  signup_data['why_participated'],
-                                  signup_data['signup_source'],
-                                  signup_data['source_details'],
-                                  signup_data['details'],
-                                  signup_data['created_at'],
-                                  signup_data['updated_at']),
-                                 signup_data, 'rogue.error_message',
-                                 signup_data['signup_id'])
+        self.db.query_str_rogue(''.join(("INSERT INTO rogue.signups "
+                                         "(id, northstar_id, campaign_id, "
+                                         "campaign_run_id, quantity, "
+                                         "why_participated, source, "
+                                         "source_details, details, "
+                                         "created_at, updated_at) "
+                                         "VALUES (%s,%s,%s,%s,%s,%s,"
+                                         "%s,%s,%s,%s,%s) ON CONFLICT "
+                                         "(id, updated_at) "
+                                         "DO NOTHING")),
+                                (signup_data['signup_id'],
+                                 signup_data['northstar_id'],
+                                 signup_data['campaign_id'],
+                                 signup_data['campaign_run_id'],
+                                 signup_data['quantity'],
+                                 signup_data['why_participated'],
+                                 signup_data['signup_source'],
+                                 signup_data['source_details'],
+                                 signup_data['details'],
+                                 signup_data['created_at'],
+                                 signup_data['updated_at']),
+                                signup_data, signup_data['signup_id'])
 
     def _delete_signup(self, signup_id, deleted_at):
         self.db.query_str(''.join(("INSERT INTO rogue.signups "
@@ -55,35 +54,34 @@ class RogueQueue(QuasarQueue):
         log("Signup {} deleted and archived.".format(signup_id))
 
     def _add_post(self, post_data):
-        self.db.query_str_backup(''.join(("INSERT INTO rogue.posts "
-                                          "(id, signup_id, campaign_id, "
-                                          "northstar_id, "
-                                          "type, action, quantity, url, "
-                                          "caption, status, source, "
-                                          "source_details, signup_source, "
-                                          "remote_addr, created_at, "
-                                          "updated_at) VALUES "
-                                          "(%s,%s,%s,%s,%s,%s,%s,%s,"
-                                          "%s,%s,%s,%s,%s,%s,%s,%s) "
-                                          "ON CONFLICT DO NOTHING")),
-                                 (post_data['id'],
-                                  post_data['signup_id'],
-                                  post_data['campaign_id'],
-                                  post_data['northstar_id'],
-                                  post_data['type'],
-                                  post_data['action'],
-                                  post_data['quantity'],
-                                  post_data['media']['url'],
-                                  post_data['media']['caption'],
-                                  post_data['status'],
-                                  post_data['source'],
-                                  post_data['source_details'],
-                                  post_data['signup_source'],
-                                  post_data['remote_addr'],
-                                  post_data['created_at'],
-                                  post_data['updated_at']),
-                                 post_data, 'rogue.error_message',
-                                 post_data['id'])
+        self.db.query_str_rogue(''.join(("INSERT INTO rogue.posts "
+                                         "(id, signup_id, campaign_id, "
+                                         "northstar_id, "
+                                         "type, action, quantity, url, "
+                                         "caption, status, source, "
+                                         "source_details, signup_source, "
+                                         "remote_addr, created_at, "
+                                         "updated_at) VALUES "
+                                         "(%s,%s,%s,%s,%s,%s,%s,%s,"
+                                         "%s,%s,%s,%s,%s,%s,%s,%s) "
+                                         "ON CONFLICT DO NOTHING")),
+                                (post_data['id'],
+                                 post_data['signup_id'],
+                                 post_data['campaign_id'],
+                                 post_data['northstar_id'],
+                                 post_data['type'],
+                                 post_data['action'],
+                                 post_data['quantity'],
+                                 post_data['media']['url'],
+                                 post_data['media']['caption'],
+                                 post_data['status'],
+                                 post_data['source'],
+                                 post_data['source_details'],
+                                 post_data['signup_source'],
+                                 post_data['remote_addr'],
+                                 post_data['created_at'],
+                                 post_data['updated_at']),
+                                post_data, post_data['id'])
         log("Post {} ETL'd.".format(post_data['id']))
 
     def _delete_post(self, post_id, deleted_at):
