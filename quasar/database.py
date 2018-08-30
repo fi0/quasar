@@ -2,7 +2,7 @@ import json
 import os
 import psycopg2
 
-from .utils import QuasarException, log, logerr
+from .utils import QuasarException, logerr
 
 # Defaults
 opts = {
