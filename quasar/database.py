@@ -2,7 +2,7 @@ import json
 import os
 import psycopg2
 
-from .utils import QuasarException
+from .utils import QuasarException, log, logerr
 
 # Defaults
 opts = {
@@ -84,7 +84,7 @@ class Database:
             print(self.cursor.query)
             raise QuasarException(e)
 
-    def query_str_backup(self, query, string, record, 
+    def query_str_backup(self, query, string, record,
                          backup_table, event_id=None):
         """Parse and run DB query, on failure backup data.
 
@@ -107,7 +107,7 @@ class Database:
             self.disconnect()
             self.connect()
             logerr("Backing up message {} to table {}.".format(event_id,
-                                                            backup_table))
+                                                               backup_table))
             self.cursor.execute(''.join(("INSERT INTO "
                                          "%s VALUES (%s)")),
                                 (backup_table, json.dumps(record)))

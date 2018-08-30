@@ -87,7 +87,7 @@ class RogueQueue(QuasarQueue):
                                   post_data['updated_at']),
                                  post_data, 'rogue.error_message',
                                  post_data['id'])
-            log("Post {} ETL'd.".format(post_data['id']))
+        log("Post {} ETL'd.".format(post_data['id']))
 
     def _delete_post(self, post_id, deleted_at):
         # Set post status to 'deleted'.
