@@ -174,8 +174,8 @@ class CioQueue(QuasarQueue):
                 self._add_email_event(data)
             else:
                 pass
-        exception KeyError as e:
+        except KeyError as e:
             logerr("C.IO message missing {}".format(e))
-        exception:
+        except:
             logerr("Something went wrong with C.IO consumer!")
             sys.exit(1)
