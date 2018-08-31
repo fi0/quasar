@@ -23,7 +23,7 @@ CREATE MATERIALIZED VIEW public.path_campaign_lookup AS
 	)
 ;
 
-CREATE TEMPORARY TABLE phoenix_utms AS (
+CREATE MATERIALIZED VIEW puck.phoenix_utms AS (
 	SELECT 
 		e.records #>> '{page,sessionId}' AS session_id,
 		max(e.records #> '{page,query}' ->> 'utm_source') AS utm_source,
@@ -33,7 +33,7 @@ CREATE TEMPORARY TABLE phoenix_utms AS (
 	GROUP BY e.records #>> '{page,sessionId}'
 	);
 	
-CREATE INDEX utm_index ON phoenix_utms (session_id);
+CREATE INDEX utm_index ON puck.phoenix_utms (session_id);
 
 
 CREATE MATERIALIZED VIEW public.phoenix_events AS (
