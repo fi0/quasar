@@ -34,9 +34,9 @@ CREATE MATERIALIZED VIEW public.phoenix_events AS (
 		e.records #>> '{page,path}' AS "path",
 		e.records #>> '{page,host}' AS host,
 		e.records #>> '{page,href}' AS href,
-		e.records #> '{page,query}' ->> 'utm_source' AS page_utm_source,
-		e.records #> '{page,query}' ->> 'utm_medium' AS page_utm_medium,
-		e.records #> '{page,query}' ->> 'utm_campaign' AS page_utm_campaign,
+		utms.utm_source AS page_utm_source,
+		utms.utm_medium AS page_utm_medium,
+		utms.utm_campaign AS page_utm_campaign,
 		e.records #>> '{data,parentSource}' AS parent_source,
 		COALESCE(dat.campaign_id::varchar, lookup.campaign_id::varchar) AS campaign_id,
 		CASE WHEN e.records #>> '{page,href}' ILIKE '%password/reset%' THEN NULL ELSE page.campaign_name END AS campaign_name,
@@ -64,6 +64,14 @@ CREATE MATERIALIZED VIEW public.phoenix_events AS (
 			(regexp_split_to_array(p.records #>> '{page,path}', E'\/'))[4] AS campaign_name 
 		FROM puck.events_json p) page ON page.object_id = e.records #>> '{_id,$oid}'
 	LEFT JOIN public.path_campaign_lookup lookup ON page.campaign_name = lookup.campaign_name
+	LEFT JOIN 
+		(SELECT 
+			e.records #>> '{page,sessionId}' AS session_id,
+			max(e.records #> '{page,query}' ->> 'utm_source') AS utm_source,
+			max(e.records #> '{page,query}' ->> 'utm_medium') AS utm_medium,
+			max(e.records #> '{page,query}' ->> 'utm_campaign') AS utm_campaign
+		FROM puck.events_json e
+		GROUP BY e.records #>> '{page,sessionId}') utms ON utms.session_id = e.records #>> '{page,sessionId}'
 ) 
 ;
 
