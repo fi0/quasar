@@ -23,6 +23,19 @@ CREATE MATERIALIZED VIEW public.path_campaign_lookup AS
 	)
 ;
 
+CREATE TEMPORARY TABLE phoenix_utms AS (
+	SELECT 
+		e.records #>> '{page,sessionId}' AS session_id,
+		max(e.records #> '{page,query}' ->> 'utm_source') AS utm_source,
+		max(e.records #> '{page,query}' ->> 'utm_medium') AS utm_medium,
+		max(e.records #> '{page,query}' ->> 'utm_campaign') AS utm_campaign
+	FROM puck.events_json e
+	GROUP BY e.records #>> '{page,sessionId}'
+	);
+	
+CREATE INDEX utm_index ON phoenix_utms (session_id);
+
+
 CREATE MATERIALIZED VIEW public.phoenix_events AS (
 	SELECT 
 		e.records #>> '{_id,$oid}' AS event_id,
@@ -64,14 +77,7 @@ CREATE MATERIALIZED VIEW public.phoenix_events AS (
 			(regexp_split_to_array(p.records #>> '{page,path}', E'\/'))[4] AS campaign_name 
 		FROM puck.events_json p) page ON page.object_id = e.records #>> '{_id,$oid}'
 	LEFT JOIN public.path_campaign_lookup lookup ON page.campaign_name = lookup.campaign_name
-	LEFT JOIN 
-		(SELECT 
-			e.records #>> '{page,sessionId}' AS session_id,
-			max(e.records #> '{page,query}' ->> 'utm_source') AS utm_source,
-			max(e.records #> '{page,query}' ->> 'utm_medium') AS utm_medium,
-			max(e.records #> '{page,query}' ->> 'utm_campaign') AS utm_campaign
-		FROM puck.events_json e
-		GROUP BY e.records #>> '{page,sessionId}') utms ON utms.session_id = e.records #>> '{page,sessionId}'
+	LEFT JOIN phoenix_utms utms ON utms.session_id = e.records #>> '{page,sessionId}'
 ) 
 ;
 
