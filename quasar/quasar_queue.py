@@ -7,6 +7,7 @@ import sys
 
 from .database import Database
 from .queue import QuasarQueue
+from .rogue_queue import RogueQueue
 from .utils import unixtime_to_isotime as u2i
 from .utils import log, logerr
 
