@@ -1,8 +1,5 @@
-import json
-import logging
 import os
 import pydash
-import sys
 
 from .queue import QuasarQueue
 from .cio_queue import CioQueue
