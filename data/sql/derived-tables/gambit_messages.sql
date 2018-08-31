@@ -35,7 +35,7 @@ FROM
 	gambit_conversations.messages_flattened f
 WHERE 
 	f.direction = 'inbound' 
-	AND f.user_is IS NOT NULL 
+	AND f.user_id IS NOT NULL 
 UNION ALL 
 (SELECT 
 	g.agent_id,
