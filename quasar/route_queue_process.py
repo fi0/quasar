@@ -1,4 +1,4 @@
-from .quasar_queue import RouteQueue
+from .route_queue import RouteQueue
 
 
 queue = RouteQueue()

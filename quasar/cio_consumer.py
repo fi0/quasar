@@ -1,4 +1,4 @@
-from .quasar_queue import CioQueue
+from .cio_queue import CioQueue
 
 
 queue = CioQueue()
