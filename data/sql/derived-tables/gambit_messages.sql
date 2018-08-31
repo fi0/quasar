@@ -66,7 +66,7 @@ LEFT JOIN
 	ON substring(c.platform_user_id, 3, 9) = u.mobile
 WHERE 
 	g.direction = 'inbound'
-	g.user_id IS NULL 
+	AND g.user_id IS NULL 
 	AND u.mobile IS NOT NULL
 	AND u.mobile <> '')
 );
