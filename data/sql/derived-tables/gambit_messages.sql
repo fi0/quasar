@@ -40,21 +40,21 @@ UNION ALL
 (SELECT 
 	g.agent_id,
 	g.attachment_url,
-	g.attachment_content_type
-	g.broadcast_id
-	g.campaign_id
-	g.conversation_id
-	g.created_at
-	g.direction
-	g.message_id
-	g.macro
-	g."match"
+	g.attachment_content_type,
+	g.broadcast_id,
+	g.campaign_id,
+	g.conversation_id,
+	g.created_at,
+	g.direction,
+	g.message_id,
+	g.macro,
+	g."match",
 	g.delivered_at,
-	g.total_segments
-	g.platform_message_id
-	g.template
-	g.text
-	g.topic
+	g.total_segments,
+	g.platform_message_id,
+	g.template,
+	g.text,
+	g.topic,
 	u.northstar_id AS user_id
 FROM 
 	gambit_conversations.messages_flattened g 
@@ -66,7 +66,7 @@ LEFT JOIN
 	ON substring(c.platform_user_id, 3, 9) = u.mobile
 WHERE 
 	g.direction = 'inbound'
-	g.user_id IS NULL 
+	AND g.user_id IS NULL 
 	AND u.mobile IS NOT NULL
 	AND u.mobile <> '')
 );
