@@ -69,4 +69,8 @@ WHERE
 	g.user_id IS NULL 
 	AND u.mobile IS NOT NULL
 	AND u.mobile <> '')
-)
+);
+
+CREATE INDEX inbound_messages_i ON public.gambit_messages_inbound (message_id, created_at, user_id, conversation_id);
+GRANT SELECT ON gambit_conversations.messages_flattened TO looker;
+GRANT SELECT ON gambit_conversations.messages_flattened to dsanalyst;
