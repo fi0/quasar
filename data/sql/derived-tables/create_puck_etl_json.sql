@@ -23,6 +23,18 @@ CREATE MATERIALIZED VIEW public.path_campaign_lookup AS
 	)
 ;
 
+CREATE MATERIALIZED VIEW puck.phoenix_utms AS (
+	SELECT 
+		e.records #>> '{page,sessionId}' AS session_id,
+		max(e.records #> '{page,query}' ->> 'utm_source') AS utm_source,
+		max(e.records #> '{page,query}' ->> 'utm_medium') AS utm_medium,
+		max(e.records #> '{page,query}' ->> 'utm_campaign') AS utm_campaign
+	FROM puck.events_json e
+	GROUP BY e.records #>> '{page,sessionId}'
+	);
+	
+CREATE INDEX utm_index ON puck.phoenix_utms (session_id);
+
 CREATE MATERIALIZED VIEW public.phoenix_events AS (
 	SELECT 
 		e.records #>> '{_id,$oid}' AS event_id,
@@ -64,14 +76,7 @@ CREATE MATERIALIZED VIEW public.phoenix_events AS (
 			(regexp_split_to_array(p.records #>> '{page,path}', E'\/'))[4] AS campaign_name 
 		FROM puck.events_json p) page ON page.object_id = e.records #>> '{_id,$oid}'
 	LEFT JOIN public.path_campaign_lookup lookup ON page.campaign_name = lookup.campaign_name
-	LEFT JOIN 
-		(SELECT 
-			e.records #>> '{page,sessionId}' AS session_id,
-			max(e.records #> '{page,query}' ->> 'utm_source') AS utm_source,
-			max(e.records #> '{page,query}' ->> 'utm_medium') AS utm_medium,
-			max(e.records #> '{page,query}' ->> 'utm_campaign') AS utm_campaign
-		FROM puck.events_json e
-		GROUP BY e.records #>> '{page,sessionId}') utms ON utms.session_id = e.records #>> '{page,sessionId}'
+	LEFT JOIN puck.phoenix_utms utms ON utms.session_id = e.records #>> '{page,sessionId}'
 ) 
 ;
 
@@ -143,23 +148,15 @@ CREATE INDEX pe_indices ON phoenix_events (event_id, event_name, ts, event_datet
 CREATE INDEX ps_indices ON phoenix_sessions (session_id, device_id, landing_ts, landing_datetime);
 CREATE INDEX dnc_indices ON device_northstar_crosswalk (northstar_id, device_id);
 
-GRANT SELECT ON public.phoenix_sessions TO jjensen;
 GRANT SELECT ON public.phoenix_sessions TO public;
 GRANT SELECT ON public.phoenix_sessions TO looker;
-GRANT SELECT ON public.phoenix_sessions TO shasan;
-GRANT SELECT ON public.phoenix_sessions TO jli;
+GRANT SELECT ON public.phoenix_sessions TO dsanalyst;
 GRANT SELECT ON public.phoenix_events TO public;
-GRANT SELECT ON public.phoenix_events TO jjensen;
 GRANT SELECT ON public.phoenix_events TO looker;
-GRANT SELECT ON public.phoenix_events TO shasan;
-GRANT SELECT ON public.phoenix_events TO jli;
+GRANT SELECT ON public.phoenix_events TO dsanalyst;
 GRANT SELECT ON public.device_northstar_crosswalk TO public;
-GRANT SELECT ON public.device_northstar_crosswalk TO jjensen;
 GRANT SELECT ON public.device_northstar_crosswalk TO looker;
-GRANT SELECT ON public.device_northstar_crosswalk TO shasan;
-GRANT SELECT ON public.device_northstar_crosswalk TO jli;
+GRANT SELECT ON public.device_northstar_crosswalk TO dsanalyst;
 GRANT SELECT ON public.path_campaign_lookup TO public;
-GRANT SELECT ON public.path_campaign_lookup TO jjensen;
 GRANT SELECT ON public.path_campaign_lookup TO looker;
-GRANT SELECT ON public.path_campaign_lookup TO shasan;
-GRANT SELECT ON public.path_campaign_lookup TO jli;
+GRANT SELECT ON public.path_campaign_lookup TO dsanalyst;
