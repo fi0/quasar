@@ -63,7 +63,7 @@ LEFT JOIN
 	ON g.conversation_id = c.conversation_id
 LEFT JOIN 
 	public.users u 
-	ON substring(c.platform_user_id, 3, 9) = u.mobile
+	ON substring(c.platform_user_id, 3, 10) = u.mobile
 WHERE 
 	g.direction = 'inbound'
 	AND g.user_id IS NULL 
