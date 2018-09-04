@@ -1,10 +1,8 @@
-from .database import Database
-import logging
 import pydash
 import time
 
-
-logging.getLogger().setLevel(logging.INFO)
+from .database import Database
+from .utils import log
 
 
 def main():
@@ -13,15 +11,15 @@ def main():
 
     db = Database()
 
-    print("Refreshing Puck JSON mat view.")
+    log("Refreshing Puck JSON mat view.")
     db.query('REFRESH MATERIALIZED VIEW puck.events_json')
-    logging.info('Refreshing public.path_campaign_lookup.')
+    log('Refreshing public.path_campaign_lookup.')
     db.query('REFRESH MATERIALIZED VIEW public.path_campaign_lookup')
-    logging.info('Refreshing public.phoenix_events.')
+    log('Refreshing public.phoenix_events.')
     db.query('REFRESH MATERIALIZED VIEW public.phoenix_events')
-    logging.info('Refreshing public.phoenix_sessions.')
+    log('Refreshing public.phoenix_sessions.')
     db.query('REFRESH MATERIALIZED VIEW public.phoenix_sessions')
-    logging.info('Refreshing public.device_northstar_crosswalk.')
+    log('Refreshing public.device_northstar_crosswalk.')
     db.query('REFRESH MATERIALIZED VIEW public.device_northstar_crosswalk')
     db.disconnect()
 
