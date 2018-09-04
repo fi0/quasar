@@ -64,11 +64,11 @@ LEFT JOIN
 LEFT JOIN 
 	public.users u 
 	ON substring(c.platform_user_id, 3, 10) = u.mobile
-WHERE 
-	g.direction = 'inbound'
 	AND g.user_id IS NULL 
 	AND u.mobile IS NOT NULL
-	AND u.mobile <> '')
+	AND u.mobile <> ''
+WHERE 
+	g.direction = 'inbound')
 );
 
 CREATE INDEX inbound_messages_i ON public.gambit_messages_inbound (message_id, created_at, user_id, conversation_id);
