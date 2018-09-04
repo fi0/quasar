@@ -35,6 +35,7 @@ setup(
             'northstar_to_quasar_diff = quasar.northstar_to_user_table:backfill_since',
             'northstar_to_quasar_diff_json = quasar.northstar_to_user_table:backfill_since_json',
             'puck_refresh = quasar.puck_events:main',
+            'puck_create = quasar.recreate_phoenix_events:main',
             'rogue_consume = quasar.rogue_consumer:main',
             'rogue_ghost_killer = quasar.ghost_killer:main',
             'users_create = quasar.recreate_derived_users:main',
