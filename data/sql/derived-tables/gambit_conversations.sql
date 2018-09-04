@@ -1,4 +1,4 @@
-DROP MATERIALIZED VIEW IF EXISTS gambit_conversations.conversations_flattened;
+DROP MATERIALIZED VIEW IF EXISTS gambit_conversations.conversations_flattened CASCADE;
 CREATE MATERIALIZED VIEW gambit_conversations.conversations_flattened AS
 (SELECT
    records ->> 'campaignId' AS campaign_id,
