@@ -73,10 +73,10 @@ class ETLMonitoring:
             'raw_gambit_conversations':
                 """SELECT count(*) FROM gambit_conversations.conversations""",
             'flattened_gambit_messages':
-                """SELECT count(*) 
+                """SELECT count(*)
                     FROM gambit_conversations.messages_flattened""",
             'flattened_gambit_conversations':
-                """SELECT count(*) 
+                """SELECT count(*)
                     FROM gambit_conversations.conversations_flattened""",
             'derived_user_count':
                 'SELECT count(*) FROM public.users',
