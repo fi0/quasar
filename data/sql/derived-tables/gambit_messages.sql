@@ -74,3 +74,54 @@ WHERE
 CREATE INDEX inbound_messages_i ON public.gambit_messages_inbound (message_id, created_at, user_id, conversation_id);
 GRANT SELECT ON gambit_conversations.messages_flattened TO looker;
 GRANT SELECT ON gambit_conversations.messages_flattened to dsanalyst;
+
+CREATE MATERIALIZED VIEW public.gambit_messages_outbound AS 
+(
+SELECT 
+	f.campaign_id,
+	f.conversation_id,
+	f.created_at,
+	f.direction,
+	f.message_id,
+	f.macro,
+	f."match",
+	f.platform_message_id,
+	f.template,
+	f.text,
+	f.topic,
+	f.user_id
+FROM 
+	gambit_conversations.messages_flattened f
+WHERE 
+	f.direction <> 'inbound' 
+	AND f.user_id IS NOT NULL 
+UNION ALL 
+(SELECT 
+	g.campaign_id,
+	g.conversation_id,
+	g.created_at,
+	g.direction,
+	g.message_id,
+	g.macro,
+	g."match",
+	g.platform_message_id,
+	g.template,
+	g.text,
+	g.topic,
+	u.northstar_id AS user_id
+FROM 
+	gambit_conversations.messages_flattened g 
+LEFT JOIN 
+	gambit_conversations.conversations_flattened c 
+	ON g.conversation_id = c.conversation_id
+LEFT JOIN 
+	public.users u 
+	ON substring(c.platform_user_id, 3, 10) = u.mobile
+	AND u.mobile IS NOT NULL
+	AND u.mobile <> ''
+WHERE 
+	g.direction <> 'inbound'
+	AND g.user_id IS NULL )
+);
+
+CREATE INDEX outbound_messages_i ON public.gambit_messages_outbound (message_id, created_at, user_id, conversation_id);
