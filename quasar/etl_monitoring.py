@@ -68,6 +68,16 @@ class ETLMonitoring:
                 'SELECT count(*) FROM cio.customer_event',
             'raw_bertly_clicks':
                 'SELECT count(*) FROM bertly.clicks',
+            'raw_gambit_messages':
+                """SELECT count(*) FROM gambit_conversations.messages""",
+            'raw_gambit_conversations':
+                """SELECT count(*) FROM gambit_conversations.conversations""",
+            'flattened_gambit_messages':
+                """SELECT count(*) 
+                    FROM gambit_conversations.messages_flattened""",
+            'flattened_gambit_conversations':
+                """SELECT count(*) 
+                    FROM gambit_conversations.conversations_flattened""",
             'derived_user_count':
                 'SELECT count(*) FROM public.users',
             'derived_user_distinct_user_count':
@@ -86,7 +96,11 @@ class ETLMonitoring:
             'derived_puck_sessions':
                 'SELECT count(*) FROM public.phoenix_sessions',
             'derived_bertly_clicks':
-                'SELECT count(*) FROM public.bertly_clicks'
+                'SELECT count(*) FROM public.bertly_clicks',
+            'derived_gambit_messages_inbound':
+                """SELECT count(*) FROM public.gambit_messages_inbound""",
+            'derived_gambit_messages_outbound':
+                """SELECT count(*) FROM public.gambit_messages_outbound""",
         }
 
     @staticmethod
