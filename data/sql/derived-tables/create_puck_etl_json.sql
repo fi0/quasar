@@ -52,7 +52,7 @@ CREATE MATERIALIZED VIEW public.phoenix_events AS (
 		utms.utm_campaign AS page_utm_campaign,
 		e.records #>> '{data,parentSource}' AS parent_source,
 		COALESCE(dat.campaign_id::varchar, lookup.campaign_id::varchar) AS campaign_id,
-		CASE WHEN e.records #>> '{page,href}' ILIKE '%password/reset%' THEN NULL ELSE page.campaign_name END AS campaign_name,
+		CASE WHEN e.records #>> '{page,href}' ILIKE '%%password/reset%%' THEN NULL ELSE page.campaign_name END AS campaign_name,
 		e.records #>> '{data,source}' AS "source",
 		e.records #>> '{data,link}' AS link,
 		e.records #>> '{data,modalType}' AS modal_type,
