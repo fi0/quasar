@@ -2,6 +2,7 @@ DROP MATERIALIZED VIEW IF EXISTS public.device_northstar_crosswalk CASCADE;
 DROP MATERIALIZED VIEW IF EXISTS public.phoenix_sessions CASCADE; 
 DROP MATERIALIZED VIEW IF EXISTS public.phoenix_events CASCADE; 
 DROP MATERIALIZED VIEW IF EXISTS public.path_campaign_lookup CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS puck.phoenix_utms CASCADE;
 
 CREATE MATERIALIZED VIEW public.path_campaign_lookup AS 
 	(
