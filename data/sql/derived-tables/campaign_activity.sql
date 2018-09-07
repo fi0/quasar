@@ -146,6 +146,5 @@ CREATE MATERIALIZED VIEW public.campaign_activity AS
     ;
 CREATE INDEX ON public.campaign_activity (northstar_id, signup_id, post_id, post_created_at, post_attribution_date);
 GRANT SELECT ON public.campaign_activity TO looker;
-GRANT SELECT ON public.campaign_activity TO jjensen;
 GRANT SELECT ON public.campaign_activity TO jli;
 GRANT SELECT ON public.campaign_activity TO shasan;
