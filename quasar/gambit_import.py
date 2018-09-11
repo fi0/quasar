@@ -2,6 +2,7 @@ from .database import Database
 import boto3
 import pydash
 import time
+from .utils import log
 
 dms = boto3.client('dms')
 
@@ -32,7 +33,7 @@ def main():
     """Keep track of start time of script."""
 
     # Kick off Gambit DB refresh
-    print("Starting Gambit DMS refresh.")
+    log("Starting Gambit DMS refresh.")
     start_Gambit_refresh()
     # Give job 10 seconds to start on AWS as a safety measure.
     time.sleep(10)
@@ -42,22 +43,22 @@ def main():
                status['reason'] == 'Stop Reason FULL_LOAD_ONLY_FINISHED' and
                status['progress'] == 100):
         # SLeep between checks for 60 seconds, then try again.
-        print("Gambit DMS refresh still not done, waiting.")
+        log("Gambit DMS refresh still not done, waiting.")
         time.sleep(60)
         status = check_refresh_status()
 
     db = Database()
 
     print("Refreshing Gambit JSON mat view.")
-    db.query('REFRESH MATERIALIZED VIEW gambit.conversations')
+    db.query('REFRESH MATERIALIZED VIEW gambit.conversations_json')
     print("Refreshing Gambit JSON mat view.")
-    db.query('REFRESH MATERIALIZED VIEW gambit.conversations')
+    db.query('REFRESH MATERIALIZED VIEW gambit.messages_json')
 
     db.disconnect()
 
     end_time = time.time()  # Record when script stopped running.
     duration = end_time - start_time  # Total duration in seconds.
-    print('duration: ', duration)
+    log('duration: ', duration)
 
 
 if __name__ == "__main__":
