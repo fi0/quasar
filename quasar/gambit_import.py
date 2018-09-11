@@ -5,6 +5,7 @@ import time
 
 dms = boto3.client('dms')
 
+
 def start_Gambit_refresh():
     """Refresh Gambit events to Quasar Prod."""
     dms.start_replication_task(ReplicationTaskArn='arn:aws:dms:us-east-1:389428637636:task:7C5KPXT3JMTQPLBLYTY3FUZSWY',
