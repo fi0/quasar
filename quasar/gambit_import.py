@@ -46,15 +46,6 @@ def main():
         time.sleep(60)
         status = check_refresh_status()
 
-    db = Database()
-
-    print("Refreshing Gambit JSON mat view.")
-    db.query('REFRESH MATERIALIZED VIEW gambit.conversations')
-    print("Refreshing Gambit JSON mat view.")
-    db.query('REFRESH MATERIALIZED VIEW gambit.conversations')
-
-    db.disconnect()
-
     end_time = time.time()  # Record when script stopped running.
     duration = end_time - start_time  # Total duration in seconds.
     print('duration: ', duration)
