@@ -33,7 +33,7 @@ def main():
 
     # Kick off Gambit DB refresh
     log("Starting Gambit DMS refresh.")
-    start_gambit_refresh()
+    start_gambit_import()
     # Give job 10 seconds to start on AWS as a safety measure.
     time.sleep(10)
 
