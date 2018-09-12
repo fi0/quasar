@@ -1,4 +1,3 @@
--- Flatten messages json tables
 DROP MATERIALIZED VIEW IF EXISTS gambit.messages_flattened CASCADE;
 CREATE MATERIALIZED VIEW gambit.messages_flattened AS
 (SELECT
@@ -28,7 +27,6 @@ CREATE INDEX usermidi ON gambit.messages_flattened(user_id);
 GRANT SELECT ON gambit.messages_flattened TO looker;
 GRANT SELECT ON gambit.messages_flattened to dsanalyst;
 
--- Create inbound view
 DROP MATERIALIZED VIEW IF EXISTS public.gambit_messages_inbound CASCADE;
 CREATE MATERIALIZED VIEW public.gambit_messages_inbound AS
 (
@@ -78,7 +76,6 @@ CREATE INDEX inbound_messages_i ON public.gambit_messages_inbound (message_id, c
 GRANT SELECT ON gambit.messages_flattened TO looker;
 GRANT SELECT ON gambit.messages_flattened to dsanalyst;
 
--- Create outbound view
 DROP MATERIALIZED VIEW IF EXISTS public.gambit_messages_outbound CASCADE;
 CREATE MATERIALIZED VIEW public.gambit_messages_outbound AS
 (
