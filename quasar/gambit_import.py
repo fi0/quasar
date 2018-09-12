@@ -6,7 +6,7 @@ from .utils import log
 dms = boto3.client('dms')
 
 
-def start_Gambit_refresh():
+def start_Gambit_import():
     """Refresh Gambit events to Quasar Prod."""
     dms.start_replication_task(ReplicationTaskArn='arn:aws:dms:us-east-1:389428637636:task:7C5KPXT3JMTQPLBLYTY3FUZSWY',
                                StartReplicationTaskType='reload-target')
