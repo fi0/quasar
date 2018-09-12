@@ -6,7 +6,7 @@ from .utils import log
 dms = boto3.client('dms')
 
 
-def start_Gambit_import():
+def start_gambit_import():
     """Refresh Gambit events to Quasar Prod."""
     dms.start_replication_task(ReplicationTaskArn='arn:aws:dms:us-east-1:389428637636:task:7C5KPXT3JMTQPLBLYTY3FUZSWY',
                                StartReplicationTaskType='reload-target')
@@ -33,7 +33,7 @@ def main():
 
     # Kick off Gambit DB refresh
     log("Starting Gambit DMS refresh.")
-    start_Gambit_refresh()
+    start_gambit_refresh()
     # Give job 10 seconds to start on AWS as a safety measure.
     time.sleep(10)
 

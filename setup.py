@@ -19,7 +19,7 @@ setup(
             'campaign_activity_refresh = quasar.refresh_campaign_activity:main',
             'cio_import = quasar.cio_consumer:main',
             'etl_monitoring = quasar.etl_monitoring:run_monitoring',
-            'gambit_import = quasar.gambit_import:start_Gambit_import',
+            'gambit_import = quasar.gambit_import:main',
             'gambit_conversations_create = quasar.gambit_conversations:recreate_gambit_conversations',
             'gambit_conversations_refresh = quasar.gambit_conversations:refresh_gambit_conversations',
             'gambit_messages_create = quasar.gambit_conversations:recreate_gambit_messages',
