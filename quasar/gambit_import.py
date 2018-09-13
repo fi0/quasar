@@ -3,7 +3,7 @@ import pydash
 import time
 from .utils import log
 
-dms = boto3.client('dms')
+dms = boto3.client('dms', region_name='us-east-1')
 
 
 def start_gambit_import():
