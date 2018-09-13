@@ -1,4 +1,4 @@
-DROP MATERIALIZED VIEW IF EXISTS public.member_event_log; 
+DROP MATERIALIZED VIEW IF EXISTS public.member_event_log CASCADE; 
 CREATE MATERIALIZED VIEW public.member_event_log AS 
 (SELECT
     MD5(concat(a.northstar_id, a."timestamp", a.action_id, a.action_serial_id)) AS event_id,
