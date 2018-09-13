@@ -40,6 +40,10 @@ FROM (
             ON sd.id = s_maxupt.id AND sd.updated_at = s_maxupt.updated_at
         ) s 
     WHERE s.deleted_at IS NULL
+    AND s.id NOT IN (SELECT c.signup_id AS id 
+    				FROM campaign_activity c 
+    				WHERE c.signup_source = 'importer-client' 
+    				AND c.signup_created_at > c.post_created_at)
     UNION ALL
     SELECT -- CAMPAIGN POSTS WITH CHANNEL
         DISTINCT p.northstar_id AS northstar_id,
