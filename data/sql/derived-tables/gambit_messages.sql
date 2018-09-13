@@ -1,4 +1,3 @@
--- Flatten messages json tables
 DROP MATERIALIZED VIEW IF EXISTS gambit.messages_flattened CASCADE;
 CREATE MATERIALIZED VIEW gambit.messages_flattened AS
 (SELECT
@@ -28,11 +27,9 @@ CREATE INDEX usermidi ON gambit.messages_flattened(user_id);
 GRANT SELECT ON gambit.messages_flattened TO looker;
 GRANT SELECT ON gambit.messages_flattened to dsanalyst;
 
--- Create inbound view
 DROP MATERIALIZED VIEW IF EXISTS public.gambit_messages_inbound CASCADE;
 CREATE MATERIALIZED VIEW public.gambit_messages_inbound AS
-(
-SELECT
+(SELECT
 	*
 FROM
 	gambit.messages_flattened f
@@ -71,18 +68,15 @@ LEFT JOIN
 	AND u.mobile <> ''
 WHERE
 	g.direction = 'inbound'
-	AND g.user_id IS NULL)
-);
+	AND g.user_id IS NULL));
 
 CREATE INDEX inbound_messages_i ON public.gambit_messages_inbound (message_id, created_at, user_id, conversation_id);
-GRANT SELECT ON gambit.messages_flattened TO looker;
-GRANT SELECT ON gambit.messages_flattened to dsanalyst;
+GRANT SELECT ON public.gambit_messages_inbound to looker;
+GRANT SELECT ON public.gambit_messages_inbound to dsanalyst;
 
--- Create outbound view
 DROP MATERIALIZED VIEW IF EXISTS public.gambit_messages_outbound CASCADE;
 CREATE MATERIALIZED VIEW public.gambit_messages_outbound AS
-(
-SELECT
+(SELECT
 	f.campaign_id,
 	f.conversation_id,
 	f.created_at,
@@ -126,7 +120,8 @@ LEFT JOIN
 	AND u.mobile <> ''
 WHERE
 	g.direction <> 'inbound'
-	AND g.user_id IS NULL )
-);
+	AND g.user_id IS NULL));
 
 CREATE INDEX outbound_messages_i ON public.gambit_messages_outbound (message_id, created_at, user_id, conversation_id);
+GRANT SELECT ON public.gambit_messages_outbound to looker;
+GRANT SELECT ON public.gambit_messages_outbound to dsanalyst;
