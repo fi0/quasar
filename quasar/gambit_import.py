@@ -2,6 +2,7 @@ import boto3
 import pydash
 import time
 from .utils import log
+from .gambit import refresh_gambit_full
 
 dms = boto3.client('dms', region_name='us-east-1')
 
@@ -45,6 +46,9 @@ def main():
         log("Gambit DMS refresh still not done, waiting.")
         time.sleep(60)
         status = check_refresh_status()
+
+    # Refresh Gambit conversations and messages json and flattened tables.
+    refresh_gambit_full()
 
     end_time = time.time()  # Record when script stopped running.
     duration = end_time - start_time  # Total duration in seconds.
