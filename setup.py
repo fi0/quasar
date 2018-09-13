@@ -22,7 +22,6 @@ setup(
             'gambit_create_raw = quasar.gambit:create_gambit_raw_json',
             'gambit_create_full = quasar.gambit:create_gambit_full',
             'gambit_conversations_create = quasar.gambit:create_gambit_conversations',
-            'gambit_conversations_create = quasar.gambit:create_gambit_conversations',
             'gambit_conversations_refresh = quasar.gambit:refresh_gambit_conversations',
             'gambit_import = quasar.gambit_import:main',
             'gambit_messages_create = quasar.gambit:create_gambit_messages',
