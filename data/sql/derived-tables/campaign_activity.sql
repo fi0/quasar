@@ -101,13 +101,13 @@ CREATE MATERIALIZED VIEW public.campaign_activity AS
 	        b."action" AS post_action,
 	        CASE 
                 WHEN b.id IS NULL THEN NULL 
-	        	WHEN a.campaign_id IN ('822','8119','8129','8195','8202','8180') 
+	        	WHEN a.campaign_id IN ('822','8119','8129','8195','8202','8180','8208') 
 	        	  AND a.created_at >= '2018-05-01' 
 	        	  THEN 'voter-reg - ground'
 	        	ELSE CONCAT(b."type", ' - ', b."action") END AS post_class,
 	        CASE 
                 WHEN b.id IS NULL THEN NULL
-	        	WHEN (a.campaign_id IN ('822','8129','8195','8202','8180') 
+	        	WHEN (a.campaign_id IN ('822','8129','8195','8202','8180','8208') 
 	        	  AND a.created_at >= '2018-05-01' 
 	        	  AND b.status = 'accepted') 
 	        	  OR (a.campaign_id IN ('8119') AND b.status <> 'rejected') 
@@ -146,6 +146,5 @@ CREATE MATERIALIZED VIEW public.campaign_activity AS
     ;
 CREATE INDEX ON public.campaign_activity (northstar_id, signup_id, post_id, post_created_at, post_attribution_date);
 GRANT SELECT ON public.campaign_activity TO looker;
-GRANT SELECT ON public.campaign_activity TO jjensen;
 GRANT SELECT ON public.campaign_activity TO jli;
 GRANT SELECT ON public.campaign_activity TO shasan;
