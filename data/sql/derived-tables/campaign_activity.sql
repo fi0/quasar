@@ -93,7 +93,11 @@ CREATE MATERIALIZED VIEW public.campaign_activity AS
     FROM 
 	    (SELECT  
 	        a.northstar_id AS northstar_id,
-	        a.id AS signup_id,
+	        CASE 
+	        	WHEN a."source" = 'importer-client' 
+	        	AND b."type" = 'share-social'
+	        	AND b.created_at < a.created_at 
+	        THEN -1 ELSE a.id END AS signup_id,
 	        b.id AS post_id,
 	        a.campaign_id AS campaign_id,
 	        a.campaign_run_id AS campaign_run_id,
@@ -112,7 +116,9 @@ CREATE MATERIALIZED VIEW public.campaign_activity AS
 	        	  AND b.status = 'accepted') 
 	        	  OR (a.campaign_id IN ('8119') AND b.status <> 'rejected') 
 	        	  THEN b.quantity
-                WHEN a.campaign_id = '8167' AND b."type" = 'text'
+                WHEN 
+                	(a.campaign_id = '8167' AND b."type" = 'text')
+                	OR (a.campaign_run_id IN ('8026','8021','8025','8103','8130','8168','8159','7928') AND b."type" = 'share-social')
                   THEN 0
 	        	ELSE 1 END AS reportback_volume,
 	        b.status AS post_status,
