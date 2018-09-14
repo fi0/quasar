@@ -27,6 +27,7 @@ setup(
             'gambit_messages_create = quasar.gambit:create_gambit_messages',
             'gambit_messages_refresh = quasar.gambit:refresh_gambit_messages',
             'gambit_refresh_full = quasar.gambit:refresh_gambit_full',
+            'gambit_refresh_inbound_outbound = quasar.gambit:refresh_gambit_inbound_outbound'
             'gtm_retention_create = quasar.create_gtm_retention:main',
             'gtm_retention_refresh = quasar.refresh_gtm_retention:main',
             'mam_retention_create = quasar.create_mam_retention:main',
