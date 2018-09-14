@@ -31,6 +31,10 @@ def refresh_gambit_messages():
     refresh_materialized_view("gambit.messages_json")
     log("Refreshing gambit.messages_flattened derived table.")
     refresh_materialized_view("gambit.messages_flattened")
+    log("Refreshing public.gambit_messages_inbound derived table.")
+    refresh_materialized_view("public.gambit_messages_inbound")
+    log("Refreshing public.gambit_messages_outbound derived table.")
+    refresh_materialized_view("public.gambit_messages_outbound")
 
 
 def create_gambit_full():
