@@ -95,8 +95,9 @@ CREATE MATERIALIZED VIEW public.campaign_activity AS
 	        a.northstar_id AS northstar_id,
 	        CASE 
 	        	WHEN a."source" = 'importer-client' 
-	        	AND b.created_at > a.created_at 
-	        THEN -1 ELSE a.id AS signup_id,
+	        	AND b."type" = 'share-social'
+	        	AND b.created_at < a.created_at 
+	        THEN -1 ELSE a.id END AS signup_id,
 	        b.id AS post_id,
 	        a.campaign_id AS campaign_id,
 	        a.campaign_run_id AS campaign_run_id,
