@@ -162,22 +162,6 @@ FROM (
     AND 
         tv.nsid IS NOT NULL AND tv.nsid <> ''
     UNION ALL 
-    SELECT -- FACEBOOK SHARES FROM PHOENIX-NEXT
-        DISTINCT pe.northstar_id AS northstar_id,
-        to_timestamp(pe.ts /1000) AS "timestamp",
-        'facebook share completed' AS "action",
-        '9' AS action_id,
-        pe.event_source AS "source",
-        pe.event_id AS action_serial_id,
-        'web' AS "channel"
-    FROM 
-        public.phoenix_events pe
-    WHERE 
-        pe.event_name IN ('share action completed', 'facebook share posted')
-    AND pe.northstar_id IS NOT NULL
-    AND pe.northstar_id <> ''
-    AND to_timestamp(pe.ts /1000) <= '2018-08-07 18:00:00'
-    UNION ALL 
     SELECT DISTINCT -- SMS LINK CLICKS FROM BERTLY 
         b.northstar_id AS northstar_id,
         b.click_time AS "timestamp",
