@@ -36,12 +36,6 @@ def refresh_gambit_messages():
     log("Refreshing public.gambit_messages_outbound derived table.")
     refresh_materialized_view("public.gambit_messages_outbound")
 
-def refresh_gambit_inbound_outbound():
-    log("Refreshing public.gambit_messages_inbound derived table.")
-    refresh_materialized_view("public.gambit_messages_inbound")
-    log("Refreshing public.gambit_messages_outbound derived table.")
-    refresh_materialized_view("public.gambit_messages_outbound")
-
 
 def create_gambit_full():
     # Only need messages since runs conversations as pre-req.
