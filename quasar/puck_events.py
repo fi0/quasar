@@ -13,6 +13,8 @@ def main():
 
     log("Refreshing Puck JSON mat view.")
     db.query('REFRESH MATERIALIZED VIEW puck.events_json')
+    log("Refresh Puck UTMS mat view.")
+    db.query('REFRESH MATERIALIZED VIEW puck.phoenix_utms')
     log('Refreshing public.path_campaign_lookup.')
     db.query('REFRESH MATERIALIZED VIEW public.path_campaign_lookup')
     log('Refreshing public.phoenix_events.')
