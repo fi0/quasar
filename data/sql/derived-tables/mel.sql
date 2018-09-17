@@ -120,16 +120,18 @@ FROM (
         GROUP BY u_create.id) u
     UNION ALL 
     SELECT -- LAST MESSAGED SMS 
-        DISTINCT u.id AS northstar_id,
-        u.last_messaged_at AS "timestamp",
+        DISTINCT g.user_id AS northstar_id,
+        g.created_at AS "timestamp",
         'messaged_gambit' AS "action", 
         '6' AS action_id,
         'SMS' AS "source",
-        '0' AS action_serial_id,
+        g.message_id AS action_serial_id,
         'sms' AS "channel"
     FROM
-        northstar.users u
-    WHERE u.last_messaged_at IS NOT NULL
+        public.gambit_messages_inbound g
+    WHERE 
+    	g.user_id IS NOT NULL
+    	AND g.macro <> 'subscriptionStatusStop' 
     UNION ALL 
         SELECT -- CLICKED EMAIL LINK 
             DISTINCT cio.customer_id AS northstar_id,
@@ -176,5 +178,4 @@ FROM (
     ); 
 CREATE INDEX ON public.member_event_log (event_id, northstar_id, "timestamp", action_serial_id);
 GRANT SELECT ON public.member_event_log TO looker;
-GRANT SELECT ON public.member_event_log TO jli;
-GRANT SELECT ON public.member_event_log TO shasan;
+GRANT SELECT ON public.member_event_log TO dsanalyst;
