@@ -47,9 +47,7 @@ def main():
         time.sleep(60)
         status = check_refresh_status()
 
-
     puck_refresh()
-
 
     end_time = time.time()  # Record when script stopped running.
     duration = end_time - start_time  # Total duration in seconds.
