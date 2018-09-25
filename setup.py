@@ -36,6 +36,7 @@ setup(
             'message_route = quasar.route_queue_process:main',
             'northstar_to_quasar_diff = quasar.northstar_to_user_table:backfill_since',
             'northstar_to_quasar_diff_json = quasar.northstar_to_user_table:backfill_since_json',
+            'puck_import = quasar.puck_import:main',
             'puck_refresh = quasar.puck_events:main',
             'puck_create = quasar.create_phoenix_events:main',
             'rogue_consume = quasar.rogue_consumer:main',
