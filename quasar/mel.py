@@ -175,7 +175,7 @@ def main():
 
     db = Database()
 
-    db.query('REFRESH MATERIALIZED VIEW public.member_event_log')
+    db.query('REFRESH MATERIALIZED VIEW CONCURRENTLY public.member_event_log')
     db.disconnect()
 
     end_time = time.time()  # Record when script stopped running.
