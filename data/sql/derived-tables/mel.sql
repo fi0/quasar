@@ -145,24 +145,6 @@ FROM (
             cio.email_event cio
         WHERE 
             cio.event_type = 'email_clicked'
-    UNION ALL
-    SELECT -- VOTER REGISTRATIONS
-        DISTINCT tv.nsid AS northstar_id,
-        tv.created_at AS "timestamp",
-        'registered' AS "action",
-        '8' AS action_id,
-        tv.source_details AS "source",
-        '0' as action_serial_id,
-        (CASE WHEN tv.source = 'email' THEN 'email'
-        WHEN tv.source = 'web' OR tv.source = 'ads' THEN 'web'
-        WHEN tv.source = 'sms' THEN 'sms'
-        WHEN tv.source NOT IN ('email', 'sms', 'ads', 'web') THEN 'other' END) AS "channel"
-    FROM
-        public.turbovote_file tv
-    WHERE
-        tv.ds_vr_status IN ('register-form', 'confirmed', 'register-OVR')
-    AND 
-        tv.nsid IS NOT NULL AND tv.nsid <> ''
     UNION ALL 
     SELECT DISTINCT -- SMS LINK CLICKS FROM BERTLY 
         b.northstar_id AS northstar_id,
