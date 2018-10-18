@@ -76,7 +76,6 @@ FROM (
         ON pd.id = p_maxupt.id AND pd.updated_at = p_maxupt.updated_at
             ) p
     WHERE p.deleted_at IS NULL
-    AND p."type" IS DISTINCT FROM 'voter-reg'
     UNION ALL -- SITE ACCESS
     SELECT DISTINCT 
         u_access.id AS northstar_id,
