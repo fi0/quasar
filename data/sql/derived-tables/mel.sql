@@ -157,6 +157,6 @@ FROM (
     WHERE b.northstar_id IS NOT NULL
       ) AS a 
     ); 
-CREATE INDEX ON public.member_event_log (event_id, northstar_id, "timestamp", action_serial_id);
+CREATE UNIQUE INDEX ON public.member_event_log (event_id, northstar_id, action_id, action_serial_id, channel, "timestamp", "source");
 GRANT SELECT ON public.member_event_log TO looker;
 GRANT SELECT ON public.member_event_log TO dsanalyst;
