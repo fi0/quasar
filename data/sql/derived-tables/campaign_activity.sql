@@ -61,12 +61,13 @@ CREATE MATERIALIZED VIEW public.posts AS
             pd.status AS status,
             pd.quantity AS quantity,
             pd."source" AS "source",
-            COALESCE(tv.created_at, pd.created_at) AS created_at,
+            COALESCE(rtv.started_registration, tv.created_at, pd.created_at) AS created_at,
             pd.url AS url,
             pd.caption,
             pd.signup_id AS signup_id
     FROM public.latest_post pd
-    LEFT JOIN rogue.turbovote tv ON tv.post_id::bigint = pd.id::bigint)
+    LEFT JOIN rogue.turbovote tv ON tv.post_id::bigint = pd.id::bigint
+    LEFT JOIN rogue.rock_the_vote rtv ON rtv.post_id::bigint = pd.id::bigint)
 ;
 CREATE INDEX posti ON public.posts (id, created_at); 
 
