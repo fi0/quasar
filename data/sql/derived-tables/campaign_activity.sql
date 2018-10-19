@@ -67,7 +67,11 @@ CREATE MATERIALIZED VIEW public.posts AS
             pd.signup_id AS signup_id
     FROM public.latest_post pd
     LEFT JOIN rogue.turbovote tv ON tv.post_id::bigint = pd.id::bigint
-    LEFT JOIN rogue.rock_the_vote rtv ON rtv.post_id::bigint = pd.id::bigint)
+    LEFT JOIN 
+    	(SELECT DISTINCT *
+    	FROM rogue.rock_the_vote
+    	) rtv ON rtv.post_id::bigint = pd.id::bigint
+    )
 ;
 CREATE INDEX posti ON public.posts (id, created_at); 
 
