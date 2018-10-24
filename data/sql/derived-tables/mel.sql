@@ -148,7 +148,7 @@ FROM (
     SELECT DISTINCT -- SMS LINK CLICKS FROM BERTLY 
         b.northstar_id AS northstar_id,
         b.click_time AS "timestamp",
-        'bertly_link_click' AS "action",
+        CONCAT('bertly_link_', b.interaction_type) AS "action",
         '10' AS action_id,
         'bertly' AS "source",
         b.click_id AS action_serial_id,

@@ -21,8 +21,8 @@ CREATE MATERIALIZED VIEW public.bertly_clicks AS (
 			END) AS SOURCE,
 		CASE 
 			WHEN c.user_agent IS NULL THEN 'uncertain'
-			WHEN c.user_agent ILIKE '%%facebot%%' 
-				OR c.user_agent ILIKE '%%twitterbot%%' THEN 'preview'
+			WHEN c.user_agent ILIKE '%%facebot twitterbot%%'
+			     OR c.user_agent ILIKE '%%X11; Ubuntu %% i686%%' THEN 'preview'
 			ELSE 'click' END AS interaction_type
 	FROM bertly.clicks c
 );
