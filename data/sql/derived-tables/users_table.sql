@@ -78,7 +78,7 @@ CREATE MATERIALIZED VIEW public.users AS
 	)
 	;
 
-CREATE INDEX du_indices 
+CREATE UNIQUE INDEX du_indices 
 	ON public.users (northstar_id, created_at, email, mobile, "source");
 
 GRANT SELECT ON public.users TO jjensen;
