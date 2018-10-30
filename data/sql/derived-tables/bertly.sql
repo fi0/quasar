@@ -26,5 +26,7 @@ CREATE MATERIALIZED VIEW public.bertly_clicks AS (
 			ELSE 'click' END AS interaction_type
 	FROM bertly.clicks c
 );
+
+CREATE UNIQUE INDEX ON public.bertly_clicks (click_id);
 GRANT SELECT ON public.campaign_activity TO looker;
 GRANT SELECT ON public.campaign_activity TO dsanalyst;
