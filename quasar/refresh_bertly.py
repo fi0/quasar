@@ -4,7 +4,7 @@ from .database import Database
 def main():
     db = Database()
     print('Refreshing Bertly Clicks materialized view.')
-    db.query('REFRESH MATERIALIZED VIEW public.bertly_clicks')
+    db.query('REFRESH MATERIALIZED VIEW CONCURRENTLY public.bertly_clicks')
     db.disconnect()
 
 
