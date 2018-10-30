@@ -8,7 +8,7 @@ def main():
     """Keep track of start time of script."""
 
     db.query("REFRESH MATERIALIZED VIEW public.cio_latest_status")
-    db.query("REFRESH MATERIALIZED VIEW public.users")
+    db.query("REFRESH MATERIALIZED VIEW CONCURRENTLY public.users")
     db.disconnect()
 
     end_time = time.time()  # Record when script stopped running.
