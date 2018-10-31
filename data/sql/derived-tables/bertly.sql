@@ -13,7 +13,9 @@ CREATE MATERIALIZED VIEW public.bertly_clicks AS (
 		COALESCE(
 			(regexp_split_to_array(c.target_url, 'broadcastid=', 'i'))[2], 
 			(regexp_split_to_array(c.target_url, 'broadcastid_', 'i'))[2],
-			(regexp_split_to_array(c.target_url, 'broadcast_', 'i'))[2]
+			(regexp_split_to_array(c.target_url, 'broadcast_', 'i'))[2],
+			(regexp_split_to_array(c.target_url, 'broadcast_id=', 'i'))[2],
+			(regexp_split_to_array(c.target_url, 'broadcast_id_', 'i'))[2]
 				) AS broadcast_id,
 		(CASE WHEN target_url ilike '%%source=web%%' THEN 'web' 
 			WHEN target_url ilike '%%source=email%%' THEN 'email'  
