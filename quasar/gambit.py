@@ -20,8 +20,8 @@ def refresh_gambit_conversations():
 
 
 def create_gambit_messages():
-    log("Creating Gambit Conversations derived tables, pre-req for Messages.")
-    run_sql_file('./data/sql/derived-tables/gambit_conversations.sql')
+    # Gambit conversations is a necessary precursor to exist
+    # before messages can be created.
     log("Creating Gambit Messages derived tables.")
     run_sql_file('./data/sql/derived-tables/gambit_messages.sql')
 
