@@ -74,6 +74,7 @@ FROM (
             GROUP BY ptemp.id) p_maxupt
         INNER JOIN rogue.posts pd
         ON pd.id = p_maxupt.id AND pd.updated_at = p_maxupt.updated_at
+	WHERE status in ('accepted', 'confirmed', 'register-OVR', 'register-form')
             ) p
     WHERE p.deleted_at IS NULL
     UNION ALL -- SITE ACCESS
@@ -116,6 +117,7 @@ FROM (
                 max(u_create."source") AS "source",
                 min(u_create.created_at) AS created_at
         FROM northstar.users u_create
+	WHERE u_create."source" IS DISTINCT FROM 'importer-client'
         GROUP BY u_create.id) u
     UNION ALL 
     SELECT -- LAST MESSAGED SMS 
