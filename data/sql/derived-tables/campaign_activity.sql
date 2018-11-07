@@ -26,7 +26,8 @@ CREATE UNIQUE INDEX signupsi ON public.signups (id, created_at);
 
 DROP MATERIALIZED VIEW IF EXISTS public.latest_post CASCADE;
 CREATE MATERIALIZED VIEW public.latest_post AS
-    (SELECT 
+    (SELECT
+	pd.northstar_id as northstar_id,
         pd.id AS id,
         pd."type" AS "type",
         pd."action" AS "action",
@@ -55,8 +56,9 @@ CREATE UNIQUE INDEX latest_posti ON public.latest_post (id, created_at);
 DROP MATERIALIZED VIEW IF EXISTS public.posts CASCADE;
 CREATE MATERIALIZED VIEW public.posts AS 
     (SELECT 
-            pd.id AS id,
-            pd."type" AS "type",
+	    pd.northstar_id as northstar_id,
+	    pd.id AS id,
+	    pd."type" AS "type",
             pd."action" AS "action",
             pd.status AS status,
             pd.quantity AS quantity,
