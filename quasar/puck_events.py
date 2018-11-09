@@ -20,7 +20,7 @@ def main():
     log('Refreshing public.phoenix_events.')
     db.query('REFRESH MATERIALIZED VIEW CONCURRENTLY public.phoenix_events')
     log('Refreshing public.phoenix_sessions.')
-    db.query('REFRESH MATERIALIZED VIEW public.phoenix_sessions')
+    db.query('REFRESH MATERIALIZED VIEW CONCURRENTLY public.phoenix_sessions')
     log('Refreshing public.device_northstar_crosswalk.')
     db.query('REFRESH MATERIALIZED VIEW public.device_northstar_crosswalk')
     db.disconnect()

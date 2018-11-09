@@ -146,7 +146,7 @@ CREATE MATERIALIZED VIEW public.device_northstar_crosswalk AS
 	);
 
 CREATE UNIQUE INDEX pe_indices ON phoenix_events (event_id, event_name, ts, event_datetime, northstar_id, session_id);
-CREATE INDEX ps_indices ON phoenix_sessions (session_id, device_id, landing_ts, landing_datetime);
+CREATE UNIQUE INDEX ps_indices ON phoenix_sessions (session_id, device_id, landing_ts, landing_datetime);
 CREATE INDEX dnc_indices ON device_northstar_crosswalk (northstar_id, device_id);
 
 GRANT SELECT ON public.phoenix_sessions TO public;
