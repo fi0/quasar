@@ -37,7 +37,7 @@ CREATE MATERIALIZED VIEW puck.phoenix_utms AS (
 CREATE INDEX utm_index ON puck.phoenix_utms (session_id);
 
 CREATE MATERIALIZED VIEW public.phoenix_events AS (
-	SELECT 
+	SELECT DISTINCT
 		e.records #>> '{_id,$oid}' AS event_id,
 		e.records #>> '{meta,id}' AS puck_id,
 		to_timestamp((e.records #>> '{meta,timestamp}')::bigint/1000) AS event_datetime,
@@ -145,8 +145,8 @@ CREATE MATERIALIZED VIEW public.device_northstar_crosswalk AS
 		ON nsids.device_id = counts.device_id
 	);
 
-CREATE INDEX pe_indices ON phoenix_events (event_id, event_name, ts, event_datetime, northstar_id, session_id);
-CREATE INDEX ps_indices ON phoenix_sessions (session_id, device_id, landing_ts, landing_datetime);
+CREATE UNIQUE INDEX pe_indices ON phoenix_events (event_id, event_name, ts, event_datetime, northstar_id, session_id);
+CREATE UNIQUE INDEX ps_indices ON phoenix_sessions (session_id, device_id, landing_ts, landing_datetime);
 CREATE INDEX dnc_indices ON device_northstar_crosswalk (northstar_id, device_id);
 
 GRANT SELECT ON public.phoenix_sessions TO public;
