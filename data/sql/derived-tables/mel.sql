@@ -151,6 +151,7 @@ FROM (
             cio.email_event cio
         WHERE 
             cio.event_type = 'email_clicked'
+	    AND cio.customer_id IS NOT NULL
     UNION ALL 
     SELECT DISTINCT -- SMS LINK CLICKS FROM BERTLY 
         b.northstar_id AS northstar_id,
@@ -160,7 +161,9 @@ FROM (
         'bertly' AS "source",
         b.click_id AS action_serial_id,
         b."source" AS "channel"
-    FROM public.bertly_clicks b 
+    FROM public.bertly_clicks b
+    JOIN public.users u
+    ON b.northstar_id = u.northstar_id
     WHERE b.northstar_id IS NOT NULL
     UNION ALL
     SELECT DISTINCT -- RTV/TV POSTS FROM CAMPAIGN ACTIVITY
