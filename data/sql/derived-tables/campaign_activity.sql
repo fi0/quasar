@@ -54,26 +54,29 @@ CREATE MATERIALIZED VIEW public.latest_post AS
 CREATE UNIQUE INDEX latest_posti ON public.latest_post (id, created_at); 
 
 DROP MATERIALIZED VIEW IF EXISTS public.posts CASCADE;
-CREATE MATERIALIZED VIEW public.posts AS 
-    (SELECT 
+CREATE MATERIALIZED VIEW public.posts AS
+    (SELECT
 	    pd.northstar_id as northstar_id,
 	    pd.id AS id,
 	    pd."type" AS "type",
-            pd."action" AS "action",
-            pd.status AS status,
-            pd.quantity AS quantity,
-            pd."source" AS "source",
-            COALESCE(rtv.started_registration, tv.created_at, pd.created_at) AS created_at,
-            pd.url AS url,
-            pd.caption,
-            pd.signup_id AS signup_id
+	    pd."action" AS "action",
+	    pd.status AS status,
+	    pd.quantity AS quantity,
+	    pd."source" AS "source",
+	    COALESCE(rtv.created_at, tv.created_at, pd.created_at) AS created_at,
+	    pd.url AS url,
+	    pd.caption,
+	    pd.signup_id AS signup_id
     FROM public.latest_post pd
     LEFT JOIN rogue.turbovote tv ON tv.post_id::bigint = pd.id::bigint
-    LEFT JOIN 
-    	(SELECT DISTINCT *
-    	FROM rogue.rock_the_vote
-    	) rtv ON rtv.post_id::bigint = pd.id::bigint
-    )
+    LEFT JOIN
+	(SELECT DISTINCT r.*,
+		CASE WHEN r.started_registration < '2017-01-01'
+		THEN r.started_registration + interval '4 year'
+		ELSE r.started_registration END AS created_at
+	FROM rogue.rock_the_vote r
+	) rtv ON rtv.post_id::bigint = pd.id::bigint
+)
 ;
 CREATE UNIQUE INDEX posti ON public.posts (id, created_at); 
 
@@ -132,26 +135,20 @@ CREATE MATERIALIZED VIEW public.campaign_activity AS
 	        a.why_participated AS why_participated,
 	        b.quantity AS quantity,
 	        a."source" AS signup_source,
-            CASE 
-                WHEN a."source" = 'niche' THEN 'niche'
-                WHEN a."source" ilike '%%sms%%' THEN 'sms'
-                ELSE 'web' END AS signup_source_bucket,
-	        b."source" AS post_source,
-            CASE 
-                WHEN b."source" IS NULL THEN NULL
-                WHEN b."source" ilike '%%sms%%' THEN 'sms'
-                ELSE 'web' END AS post_source_bucket,
+		CASE
+		    WHEN a."source" = 'niche' THEN 'niche'
+		    WHEN a."source" ilike '%%sms%%' THEN 'sms'
+		    ELSE 'web' END AS signup_source_bucket,
+		    b."source" AS post_source,
+		CASE
+		    WHEN b."source" IS NULL THEN NULL
+		    WHEN b."source" ilike '%%sms%%' THEN 'sms'
+		    ELSE 'web' END AS post_source_bucket,
 	        CASE 
-	        	WHEN b."source"='rock-the-vote' 
-	        		AND b.created_at > '2017-01-01' 
-	        		THEN b.created_at 
-	        	WHEN b."source"='rock-the-vote' 
-	        		AND b.created_at <= '2017-01-01'
-	        		THEN b.created_at + interval '4 year'
-	        	ELSE a.created_at END AS signup_created_at,
-	        CASE WHEN b.created_at < '2017-01-01' AND b."source" = 'rock-the-vote'
-             	 THEN b.created_at + interval '4 year'
-             	 ELSE b.created_at END AS post_created_at,
+		    WHEN b."source"='rock-the-vote'
+		    THEN b.created_at
+		    ELSE a.created_at END AS signup_created_at,
+		b.created_at AS post_created_at,
 	        c.reported_back AS reported_back,
 	        b.url AS url,
 	        b.caption
