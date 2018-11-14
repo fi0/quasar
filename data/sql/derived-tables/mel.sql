@@ -162,7 +162,7 @@ FROM (
         b.click_id AS action_serial_id,
         b."source" AS "channel"
     FROM public.bertly_clicks b
-    JOIN public.users u
+    INNER JOIN public.users u
     ON b.northstar_id = u.northstar_id
     WHERE b.northstar_id IS NOT NULL
     UNION ALL
