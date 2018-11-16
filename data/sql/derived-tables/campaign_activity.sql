@@ -48,7 +48,9 @@ CREATE MATERIALIZED VIEW public.latest_post AS
          AND ptemp."source" IS DISTINCT FROM 'runscope-oauth'
         GROUP BY ptemp.id) p_maxupt
      INNER JOIN rogue.posts pd
-            ON pd.id = p_maxupt.id AND pd.updated_at = p_maxupt.updated_at  
+            ON pd.id = p_maxupt.id AND pd.updated_at = p_maxupt.updated_at
+     INNER JOIN public.signups s
+     	    ON pd.signup_id = s.id
     )
     ;
 CREATE UNIQUE INDEX latest_posti ON public.latest_post (id, created_at); 
