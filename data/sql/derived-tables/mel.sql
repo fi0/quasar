@@ -17,71 +17,33 @@ FROM (
         '1' AS action_id, 
         s."source" AS "source",
         s.id::varchar AS action_serial_id,
-        s.channel AS channel
-    FROM      
-         (SELECT 
-            sd.northstar_id,
-            sd.created_at,
-            sd.id,
-            sd."source",
-            sd.deleted_at, 
-            (CASE WHEN sd."source" ILIKE '%%sms%%' THEN 'sms'
-            WHEN sd."source" NOT LIKE '%%sms%%'AND sd."source" NOT LIKE '%%email%%' AND sd."source" NOT LIKE '%%niche%%' OR sd."source" IS NULL THEN 'web'
-            WHEN sd."source" ILIKE '%%email%%' THEN 'email'
-            WHEN sd."source" ILIKE '%%niche%%' THEN 'niche_coregistration'
-            WHEN sd."source" NOT LIKE '%%sms%%'AND sd."source" NOT LIKE '%%email%%' AND sd."source" NOT LIKE '%%niche%%' AND sd."source" IS NOT NULL THEN 'other' END) AS "channel"
-        FROM 
-            (SELECT 
-                stemp.id,
-                max(stemp.updated_at) AS updated_at
-            FROM rogue.signups stemp
-            GROUP BY stemp.id) s_maxupt
-        INNER JOIN rogue.signups sd
-            ON sd.id = s_maxupt.id AND sd.updated_at = s_maxupt.updated_at
-        WHERE sd."source" IS DISTINCT FROM 'importer-client'
-        AND sd."source" IS DISTINCT FROM 'rock-the-vote'
-	AND sd."source" IS DISTINCT FROM 'turbovote'
-        ) s 
-    WHERE s.deleted_at IS NULL
-    AND s.id NOT IN (SELECT c.signup_id AS id 
+	(CASE WHEN s."source" ILIKE '%%sms%%' THEN 'sms'
+	WHEN s."source" NOT LIKE '%%sms%%'AND s."source" NOT LIKE '%%email%%' AND s."source" NOT LIKE '%%niche%%' OR s."source" IN ('rock-the-vote', 'turbovote') THEN 'web'
+	WHEN s."source" ILIKE '%%email%%' THEN 'email'
+	WHEN s."source" ILIKE '%%niche%%' THEN 'niche_coregistration'
+	WHEN s."source" NOT LIKE '%%sms%%'AND s."source" NOT LIKE '%%email%%' AND s."source" NOT LIKE '%%niche%%' AND s."source" NOT IN ('rock-the-vote', 'turbovote') AND s."source" IS NOT NULL THEN 'other' END) AS "channel"
+    FROM public.signups s
+    WHERE s."source" IS DISTINCT FROM 'importer-client'
+	AND s."source" IS DISTINCT FROM 'rock-the-vote'
+	AND s."source" IS DISTINCT FROM 'turbovote'
+	AND s.id NOT IN (SELECT c.signup_id AS id
     				FROM campaign_activity c 
     				WHERE c.signup_source = 'importer-client' 
     				AND c.signup_created_at > c.post_created_at)
     UNION ALL
-    SELECT -- CAMPAIGN POSTS WITH CHANNEL EXCLUDING RTV/TV
+    SELECT -- CAMPAIGN POSTS WITH CHANNEL
         DISTINCT p.northstar_id AS northstar_id,
         p.created_at AS "timestamp",
         'post' AS "action",
         '2' AS action_id,
         p."source" AS "source",
         p.id::varchar AS action_serial_id,
-        p.channel AS channel
-    FROM 
-        (
-        SELECT 
-            pd.northstar_id,
-            pd.created_at,
-            pd.id,
-            pd."source",
-            pd.deleted_at,
-            pd."type",
-            (CASE WHEN pd."source" ILIKE '%%sms%%' THEN 'sms'
-            WHEN pd."source" ILIKE '%%phoenix%%' OR pd."source" IS NULL THEN 'web'
-            WHEN pd."source" ILIKE '%%app%%' THEN 'mobile_app'
-            WHEN pd."source" NOT LIKE '%%phoenix%%' AND pd."source" NOT LIKE '%%sms%%' AND pd."source" IS NOT NULL AND pd."source" NOT LIKE '%%app%%' THEN 'other' END) AS "channel"
-        FROM 
-            (SELECT 
-                ptemp.id,
-                max(ptemp.updated_at) AS updated_at
-            FROM rogue.posts ptemp
-            GROUP BY ptemp.id) p_maxupt
-        INNER JOIN rogue.posts pd
-        ON pd.id = p_maxupt.id AND pd.updated_at = p_maxupt.updated_at
-        WHERE pd.status IN ('accepted', 'confirmed', 'register-OVR', 'register-form')
-        AND pd."source" IS DISTINCT FROM 'rock-the-vote'
-        AND pd."source" IS DISTINCT FROM 'turbovote'
-            ) p
-    WHERE p.deleted_at IS NULL
+	(CASE WHEN p."source" ILIKE '%%sms%%' THEN 'sms'
+	WHEN p."source" ILIKE '%%phoenix%%' OR p."source" IS NULL or p."source" ILIKE '%%turbovote%%' THEN 'web'
+	WHEN p."source" ILIKE '%%app%%' THEN 'mobile_app'
+	WHEN p."source" NOT LIKE '%%phoenix%%' AND p."source" NOT LIKE '%%sms%%' AND p."source" IS NOT NULL AND p."source" NOT LIKE '%%app%%' and p."source" NOT LIKE '%%turbovote%%' THEN 'other' END) AS "channel"
+    FROM public.posts p
+    WHERE p.status IN ('accepted', 'confirmed', 'register-OVR', 'register-form')
     UNION ALL -- SITE ACCESS
     SELECT DISTINCT 
         u_access.id AS northstar_id,
@@ -165,20 +127,8 @@ FROM (
     INNER JOIN public.users u
     ON b.northstar_id = u.northstar_id
     WHERE b.northstar_id IS NOT NULL
-    UNION ALL
-    SELECT DISTINCT -- RTV/TV POSTS FROM CAMPAIGN ACTIVITY
-    	   ca.northstar_id AS northstar_id,
-	   ca.post_created_at AS "timestamp",
-	   'post' AS "action",
-	   '2' AS action_id,
-	   ca.post_source AS "source",
-	   ca.post_id::varchar AS action_serial_id,
-	   'web' AS channel
-    FROM public.campaign_activity ca
-    WHERE ca.post_source IN ('rock-the-vote', 'turbovote')
-    AND ca.post_status IN ('accepted', 'confirmed', 'register-OVR', 'register-form')
-      ) AS a 
-    ); 
+    ) AS a
+   );
 CREATE UNIQUE INDEX ON public.member_event_log (event_id, northstar_id, action_id, action_serial_id, channel, "timestamp", "source");
 GRANT SELECT ON public.member_event_log TO looker;
 GRANT SELECT ON public.member_event_log TO dsanalyst;
