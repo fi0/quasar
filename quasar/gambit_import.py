@@ -9,7 +9,7 @@ dms = boto3.client('dms', region_name='us-east-1')
 
 def start_gambit_import():
     """Refresh Gambit events to Quasar Prod."""
-    dms.start_replication_task(ReplicationTaskArn='arn:aws:dms:us-east-1:389428637636:task:7C5KPXT3JMTQPLBLYTY3FUZSWY',
+    dms.start_replication_task(ReplicationTaskArn='arn:aws:dms:us-east-1:389428637636:task:MUFXOH6A4Z4S2UMOQECGJ5Z6RU',
                                StartReplicationTaskType='reload-target')
 
 
@@ -17,7 +17,7 @@ def check_refresh_status():
     """Report back metrics for DMS progress."""
     task_progess = dms.describe_replication_tasks(Filters=[
         {'Name': 'replication-task-arn',
-         'Values': ['arn:aws:dms:us-east-1:389428637636:task:7C5KPXT3JMTQPLBLYTY3FUZSWY']}])
+         'Values': ['arn:aws:dms:us-east-1:389428637636:task:MUFXOH6A4Z4S2UMOQECGJ5Z6RU']}])
     refresh_status = {}
     refresh_status['status'] = pydash.get(task_progess,
                                           'ReplicationTasks.0.Status')
