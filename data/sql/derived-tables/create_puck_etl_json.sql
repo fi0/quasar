@@ -82,6 +82,9 @@ CREATE MATERIALIZED VIEW public.phoenix_events AS (
 ;
 
 CREATE MATERIALIZED VIEW phoenix_sessions AS (
+       SELECT e2.*,
+       	      e2.end_ts - e2.landing_ts as session_duration
+       FROM (
 	SELECT 
 		e.records #>> '{page,sessionId}' AS session_id,
 		max(e.records #>> '{user,deviceId}') AS device_id,
@@ -91,6 +94,12 @@ CREATE MATERIALIZED VIEW phoenix_sessions AS (
 				THEN e.records #>> '{meta,timestamp}' 
 				ELSE e.records #>> '{page,landingTimestamp}' END
 			)::bigint AS landing_ts,
+		max(
+			CASE WHEN
+				e.records #>> '{page,landingTimestamp}' = 'null'
+				THEN e.records #>> '{meta,timestamp}'
+				ELSE e.records #>> '{page,landingTimestamp}' END
+			)::bigint AS end_ts,
 		min(
 			to_timestamp(
 			(CASE WHEN 
@@ -104,20 +113,11 @@ CREATE MATERIALIZED VIEW phoenix_sessions AS (
 		max(e.records #> '{page,referrer}' ->> 'href') AS referrer_href,
 		max(e.records #> '{page,referrer}' -> 'query' ->> 'from_session') AS from_session,
 		max(e.records #> '{page,referrer}' -> 'query' ->> 'source') AS referrer_source,
-		max(COALESCE(
-			e.records #> '{page,referrer}' -> 'query' ->> 'utm_source',
-			e.records #> '{page,referrer}' -> 'query' ->> 'amp;utm_source'
-			)) AS referrer_utm_source,
-		max(COALESCE(
-			e.records #> '{page,referrer}' -> 'query' ->> 'utm_medium',
-			e.records #> '{page,referrer}' -> 'query' ->> 'amp;utm_medium'
-			)) AS referrer_utm_medium,
-		max(COALESCE(
-			e.records #> '{page,referrer}' -> 'query' ->> 'utm_campaign',
-			e.records #> '{page,referrer}' -> 'query' ->> 'amp;utm_campaign'
-			)) AS referrer_utm_campaign
+		max(e.records #> '{page,query}' ->> 'utm_source') AS utm_source,
+		max(e.records #> '{page,query}' ->> 'utm_medium') AS utm_medium,
+		max(e.records #> '{page,query}' ->> 'utm_campaign') AS utm_campaign
 	FROM puck.events_json e 
-	GROUP BY e.records #>> '{page,sessionId}'
+	GROUP BY e.records #>> '{page,sessionId}' ) e2
 ) ;
 
 CREATE MATERIALIZED VIEW public.device_northstar_crosswalk AS 
