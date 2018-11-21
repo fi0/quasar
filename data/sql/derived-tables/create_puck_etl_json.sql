@@ -82,10 +82,7 @@ CREATE MATERIALIZED VIEW public.phoenix_events AS (
 ;
 
 CREATE MATERIALIZED VIEW phoenix_sessions AS (
-       SELECT e2.*,
-       	      e2.end_ts - e2.landing_ts as session_duration
-       FROM (
-	SELECT 
+       SELECT
 		e.records #>> '{page,sessionId}' AS session_id,
 		max(e.records #>> '{user,deviceId}') AS device_id,
 		min(
@@ -108,6 +105,14 @@ CREATE MATERIALIZED VIEW phoenix_sessions AS (
 				ELSE e.records #>> '{page,landingTimestamp}' 
 				END)::bigint/1000)
 			)  AS landing_datetime,
+		max(
+			to_timestamp(
+			(CASE WHEN
+				e.records #>> '{page,landingTimestamp}' = 'null'
+				THEN e.records #>> '{meta,timestamp}'
+				ELSE e.records #>> '{page,landingTimestamp}'
+				END)::bigint/1000)
+			)  AS end_datetime,
 		max(e.records #> '{page,referrer}' ->> 'path') AS referrer_path,
 		max(e.records #> '{page,referrer}' ->> 'host') AS referrer_host,
 		max(e.records #> '{page,referrer}' ->> 'href') AS referrer_href,
@@ -115,9 +120,22 @@ CREATE MATERIALIZED VIEW phoenix_sessions AS (
 		max(e.records #> '{page,referrer}' -> 'query' ->> 'source') AS referrer_source,
 		max(e.records #> '{page,query}' ->> 'utm_source') AS utm_source,
 		max(e.records #> '{page,query}' ->> 'utm_medium') AS utm_medium,
-		max(e.records #> '{page,query}' ->> 'utm_campaign') AS utm_campaign
-	FROM puck.events_json e 
-	GROUP BY e.records #>> '{page,sessionId}' ) e2
+		max(e.records #> '{page,query}' ->> 'utm_campaign') AS utm_campaign,
+		max(e1.landing_path) AS landing_page
+	FROM puck.events_json e
+	LEFT JOIN (
+		SELECT e.records #>> '{page,sessionId}' AS session_id,
+		FIRST_VALUE(e.records #>> '{page, path}') OVER (
+		        PARTITION BY e.records #> '{user, northstarId}', e.records #>> '{page,sessionId}'
+			ORDER BY (
+			(CASE WHEN
+				e.records #>> '{page,landingTimestamp}' = 'null'
+				THEN e.records #>> '{meta,timestamp}'
+				ELSE e.records #>> '{page,landingTimestamp}' END
+			)::bigint)) AS landing_path
+		FROM puck.events_json e) e1
+	ON e1.session_id = e.records #>> '{page,sessionId}'
+	GROUP BY e.records #>> '{page,sessionId}'
 ) ;
 
 CREATE MATERIALIZED VIEW public.device_northstar_crosswalk AS 
