@@ -91,12 +91,7 @@ CREATE MATERIALIZED VIEW phoenix_sessions AS (
 				THEN e.records #>> '{meta,timestamp}' 
 				ELSE e.records #>> '{page,landingTimestamp}' END
 			)::bigint AS landing_ts,
-		max(
-			CASE WHEN
-				e.records #>> '{page,landingTimestamp}' = 'null'
-				THEN e.records #>> '{meta,timestamp}'
-				ELSE e.records #>> '{page,landingTimestamp}' END
-			)::bigint AS end_ts,
+		max(e.records #>> '{meta,timestamp}')::bigint AS end_ts,
 		min(
 			to_timestamp(
 			(CASE WHEN 
@@ -105,14 +100,7 @@ CREATE MATERIALIZED VIEW phoenix_sessions AS (
 				ELSE e.records #>> '{page,landingTimestamp}' 
 				END)::bigint/1000)
 			)  AS landing_datetime,
-		max(
-			to_timestamp(
-			(CASE WHEN
-				e.records #>> '{page,landingTimestamp}' = 'null'
-				THEN e.records #>> '{meta,timestamp}'
-				ELSE e.records #>> '{page,landingTimestamp}'
-				END)::bigint/1000)
-			)  AS end_datetime,
+		max(to_timestamp((e.records #>> '{meta,timestamp}')::bigint/1000)) AS end_datetime,
 		max(e.records #> '{page,referrer}' ->> 'path') AS referrer_path,
 		max(e.records #> '{page,referrer}' ->> 'host') AS referrer_host,
 		max(e.records #> '{page,referrer}' ->> 'href') AS referrer_href,
