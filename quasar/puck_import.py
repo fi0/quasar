@@ -9,7 +9,7 @@ dms = boto3.client('dms', region_name='us-east-1')
 
 def start_puck_import():
     """Refresh Puck events to Quasar Prod."""
-    dms.start_replication_task(ReplicationTaskArn='arn:aws:dms:us-east-1:389428637636:task:3QEAICCW7MTVODXBHJZ2DMIZOM',
+    dms.start_replication_task(ReplicationTaskArn='arn:aws:dms:us-east-1:389428637636:task:AUA5U7AZYFTHDSVUAEQ6H33YRE',
                                StartReplicationTaskType='reload-target')
 
 
@@ -17,7 +17,7 @@ def check_refresh_status():
     """Report back metrics for DMS progress."""
     task_progess = dms.describe_replication_tasks(Filters=[
         {'Name': 'replication-task-arn',
-         'Values': ['arn:aws:dms:us-east-1:389428637636:task:3QEAICCW7MTVODXBHJZ2DMIZOM']}])
+         'Values': ['arn:aws:dms:us-east-1:389428637636:task:AUA5U7AZYFTHDSVUAEQ6H33YRE']}])
     refresh_status = {}
     refresh_status['status'] = pydash.get(task_progess,
                                           'ReplicationTasks.0.Status')
