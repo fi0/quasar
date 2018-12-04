@@ -127,6 +127,7 @@ FROM (
     INNER JOIN public.users u
     ON b.northstar_id = u.northstar_id
     WHERE b.northstar_id IS NOT NULL
+    AND b.interaction_type IS DISTINCT FROM 'preview'
     ) AS a
    );
 CREATE UNIQUE INDEX ON public.member_event_log (event_id, northstar_id, action_id, action_serial_id, channel, "timestamp", "source");
