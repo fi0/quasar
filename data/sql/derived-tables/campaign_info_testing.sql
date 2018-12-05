@@ -54,7 +54,7 @@ GRANT SELECT ON campaign_info_testing TO dsanalyst;
 DROP MATERIALIZED VIEW IF EXISTS campaign_info_international_testing;
 CREATE MATERIALIZED VIEW IF NOT EXISTS campaign_info_international_testing (
 SELECT 
-	c.id,
+	c.id AS campaign_id,
 	i.*
 FROM campaign_info_all 
 LEFT JOIN rogue_thor.campaigns c ON i.campaign_run_id = c.campaign_run_id
