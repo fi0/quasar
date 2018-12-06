@@ -66,5 +66,4 @@ CREATE TABLE IF NOT EXISTS campaign_info_international_testing AS (
 GRANT SELECT ON campaign_info_international_testing TO dsanalyst;
 GRANT SELECT ON campaign_info_international_testing TO looker;
 
-CREATE UNIQUE INDEX ON public.campaign_info_international_testing (campaign_run_id, campaign_id);
 CREATE UNIQUE INDEX ON public.campaign_info_testing (campaign_run_id, campaign_id);
