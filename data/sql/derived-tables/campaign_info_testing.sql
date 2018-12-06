@@ -51,6 +51,7 @@ CREATE TABLE IF NOT EXISTS campaign_info_testing AS (
 	WHERE i.campaign_language = 'en'
 );
 GRANT SELECT ON campaign_info_testing TO dsanalyst;
+GRANT SELECT ON campaign_info_testing TO looker;
 
 DROP TABLE IF EXISTS campaign_info_international_testing;
 CREATE TABLE IF NOT EXISTS campaign_info_international_testing AS (
@@ -63,3 +64,7 @@ CREATE TABLE IF NOT EXISTS campaign_info_international_testing AS (
 	WHERE campaign_language IS DISTINCT FROM 'en'
 );
 GRANT SELECT ON campaign_info_international_testing TO dsanalyst;
+GRANT SELECT ON campaign_info_international_testing TO looker;
+
+CREATE UNIQUE INDEX ON public.campaign_info_international_testing (campaign_run_id, campaign_id);
+CREATE UNIQUE INDEX ON public.campaign_info_testing (campaign_run_id, campaign_id);
