@@ -40,24 +40,31 @@ CREATE TEMPORARY TABLE IF NOT EXISTS campaign_info_all AS (
     GROUP BY 1,2,3,4,5,6,7,8,9,10,11 
     ORDER BY c.field_campaigns_target_id, fdfrd.field_run_date_value);
     
-DROP MATERIALIZED VIEW IF EXISTS campaign_info_testing;
-CREATE MATERIALIZED VIEW IF NOT EXISTS campaign_info_testing (
-SELECT 
-	c.id AS campaign_id,
-	i.*
-FROM campaign_info_all i
-WHERE i.campaign_language = 'en'
-LEFT JOIN rogue_thor.campaigns c ON i.campaign_run_id = c.campaign_run_id
+DROP TABLE IF EXISTS campaign_info_testing;
+CREATE TABLE IF NOT EXISTS campaign_info_testing AS (
+	SELECT 
+		c.id AS campaign_id,
+		c.internal_title AS campaign_name,
+		i.*
+	FROM campaign_info_all i
+	LEFT JOIN rogue_prod.campaigns c ON i.campaign_run_id = c.campaign_run_id
+	WHERE i.campaign_language = 'en'
 );
 GRANT SELECT ON campaign_info_testing TO dsanalyst;
+GRANT SELECT ON campaign_info_testing TO looker;
 
-DROP MATERIALIZED VIEW IF EXISTS campaign_info_international_testing;
-CREATE MATERIALIZED VIEW IF NOT EXISTS campaign_info_international_testing (
-SELECT 
-	c.id AS campaign_id,
-	i.*
-FROM campaign_info_all 
-LEFT JOIN rogue_thor.campaigns c ON i.campaign_run_id = c.campaign_run_id
-WHERE campaign_language IS DISTINCT FROM 'en'
+DROP TABLE IF EXISTS campaign_info_international_testing;
+CREATE TABLE IF NOT EXISTS campaign_info_international_testing AS (
+	SELECT 
+		c.id AS campaign_id,
+		c.internal_title AS campaign_name,
+		i.*
+	FROM campaign_info_all i
+	LEFT JOIN rogue_prod.campaigns c ON i.campaign_run_id = c.campaign_run_id
+	WHERE campaign_language IS DISTINCT FROM 'en'
 );
 GRANT SELECT ON campaign_info_international_testing TO dsanalyst;
+GRANT SELECT ON campaign_info_international_testing TO looker;
+
+CREATE UNIQUE INDEX ON public.campaign_info_international_testing (campaign_run_id, campaign_id);
+CREATE UNIQUE INDEX ON public.campaign_info_testing (campaign_run_id, campaign_id);
