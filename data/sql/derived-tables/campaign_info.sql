@@ -1,5 +1,5 @@
 DROP MATERIALIZED VIEW IF EXISTS rogue.campaign_info_all;
-CREATE MATERIALIZED VIEW rogue.campaign_info_all AS ( 
+CREATE MATERIALIZED VIEW IF NOT EXISTS rogue.campaign_info_all AS ( 
     SELECT c.field_campaigns_target_id as campaign_node_id,
            n2.title as campaign_node_id_title,
            c.entity_id as campaign_run_id,
@@ -42,7 +42,7 @@ CREATE MATERIALIZED VIEW rogue.campaign_info_all AS (
     ORDER BY c.field_campaigns_target_id, fdfrd.field_run_date_value);
     
 DROP MATERIALIZED VIEW IF EXISTS public.campaign_info;
-CREATE MATERIALIZED VIEW public.campaign_info AS (
+CREATE MATERIALIZED VIEW IF NOT EXISTS public.campaign_info AS (
 	SELECT 
 		c.id AS campaign_id,
 		c.internal_title AS campaign_name,
@@ -55,7 +55,7 @@ GRANT SELECT ON public.campaign_info TO dsanalyst;
 GRANT SELECT ON public.campaign_info TO looker;
 
 DROP MATERIALIZED VIEW IF EXISTS public.campaign_info_international;
-CREATE MATERIALIZED view public.campaign_info_international AS (
+CREATE MATERIALIZED VIEW IF NOT EXISTS public.campaign_info_international AS (
 	SELECT 
 		c.id AS campaign_id,
 		c.internal_title AS campaign_name,
