@@ -117,20 +117,20 @@ CREATE MATERIALIZED VIEW public.campaign_activity AS
 	        b."action" AS post_action,
 	        CASE 
                 WHEN b.id IS NULL THEN NULL 
-	        	WHEN a.campaign_id IN ('822','8119','8129','8195','8202','8180','8208') 
+	        	WHEN a.campaign_id IN ('822','6223','8103','8119','8129','8130','8180','8195','8202','8208') 
 	        	  AND a.created_at >= '2018-05-01' 
 	        	  THEN 'voter-reg - ground'
 	        	ELSE CONCAT(b."type", ' - ', b."action") END AS post_class,
 	        CASE 
                 WHEN b.id IS NULL THEN NULL
-	        	WHEN (a.campaign_id IN ('822','8129','8195','8202','8180','8208') 
+	        	WHEN (a.campaign_id IN ('822','6223','8103','8129','8130','8180','8195','8202','8208') 
 	        	  AND a.created_at >= '2018-05-01' 
 	        	  AND b.status = 'accepted') 
 	        	  OR (a.campaign_id IN ('8119') AND b.status <> 'rejected') 
 	        	  THEN b.quantity
                 WHEN 
-                	(a.campaign_id = '8167' AND b."type" = 'text')
-                	OR (a.campaign_run_id IN ('8026','8021','8025','8103','8130','8168','8159','7928') AND b."type" = 'share-social')
+                	(a.campaign_id IN ('8167','8168') AND b."type" = 'text')
+                	OR (a.campaign_id IN ('5438','7927','8025','8026','8103','8130','8158','8168') AND b."type" = 'share-social')
                   THEN 0
 	        	ELSE 1 END AS reportback_volume,
 	        b.status AS post_status,
