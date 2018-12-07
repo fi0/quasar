@@ -4,9 +4,9 @@ import time
 
 
 def create():
-"""(Re)create materialized views: campaign_info_all, campaign_info,
-campaign_info_international.   
-"""
+    """(Re)create materialized views: campaign_info_all, campaign_info,
+    campaign_info_international.
+    """
     run_sql_file('./data/sql/derived-tables/campaign_info.sql')
 
 
