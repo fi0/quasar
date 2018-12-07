@@ -12,9 +12,8 @@ setup(
         'console_scripts': [
             'bertly_refresh = quasar.refresh_bertly:main',
             'bertly_create = quasar.create_bertly:main',
-            'campaign_info = quasar.campaign_info:main',
-            'campaign_info_recreate = quasar.ashes_to_campaign_info:create',
-            'campaign_info_refresh = quasar.ashes_to_campaign_info:main',
+            'campaign_info_recreate = quasar.campaign_info:create',
+            'campaign_info_refresh = quasar.campaign_info:main',
             'campaign_activity_create = quasar.create_campaign_activity:main',
             'campaign_activity_refresh = quasar.refresh_campaign_activity:main',
             'cio_import = quasar.cio_consumer:main',
