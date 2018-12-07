@@ -4,13 +4,10 @@ import time
 
 
 def create():
-    start_time = time.time()
-    """Keep track of start time of script."""
-
+"""(Re)create materialized views: campaign_info_all, campaign_info,
+campaign_info_international.   
+"""
     run_sql_file('./data/sql/derived-tables/campaign_info.sql')
-    end_time = time.time()  # Record when script stopped running.
-    duration = end_time - start_time  # Total duration in seconds.
-    print('duration: ', duration)
 
 
 def main():
