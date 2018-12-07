@@ -40,8 +40,8 @@ CREATE TEMPORARY TABLE IF NOT EXISTS campaign_info_all AS (
     GROUP BY 1,2,3,4,5,6,7,8,9,10,11 
     ORDER BY c.field_campaigns_target_id, fdfrd.field_run_date_value);
     
-DROP TABLE IF EXISTS campaign_info_testing;
-CREATE TABLE IF NOT EXISTS campaign_info_testing AS (
+DROP TABLE IF EXISTS campaign_info;
+CREATE TABLE IF NOT EXISTS campaign_info AS (
 	SELECT 
 		c.id AS campaign_id,
 		c.internal_title AS campaign_name,
@@ -50,11 +50,11 @@ CREATE TABLE IF NOT EXISTS campaign_info_testing AS (
 	LEFT JOIN rogue_prod.campaigns c ON i.campaign_run_id = c.campaign_run_id
 	WHERE i.campaign_language = 'en'
 );
-GRANT SELECT ON campaign_info_testing TO dsanalyst;
-GRANT SELECT ON campaign_info_testing TO looker;
+GRANT SELECT ON campaign_info TO dsanalyst;
+GRANT SELECT ON campaign_info TO looker;
 
-DROP TABLE IF EXISTS campaign_info_international_testing;
-CREATE TABLE IF NOT EXISTS campaign_info_international_testing AS (
+DROP TABLE IF EXISTS campaign_info_international;
+CREATE TABLE IF NOT EXISTS campaign_info_international AS (
 	SELECT 
 		c.id AS campaign_id,
 		c.internal_title AS campaign_name,
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS campaign_info_international_testing AS (
 	LEFT JOIN rogue_prod.campaigns c ON i.campaign_run_id = c.campaign_run_id
 	WHERE campaign_language IS DISTINCT FROM 'en'
 );
-GRANT SELECT ON campaign_info_international_testing TO dsanalyst;
-GRANT SELECT ON campaign_info_international_testing TO looker;
+GRANT SELECT ON campaign_info_international TO dsanalyst;
+GRANT SELECT ON campaign_info_international TO looker;
 
-CREATE UNIQUE INDEX ON public.campaign_info_testing (campaign_run_id, campaign_id);
+CREATE UNIQUE INDEX ON public.campaign_info (campaign_run_id, campaign_id);
