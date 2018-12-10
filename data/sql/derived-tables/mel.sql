@@ -26,10 +26,6 @@ FROM (
     WHERE s."source" IS DISTINCT FROM 'importer-client'
 	AND s."source" IS DISTINCT FROM 'rock-the-vote'
 	AND s."source" IS DISTINCT FROM 'turbovote'
-	AND s.id NOT IN (SELECT c.signup_id AS id
-    				FROM campaign_activity c 
-    				WHERE c.signup_source = 'importer-client' 
-    				AND c.signup_created_at > c.post_created_at)
     UNION ALL
     SELECT -- CAMPAIGN POSTS WITH CHANNEL
         DISTINCT p.northstar_id AS northstar_id,
