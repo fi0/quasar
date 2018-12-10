@@ -134,7 +134,6 @@ CREATE MATERIALIZED VIEW public.reportbacks AS
 	  WHERE p.is_reportback = 1
 	  	 AND p.is_accepted = 1
 		 AND p.signup_id != -1
-		 AND p.id IS NOT NULL
 	  GROUP BY p.signup_id, p.post_class, p.reportback_volume
 	  )
 )
