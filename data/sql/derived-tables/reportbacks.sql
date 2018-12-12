@@ -83,7 +83,7 @@ CREATE MATERIALIZED VIEW public.posts_qa AS
 		    AND post_class ilike 'vote%%' THEN 1
 		 ELSE null END AS is_accepted,
 	    pd.quantity AS quantity,
-	    CASE WHEN post_class <> 'voter-reg - ground'
+	    CASE WHEN pd.post_class <> 'voter-reg - ground' or pd.quantity IS NULL
 	    	 THEN 1
 		 ELSE pd.quantity END AS reportback_volume,
 	    pd."source" AS "source",
