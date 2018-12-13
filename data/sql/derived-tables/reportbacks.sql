@@ -107,11 +107,14 @@ CREATE MATERIALIZED VIEW public.posts_qa AS
 ;
 CREATE UNIQUE INDEX posti ON public.posts_qa (created_at, campaign_id, id);
 CREATE INDEX signup_post_classi on public.posts_qa (is_reportback, is_accepted, signup_id, post_id, post_class);
+GRANT SELECT ON public.reportbacks TO looker;
+GRANT SELECT ON public.reportbacks TO dsanalyst;
 
 DROP MATERIALIZED VIEW IF EXISTS public.reportbacks;
 CREATE MATERIALIZED VIEW public.reportbacks AS
     (
     SELECT
+	pd.northstar_id,
 	pd.id as post_id,
 	pd.signup_id,
 	pd.campaign_id,
