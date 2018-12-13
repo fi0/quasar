@@ -40,11 +40,7 @@ CREATE MATERIALIZED VIEW public.latest_post_qa AS
         pd.created_at AS created_at,
         pd.url AS url,
         pd.caption,
-	CASE WHEN s."source" = 'importer-client'
-	     	  AND pd."type" = 'share-social'
-		 AND pd.created_at < s.created_at
-	     	THEN -1
-	     ELSE pd.signup_id END AS signup_id,
+	pd.signup_id,
 	s.campaign_id,
 	CASE WHEN pd.id IS NULL THEN NULL
 	     WHEN s.campaign_id IN (
@@ -133,7 +129,6 @@ CREATE MATERIALIZED VIEW public.reportbacks AS
 	  FROM public.posts p
 	  WHERE p.is_reportback = 1
 	  	 AND p.is_accepted = 1
-		 AND p.signup_id != -1
 	  GROUP BY p.signup_id, p.post_class, p.reportback_volume
 	  )
 )
