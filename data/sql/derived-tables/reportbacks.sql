@@ -26,6 +26,8 @@ CREATE MATERIALIZED VIEW public.signups_qa AS
     )
     ;
 CREATE UNIQUE INDEX signupsi ON public.signups_qa (created_at, id);
+GRANT SELECT ON public.reportbacks TO looker;
+GRANT SELECT ON public.reportbacks TO dsanalyst;
 
 DROP MATERIALIZED VIEW IF EXISTS public.latest_post_qa CASCADE;
 CREATE MATERIALIZED VIEW public.latest_post_qa AS
@@ -40,11 +42,7 @@ CREATE MATERIALIZED VIEW public.latest_post_qa AS
         pd.created_at AS created_at,
         pd.url AS url,
         pd.caption,
-	CASE WHEN s."source" = 'importer-client'
-	     	  AND pd."type" = 'share-social'
-		 AND pd.created_at < s.created_at
-	     	THEN -1
-	     ELSE pd.signup_id END AS signup_id,
+	pd.signup_id,
 	s.campaign_id,
 	CASE WHEN pd.id IS NULL THEN NULL
 	     WHEN s.campaign_id IN (
@@ -68,6 +66,8 @@ CREATE MATERIALIZED VIEW public.latest_post_qa AS
     )
     ;
 CREATE UNIQUE INDEX latest_posti ON public.latest_post_qa (id, created_at);
+GRANT SELECT ON public.reportbacks TO looker;
+GRANT SELECT ON public.reportbacks TO dsanalyst;
 
 DROP MATERIALIZED VIEW IF EXISTS public.posts_qa CASCADE;
 CREATE MATERIALIZED VIEW public.posts_qa AS
@@ -78,12 +78,12 @@ CREATE MATERIALIZED VIEW public.posts_qa AS
 	    pd."action" AS "action",
 	    pd.status AS status,
 	    CASE WHEN pd.status IN ('accepted', 'pending')
-		    AND post_class NOT ilike 'vote%%' THEN 1
+		    AND pd.post_class NOT ilike 'vote%%' THEN 1
 	    	 WHEN pd.status IN ('accepted', 'confirmed', 'register-OVR', 'register-form')
-		    AND post_class ilike 'vote%%' THEN 1
+		    AND pd.post_class ilike 'vote%%' THEN 1
 		 ELSE null END AS is_accepted,
 	    pd.quantity AS quantity,
-	    CASE WHEN post_class <> 'voter-reg - ground'
+	    CASE WHEN pd.post_class <> 'voter-reg - ground' or pd.quantity IS NULL
 	    	 THEN 1
 		 ELSE pd.quantity END AS reportback_volume,
 	    pd."source" AS "source",
@@ -98,7 +98,7 @@ CREATE MATERIALIZED VIEW public.posts_qa AS
 	    pd.campaign_id,
 	    CASE WHEN pd.id IS NOT NULL THEN 1
 		 ELSE null end as is_reportback
-    FROM public.latest_post pd
+    FROM public.latest_post_qa pd
     LEFT JOIN rogue.turbovote tv ON tv.post_id::bigint = pd.id::bigint
     LEFT JOIN
 	(SELECT DISTINCT r.*,
@@ -111,11 +111,14 @@ CREATE MATERIALIZED VIEW public.posts_qa AS
 ;
 CREATE UNIQUE INDEX posti ON public.posts_qa (created_at, campaign_id, id);
 CREATE INDEX signup_post_classi on public.posts_qa (is_reportback, is_accepted, signup_id, post_id, post_class);
+GRANT SELECT ON public.reportbacks TO looker;
+GRANT SELECT ON public.reportbacks TO dsanalyst;
 
 DROP MATERIALIZED VIEW IF EXISTS public.reportbacks;
 CREATE MATERIALIZED VIEW public.reportbacks AS
     (
     SELECT
+	pd.northstar_id,
 	pd.id as post_id,
 	pd.signup_id,
 	pd.campaign_id,
@@ -133,7 +136,6 @@ CREATE MATERIALIZED VIEW public.reportbacks AS
 	  FROM public.posts p
 	  WHERE p.is_reportback = 1
 	  	 AND p.is_accepted = 1
-		 AND p.signup_id != -1
 	  GROUP BY p.signup_id, p.post_class, p.reportback_volume
 	  )
 )
