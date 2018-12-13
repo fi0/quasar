@@ -25,7 +25,7 @@ CREATE MATERIALIZED VIEW public.signups_qa AS
             ON sd.id = s_maxupt.id AND sd.updated_at = s_maxupt.updated_at
     )
     ;
-CREATE UNIQUE INDEX signupsi ON public.signups_qa (created_at, id);
+CREATE UNIQUE INDEX signupsis ON public.signups_qa (created_at, id);
 GRANT SELECT ON public.reportbacks TO looker;
 GRANT SELECT ON public.reportbacks TO dsanalyst;
 
@@ -65,9 +65,9 @@ CREATE MATERIALIZED VIEW public.latest_post_qa AS
      	    ON pd.signup_id = s.id
     )
     ;
-CREATE UNIQUE INDEX latest_posti ON public.latest_post_qa (id, created_at);
-GRANT SELECT ON public.reportbacks TO looker;
-GRANT SELECT ON public.reportbacks TO dsanalyst;
+CREATE UNIQUE INDEX latest_postis ON public.latest_post_qa (id, created_at);
+GRANT SELECT ON public.latest_post_qa TO looker;
+GRANT SELECT ON public.latest_post_qa TO dsanalyst;
 
 DROP MATERIALIZED VIEW IF EXISTS public.posts_qa CASCADE;
 CREATE MATERIALIZED VIEW public.posts_qa AS
@@ -109,10 +109,10 @@ CREATE MATERIALIZED VIEW public.posts_qa AS
 	) rtv ON rtv.post_id::bigint = pd.id::bigint
 )
 ;
-CREATE UNIQUE INDEX posti ON public.posts_qa (created_at, campaign_id, id);
-CREATE INDEX signup_post_classi on public.posts_qa (is_reportback, is_accepted, signup_id, post_id, post_class);
-GRANT SELECT ON public.reportbacks TO looker;
-GRANT SELECT ON public.reportbacks TO dsanalyst;
+CREATE UNIQUE INDEX postis ON public.posts_qa (created_at, campaign_id, id);
+CREATE INDEX signup_post_classis on public.posts_qa (is_reportback, is_accepted, signup_id, id, post_class);
+GRANT SELECT ON public.posts_qa TO looker;
+GRANT SELECT ON public.posts_qa TO dsanalyst;
 
 DROP MATERIALIZED VIEW IF EXISTS public.reportbacks;
 CREATE MATERIALIZED VIEW public.reportbacks AS
@@ -130,16 +130,16 @@ CREATE MATERIALIZED VIEW public.reportbacks AS
 	pd.source_bucket as post_source_bucket,
 	pd.reportback_volume
     FROM
-	public.posts pd
+	public.posts_qa pd
     WHERE pd.id IN (
     	  SELECT min(id)
-	  FROM public.posts p
+	  FROM public.posts_qa p
 	  WHERE p.is_reportback = 1
 	  	 AND p.is_accepted = 1
 	  GROUP BY p.signup_id, p.post_class, p.reportback_volume
 	  )
-)
-CREATE UNIQUE INDEX reportbacksi ON public.reportbacks (post_id);
-CREATE INDEX created_ati ON public.reportbacks (post_created_at, campaign_id, post_class, reportback_volume);
+);
+CREATE UNIQUE INDEX reportbacksis ON public.reportbacks (post_id);
+CREATE INDEX created_atis ON public.reportbacks (post_created_at, campaign_id, post_class, reportback_volume);
 GRANT SELECT ON public.reportbacks TO looker;
 GRANT SELECT ON public.reportbacks TO dsanalyst;
