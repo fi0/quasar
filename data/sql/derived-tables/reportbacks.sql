@@ -42,7 +42,11 @@ CREATE MATERIALIZED VIEW public.latest_post_qa AS
         pd.created_at AS created_at,
         pd.url AS url,
         pd.caption,
-	pd.signup_id,
+	CASE WHEN s."source" = 'importer-client'
+	     	  AND pd."type" = 'share-social'
+		 AND pd.created_at < s.created_at
+	     	THEN -1
+	     ELSE pd.signup_id END AS signup_id,
 	s.campaign_id,
 	CASE WHEN pd.id IS NULL THEN NULL
 	     WHEN s.campaign_id IN (
@@ -136,7 +140,7 @@ CREATE MATERIALIZED VIEW public.reportbacks AS
 	  FROM public.posts_qa p
 	  WHERE p.is_reportback = 1
 	  	 AND p.is_accepted = 1
-	  GROUP BY p.signup_id, p.post_class, p.reportback_volume
+	  GROUP BY p.northstar_id, p.campaign_id, p.signup_id, p.post_class, p.reportback_volume
 	  )
 );
 CREATE UNIQUE INDEX reportbacksis ON public.reportbacks (post_id);
