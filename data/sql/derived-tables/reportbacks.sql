@@ -26,8 +26,8 @@ CREATE MATERIALIZED VIEW public.signups_qa AS
     )
     ;
 CREATE UNIQUE INDEX signupsis ON public.signups_qa (created_at, id);
-GRANT SELECT ON public.reportbacks TO looker;
-GRANT SELECT ON public.reportbacks TO dsanalyst;
+GRANT SELECT ON public.signups_qa TO looker;
+GRANT SELECT ON public.signups_qa TO dsanalyst;
 
 DROP MATERIALIZED VIEW IF EXISTS public.latest_post_qa CASCADE;
 CREATE MATERIALIZED VIEW public.latest_post_qa AS
