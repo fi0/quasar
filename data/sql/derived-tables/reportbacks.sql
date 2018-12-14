@@ -17,8 +17,7 @@ CREATE MATERIALIZED VIEW public.signups_qa AS
         		max(stemp.updated_at) AS updated_at
         FROM rogue.signups stemp
         WHERE stemp.deleted_at IS NULL
-        AND stemp."source" IS DISTINCT FROM 'runscope'
-        AND stemp."source" IS DISTINCT FROM 'runscope-oauth'
+        AND stemp."source" NOT IN ('runscope', 'runscope-oauth', 'rogue-oauth')
         AND stemp.why_participated IS DISTINCT FROM 'why_participated_ghost'
         GROUP BY stemp.id) s_maxupt
         INNER JOIN rogue.signups sd
@@ -62,6 +61,7 @@ CREATE MATERIALIZED VIEW public.latest_post_qa AS
          WHERE ptemp.deleted_at IS NULL
          AND ptemp."source" IS DISTINCT FROM 'runscope'
          AND ptemp."source" IS DISTINCT FROM 'runscope-oauth'
+	 AND ptemp.caption IS DISTINCT FROM 'test runscope upload'
         GROUP BY ptemp.id) p_maxupt
      INNER JOIN rogue.posts pd
             ON pd.id = p_maxupt.id AND pd.updated_at = p_maxupt.updated_at
