@@ -48,7 +48,12 @@ CREATE MATERIALIZED VIEW public.phoenix_events AS (
 		e.records #>> '{meta,id}' AS puck_id,
 		to_timestamp((e.records #>> '{meta,timestamp}')::bigint/1000) AS event_datetime,
 		(e.records #>> '{meta,timestamp}')::bigint AS ts,
-		e.records #>> '{event,name}' AS event_name,
+		CASE 
+			WHEN enames_old.old_name IS NOT NULL 
+			THEN enames_old.old_name
+			ELSE enames_new.old_name END 
+			AS event_name,
+		COALESCE(enames_new.new_name, enames_old.new_name) AS new_event_name,
 		e.records #>> '{event,source}' AS event_source,
 		e.records #>> '{page,path}' AS "path",
 		e.records #>> '{page,host}' AS host,
@@ -68,6 +73,8 @@ CREATE MATERIALIZED VIEW public.phoenix_events AS (
 		e.records #>> '{browser,size}' AS browser_size,
 		e.records #>> '{user,northstarId}' AS northstar_id
 	FROM puck.events_json e
+	LEFT JOIN puck.event_lookup enames_old ON e.records #>> '{event,name}' = enames_old.old_name
+	LEFT JOIN puck.event_lookup enames_new ON e.records #>> '{event,name}' = enames_new.new_name
 	LEFT JOIN 
 		(SELECT 
 			edat.records #>> '{_id,$oid}' AS object_id,
