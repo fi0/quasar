@@ -67,7 +67,7 @@ CREATE MATERIALIZED VIEW public.latest_post_qa AS
         GROUP BY ptemp.id) p_maxupt
      INNER JOIN rogue.posts pd
             ON pd.id = p_maxupt.id AND pd.updated_at = p_maxupt.updated_at
-     INNER JOIN public.signups s
+     INNER JOIN public.signups_qa s
      	    ON pd.signup_id = s.id
     )
     ;
