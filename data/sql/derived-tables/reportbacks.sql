@@ -9,6 +9,7 @@ CREATE MATERIALIZED VIEW public.signups_qa AS
         sd."source" AS "source",
 	CASE WHEN sd."source" = 'niche' THEN 'niche'
 	     WHEN sd."source" ilike '%%sms%%' THEN 'sms'
+	     WHEN sd."source" in ('rock-the-vote', 'turbovote') THEN 'voter-reg'
 	     ELSE 'web' END AS source_bucket,
         sd.created_at AS created_at
     FROM
