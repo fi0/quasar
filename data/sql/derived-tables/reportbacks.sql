@@ -102,9 +102,9 @@ CREATE MATERIALIZED VIEW public.posts_qa AS
 	    pd.signup_id AS signup_id,
 	    pd.post_class,
 	    pd.campaign_id,
-	    CASE WHEN pd.post_class ilike '%%text%%' and pd.campaign_id IN ('8167', '8168')
+	    CASE WHEN pd.post_class ilike '%%text%%' and pd.campaign_id IN ('8167', '8168', '8309', '8292')
 		      THEN null
-		 WHEN pd.post_class ilike '%%social%%' and pd.campaign_id IN ('5438','7927','8025','8026','8103','8130','8158','8168') THEN null
+		 WHEN pd.post_class ilike '%%social%%' and pd.campaign_id IN ('5438','7927','8025','8026','8103','8130','8158','8168', '8309', '8292') THEN null
 		 ELSE 1 end as is_reportback
     FROM public.latest_post_qa pd
     LEFT JOIN rogue.turbovote tv ON tv.post_id::bigint = pd.id::bigint
