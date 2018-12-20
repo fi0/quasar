@@ -27,7 +27,7 @@ CREATE MATERIALIZED VIEW public.signups AS
             ON sd.id = s_maxupt.id AND sd.updated_at = s_maxupt.updated_at
     )
     ;
-CREATE UNIQUE INDEX signupsis ON public.signups (created_at, id);
+CREATE UNIQUE INDEX signupsi ON public.signups (created_at, id);
 GRANT SELECT ON public.signups TO looker;
 GRANT SELECT ON public.signups TO dsanalyst;
 
@@ -72,7 +72,7 @@ CREATE MATERIALIZED VIEW public.latest_post AS
      	    ON pd.signup_id = s.id
     )
     ;
-CREATE UNIQUE INDEX latest_postis ON public.latest_post (id, created_at);
+CREATE UNIQUE INDEX latest_posti ON public.latest_post (id, created_at);
 GRANT SELECT ON public.latest_post TO looker;
 GRANT SELECT ON public.latest_post TO dsanalyst;
 
@@ -118,8 +118,8 @@ CREATE MATERIALIZED VIEW public.posts AS
 	) rtv ON rtv.post_id::bigint = pd.id::bigint
 )
 ;
-CREATE UNIQUE INDEX postis ON public.posts (created_at, campaign_id, id);
-CREATE INDEX signup_post_classis on public.posts (is_reportback, is_accepted, signup_id, id, post_class);
+CREATE UNIQUE INDEX posti ON public.posts (created_at, campaign_id, id);
+CREATE INDEX signup_post_classi on public.posts (is_reportback, is_accepted, signup_id, id, post_class);
 GRANT SELECT ON public.posts TO looker;
 GRANT SELECT ON public.posts TO dsanalyst;
 
@@ -148,7 +148,7 @@ CREATE MATERIALIZED VIEW public.reportbacks AS
 	  GROUP BY p.northstar_id, p.campaign_id, p.signup_id, p.post_class, p.reportback_volume
 	  )
 );
-CREATE UNIQUE INDEX reportbacksis ON public.reportbacks (post_id);
-CREATE INDEX created_atis ON public.reportbacks (post_created_at, campaign_id, post_class, reportback_volume);
+CREATE UNIQUE INDEX reportbacksi ON public.reportbacks (post_id);
+CREATE INDEX created_ati ON public.reportbacks (post_created_at, campaign_id, post_class, reportback_volume);
 GRANT SELECT ON public.reportbacks TO looker;
 GRANT SELECT ON public.reportbacks TO dsanalyst;
