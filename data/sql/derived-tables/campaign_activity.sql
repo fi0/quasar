@@ -136,6 +136,7 @@ CREATE MATERIALIZED VIEW public.reportbacks AS
 	pd.status as post_status,
 	pd.post_class,
 	pd.created_at as post_created_at,
+	pd.source as post_source,
 	pd.source_bucket as post_source_bucket,
 	pd.reportback_volume
     FROM
