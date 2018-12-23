@@ -10,8 +10,7 @@ def main():
     db.query("REFRESH MATERIALIZED VIEW CONCURRENTLY public.signups")
     db.query("REFRESH MATERIALIZED VIEW CONCURRENTLY public.latest_post")
     db.query("REFRESH MATERIALIZED VIEW CONCURRENTLY public.posts")
-    db.query("REFRESH MATERIALIZED VIEW CONCURRENTLY public.reported_back")
-    db.query("REFRESH MATERIALIZED VIEW CONCURRENTLY public.campaign_activity")
+    db.query("REFRESH MATERIALIZED VIEW CONCURRENTLY public.reportbacks")
     db.disconnect()
 
     end_time = time.time()  # Record when script stopped running.
