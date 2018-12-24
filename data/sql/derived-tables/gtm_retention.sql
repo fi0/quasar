@@ -15,7 +15,7 @@ CREATE MATERIALIZED VIEW public.gtm_retention AS
         , month_list.event_month as event_month
         , COALESCE(data.monthly_events, 0) as monthly_events
         , DATA.action_type AS action_type
-        , ca.created_at
+        , ca.created_at AS signup_created_at
         , DATA.timestamp AS event_created_at
         , row_number() over() AS key
         FROM
