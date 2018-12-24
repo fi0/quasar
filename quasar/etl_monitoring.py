@@ -86,11 +86,12 @@ class ETLMonitoring:
             'derived_active_user_count':
                 """SELECT count(*) FROM public.users u
                 WHERE u.subscribed_member = TRUE""",
-            'derived_ca_table_count':
-                'SELECT count(*) FROM public.campaign_activity c',
-            'derived_ca_post_count':
-                'SELECT count(distinct c.post_id) '
-                'FROM public.campaign_activity c',
+            'derived_signups_count':
+                'SELECT count(*) FROM public.signups s',
+            'derived_post_count':
+                'SELECT count(*) FROM public.posts p',
+            'derived_reportbacks_count':
+                'SELECT count(*) FROM public.reportbacks r',
             'derived_puck_events':
                 'SELECT count(*) FROM public.phoenix_events',
             'derived_puck_sessions':
