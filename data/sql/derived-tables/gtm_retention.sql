@@ -11,22 +11,22 @@ CREATE MATERIALIZED VIEW public.gtm_retention AS
   FROM
         (SELECT
           ca.northstar_id as northstar_id
-        , date_trunc ('month', ca.signup_created_at) as signup_month
+        , date_trunc ('month', ca.created_at) as signup_month
         , month_list.event_month as event_month
         , COALESCE(data.monthly_events, 0) as monthly_events
         , DATA.action_type AS action_type
-        , ca.signup_created_at
+        , ca.created_at
         , DATA.timestamp AS event_created_at
         , row_number() over() AS key
         FROM
-          public.campaign_activity ca
+          public.signups ca
         LEFT JOIN
           (
             SELECT
               DISTINCT(date_trunc('month', member_event_log.timestamp)) as event_month
             FROM member_event_log
           ) as month_list
-        ON month_list.event_month >= date_trunc ('month', ca.signup_created_at)
+        ON month_list.event_month >= date_trunc ('month', ca.created_at)
         LEFT JOIN
           (
             SELECT
@@ -39,7 +39,7 @@ CREATE MATERIALIZED VIEW public.gtm_retention AS
             GROUP BY 1,2, 3
           ) as data
         ON data.event_month = month_list.event_month AND data.northstar_id = ca.northstar_id
-        WHERE ca.campaign_run_id = '8022')
+        WHERE ca.campaign_id = '8017')
         a) ;;
 CREATE INDEX ON public.gtm_retention (northstar_id);
 GRANT SELECT ON public.gtm_retention TO looker;
