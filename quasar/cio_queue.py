@@ -7,6 +7,7 @@ from .database import Database
 from .queue import QuasarQueue
 from .utils import log, logerr
 
+
 class CioQueue(QuasarQueue):
 
     def __init__(self):
