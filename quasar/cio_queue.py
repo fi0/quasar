@@ -7,6 +7,7 @@ from .database import Database
 from .queue import QuasarQueue
 from .utils import log, logerr
 
+
 class CioQueue(QuasarQueue):
 
     def __init__(self):
@@ -128,7 +129,8 @@ class CioQueue(QuasarQueue):
         email_event = {
             'email_converted',
             'email_opened',
-            'email_unsubscribed'
+            'email_unsubscribed',
+            'email_sent'
         }
         # Always capture atomic c.io event in raw format.
         self._log_event(data)
