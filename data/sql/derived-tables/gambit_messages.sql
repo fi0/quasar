@@ -79,6 +79,7 @@ CREATE MATERIALIZED VIEW public.gambit_messages_outbound AS
 (SELECT
 	f.campaign_id,
 	f.conversation_id,
+	f.broadcast_id,
 	f.created_at,
 	f.direction,
 	f.message_id,
@@ -98,6 +99,7 @@ UNION ALL
 (SELECT
 	g.campaign_id,
 	g.conversation_id,
+	g.broadcast_id,
 	g.created_at,
 	g.direction,
 	g.message_id,
