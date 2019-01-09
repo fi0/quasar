@@ -133,7 +133,7 @@ make test
 
 ## Versioning
 
-??
+We should figure this out.
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
