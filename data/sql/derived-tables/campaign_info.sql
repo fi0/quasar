@@ -45,11 +45,22 @@ DROP MATERIALIZED VIEW IF EXISTS public.campaign_info CASCADE;
 CREATE MATERIALIZED VIEW IF NOT EXISTS public.campaign_info AS (
 	SELECT 
 		c.id AS campaign_id,
+		c.campaign_run_id,
 		c.internal_title AS campaign_name,
-		i.*
-	FROM rogue.campaign_info_all i
-	LEFT JOIN rogue_prod.campaigns c ON i.campaign_run_id = c.campaign_run_id
-	WHERE i.campaign_language = 'en'
+		c.cause AS campaign_cause,
+		c.start_date AS campaign_run_start_date,
+		c.end_date AS campaign_run_end_date,
+		c.created_at AS campaign_created_date,
+		i.campaign_node_id_title,
+		i.campaign_run_id_title,
+		i.campaign_action_type,
+		i.campaign_cause_type,
+		i.campaign_noun,
+		i.campaign_verb,
+		i.campaign_cta
+	FROM rogue_prod.campaigns c
+	LEFT JOIN rogue.campaign_info_all i ON i.campaign_run_id = c.campaign_run_id
+	WHERE i.campaign_language = 'en' OR i.campaign_language IS NULL 
 );
 GRANT SELECT ON public.campaign_info TO dsanalyst;
 GRANT SELECT ON public.campaign_info TO looker;
