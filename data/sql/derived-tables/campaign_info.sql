@@ -58,7 +58,7 @@ CREATE MATERIALIZED VIEW IF NOT EXISTS public.campaign_info AS (
 		i.campaign_noun,
 		i.campaign_verb,
 		i.campaign_cta
-	FROM rogue_prod.campaigns c
+	FROM dosomething_rogue.campaigns c
 	LEFT JOIN rogue.campaign_info_all i ON i.campaign_run_id = c.campaign_run_id
 	WHERE i.campaign_language = 'en' OR i.campaign_language IS NULL 
 );
@@ -72,7 +72,7 @@ CREATE MATERIALIZED VIEW IF NOT EXISTS public.campaign_info_international AS (
 		c.internal_title AS campaign_name,
 		i.*
 	FROM rogue.campaign_info_all i
-	LEFT JOIN rogue_prod.campaigns c ON i.campaign_run_id = c.campaign_run_id
+	LEFT JOIN dosomething_rogue.campaigns c ON i.campaign_run_id = c.campaign_run_id
 	WHERE campaign_language IS DISTINCT FROM 'en'
 );
 GRANT SELECT ON public.campaign_info_international TO dsanalyst;
