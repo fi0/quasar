@@ -51,6 +51,7 @@ CREATE MATERIALIZED VIEW IF NOT EXISTS public.campaign_info AS (
 		c.start_date AS campaign_run_start_date,
 		c.end_date AS campaign_run_end_date,
 		c.created_at AS campaign_created_date,
+		i.campaign_node_id,
 		i.campaign_node_id_title,
 		i.campaign_run_id_title,
 		i.campaign_action_type,
