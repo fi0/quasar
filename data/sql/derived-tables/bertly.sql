@@ -30,5 +30,5 @@ CREATE MATERIALIZED VIEW public.bertly_clicks AS (
 );
 
 CREATE UNIQUE INDEX ON public.bertly_clicks (click_id);
-GRANT SELECT ON public.campaign_activity TO looker;
-GRANT SELECT ON public.campaign_activity TO dsanalyst;
+GRANT SELECT ON public.bertly_clicks TO looker;
+GRANT SELECT ON public.bertly_clicks TO dsanalyst;
