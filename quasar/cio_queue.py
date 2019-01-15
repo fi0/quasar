@@ -98,7 +98,7 @@ class CioQueue(QuasarQueue):
         log(''.join(("Added email event from "
                      "C.IO event id {}.")).format(data['event_id']))
 
-    # Save email sent event. 
+    # Save email sent event.
     def _add_email_sent_event(self, data):
         self.db.query_str(''.join(("INSERT INTO cio.email_sent "
                                    "(email_id, customer_id, email_address, "
