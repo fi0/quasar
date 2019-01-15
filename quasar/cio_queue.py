@@ -98,6 +98,24 @@ class CioQueue(QuasarQueue):
         log(''.join(("Added email event from "
                      "C.IO event id {}.")).format(data['event_id']))
 
+    # Save email sent event. 
+    def _add_email_sent_event(self, data):
+        self.db.query_str(''.join(("INSERT INTO cio.email_sent "
+                                   "(email_id, customer_id, email_address, "
+                                   "template_id, subject, event_id, "
+                                   "timestamp) VALUES "
+                                   "(%s,%s,%s,%s,%s,%s,to_timestamp(%s)) "
+                                   "ON CONFLICT (email_id, customer_id, "
+                                   "timestamp) DO NOTHING")),
+                          (data['data']['email_id'],
+                           data['data']['customer_id'],
+                           data['data']['email_address'],
+                           data['data']['template_id'],
+                           data['data']['subject'],
+                           data['event_id'], data['timestamp']))
+        log(''.join(("Added email event from "
+                     "C.IO event id {}.")).format(data['event_id']))
+
     # Save email event data and dates, e.g. email_click.
     def _add_email_click_event(self, data):
         self.db.query_str(''.join(("INSERT INTO cio.email_event "
@@ -129,8 +147,7 @@ class CioQueue(QuasarQueue):
         email_event = {
             'email_converted',
             'email_opened',
-            'email_unsubscribed',
-            'email_sent'
+            'email_unsubscribed'
         }
         # Always capture atomic c.io event in raw format.
         self._log_event(data)
@@ -141,6 +158,8 @@ class CioQueue(QuasarQueue):
                 self._add_unsub_event(data)
             elif event_type == 'email_clicked':
                 self._add_email_click_event(data)
+            elif event_type == 'email_sent':
+                self._add_email_sent_event(data)
             elif event_type in email_event:
                 self._add_email_event(data)
             else:
