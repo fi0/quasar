@@ -49,4 +49,3 @@ def refresh_dms(arn, name=None):
     end_time = time.time()  # Record when script stopped running.
     duration = end_time - start_time  # Total duration in seconds.
     log("duration: {}".format(duration))
-    
