@@ -1,6 +1,9 @@
-from .database import Database
-from .sql_utils import run_sql_file
+import os
 import time
+
+from .database import Database
+from .refresh_dms import refresh_dms
+from .sql_utils import run_sql_file
 
 
 def create():
@@ -14,6 +17,7 @@ def main():
     start_time = time.time()
     """Keep track of start time of script."""
 
+    refresh_dms(os.environ.get('CAMPAIGNS_ARN'), 'Campaigns')
     db = Database()
 
     db.query('REFRESH MATERIALIZED VIEW rogue.campaign_info_all')
