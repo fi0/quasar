@@ -145,6 +145,7 @@ class CioQueue(QuasarQueue):
         event_type = pydash.get(data, 'event_type')
         # Set for checking email event types.
         email_event = {
+            'email_bounced',
             'email_converted',
             'email_opened',
             'email_unsubscribed'
