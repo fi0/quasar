@@ -54,7 +54,7 @@ CREATE MATERIALIZED VIEW public.phoenix_events AS (
 			THEN enames_old.old_name
 			ELSE enames_new.old_name END 
 			AS event_name,
-		COALESCE(enames_new.new_name, enames_old.new_name) AS new_event_name,
+		COALESCE(enames_new.new_name, enames_old.new_name, e.records #>> '{event,name}') AS new_event_name,
 		e.records #>> '{event,source}' AS event_source,
 		e.records #>> '{page,path}' AS "path",
 		e.records #>> '{page,host}' AS host,
