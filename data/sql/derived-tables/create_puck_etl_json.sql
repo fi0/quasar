@@ -27,6 +27,7 @@ CREATE MATERIALIZED VIEW public.path_campaign_lookup AS
 			WHERE e.records #>> '{data,campaignId}' IS NOT NULL 
 				OR e.records #>> '{data,legacyCampaignId}' IS NOT NULL 
 			) camps
+	INNER JOIN campaign_info i ON i.campaign_id::varchar = camps.campaign_id
 	GROUP BY camps.campaign_name
 	)
 ;
