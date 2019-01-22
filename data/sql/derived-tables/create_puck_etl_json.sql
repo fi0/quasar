@@ -49,10 +49,11 @@ CREATE MATERIALIZED VIEW public.phoenix_events AS (
 		e.records #>> '{meta,id}' AS puck_id,
 		to_timestamp((e.records #>> '{meta,timestamp}')::bigint/1000) AS event_datetime,
 		(e.records #>> '{meta,timestamp}')::bigint AS ts,
-		CASE 
-			WHEN enames_old.old_name IS NOT NULL 
-			THEN enames_old.old_name
-			ELSE enames_new.old_name END 
+		COALESCE((CASE 
+				  WHEN enames_old.old_name IS NOT NULL 
+				  THEN enames_old.old_name
+				  ELSE enames_new.old_name END), 
+				  e.records #>> '{event,name}')
 			AS event_name,
 		COALESCE(enames_new.new_name, enames_old.new_name, e.records #>> '{event,name}') AS new_event_name,
 		e.records #>> '{event,source}' AS event_source,
