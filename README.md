@@ -91,8 +91,10 @@ Alternately, you can use Docker to pull a PostgreSQL image based on version/imag
 	* Specify image tag (check PostgreSQL version in this file, full image list [here](https://hub.docker.com/_/postgres/)): ```export QUASAR_PG_DOCKER_IMAGE="postgres:10"```
 	* Command to pull down images based on image tag: ```alias qu="docker pull $QUASAR_PG_DOCKER_IMAGE"```
 	* Command to start up Postgres container. Default username and database are `postgres`, and password, controlled by `POSTGRES_PASSWORD` is `postgres` in this case: ```alias qp="docker run --rm --name quasar-pg -e POSTGRES_PASSWORD=postgres -d -p 5432:5432 -v $HOME/docker/volumes/postgres:/var/lib/postgresql/data $QUASAR_PG_DOCKER_IMAGE"```
-	* Command to kill running image: ```alias qpk="docker kill quasar-pg"
-```
+	* Command to kill running image: ```alias qpk="docker kill quasar-pg"```
+* Run `qu` to checkout the Postgres Docker image.
+* Run `qp` to run bring up Postgres Docker image.
+* You can kill the Docker image with `qpk`.
 
 ## Usage
 
