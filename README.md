@@ -55,11 +55,6 @@ cd $QUASAR_PROJECT_DIR
 pip install -r requirements.txt
 ```
 
-Start the vagrant machine. It runs MySQL and PostgreSQL:
-
-```
-vagrant up
-```
 
 ### Development
 
@@ -74,6 +69,32 @@ To exit out of virtualenv:
 ```
 deactivate
 ```
+
+Current PostgreSQL Major Version: `10`.
+
+You use the provided Vagrant file to run PostgreSQL locally in a VM (make sure you have [Virtualbox](https://www.virtualbox.org/wiki/Downloads) and [Vagrant](https://www.vagrantup.com/) installed.)
+
+Start the vagrant machine. It runs PostgreSQL 10. Username/password are `root/password`:
+
+```
+vagrant up
+```
+
+Alternately, you can use Docker to pull a PostgreSQL image based on version/image tag.
+(Instructions here modified from [here](https://hackernoon.com/dont-install-postgres-docker-pull-postgres-bee20e200198).)
+
+* Install [Docker for Desktop](https://hub.docker.com/editions/community/docker-ce-desktop-mac) for MacOS.
+* Create a Docker Hub account if you don't already have one. 
+* From your Terminal provide of choice type `docker login`. Authenticate with your Docker Hub account, keeping in mind your username for the CLI isn't your email address, it's your profile name, which you can find by going to `https://hub.docker.com`, and seeing your profile name in the upper right corner.
+* Setup a directory to make sure your Docker Postgres data is persisted: `mkdir -p $HOME/docker/volumes/postgres`
+* Add the following aliases (modify to taste) to your `~/.bash_profile` script and then run `source ~/.bash_profile`:
+	* Specify image tag (check PostgreSQL version in this file, full image list [here](https://hub.docker.com/_/postgres/)): ```export QUASAR_PG_DOCKER_IMAGE="postgres:10"```
+	* Command to pull down images based on image tag: ```alias qu="docker pull $QUASAR_PG_DOCKER_IMAGE"```
+	* Command to start up Postgres container. Default username and database are `postgres`, and password, controlled by `POSTGRES_PASSWORD` is `postgres` in this case: ```alias qp="docker run --rm --name quasar-pg -e POSTGRES_PASSWORD=postgres -d -p 5432:5432 -v $HOME/docker/volumes/postgres:/var/lib/postgresql/data $QUASAR_PG_DOCKER_IMAGE"```
+	* Command to kill running image: ```alias qpk="docker kill quasar-pg"```
+* Run `qu` to checkout the Postgres Docker image.
+* Run `qp` to run bring up Postgres Docker image.
+* You can kill the Docker image with `qpk`.
 
 ## Usage
 
