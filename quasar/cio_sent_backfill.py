@@ -3,6 +3,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 from sqlalchemy import create_engine
 from sqlalchemy.engine.url import URL
+from sqlalchemy.sql import text
 
 from .utils import log, logerr
 
@@ -17,9 +18,9 @@ pg_vars = {
 
 pg_ssl = os.getenv('PG_SSL')
 
+# Setup SQL Alchemy postgres connection.
 engine = create_engine(URL(**pg_vars),
                        connect_args={'sslmode': pg_ssl})
-
 connection = engine.connect()
 
 # Grab a page from C.io messages API with optional next param for pagination.
@@ -35,8 +36,28 @@ def get_page(next_page=None):
     return r.json()
 
 
+# Insert record atomically. 
+def insert_record(message):
+	query = text(''.join(("INSERT INTO cio.email_sent(email_id, customer_id, "
+		                  "email_address, template_id, subject, timestamp)"
+		                  "VALUES (:email_id, :customer_id, :email_address,"
+		                  ":template_id, :subject, to_timestamp(:timestamp))"
+		                  "ON CONFLICT (email_id, customer_id, timestamp) "
+		                  "DO NOTHING")))
+	record = {
+	    'email_id': message['id'],
+	    'customer_id': message['customer_id'],
+	    'email_address': message['recipient'],
+	    'template_id': message['msg_template_id'],
+	    'subject': message['subject'],
+	    'timestamp': message['metrics']['sent']
+	}
+	connection.execute(query, **record)
+
+
 def main():
 	page = get_page()
 	for id in page['messages']:
+		insert_record(id)
 		log('Message ID is {}.'.format(id['id']))
 	log('The next page ID is {}.'.format(page['next']))
