@@ -82,7 +82,7 @@ def main():
 		insert_bookmark(page['next'])
 	# While there is a page of results, continue processing.
 	while page:
-		with PoolExecutor(max_workers=os.getenv('POOL_SIZE')) as executor:
+		with PoolExecutor(max_workers=int(os.getenv('POOL_SIZE'))) as executor:
 			for _ in executor.map(insert_record, page['messages']):
 				pass
 		page = get_page(next_page=get_bookmark())
