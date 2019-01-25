@@ -146,7 +146,7 @@ class CioQueue(QuasarQueue):
                                    "(email_id, customer_id, email_address, "
                                    "template_id, event_id, "
                                    "timestamp) VALUES "
-                                   "(%s,%s,%s,%s,%s,%s,to_timestamp(%s)) "
+                                   "(%s,%s,%s,%s,%s,to_timestamp(%s)) "
                                    "ON CONFLICT (email_id, customer_id, "
                                    "timestamp) DO NOTHING")),
                           (data['data']['email_id'],
