@@ -18,12 +18,15 @@ pg_vars = {
     'database': os.getenv('PG_DATABASE')
 }
 
+
 pg_ssl = os.getenv('PG_SSL')
+
 
 # Setup SQL Alchemy postgres connection.
 engine = create_engine(URL(**pg_vars),
                        connect_args={'sslmode': pg_ssl})
 conn = engine.connect()
+
 
 # Grab a page from C.io messages API with optional next param for pagination.
 def get_page(next_page=None):
@@ -38,52 +41,52 @@ def get_page(next_page=None):
     return r.json()
 
 
-# Insert C.io email_sent record atomically. 
+# Insert C.io email_sent record atomically.
 def insert_record(message):
-	query = text(''.join(("INSERT INTO cio.email_sent(email_id, customer_id, "
-		                  "email_address, template_id, subject, timestamp)"
-		                  "VALUES (:email_id, :customer_id, :email_address,"
-		                  ":template_id, :subject, to_timestamp(:timestamp))"
-		                  "ON CONFLICT (email_id, customer_id, timestamp) "
-		                  "DO NOTHING")))
-	record = {
-	    'email_id': message['id'],
-	    'customer_id': message['customer_id'],
-	    'email_address': message['recipient'],
-	    'template_id': message['msg_template_id'],
-	    'subject': message['subject'],
-	    'timestamp': message['metrics']['sent']
-	}
-	conn.execute(query, **record)
-	log('Message ID {} processed.'.format(message['id']))
+    query = text(''.join(("INSERT INTO cio.email_sent_backfill(email_id, "
+                          "customer_id, email_address, template_id, subject, "
+                          "timestamp) VALUES (:email_id, :customer_id, "
+                          ":email_address, :template_id, :subject, "
+                          "to_timestamp(:timestamp)) ON CONFLICT (email_id, "
+                          " email_address, timestamp) DO NOTHING")))
+    record = {
+        'email_id': message['id'],
+        'customer_id': message['customer_id'],
+        'email_address': message['recipient'],
+        'template_id': message['msg_template_id'],
+        'subject': message['subject'],
+        'timestamp': message['metrics']['sent']
+    }
+    conn.execute(query, **record)
+    log('Message ID {} processed.'.format(message['id']))
 
 
 # Get next page location.
 def get_bookmark():
-	s = "SELECT * FROM cio.sent_backfill_track"
-	result = conn.execute(s)
-	return result.fetchall()
+    s = "SELECT * FROM cio.sent_backfill_track"
+    result = conn.execute(s)
+    return result.fetchall()
 
 
 # Keep track of next page location.
 def insert_bookmark(next_page):
-	query = text(''.join(("INSERT INTO cio.sent_backfill_track(next_page) "
-		                  "VALUES (:next_page)")))
-	conn.execute("TRUNCATE cio.sent_backfill_track")
-	conn.execute(query, next_page=next_page)
+    query = text(''.join(("INSERT INTO cio.sent_backfill_track(next_page) "
+                          "VALUES (:next_page)")))
+    conn.execute("TRUNCATE cio.sent_backfill_track")
+    conn.execute(query, next_page=next_page)
 
 
 def main():
-	# Check if this is start of the run. If not, resume from last page.
-	if get_bookmark() is None:
-		page = get_page()
-	else:
-		page = get_page(next_page=get_bookmark())
-		insert_bookmark(page['next'])
-	# While there is a page of results, continue processing.
-	while page:
-		with PoolExecutor(max_workers=int(os.getenv('POOL_SIZE'))) as executor:
-			for _ in executor.map(insert_record, page['messages']):
-				pass
-		page = get_page(next_page=get_bookmark())
-		insert_bookmark(page['next'])
+    # Check if this is start of the run. If not, resume from last page.
+    if get_bookmark() is None:
+        page = get_page()
+    else:
+        page = get_page(next_page=get_bookmark())
+        insert_bookmark(page['next'])
+    # While there is a page of results, continue processing.
+    while page:
+        with PoolExecutor(max_workers=int(os.getenv('POOL_SIZE'))) as executor:
+            for _ in executor.map(insert_record, page['messages']):
+                pass
+        page = get_page(next_page=get_bookmark())
+        insert_bookmark(page['next'])
