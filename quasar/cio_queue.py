@@ -140,6 +140,23 @@ class CioQueue(QuasarQueue):
         log(''.join(("Added email event from "
                      "C.IO event id {}.")).format(data['event_id']))
 
+        # Save email bounced event.
+    def _add_email_bounced_event(self, data):
+        self.db.query_str(''.join(("INSERT INTO cio.email_bounced "
+                                   "(email_id, customer_id, email_address, "
+                                   "template_id, event_id, "
+                                   "timestamp) VALUES "
+                                   "(%s,%s,%s,%s,%s,to_timestamp(%s)) "
+                                   "ON CONFLICT (email_id, customer_id, "
+                                   "timestamp) DO NOTHING")),
+                          (data['data']['email_id'],
+                           data['data']['customer_id'],
+                           data['data']['email_address'],
+                           data['data']['template_id'],
+                           data['event_id'], data['timestamp']))
+        log(''.join(("Added email bounced event from "
+                     "C.IO event id {}.")).format(data['event_id']))
+
     def process_message(self, message_data):
         data = message_data['data']
         event_type = pydash.get(data, 'event_type')
