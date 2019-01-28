@@ -8,7 +8,12 @@ CREATE MATERIALIZED VIEW public.member_event_log AS
     a.action_id AS action_id,
     a."source" AS "source",
     a.action_serial_id AS action_serial_id,
-    a.channel AS channel
+    a.channel AS channel,
+    CASE 
+    	WHEN date_trunc('month', a."timestamp") = date_trunc('month', u.created_at) 
+    	THEN 'New' 
+    	ELSE 'Returning' END 
+    	AS "type"
 FROM ( 
     SELECT -- CAMPAIGN SIGNUP WITH CHANNEL
         DISTINCT s.northstar_id AS northstar_id,
@@ -125,6 +130,7 @@ FROM (
     WHERE b.northstar_id IS NOT NULL
     AND b.interaction_type IS DISTINCT FROM 'preview'
     ) AS a
+ LEFT JOIN public.users u ON u.northstar_id = a.northstar_id
    );
 CREATE UNIQUE INDEX ON public.member_event_log (event_id, northstar_id, action_id, action_serial_id, channel, "timestamp", "source");
 GRANT SELECT ON public.member_event_log TO looker;
