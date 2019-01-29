@@ -178,6 +178,8 @@ class CioQueue(QuasarQueue):
                 self._add_email_click_event(data)
             elif event_type == 'email_sent':
                 self._add_email_sent_event(data)
+            elif event_type == 'email_bounced':
+                self._add_email_bounced_event(data)
             elif event_type in email_event:
                 self._add_email_event(data)
             else:
