@@ -79,48 +79,49 @@ GRANT SELECT ON public.latest_post TO dsanalyst;
 DROP MATERIALIZED VIEW IF EXISTS public.posts CASCADE;
 CREATE MATERIALIZED VIEW public.posts AS
     (SELECT
-	    pd.northstar_id as northstar_id,
-	    pd.id AS id,
-	    pd."type" AS "type",
-	    pd."action" AS "action",
-	    pd.status AS status,
-	    CASE WHEN pd.status IN ('accepted', 'pending')
-		    AND pd.post_class NOT ilike 'vote%%' THEN 1
-	    	 WHEN pd.status IN ('accepted', 'confirmed', 'register-OVR', 'register-form')
-		    AND pd.post_class ilike 'vote%%' THEN 1
-		 ELSE null END AS is_accepted,
-	    pd.quantity AS quantity,
-	    CASE WHEN pd.post_class <> 'voter-reg - ground' or pd.quantity IS NULL
-	    	 THEN 1
-		 ELSE pd.quantity END AS reportback_volume,
-	    pd."source" AS "source",
-	    CASE WHEN pd."source" IS NULL THEN NULL
-		 WHEN pd."source" ilike '%%sms%%' THEN 'sms'
-		 ELSE 'web' END AS source_bucket,
-	    COALESCE(rtv.created_at, tv.created_at, pd.created_at) AS created_at,
-	    pd.url AS url,
-	    pd.caption,
-	    pd.signup_id AS signup_id,
-	    pd.post_class,
-	    pd.campaign_id,
-	    CASE WHEN pd.post_class ilike '%%text%%' and pd.campaign_id IN ('8167', '8168', '8309', '8292', '8226', '5646')
-		      THEN null
-		 WHEN pd.post_class ilike '%%social%%' and pd.campaign_id IN ('5438','7927','8025','8026','8103','8130','8158','8168', '8309', '8292', '8226', '5646') THEN null
-		 ELSE 1 end as is_reportback
+        pd.northstar_id as northstar_id,
+        pd.id AS id,
+        pd."type" AS "type",
+        pd."action" AS "action",
+        pd.status AS status,
+        CASE WHEN pd.status IN ('accepted', 'pending')
+            AND pd.post_class NOT ilike 'vote%%' THEN 1
+             WHEN pd.status IN ('accepted', 'confirmed', 'register-OVR', 'register-form')
+            AND pd.post_class ilike 'vote%%' THEN 1
+         ELSE null END AS is_accepted,
+        pd.quantity AS quantity,
+        CASE WHEN pd.post_class <> 'voter-reg - ground' or pd.quantity IS NULL
+             THEN 1
+         ELSE pd.quantity END AS reportback_volume,
+        pd."source" AS "source",
+        CASE WHEN pd."source" IS NULL THEN NULL
+         WHEN pd."source" ilike '%%sms%%' THEN 'sms'
+         ELSE 'web' END AS source_bucket,
+        COALESCE(rtv.created_at, tv.created_at, pd.created_at) AS created_at,
+        pd.url AS url,
+        pd.text,
+        pd.signup_id AS signup_id,
+        pd.post_class,
+        pd.campaign_id,
+        CASE WHEN pd.post_class ilike '%%text%%' and pd.campaign_id IN ('8167', '8168', '8309', '8292', '8226', '5646')
+              THEN null
+         WHEN pd.post_class ilike '%%social%%' and pd.campaign_id IN ('5438','7927','8025','8026','8103','8130','8158','8168', '8309', '8292', '8226', '5646') THEN null
+         ELSE 1 end as is_reportback
     FROM public.latest_post pd
     LEFT JOIN rogue.turbovote tv ON tv.post_id::bigint = pd.id::bigint
     LEFT JOIN
-	(SELECT DISTINCT r.*,
-		CASE WHEN r.started_registration < '2017-01-01'
-		THEN r.started_registration + interval '4 year'
-		ELSE r.started_registration END AS created_at
-	FROM rogue.rock_the_vote r
-	) rtv ON rtv.post_id::bigint = pd.id::bigint
+    (SELECT DISTINCT r.*,
+        CASE WHEN r.started_registration < '2017-01-01'
+        THEN r.started_registration + interval '4 year'
+        ELSE r.started_registration END AS created_at
+    FROM rogue.rock_the_vote r
+    ) rtv ON rtv.post_id::bigint = pd.id::bigint
 )
 ;
 CREATE UNIQUE INDEX posti ON public.posts (created_at, campaign_id, id);
 CREATE INDEX signup_post_classi on public.posts (is_reportback, is_accepted, signup_id, id, post_class);
 GRANT SELECT ON public.posts TO looker;
+GRANT SELECT ON public.posts TO dsanalyst;
 GRANT SELECT ON public.posts TO dsanalyst;
 
 DROP MATERIALIZED VIEW IF EXISTS public.reportbacks;
