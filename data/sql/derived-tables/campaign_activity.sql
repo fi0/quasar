@@ -23,8 +23,8 @@ CREATE MATERIALIZED VIEW public.signups AS
 	AND stemp."source" IS DISTINCT  FROM 'rogue-oauth'
         AND stemp.why_participated IS DISTINCT FROM 'why_participated_ghost'
         GROUP BY stemp.id) s_maxupt
-  INNER JOIN ft_dosomething_rogue.signups sd
-      ON sd.id = s_maxupt.id AND sd.updated_at = s_maxupt.updated_at
+  	INNER JOIN ft_dosomething_rogue.signups sd
+  	    ON sd.id = s_maxupt.id AND sd.updated_at = s_maxupt.updated_at
     )
     ;
 CREATE UNIQUE INDEX signupsi ON public.signups (created_at, id);
