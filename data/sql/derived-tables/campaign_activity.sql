@@ -16,14 +16,14 @@ CREATE MATERIALIZED VIEW public.signups AS
         (SELECT
         		stemp.id,
         		max(stemp.updated_at) AS updated_at
-        FROM rogue.signups stemp
+        FROM ft_dosomething_rogue.signups stemp
         WHERE stemp.deleted_at IS NULL
         AND stemp."source" IS DISTINCT FROM 'runscope'
 	AND stemp."source" IS DISTINCT FROM 'runscope-oauth'
 	AND stemp."source" IS DISTINCT  FROM 'rogue-oauth'
         AND stemp.why_participated IS DISTINCT FROM 'why_participated_ghost'
         GROUP BY stemp.id) s_maxupt
-        INNER JOIN rogue.signups sd
+        INNER JOIN ft_dosomething_rogue.signups sd
             ON sd.id = s_maxupt.id AND sd.updated_at = s_maxupt.updated_at
     )
     ;
@@ -60,13 +60,13 @@ CREATE MATERIALIZED VIEW public.latest_post AS
         (SELECT
             ptemp.id,
             max(ptemp.updated_at) AS updated_at
-         FROM ft_dosomething_rogue_qa.posts ptemp
+         FROM ft_dosomething_rogue.posts ptemp
          WHERE ptemp.deleted_at IS NULL
          AND ptemp."source" IS DISTINCT FROM 'runscope'
          AND ptemp."source" IS DISTINCT FROM 'runscope-oauth'
      AND ptemp.text IS DISTINCT FROM 'test runscope upload'
         GROUP BY ptemp.id) p_maxupt
-     INNER JOIN ft_dosomething_rogue_qa.posts pd
+     INNER JOIN ft_dosomething_rogue.posts pd
             ON pd.id = p_maxupt.id AND pd.updated_at = p_maxupt.updated_at
      INNER JOIN public.signups s
             ON pd.signup_id = s.id
@@ -108,13 +108,13 @@ CREATE MATERIALIZED VIEW public.posts AS
          WHEN pd.post_class ilike '%%social%%' and pd.campaign_id IN ('5438','7927','8025','8026','8103','8130','8158','8168', '8309', '8292', '8226', '5646') THEN null
          ELSE 1 end as is_reportback
     FROM public.latest_post pd
-    LEFT JOIN rogue.turbovote tv ON tv.post_id::bigint = pd.id::bigint
+    LEFT JOIN ft_dosomething_rogue.turbovote tv ON tv.post_id::bigint = pd.id::bigint
     LEFT JOIN
     (SELECT DISTINCT r.*,
         CASE WHEN r.started_registration < '2017-01-01'
         THEN r.started_registration + interval '4 year'
         ELSE r.started_registration END AS created_at
-    FROM rogue.rock_the_vote r
+    FROM ft_dosomething_rogue.rock_the_vote r
     ) rtv ON rtv.post_id::bigint = pd.id::bigint
 )
 ;
