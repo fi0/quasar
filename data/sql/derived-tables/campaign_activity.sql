@@ -22,7 +22,7 @@ CREATE MATERIALIZED VIEW public.signups AS
 		AND stemp."source" IS DISTINCT FROM 'runscope-oauth'
 		AND stemp."source" IS DISTINCT  FROM 'rogue-oauth'
         AND stemp.why_participated IS DISTINCT FROM 'why_participated_ghost'
-        AND stemp.why_participated = 'Testing from Ghost Inspector!'
+        AND stemp.why_participated IS DISTINCT FROM 'Testing from Ghost Inspector!'
         GROUP BY stemp.id) s_maxupt
 	INNER JOIN rogue.signups sd
 		ON sd.id = s_maxupt.id AND sd.updated_at = s_maxupt.updated_at
