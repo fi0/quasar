@@ -34,7 +34,7 @@ GRANT SELECT ON public.signups TO dsanalyst;
 DROP MATERIALIZED VIEW IF EXISTS public.latest_post CASCADE;
 CREATE MATERIALIZED VIEW public.latest_post AS
     (SELECT
-	pd.northstar_id as northstar_id,
+    pd.northstar_id as northstar_id,
         pd.id AS id,
         pd."type" AS "type",
         pd."action" AS "action",
@@ -43,33 +43,33 @@ CREATE MATERIALIZED VIEW public.latest_post AS
         pd."source" AS "source",
         pd.created_at AS created_at,
         pd.url AS url,
-        pd.caption,
-	CASE WHEN s."source" = 'importer-client'
-	     	  AND pd."type" = 'share-social'
-		 AND pd.created_at < s.created_at
-	     	THEN -1
-	     ELSE pd.signup_id END AS signup_id,
-	s.campaign_id,
-	CASE WHEN pd.id IS NULL THEN NULL
-	     WHEN s.campaign_id IN (
-	     '822','6223','8103','8119','8129','8130','8180','8195','8202','8208')
-	     	  AND s.created_at >= '2018-05-01'
-	       THEN 'voter-reg - ground'
-	     ELSE CONCAT(pd."type", ' - ', pd."action") END AS post_class
+        pd.text,
+    CASE WHEN s."source" = 'importer-client'
+              AND pd."type" = 'share-social'
+         AND pd.created_at < s.created_at
+            THEN -1
+         ELSE pd.signup_id END AS signup_id,
+    s.campaign_id,
+    CASE WHEN pd.id IS NULL THEN NULL
+         WHEN s.campaign_id IN (
+         '822','6223','8103','8119','8129','8130','8180','8195','8202','8208')
+              AND s.created_at >= '2018-05-01'
+           THEN 'voter-reg - ground'
+         ELSE CONCAT(pd."type", ' - ', pd."action") END AS post_class
     FROM
         (SELECT
             ptemp.id,
             max(ptemp.updated_at) AS updated_at
-         FROM rogue.posts ptemp
+         FROM ft_dosomething_rogue_qa.posts ptemp
          WHERE ptemp.deleted_at IS NULL
          AND ptemp."source" IS DISTINCT FROM 'runscope'
          AND ptemp."source" IS DISTINCT FROM 'runscope-oauth'
-	 AND ptemp.caption IS DISTINCT FROM 'test runscope upload'
+     AND ptemp.text IS DISTINCT FROM 'test runscope upload'
         GROUP BY ptemp.id) p_maxupt
-     INNER JOIN rogue.posts pd
+     INNER JOIN ft_dosomething_rogue_qa.posts pd
             ON pd.id = p_maxupt.id AND pd.updated_at = p_maxupt.updated_at
      INNER JOIN public.signups s
-     	    ON pd.signup_id = s.id
+            ON pd.signup_id = s.id
     )
     ;
 CREATE UNIQUE INDEX latest_posti ON public.latest_post (id, created_at);
