@@ -1,5 +1,5 @@
 DROP MATERIALIZED VIEW IF EXISTS public.signups CASCADE;
-CREATE MATERIALIZED VIEW public.signups AS
+CREATE MATERIALIZED VIEW CONCURRENTLY public.signups AS
 	(SELECT
 		sd.northstar_id AS northstar_id,
 		sd.id AS id,
@@ -32,7 +32,7 @@ GRANT SELECT ON public.signups TO looker;
 GRANT SELECT ON public.signups TO dsanalyst;
 
 DROP MATERIALIZED VIEW IF EXISTS public.latest_post CASCADE;
-CREATE MATERIALIZED VIEW public.latest_post AS
+CREATE MATERIALIZED VIEW CONCURRENTLY public.latest_post AS
 	(SELECT
 	pd.northstar_id as northstar_id,
 		pd.id AS id,
@@ -77,7 +77,7 @@ GRANT SELECT ON public.latest_post TO looker;
 GRANT SELECT ON public.latest_post TO dsanalyst;
 
 DROP MATERIALIZED VIEW IF EXISTS public.posts CASCADE;
-CREATE MATERIALIZED VIEW public.posts AS
+CREATE MATERIALIZED VIEW CONCURRENTLY public.posts AS
 	(SELECT
 		pd.northstar_id as northstar_id,
 		pd.id AS id,
@@ -124,8 +124,24 @@ GRANT SELECT ON public.posts TO looker;
 GRANT SELECT ON public.posts TO dsanalyst;
 GRANT SELECT ON public.posts TO dsanalyst;
 
+DROP MATERIALIZED VIEW IF EXISTS ft_dosomething_rogue.turbovote;
+CREATE MATERIALIZED VIEW CONCURRENTLY ft_dosomething_rogue.turbovote AS
+    (SELECT id, 
+       details::jsonb->>'hostname' AS hostname,
+       details::jsonb->>'referral_code' AS referral_code,
+       details::jsonb->>'partner_comms_opt_in' AS partner_comms_opt_in,
+       created_at, updated_at, source_details,
+       details::jsonb->>'voter_registration_status' AS voter_registration_status,
+       details::jsonb->>'voter_registration_source' AS voter_registration_source,
+       details::jsonb->>'voter_registration_method' AS voter_registration_method,
+       details::jsonb->>'voter_registration_preference' AS voter_registration_preference,
+       details::jsonb->>'email_subscribed' AS email_subscribed,
+       details::jsonb->>'sms_subscribed' AS sms_subscribed
+     FROM ft_dosomething_rogue_qa.posts
+     WHERE source = 'turbovote');
+
 DROP MATERIALIZED VIEW IF EXISTS public.reportbacks;
-CREATE MATERIALIZED VIEW public.reportbacks AS
+CREATE MATERIALIZED VIEW CONCURRENTLY public.reportbacks AS
 	(
 	SELECT
 	pd.northstar_id,
