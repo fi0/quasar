@@ -89,9 +89,24 @@ CREATE MATERIALIZED VIEW ft_dosomething_rogue.turbovote AS
             details::jsonb->>'voter_registration_preference' AS voter_registration_preference,
             details::jsonb->>'email_subscribed' AS email_subscribed,
             details::jsonb->>'sms_subscribed' AS sms_subscribed
-     FROM ft_dosomething_rogue_qa.posts
+     FROM ft_dosomething_rogue.posts
      WHERE source = 'turbovote');
 CREATE UNIQUE INDEX ON ft_dosomething_rogue.turbovote (post_id, created_at, updated_at);
+GRANT SELECT ON ft_dosomething_rogue.turbovote TO looker;
+GRANT SELECT ON ft_dosomething_rogue.turbovote TO dsanalyst;
+
+DROP MATERIALIZED VIEW IF EXISTS ft_dosomething_rogue.rock_the_vote CASCADE;
+CREATE MATERIALIZED VIEW ft_dosomething_rogue.rock_the_vote AS
+    (SELECT id AS post_id, 
+       details::jsonb->>'Tracking Source' AS tracking_source,
+       details::jsonb->>'Started registration' AS started_registration,
+       details::jsonb->>'Finish with State' AS finish_with_state,
+       details::jsonb->>'Status' AS status,
+       details::jsonb->>'Email address' AS email,
+       details::jsonb->>'Home zip code' AS zip
+     FROM ft_dosomething_rogue.posts
+     WHERE source = 'rock-the-vote');
+CREATE INDEX ON ft_dosomething_rogue.rock_the_vote (post_id, started_registration);
 GRANT SELECT ON ft_dosomething_rogue.turbovote TO looker;
 GRANT SELECT ON ft_dosomething_rogue.turbovote TO dsanalyst;
 
