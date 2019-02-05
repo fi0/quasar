@@ -1,29 +1,29 @@
 DROP MATERIALIZED VIEW IF EXISTS ft_gambit_conversations_api.messages_flattened_ft CASCADE;
 CREATE MATERIALIZED VIEW ft_gambit_conversations_api.messages_flattened_ft AS
 (SELECT 
-    'agentId' AS agent_id,
+    agent_id AS agent_id,
     attachments->0->>'contentType' AS attachment_content_type,
     attachments->0->>'url' AS attachment_url,
-    'broadcastId' AS broadcast_id,
-    'campaignId' AS campaign_id,
-    'conversation_id' AS conversation_id,
-    'created_at' as created_at,
-    'direction' AS direction,
-    '_id' AS message_id,
-    'macro' AS macro,
-    'match' AS match,
+    broadcast_id AS broadcast_id,
+    campaign_id AS campaign_id,
+    conversation_id AS conversation_id,
+    created_at as created_at,
+    direction AS direction,
+    _id AS message_id,
+    macro AS macro,
+    match AS match,
     metadata #>> '{delivery,queuedAt}' AS delivered_at,
     (metadata #> '{delivery}' ->> 'totalSegments')::INT AS total_segments,
-    'platform_message_id' as platform_message_id,
-    'template' AS template,
-    'text' AS text,
-    'topic' AS topic,
-    'userId' AS user_id
+    platform_message_id as platform_message_id,
+    template AS template,
+    text AS text,
+    topic AS topic,
+    user_id AS user_id
  FROM ft_gambit_conversations_api.messages
 );
 
-CREATE INDEX platformmsgi ON ft_gambit_conversations_api.messages_flattened_ft(platform_message_id);
-CREATE INDEX usermidi ON ft_gambit_conversations_api.messages_flattened_ft(user_id);
+CREATE INDEX platformmsgi_ft ON ft_gambit_conversations_api.messages_flattened_ft(platform_message_id);
+CREATE INDEX usermidi_ft ON ft_gambit_conversations_api.messages_flattened_ft(user_id);
 
 GRANT SELECT ON ft_gambit_conversations_api.messages_flattened_ft TO looker;
 GRANT SELECT ON ft_gambit_conversations_api.messages_flattened_ft to dsanalyst;
@@ -128,3 +128,5 @@ WHERE
 CREATE INDEX outbound_messages_ft_i ON public.gambit_messages_outbound_ft (message_id, created_at, user_id, conversation_id);
 GRANT SELECT ON public.gambit_messages_outbound_ft to looker;
 GRANT SELECT ON public.gambit_messages_outbound_ft to dsanalyst;
+
+
