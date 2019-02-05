@@ -25,8 +25,8 @@ CREATE MATERIALIZED VIEW public.signups AS
 		AND sd."source" IS DISTINCT FROM 'runscope'
 		AND sd."source" IS DISTINCT FROM 'runscope-oauth'
 		AND sd."source" IS DISTINCT  FROM 'rogue-oauth'
-        AND sd.why_participated IS DISTINCT FROM 'why_participated_ghost'
-        AND sd.why_participated IS DISTINCT FROM 'Testing from Ghost Inspector!'
+		AND sd.why_participated IS DISTINCT FROM 'why_participated_ghost'
+		AND sd.why_participated IS DISTINCT FROM 'Testing from Ghost Inspector!'
     )
     ;
 CREATE UNIQUE INDEX signupsi ON public.signups (created_at, id);
@@ -65,12 +65,12 @@ CREATE MATERIALIZED VIEW public.latest_post AS
          FROM rogue.posts ptemp
         GROUP BY ptemp.id) p_maxupt
      INNER JOIN rogue.posts pd
-            ON pd.id = p_maxupt.id 
-            AND pd.updated_at = p_maxupt.updated_at
-            AND pd.deleted_at IS NULL
-         	AND pd."source" IS DISTINCT FROM 'runscope'
-         	AND pd."source" IS DISTINCT FROM 'runscope-oauth'
-	 		AND pd.caption IS DISTINCT FROM 'test runscope upload'
+		ON pd.id = p_maxupt.id 
+		AND pd.updated_at = p_maxupt.updated_at
+		AND pd.deleted_at IS NULL
+		AND pd."source" IS DISTINCT FROM 'runscope'
+		AND pd."source" IS DISTINCT FROM 'runscope-oauth'
+		AND pd.caption IS DISTINCT FROM 'test runscope upload'
      INNER JOIN public.signups s
      	    ON pd.signup_id = s.id
     )
