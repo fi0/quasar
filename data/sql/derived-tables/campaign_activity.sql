@@ -45,7 +45,7 @@ CREATE MATERIALIZED VIEW public.latest_post AS
         pd."source" AS "source",
         pd.created_at AS created_at,
         pd.url AS url,
-        pd.caption,
+        pd.text,
 	CASE WHEN s."source" = 'importer-client'
 	     	  AND pd."type" = 'share-social'
 		 AND pd.created_at < s.created_at
@@ -70,7 +70,7 @@ CREATE MATERIALIZED VIEW public.latest_post AS
 		AND pd.deleted_at IS NULL
 		AND pd."source" IS DISTINCT FROM 'runscope'
 		AND pd."source" IS DISTINCT FROM 'runscope-oauth'
-		AND pd.caption IS DISTINCT FROM 'test runscope upload'
+		AND pd.text IS DISTINCT FROM 'test runscope upload'
      INNER JOIN public.signups s
      	    ON pd.signup_id = s.id
     )
@@ -136,7 +136,7 @@ CREATE MATERIALIZED VIEW public.posts AS
 		 ELSE 'web' END AS source_bucket,
 	    COALESCE(rtv.created_at, tv.created_at, pd.created_at) AS created_at,
 	    pd.url AS url,
-	    pd.caption,
+	    pd.text,
 	    pd.signup_id AS signup_id,
 	    pd.post_class,
 	    pd.campaign_id,
