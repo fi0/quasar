@@ -17,15 +17,16 @@ CREATE MATERIALIZED VIEW public.signups AS
         		stemp.id,
         		max(stemp.updated_at) AS updated_at
         FROM rogue.signups stemp
-        WHERE stemp.deleted_at IS NULL
-        AND stemp."source" IS DISTINCT FROM 'runscope'
-		AND stemp."source" IS DISTINCT FROM 'runscope-oauth'
-		AND stemp."source" IS DISTINCT  FROM 'rogue-oauth'
-        AND stemp.why_participated IS DISTINCT FROM 'why_participated_ghost'
-        AND stemp.why_participated IS DISTINCT FROM 'Testing from Ghost Inspector!'
         GROUP BY stemp.id) s_maxupt
 	INNER JOIN rogue.signups sd
-		ON sd.id = s_maxupt.id AND sd.updated_at = s_maxupt.updated_at
+		ON sd.id = s_maxupt.id 
+		AND sd.updated_at = s_maxupt.updated_at 
+		AND sd.deleted_at IS NULL 
+		AND sd."source" IS DISTINCT FROM 'runscope'
+		AND sd."source" IS DISTINCT FROM 'runscope-oauth'
+		AND sd."source" IS DISTINCT  FROM 'rogue-oauth'
+        AND sd.why_participated IS DISTINCT FROM 'why_participated_ghost'
+        AND sd.why_participated IS DISTINCT FROM 'Testing from Ghost Inspector!'
     )
     ;
 CREATE UNIQUE INDEX signupsi ON public.signups (created_at, id);
@@ -62,13 +63,14 @@ CREATE MATERIALIZED VIEW public.latest_post AS
             ptemp.id,
             max(ptemp.updated_at) AS updated_at
          FROM rogue.posts ptemp
-         WHERE ptemp.deleted_at IS NULL
-         AND ptemp."source" IS DISTINCT FROM 'runscope'
-         AND ptemp."source" IS DISTINCT FROM 'runscope-oauth'
-	 AND ptemp.caption IS DISTINCT FROM 'test runscope upload'
         GROUP BY ptemp.id) p_maxupt
      INNER JOIN rogue.posts pd
-            ON pd.id = p_maxupt.id AND pd.updated_at = p_maxupt.updated_at
+            ON pd.id = p_maxupt.id 
+            AND pd.updated_at = p_maxupt.updated_at
+            AND pd.deleted_at IS NULL
+         	AND pd."source" IS DISTINCT FROM 'runscope'
+         	AND pd."source" IS DISTINCT FROM 'runscope-oauth'
+	 		AND pd.caption IS DISTINCT FROM 'test runscope upload'
      INNER JOIN public.signups s
      	    ON pd.signup_id = s.id
     )
