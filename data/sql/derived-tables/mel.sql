@@ -13,7 +13,11 @@ CREATE MATERIALIZED VIEW public.member_event_log AS
     	WHEN date_trunc('month', a."timestamp") = date_trunc('month', u.created_at) 
     	THEN 'New' 
     	ELSE 'Returning' END 
-    	AS "type"
+    	AS "type",
+    MIN("timestamp") 
+    	OVER 
+    	(PARTITION BY a.northstar_id, date_trunc('month', a."timestamp")) 
+    	AS first_action_month
 FROM ( 
     SELECT -- CAMPAIGN SIGNUP WITH CHANNEL
         DISTINCT s.northstar_id AS northstar_id,
