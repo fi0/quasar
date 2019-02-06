@@ -74,7 +74,8 @@ CREATE MATERIALIZED VIEW public.phoenix_events AS (
 		e.records #> '{data,sourceData}' ->> 'text' AS source_data_text,
 		e.records #>> '{page,sessionId}' AS session_id,
 		e.records #>> '{browser,size}' AS browser_size,
-		e.records #>> '{user,northstarId}' AS northstar_id
+		e.records #>> '{user,northstarId}' AS northstar_id,
+		e.records #>> '{user,deviceId}' AS device_id
 	FROM puck.events_json e
 	LEFT JOIN puck.event_lookup enames_old ON e.records #>> '{event,name}' = enames_old.old_name
 	LEFT JOIN puck.event_lookup enames_new ON e.records #>> '{event,name}' = enames_new.new_name

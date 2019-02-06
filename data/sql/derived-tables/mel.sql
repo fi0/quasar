@@ -13,7 +13,11 @@ CREATE MATERIALIZED VIEW public.member_event_log AS
     	WHEN date_trunc('month', a."timestamp") = date_trunc('month', u.created_at) 
     	THEN 'New' 
     	ELSE 'Returning' END 
-    	AS "type"
+    	AS "type",
+    MIN("timestamp") 
+    	OVER 
+    	(PARTITION BY a.northstar_id, date_trunc('month', a."timestamp")) 
+    	AS first_action_month
 FROM ( 
     SELECT -- CAMPAIGN SIGNUP WITH CHANNEL
         DISTINCT s.northstar_id AS northstar_id,
@@ -44,7 +48,7 @@ FROM (
 	WHEN p."source" ILIKE '%%app%%' THEN 'mobile_app'
 	WHEN p."source" NOT LIKE '%%phoenix%%' AND p."source" NOT LIKE '%%sms%%' AND p."source" IS NOT NULL AND p."source" NOT LIKE '%%app%%' and p."source" NOT LIKE '%%turbovote%%' THEN 'other' END) AS "channel"
     FROM public.posts p
-    WHERE p.status IN ('accepted', 'confirmed', 'register-OVR', 'register-form')
+    WHERE p.status IN ('accepted', 'confirmed', 'register-OVR', 'register-form', 'pending')
     UNION ALL -- SITE ACCESS
     SELECT DISTINCT 
         u_access.id AS northstar_id,
@@ -56,6 +60,11 @@ FROM (
         'web' AS channel
     FROM northstar.users u_access
     WHERE u_access.last_accessed_at IS NOT NULL
+    AND u_access."source" IS DISTINCT FROM 'runscope'
+	AND u_access."source" IS DISTINCT FROM 'runscope-client'
+	AND u_access.email IS DISTINCT FROM 'runscope-scheduled-test@dosomething.org'
+	AND u_access.email IS DISTINCT FROM 'juy+runscopescheduledtests@dosomething.org'
+	AND (u_access.email NOT ILIKE '%%@example.org%%' OR u_access.email IS NULL) 
     UNION ALL -- SITE LOGIN
     SELECT DISTINCT 
         u_login.id AS northstar_id,
@@ -67,6 +76,11 @@ FROM (
         'web' AS channel
     FROM northstar.users u_login
     WHERE u_login.last_authenticated_at IS NOT NULL 
+    AND u_login."source" IS DISTINCT FROM 'runscope'
+	AND u_login."source" IS DISTINCT FROM 'runscope-client'
+	AND u_login.email IS DISTINCT FROM 'runscope-scheduled-test@dosomething.org'
+	AND u_login.email IS DISTINCT FROM 'juy+runscopescheduledtests@dosomething.org'
+	AND (u_login.email NOT ILIKE '%%@example.org%%' OR u_login.email IS NULL) 
     UNION ALL 
     SELECT -- ACCOUNT CREATION 
         DISTINCT u.id AS northstar_id,
@@ -86,6 +100,11 @@ FROM (
                 min(u_create.created_at) AS created_at
         FROM northstar.users u_create
 	WHERE u_create."source" IS DISTINCT FROM 'importer-client'
+	AND u_create."source" IS DISTINCT FROM 'runscope'
+	AND u_create."source" IS DISTINCT FROM 'runscope-client'
+	AND u_create.email IS DISTINCT FROM 'runscope-scheduled-test@dosomething.org'
+	AND u_create.email IS DISTINCT FROM 'juy+runscopescheduledtests@dosomething.org'
+	AND (u_create.email NOT ILIKE '%%@example.org%%' OR u_create.email IS NULL) 
         GROUP BY u_create.id) u
     UNION ALL 
     SELECT -- LAST MESSAGED SMS 
