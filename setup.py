@@ -17,6 +17,7 @@ setup(
             'campaign_activity_create = quasar.create_campaign_activity:main',
             'campaign_activity_refresh = quasar.refresh_campaign_activity:main',
             'cio_import = quasar.cio_consumer:main',
+            'cio_bounced_backfill = quasar.cio_bounced_backfill:main',
             'cio_sent_backfill = quasar.cio_sent_backfill:main',
             'etl_monitoring = quasar.etl_monitoring:run_monitoring',
             'gambit_create_raw = quasar.gambit:create_gambit_raw_json',
