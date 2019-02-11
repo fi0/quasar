@@ -5,6 +5,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine.url import URL
 from sqlalchemy.sql import text
 
+from .utils import log
+
 pg_vars = {
     'drivername': os.getenv('PG_DRIVER'),
     'username': os.getenv('PG_USER'),
