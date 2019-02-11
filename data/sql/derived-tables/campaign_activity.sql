@@ -33,6 +33,7 @@ CREATE UNIQUE INDEX ON public.signups (created_at, id);
 GRANT SELECT ON public.signups TO looker;
 GRANT SELECT ON public.signups TO dsanalyst;
 
+SET enable_nestloop = FALSE;
 DROP MATERIALIZED VIEW IF EXISTS public.latest_post CASCADE;
 CREATE MATERIALIZED VIEW public.latest_post AS
     (SELECT
