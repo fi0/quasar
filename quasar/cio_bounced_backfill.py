@@ -1,13 +1,9 @@
 from concurrent.futures import ThreadPoolExecutor as PoolExecutor
 import os
 import requests
-from requests.auth import HTTPBasicAuth
 from sqlalchemy import create_engine
 from sqlalchemy.engine.url import URL
-from sqlalchemy.sql import select
 from sqlalchemy.sql import text
-
-from .utils import log, logerr
 
 pg_vars = {
     'drivername': os.getenv('PG_DRIVER'),
