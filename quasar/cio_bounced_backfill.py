@@ -42,9 +42,9 @@ def get_page(next_page=None):
 # Insert C.io email_bounced record atomically.
 def insert_record(message):
     query = text(''.join(("INSERT INTO cio.email_bounced_backfill(email_id, "
-                          "customer_id, email_address, template_id, event_id"
+                          "customer_id, email_address, template_id, subject, "
                           "timestamp) VALUES (:email_id, :customer_id, "
-                          ":email_address, :template_id, :event_id, "
+                          ":email_address, :template_id, :subject, "
                           "to_timestamp(:timestamp)) ON CONFLICT (email_id, "
                           " email_address, timestamp) DO NOTHING")))
     record = {
@@ -52,7 +52,7 @@ def insert_record(message):
         'customer_id': message['customer_id'],
         'email_address': message['recipient'],
         'template_id': message['msg_template_id'],
-        'event_id': message['event_id'],
+        'subject': message['subject'],
         'timestamp': message['metrics']['sent']
     }
     conn.execute(query, **record)

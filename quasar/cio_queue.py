@@ -144,15 +144,16 @@ class CioQueue(QuasarQueue):
     def _add_email_bounced_event(self, data):
         self.db.query_str(''.join(("INSERT INTO cio.email_bounced "
                                    "(email_id, customer_id, email_address, "
-                                   "template_id, event_id, "
+                                   "template_id, subject, event_id, "
                                    "timestamp) VALUES "
-                                   "(%s,%s,%s,%s,%s,to_timestamp(%s)) "
+                                   "(%s,%s,%s,%s,%s, %s, to_timestamp(%s)) "
                                    "ON CONFLICT (email_id, customer_id, "
                                    "timestamp) DO NOTHING")),
                           (data['data']['email_id'],
                            data['data']['customer_id'],
                            data['data']['email_address'],
                            data['data']['template_id'],
+                           data['data']['subject'],
                            data['event_id'], data['timestamp']))
         log(''.join(("Added email bounced event from "
                      "C.IO event id {}.")).format(data['event_id']))
