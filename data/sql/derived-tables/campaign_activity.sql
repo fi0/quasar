@@ -12,23 +12,12 @@ CREATE MATERIALIZED VIEW public.signups AS
 	     WHEN sd."source" in ('rock-the-vote', 'turbovote') THEN 'voter-reg'
 	     ELSE 'web' END AS source_bucket,
         sd.created_at AS created_at
-    FROM
-        (SELECT
-        		stemp.id,
-        		max(stemp.updated_at) AS updated_at
-        FROM ft_dosomething_rogue.signups stemp
-        GROUP BY stemp.id) s_maxupt
-	INNER JOIN ft_dosomething_rogue.signups sd
-		ON sd.id = s_maxupt.id 
-		AND sd.updated_at = s_maxupt.updated_at 
-		AND sd.deleted_at IS NULL 
-		AND sd."source" IS DISTINCT FROM 'runscope'
-		AND sd."source" IS DISTINCT FROM 'runscope-oauth'
-		AND sd."source" IS DISTINCT  FROM 'rogue-oauth'
-		AND sd.why_participated IS DISTINCT FROM 'why_participated_ghost'
-		AND sd.why_participated IS DISTINCT FROM 'Testing from Ghost Inspector!'
-    )
-    ;
+    FROM ft_dosomething_rogue.signups sd
+    WHERE sd._fivetran_deleted = 'false'
+	AND sd.deleted_at IS NULL
+	AND sd."source" IS DISTINCT FROM 'rogue-oauth'
+	AND sd.why_participated IS DISTINCT FROM 'Testing from Ghost Inspector!'
+    );
 CREATE UNIQUE INDEX ON public.signups (created_at, id);
 GRANT SELECT ON public.signups TO looker;
 GRANT SELECT ON public.signups TO dsanalyst;
