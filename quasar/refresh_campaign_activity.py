@@ -9,6 +9,10 @@ def main():
 
     db.query("REFRESH MATERIALIZED VIEW CONCURRENTLY public.signups")
     db.query("REFRESH MATERIALIZED VIEW CONCURRENTLY public.latest_post")
+    db.query(''.join(("REFRESH MATERIALIZED VIEW CONCURRENTLY "
+                      "ft_dosomething_rogue.turbovote")))
+    db.query(''.join(("REFRESH MATERIALIZED VIEW CONCURRENTLY "
+                      "ft_dosomething_rogue.rock_the_vote")))
     db.query("REFRESH MATERIALIZED VIEW CONCURRENTLY public.posts")
     db.query("REFRESH MATERIALIZED VIEW CONCURRENTLY public.reportbacks")
     db.disconnect()
