@@ -22,53 +22,6 @@ CREATE UNIQUE INDEX ON public.signups (created_at, id);
 GRANT SELECT ON public.signups TO looker;
 GRANT SELECT ON public.signups TO dsanalyst;
 
-SET enable_nestloop = FALSE;
-DROP MATERIALIZED VIEW IF EXISTS public.latest_post CASCADE;
-CREATE MATERIALIZED VIEW public.latest_post AS
-    (SELECT
-	pd.northstar_id as northstar_id,
-        pd.id AS id,
-        pd."type" AS "type",
-        pd."action" AS "action",
-        pd.status AS status,
-        pd.quantity AS quantity,
-        pd."source" AS "source",
-        pd.created_at AS created_at,
-        pd.url AS url,
-        pd.text,
-	CASE WHEN s."source" = 'importer-client'
-	     	  AND pd."type" = 'share-social'
-		 AND pd.created_at < s.created_at
-	     	THEN -1
-	     ELSE pd.signup_id END AS signup_id,
-	s.campaign_id,
-	CASE WHEN pd.id IS NULL THEN NULL
-	     WHEN s.campaign_id IN (
-	     '822','6223','8103','8119','8129','8130','8180','8195','8202','8208')
-	     	  AND s.created_at >= '2018-05-01'
-	       THEN 'voter-reg - ground'
-	     ELSE CONCAT(pd."type", ' - ', pd."action") END AS post_class
-    FROM
-        (SELECT
-            ptemp.id,
-            max(ptemp.updated_at) AS updated_at
-         FROM ft_dosomething_rogue.posts ptemp
-        GROUP BY ptemp.id) p_maxupt
-     INNER JOIN ft_dosomething_rogue.posts pd
-		ON pd.id = p_maxupt.id 
-		AND pd.updated_at = p_maxupt.updated_at
-		AND pd.deleted_at IS NULL
-		AND pd."source" IS DISTINCT FROM 'runscope'
-		AND pd."source" IS DISTINCT FROM 'runscope-oauth'
-		AND pd.text IS DISTINCT FROM 'test runscope upload'
-     INNER JOIN public.signups s
-     	    ON pd.signup_id = s.id
-    )
-    ;
-CREATE UNIQUE INDEX ON public.latest_post (id, created_at);
-GRANT SELECT ON public.latest_post TO looker;
-GRANT SELECT ON public.latest_post TO dsanalyst;
-
 DROP MATERIALIZED VIEW IF EXISTS ft_dosomething_rogue.turbovote CASCADE;
 CREATE MATERIALIZED VIEW ft_dosomething_rogue.turbovote AS
 	(SELECT id AS post_id, 
