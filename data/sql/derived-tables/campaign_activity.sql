@@ -66,15 +66,15 @@ CREATE MATERIALIZED VIEW public.posts AS
 	    pd."type" AS "type",
 	    pd."action" AS "action",
 	    pd.status AS status,
-	    CASE WHEN pd.status IN ('accepted', 'pending')
-		    AND pd.post_class NOT ilike 'vote%%' THEN 1
-	    	 WHEN pd.status IN ('accepted', 'confirmed', 'register-OVR', 'register-form')
-		    AND pd.post_class ilike 'vote%%' THEN 1
-		 ELSE null END AS is_accepted,
 	    pd.quantity AS quantity,
-	    CASE WHEN pd.post_class <> 'voter-reg - ground' or pd.quantity IS NULL
-	    	 THEN 1
-		 ELSE pd.quantity END AS reportback_volume,
+	    pd.campaign_id,
+	    CASE WHEN pd.id IS NULL THEN NULL
+	    	 WHEN s.campaign_id IN (
+		      '822','6223','8103','8119','8129','8130','8180','8195','8202','8208')
+	    	      AND s.created_at >= '2018-05-01'
+	    	      AND pd."type" = 'photo'
+	    	 THEN pd.quantity
+		 ELSE 1 END AS reportback_volume,
 	    pd."source" AS "source",
 	    CASE WHEN pd."source" IS NULL THEN NULL
 		 WHEN pd."source" ilike '%%sms%%' THEN 'sms'
@@ -82,8 +82,6 @@ CREATE MATERIALIZED VIEW public.posts AS
 	    COALESCE(rtv.created_at, tv.created_at, pd.created_at) AS created_at,
 	    pd.url AS url,
 	    pd.text,
-	    pd.post_class,
-	    pd.campaign_id,
 	    CASE WHEN pd.post_class ilike '%%text%%' and pd.campaign_id IN ('8167', '8168', '8309', '8292', '8226', '5646')
 		      THEN null
 		 WHEN pd.post_class ilike '%%social%%' and pd.campaign_id IN ('5438','7927','8025','8026','8103','8130','8158','8168', '8309', '8292', '8226', '5646') THEN null
@@ -93,6 +91,26 @@ CREATE MATERIALIZED VIEW public.posts AS
 		      AND pd.created_at < s.created_at
 		 THEN -1
 		 ELSE pd.signup_id END AS signup_id,
+	    CASE WHEN pd.id IS NULL THEN NULL
+	    	 WHEN s.campaign_id IN (
+		      '822','6223','8103','8119','8129','8130','8180','8195','8202','8208')
+		      AND s.created_at >= '2018-05-01'
+		      AND pd."type" = 'photo'
+	    	 THEN 'voter-reg - ground'
+	    	 ELSE CONCAT(pd."type", ' - ', pd."action") END AS post_class,
+	    CASE WHEN pd.status IN ('accepted', 'pending')
+	    	      AND s.campaign_id NOT IN (
+		      '822','6223','8103','8119','8129','8130','8180','8195','8202','8208')
+		      AND pd."type" NOT ILIKE 'vote%%'
+	    	 THEN 1
+	    	 WHEN pd.status IN ('accepted', 'confirmed', 'register-OVR', 'register-form')
+	    	      AND (
+		      	s.campaign_id IN (
+	    	 	'822','6223','8103','8119','8129','8130','8180','8195','8202','8208')
+		     	OR pd."type" ILIKE 'vote%%'
+		      )
+	    	 THEN 1
+	    	 ELSE NULL END AS is_accepted,
     FROM ft_dosomething_rogue.posts pd
     INNER JOIN public.test_signups s
     	  ON pd.signup_id = s.id
