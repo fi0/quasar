@@ -89,7 +89,9 @@ CREATE MATERIALIZED VIEW public.posts AS
 		      THEN null
 		 WHEN pd.post_class ilike '%%social%%' and pd.campaign_id IN ('5438','7927','8025','8026','8103','8130','8158','8168', '8309', '8292', '8226', '5646') THEN null
 		 ELSE 1 end as is_reportback
-    FROM public.latest_post pd
+    FROM ft_dosomething_rogue.posts pd
+    INNER JOIN public.test_signups s
+    	  ON pd.signup_id = s.id
     LEFT JOIN ft_dosomething_rogue.turbovote tv ON tv.post_id::bigint = pd.id::bigint
     LEFT JOIN
 	(SELECT DISTINCT r.*,
@@ -98,6 +100,8 @@ CREATE MATERIALIZED VIEW public.posts AS
 		ELSE r.started_registration END AS created_at
 	FROM ft_dosomething_rogue.rock_the_vote r
 	) rtv ON rtv.post_id::bigint = pd.id::bigint
+    WHERE pd.deleted_at IS NULL
+	 AND pd."text" IS DISTINCT FROM 'test runscope upload'
 )
 ;
 CREATE UNIQUE INDEX ON public.posts (created_at, campaign_id, id);
