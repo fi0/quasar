@@ -82,10 +82,6 @@ CREATE MATERIALIZED VIEW public.posts AS
 	    COALESCE(rtv.created_at, tv.created_at, pd.created_at) AS created_at,
 	    pd.url AS url,
 	    pd.text,
-	    CASE WHEN pd.post_class ilike '%%text%%' and pd.campaign_id IN ('8167', '8168', '8309', '8292', '8226', '5646')
-		      THEN null
-		 WHEN pd.post_class ilike '%%social%%' and pd.campaign_id IN ('5438','7927','8025','8026','8103','8130','8158','8168', '8309', '8292', '8226', '5646') THEN null
-		 ELSE 1 end as is_reportback
 	    CASE WHEN s."source" = 'importer-client'
 		      AND pd."type" = 'share-social'
 		      AND pd.created_at < s.created_at
@@ -111,6 +107,10 @@ CREATE MATERIALIZED VIEW public.posts AS
 		      )
 	    	 THEN 1
 	    	 ELSE NULL END AS is_accepted,
+	    pd.action_id,
+	    a.reportback AS is_reportback,
+	    a.civic_action,
+	    a.scholarship_entry
     FROM ft_dosomething_rogue.posts pd
     INNER JOIN public.test_signups s
     	  ON pd.signup_id = s.id
@@ -122,6 +122,8 @@ CREATE MATERIALIZED VIEW public.posts AS
 		ELSE r.started_registration END AS created_at
 	FROM ft_dosomething_rogue.rock_the_vote r
 	) rtv ON rtv.post_id::bigint = pd.id::bigint
+    LEFT JOIN ft_dosomething_rogue.actions a
+    	 ON pd.action_id = a.id
     WHERE pd.deleted_at IS NULL
 	 AND pd."text" IS DISTINCT FROM 'test runscope upload'
 )
@@ -152,7 +154,7 @@ CREATE MATERIALIZED VIEW public.reportbacks AS
     WHERE pd.id IN (
     	  SELECT min(id)
 	  FROM public.posts p
-	  WHERE p.is_reportback = 1
+	  WHERE p.is_reportback = 'true'
 	  	 AND p.is_accepted = 1
 	  GROUP BY p.northstar_id, p.campaign_id, p.signup_id, p.post_class, p.reportback_volume
 	  )
