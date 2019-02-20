@@ -148,7 +148,9 @@ CREATE MATERIALIZED VIEW public.reportbacks AS
 	pd.created_at as post_created_at,
 	pd.source as post_source,
 	pd.source_bucket as post_source_bucket,
-	pd.reportback_volume
+	pd.reportback_volume,
+	pd.civic_action,
+	pd.scholarship_entry
     FROM
 	public.posts pd
     WHERE pd.id IN (
