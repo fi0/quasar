@@ -64,7 +64,7 @@ CREATE MATERIALIZED VIEW public.posts AS
 	    pd.northstar_id as northstar_id,
 	    pd.id AS id,
 	    pd."type" AS "type",
-	    pd."action" AS "action",
+	    a."name" AS "action",
 	    pd.status AS status,
 	    pd.quantity AS quantity,
 	    pd.campaign_id,
@@ -93,7 +93,7 @@ CREATE MATERIALIZED VIEW public.posts AS
 		      AND s.created_at >= '2018-05-01'
 		      AND pd."type" = 'photo'
 	    	 THEN 'voter-reg - ground'
-	    	 ELSE CONCAT(pd."type", ' - ', pd."action") END AS post_class,
+	    	 ELSE CONCAT(pd."type", ' - ', a."name") END AS post_class,
 	    CASE WHEN pd.status IN ('accepted', 'pending')
 	    	      AND s.campaign_id NOT IN (
 		      '822','6223','8103','8119','8129','8130','8180','8195','8202','8208')
