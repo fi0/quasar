@@ -8,7 +8,6 @@ def main():
     """Keep track of start time of script."""
 
     db.query("REFRESH MATERIALIZED VIEW CONCURRENTLY public.signups")
-    db.query("REFRESH MATERIALIZED VIEW CONCURRENTLY public.latest_post")
     db.query(''.join(("REFRESH MATERIALIZED VIEW "
                       "ft_dosomething_rogue.turbovote")))
     db.query(''.join(("REFRESH MATERIALIZED VIEW "
