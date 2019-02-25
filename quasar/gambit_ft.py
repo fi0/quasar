@@ -2,16 +2,6 @@ from .sql_utils import run_sql_file, refresh_materialized_view
 from .utils import log
 
 
-def create_gambit_conversations():
-    log("Creating Gambit Conversations derived tables.")
-    run_sql_file('./data/sql/derived-tables/gambit_conversations_ft.sql')
-
-
-def refresh_gambit_conversations():
-    log("Refreshing gambit.conversations_flattened_ft derived table.")
-    refresh_materialized_view("ft_gambit_conversations_api.conversations_flattened_ft")
-
-
 def create_gambit_messages():
     # Gambit conversations is a necessary precursor to exist
     # before messages can be created.
@@ -29,5 +19,4 @@ def refresh_gambit_messages():
 
 
 def refresh_gambit_full():
-    refresh_gambit_conversations()
     refresh_gambit_messages()
