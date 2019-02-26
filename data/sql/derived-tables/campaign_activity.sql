@@ -114,6 +114,7 @@ CREATE MATERIALIZED VIEW public.posts AS
     	 ON pd.action_id = a.id
     WHERE pd.deleted_at IS NULL
 	 AND pd."text" IS DISTINCT FROM 'test runscope upload'
+	 AND a."name" IS NOT NULL
 )
 ;
 CREATE UNIQUE INDEX ON public.posts (created_at, campaign_id, id);
