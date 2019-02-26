@@ -69,12 +69,9 @@ CREATE MATERIALIZED VIEW public.posts AS
 	    pd.quantity AS quantity,
 	    pd.campaign_id,
 	    CASE WHEN pd.id IS NULL THEN NULL
-	    	 WHEN s.campaign_id IN (
-		      '822','6223','8103','8119','8129','8130','8180','8195','8202','8208')
-	    	      AND s.created_at >= '2018-05-01'
-	    	      AND pd."type" = 'photo'
+	    	 WHEN (a."name" = 'voter-reg OTG' AND pd.created_at >= '2018-05-01')
 	    	 THEN pd.quantity
-		 ELSE 1 END AS reportback_volume,
+		ELSE 1 END AS reportback_volume,
 	    pd."source" AS "source",
 	    CASE WHEN pd."source" IS NULL THEN NULL
 		 WHEN pd."source" ilike '%%sms%%' THEN 'sms'
@@ -88,23 +85,14 @@ CREATE MATERIALIZED VIEW public.posts AS
 		 THEN -1
 		 ELSE pd.signup_id END AS signup_id,
 	    CASE WHEN pd.id IS NULL THEN NULL
-	    	 WHEN s.campaign_id IN (
-		      '822','6223','8103','8119','8129','8130','8180','8195','8202','8208')
-		      AND s.created_at >= '2018-05-01'
-		      AND pd."type" = 'photo'
-	    	 THEN 'voter-reg - ground'
+	    	 WHEN (a."name" = 'voter-reg OTG' AND pd.created_at < '2018-05-01')
+	    	 THEN 'photo - default'
 	    	 ELSE CONCAT(pd."type", ' - ', a."name") END AS post_class,
 	    CASE WHEN pd.status IN ('accepted', 'pending')
-	    	      AND s.campaign_id NOT IN (
-		      '822','6223','8103','8119','8129','8130','8180','8195','8202','8208')
-		      AND pd."type" NOT ILIKE 'vote%%'
+		      AND a."name" NOT ILIKE '%%vote%%'
 	    	 THEN 1
 	    	 WHEN pd.status IN ('accepted', 'confirmed', 'register-OVR', 'register-form')
-	    	      AND (
-		      	s.campaign_id IN (
-	    	 	'822','6223','8103','8119','8129','8130','8180','8195','8202','8208')
-		     	OR pd."type" ILIKE 'vote%%'
-		      )
+		      AND a."name" ILIKE '%%vote%%'
 	    	 THEN 1
 	    	 ELSE NULL END AS is_accepted,
 	    pd.action_id,
