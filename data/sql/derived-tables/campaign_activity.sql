@@ -69,7 +69,7 @@ CREATE MATERIALIZED VIEW public.posts AS
 	    pd.quantity AS quantity,
 	    pd.campaign_id,
 	    CASE WHEN pd.id IS NULL THEN NULL
-	    	 WHEN (a."name" = 'voter-reg OTG' AND pd.created_at >= '2018-05-01')
+	    	 WHEN a."name" = 'voter-reg OTG'
 	    	 THEN pd.quantity
 		ELSE 1 END AS reportback_volume,
 	    pd."source" AS "source",
@@ -85,8 +85,6 @@ CREATE MATERIALIZED VIEW public.posts AS
 		 THEN -1
 		 ELSE pd.signup_id END AS signup_id,
 	    CASE WHEN pd.id IS NULL THEN NULL
-	    	 WHEN (a."name" = 'voter-reg OTG' AND pd.created_at < '2018-05-01')
-	    	 THEN 'photo - default'
 	    	 ELSE CONCAT(pd."type", ' - ', a."name") END AS post_class,
 	    CASE WHEN pd.status IN ('accepted', 'pending')
 		      AND a."name" NOT ILIKE '%%vote%%'
