@@ -100,7 +100,7 @@ CREATE MATERIALIZED VIEW public.posts AS
 	    a.civic_action,
 	    a.scholarship_entry
     FROM ft_dosomething_rogue.posts pd
-    INNER JOIN public.test_signups s
+    INNER JOIN public.signups s
     	  ON pd.signup_id = s.id
     LEFT JOIN ft_dosomething_rogue.turbovote tv ON tv.post_id::bigint = pd.id::bigint
     LEFT JOIN
