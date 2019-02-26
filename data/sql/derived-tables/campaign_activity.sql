@@ -139,7 +139,18 @@ CREATE MATERIALIZED VIEW public.reportbacks AS
 	pd.source_bucket as post_source_bucket,
 	pd.reportback_volume,
 	pd.civic_action,
-	pd.scholarship_entry
+	pd.scholarship_entry,
+	CASE WHEN (pd.post_class ilike '%%vote%%' AND pd.post_status = 'confirmed')
+	     THEN 'self-reported registrations'
+	     WHEN (pd.post_class ilike '%%vote%%' AND pd.post_status <> 'confirmed')
+	     THEN 'voter_registrations'
+	     WHEN pd.post_class ilike '%%photo%%'
+	     THEN 'photo_rbs'
+	     WHEN pd.post_class ilike '%%text%%'
+	     THEN 'text_rbs'
+	     WHEN pd.post_class ilike '%%social%%'
+	     THEN 'social'
+	     ELSE NULL END AS post_bucket
     FROM
 	public.posts pd
     WHERE pd.id IN (
