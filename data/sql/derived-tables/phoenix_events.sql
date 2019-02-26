@@ -108,14 +108,14 @@ CREATE MATERIALIZED VIEW public.phoenix_sessions AS (
 				END)::numeric/1000)
 			)  AS landing_datetime,
 		max(to_timestamp((e.meta #>> '{timestamp}')::numeric/1000)) AS end_datetime,
-		max(e.page #> '{referrer, path}') AS referrer_path,
-		max(e.page #> '{referrer, host}') AS referrer_host,
-		max(e.page #> '{referrer, href}') AS referrer_href,
-		max(e.page #> '{referrer, query, from_session}') AS from_session,
-		max(e.page #> '{referrer, query, source}') AS referrer_source,
-		max(e.page #> '{query, utm_source}') AS utm_source,
-		max(e.page #> '{query, utm_medium}') AS utm_medium,
-		max(e.page #> '{query, utm_campaign}') AS utm_campaign,
+		max(e.page #>> '{referrer, path}') AS referrer_path,
+		max(e.page #>> '{referrer, host}') AS referrer_host,
+		max(e.page #>> '{referrer, href}') AS referrer_href,
+		max(e.page #>> '{referrer, query, from_session}') AS from_session,
+		max(e.page #>> '{referrer, query, source}') AS referrer_source,
+		max(e.page #>> '{query, utm_source}') AS utm_source,
+		max(e.page #>> '{query, utm_medium}') AS utm_medium,
+		max(e.page #>> '{query, utm_campaign}') AS utm_campaign,
 		max(e1.landing_path) AS landing_page
 	FROM ft_heroku_wzsf6b3z.events e
 	LEFT JOIN (
