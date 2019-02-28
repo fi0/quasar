@@ -133,6 +133,7 @@ CREATE MATERIALIZED VIEW public.phoenix_sessions AS (
 	GROUP BY e.page #>> '{sessionId}'
 ) ;
 
+DROP MATERIALIZED VIEW IF EXISTS public.device_northstar_crosswalk CASCADE;
 CREATE MATERIALIZED VIEW public.device_northstar_crosswalk AS 
 	(SELECT 
 		nsids.device_id,
@@ -144,17 +145,17 @@ CREATE MATERIALIZED VIEW public.device_northstar_crosswalk AS
 			1/count(dis.device_id)::FLOAT AS proportion
 		FROM 
 			(SELECT DISTINCT 
-			    e.records #>> '{user,deviceId}' AS device_id,
-			    e.records #>> '{user,northstarId}' AS northstar_id
+			    e.user #>> '{deviceId}' AS device_id,
+			    e.user #>> '{northstarId}' AS northstar_id
 			  FROM ft_heroku_wzsf6b3z.events e 
-			  WHERE e.records #>> '{user,northstarId}' IS NOT NULL) dis
+			  WHERE e.user #>> '{northstarId}' IS NOT NULL) dis
 		GROUP BY dis.device_id) counts
 	LEFT JOIN 
 		(SELECT DISTINCT 
-		    e.records #>> '{user,deviceId}' AS device_id,
-		    e.records #>> '{user,northstarId}' AS northstar_id
+		    e.user #>> '{deviceId}' AS device_id,
+		    e.user #>> '{northstarId}' AS northstar_id
 		 FROM ft_heroku_wzsf6b3z.events e  
-		 WHERE e.records #>> '{user,northstarId}' IS NOT NULL) nsids
+		 WHERE e.user #>> '{northstarId}' IS NOT NULL) nsids
 		ON nsids.device_id = counts.device_id
 	);
 
