@@ -69,15 +69,12 @@ class ETLMonitoring:
             'raw_bertly_clicks':
                 'SELECT count(*) FROM bertly.clicks',
             'raw_gambit_messages':
-                """SELECT count(*) FROM gambit.messages""",
+                """SELECT count(*) FROM ft_gambit_conversations_api.messages""",
             'raw_gambit_conversations':
-                """SELECT count(*) FROM gambit.conversations""",
+                """SELECT count(*) FROM ft_gambit_conversations_api.conversations""",
             'flattened_gambit_messages':
                 """SELECT count(*)
-                    FROM gambit.messages_flattened""",
-            'flattened_gambit_conversations':
-                """SELECT count(*)
-                    FROM gambit.conversations_flattened""",
+                    FROM ft_gambit_conversations_api.messages_flattened""",
             'derived_user_count':
                 'SELECT count(*) FROM public.users',
             'derived_user_distinct_user_count':

@@ -1,38 +1,39 @@
-DROP MATERIALIZED VIEW IF EXISTS gambit.messages_flattened CASCADE;
-CREATE MATERIALIZED VIEW gambit.messages_flattened AS
-(SELECT
-    records ->> 'agentId' AS agent_id,
-    records #>> '{attachments,url}' AS attachment_url,
-    records ->> '{attachments,contentType}'as attachment_content_type,
-    records ->> 'broadcastId' AS broadcast_id,
-    records ->> 'campaignId' AS campaign_id,
-    records #>> '{conversationId,$oid}' AS conversation_id,
-    to_timestamp((((records #>> '{createdAt,$date}')::BIGINT) / 1000)::DOUBLE PRECISION) AS created_at,
-    records ->> 'direction' AS direction,
-    records #>> '{_id,$oid}' AS message_id,
-    records ->> 'macro' AS macro,
-    records ->> 'match' AS match,
-    to_timestamp((records #> '{metadata,delivery}' #>> '{deliveredAt,$date}')::BIGINT / 1000::DOUBLE PRECISION) AS delivered_at,
-    (records #> '{metadata,delivery}' ->> 'totalSegments')::INT AS total_segments,
-    records ->> 'platformMessageId' AS platform_message_id,
-    records ->> 'template' AS template,
-    records ->> 'text' AS text,
-    records ->> 'topic' AS topic,
-    records ->> 'userId' AS user_id
-FROM gambit.messages_json);
+DROP MATERIALIZED VIEW IF EXISTS ft_gambit_conversations_api.messages_flattened CASCADE;
+CREATE MATERIALIZED VIEW ft_gambit_conversations_api.messages_flattened AS
+(SELECT 
+    agent_id AS agent_id,
+    attachments->0->>'contentType' AS attachment_content_type,
+    attachments->0->>'url' AS attachment_url,
+    broadcast_id AS broadcast_id,
+    campaign_id AS campaign_id,
+    conversation_id AS conversation_id,
+    created_at as created_at,
+    direction AS direction,
+    _id AS message_id,
+    macro AS macro,
+    match AS match,
+    metadata #>> '{delivery,queuedAt}' AS delivered_at,
+    (metadata #> '{delivery}' ->> 'totalSegments')::INT AS total_segments,
+    platform_message_id as platform_message_id,
+    template AS template,
+    text AS text,
+    topic AS topic,
+    user_id AS user_id
+ FROM ft_gambit_conversations_api.messages
+);
 
-CREATE INDEX platformmsgi ON gambit.messages_flattened(platform_message_id);
-CREATE INDEX usermidi ON gambit.messages_flattened(user_id);
+CREATE INDEX platformmsgi ON ft_gambit_conversations_api.messages_flattened(platform_message_id);
+CREATE INDEX usermidi ON ft_gambit_conversations_api.messages_flattened(user_id);
 
-GRANT SELECT ON gambit.messages_flattened TO looker;
-GRANT SELECT ON gambit.messages_flattened to dsanalyst;
+GRANT SELECT ON ft_gambit_conversations_api.messages_flattened TO looker;
+GRANT SELECT ON ft_gambit_conversations_api.messages_flattened to dsanalyst;
 
 DROP MATERIALIZED VIEW IF EXISTS public.gambit_messages_inbound CASCADE;
 CREATE MATERIALIZED VIEW public.gambit_messages_inbound AS
 (SELECT
 	*
 FROM
-	gambit.messages_flattened f
+	ft_gambit_conversations_api.messages_flattened f
 WHERE
 	f.direction = 'inbound'
 	AND f.user_id IS NOT NULL
@@ -57,10 +58,10 @@ UNION ALL
 	g.topic,
 	u.northstar_id AS user_id
 FROM
-	gambit.messages_flattened g
+	ft_gambit_conversations_api.messages_flattened g
 LEFT JOIN
-	gambit.conversations_flattened c
-	ON g.conversation_id = c.conversation_id
+	ft_gambit_conversations_api.conversations c
+	ON g.conversation_id = c._id
 LEFT JOIN
 	public.users u
 	ON substring(c.platform_user_id, 3, 10) = u.mobile
@@ -91,7 +92,7 @@ CREATE MATERIALIZED VIEW public.gambit_messages_outbound AS
 	f.topic,
 	f.user_id
 FROM
-	gambit.messages_flattened f
+	ft_gambit_conversations_api.messages_flattened f
 WHERE
 	f.direction <> 'inbound'
 	AND f.user_id IS NOT NULL
@@ -111,10 +112,10 @@ UNION ALL
 	g.topic,
 	u.northstar_id AS user_id
 FROM
-	gambit.messages_flattened g
+	ft_gambit_conversations_api.messages_flattened g
 LEFT JOIN
-	gambit.conversations_flattened c
-	ON g.conversation_id = c.conversation_id
+	ft_gambit_conversations_api.conversations c
+	ON g.conversation_id = c._id
 LEFT JOIN
 	public.users u
 	ON substring(c.platform_user_id, 3, 10) = u.mobile
@@ -127,3 +128,5 @@ WHERE
 CREATE INDEX outbound_messages_i ON public.gambit_messages_outbound (message_id, created_at, user_id, conversation_id);
 GRANT SELECT ON public.gambit_messages_outbound to looker;
 GRANT SELECT ON public.gambit_messages_outbound to dsanalyst;
+
+
