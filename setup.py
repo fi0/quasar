@@ -5,7 +5,7 @@ with open('requirements.txt') as f:
 
 setup(
     name="quasar",
-    version="2019.2.19.0",
+    version="2019.3.4.0",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
@@ -37,9 +37,8 @@ setup(
             'message_route = quasar.route_queue_process:main',
             'northstar_to_quasar_diff = quasar.northstar_to_user_table:backfill_since',
             'northstar_to_quasar_diff_json = quasar.northstar_to_user_table:backfill_since_json',
-            'puck_import = quasar.puck_import:main',
-            'puck_refresh = quasar.puck_events:main',
-            'puck_create = quasar.create_phoenix_events:main',
+            'phoenix_events_refresh = quasar.refresh_phoenix_events:main',
+            'phoenix_events_create = quasar.create_phoenix_events:main',
             'rogue_consume = quasar.rogue_consumer:main',
             'rogue_ghost_killer = quasar.ghost_killer:main',
             'users_create = quasar.create_derived_users:main',
