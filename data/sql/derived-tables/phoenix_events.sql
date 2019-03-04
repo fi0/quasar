@@ -11,7 +11,7 @@ CREATE MATERIALIZED VIEW public.path_campaign_lookup AS
 				NULLIF(regexp_replace(e."data" #>> '{legacyCampaignId}', '[^0-9.]','','g'), '')
 		 		) AS campaign_id,
 			(regexp_split_to_array(e."page" #>> '{path}', E'\/'))[4] AS campaign_name
-			FROM ft_heroku_wzsf6b3z.events e
+			FROM ft_puck_heroku_wzsf6b3z.events e
 			WHERE e."data" #>> '{campaignId}' IS NOT NULL 
 				OR e."data" #>> '{legacyCampaignId}' IS NOT NULL 
 			) camps
@@ -20,17 +20,17 @@ CREATE MATERIALIZED VIEW public.path_campaign_lookup AS
 	)
 ;
 
-DROP MATERIALIZED VIEW IF EXISTS ft_heroku_wzsf6b3z.phoenix_utms CASCADE;
-CREATE MATERIALIZED VIEW ft_heroku_wzsf6b3z.phoenix_utms AS (
+DROP MATERIALIZED VIEW IF EXISTS ft_puck_heroku_wzsf6b3z.phoenix_utms CASCADE;
+CREATE MATERIALIZED VIEW ft_puck_heroku_wzsf6b3z.phoenix_utms AS (
 	SELECT 
 		e."page" #>> '{sessionId}' AS session_id,
 		max(e."page" #> '{query}' ->> 'utm_source') AS utm_source,
 		max(e."page" #> '{query}' ->> 'utm_medium') AS utm_medium,
 		max(e."page" #> '{query}' ->> 'utm_campaign') AS utm_campaign
-	FROM ft_heroku_wzsf6b3z.events e
+	FROM ft_puck_heroku_wzsf6b3z.events e
 	GROUP BY e."page" #>> '{sessionId}'
 	);
-CREATE INDEX ON ft_heroku_wzsf6b3z.phoenix_utms (session_id);
+CREATE INDEX ON ft_puck_heroku_wzsf6b3z.phoenix_utms (session_id);
 
 DROP MATERIALIZED VIEW IF EXISTS public.phoenix_events CASCADE;
 CREATE MATERIALIZED VIEW public.phoenix_events AS (
@@ -65,9 +65,9 @@ CREATE MATERIALIZED VIEW public.phoenix_events AS (
 		e.browser #>> '{size}' AS browser_size,
 		e.user #>> '{northstarId}' AS northstar_id,
 		e.user #>> '{deviceId}' AS device_id
-	FROM ft_heroku_wzsf6b3z.events e
-	LEFT JOIN ft_heroku_wzsf6b3z.event_lookup enames_old ON e.event #>> '{name}' = enames_old.old_name
-	LEFT JOIN ft_heroku_wzsf6b3z.event_lookup enames_new ON e.event #>> '{name}' = enames_new.new_name
+	FROM ft_puck_heroku_wzsf6b3z.events e
+	LEFT JOIN ft_puck_heroku_wzsf6b3z.event_lookup enames_old ON e.event #>> '{name}' = enames_old.old_name
+	LEFT JOIN ft_puck_heroku_wzsf6b3z.event_lookup enames_new ON e.event #>> '{name}' = enames_new.new_name
 	LEFT JOIN 
 		(SELECT 
 			edat._id AS object_id,
@@ -75,15 +75,15 @@ CREATE MATERIALIZED VIEW public.phoenix_events AS (
 				NULLIF(regexp_replace(edat."data" #>> '{legacyCampaignId}', '[^0-9.]','','g'), ''),
 				NULLIF(regexp_replace(edat."data" #>> '{campaignId}', '[^0-9.]','','g'), '')
 		 		) AS campaign_id
-		FROM ft_heroku_wzsf6b3z.events edat
+		FROM ft_puck_heroku_wzsf6b3z.events edat
 		WHERE edat."data" IS NOT NULL) dat ON e._id = dat.object_id
 	LEFT JOIN 
 		(SELECT 
 			p._id AS object_id,
 			(regexp_split_to_array(p.page #>> '{path}', E'\/'))[4] AS campaign_name 
-		FROM ft_heroku_wzsf6b3z.events p) page ON page.object_id = e._id
+		FROM ft_puck_heroku_wzsf6b3z.events p) page ON page.object_id = e._id
 	LEFT JOIN public.path_campaign_lookup lookup ON page.campaign_name = lookup.campaign_name
-	LEFT JOIN ft_heroku_wzsf6b3z.phoenix_utms utms ON utms.session_id = e.page #>> '{sessionId}'
+	LEFT JOIN ft_puck_heroku_wzsf6b3z.phoenix_utms utms ON utms.session_id = e.page #>> '{sessionId}'
 ) 
 ;
 
@@ -117,7 +117,7 @@ CREATE MATERIALIZED VIEW public.phoenix_sessions AS (
 		max(e.page #>> '{query, utm_medium}') AS utm_medium,
 		max(e.page #>> '{query, utm_campaign}') AS utm_campaign,
 		max(e1.landing_path) AS landing_page
-	FROM ft_heroku_wzsf6b3z.events e
+	FROM ft_puck_heroku_wzsf6b3z.events e
 	LEFT JOIN (
 		SELECT e.page #>> '{sessionId}' AS session_id,
 		FIRST_VALUE(e.page #>> '{path}') OVER (
@@ -128,7 +128,7 @@ CREATE MATERIALIZED VIEW public.phoenix_sessions AS (
 				THEN e.meta #>> '{timestamp}'
 				ELSE e.meta #>> '{landingTimestamp}' END
 			)::numeric)) AS landing_path
-		FROM ft_heroku_wzsf6b3z.events e) e1
+		FROM ft_puck_heroku_wzsf6b3z.events e) e1
 	ON e1.session_id = e.page #>> '{sessionId}'
 	GROUP BY e.page #>> '{sessionId}'
 ) ;
@@ -147,14 +147,14 @@ CREATE MATERIALIZED VIEW public.device_northstar_crosswalk AS
 			(SELECT DISTINCT 
 			    e.user #>> '{deviceId}' AS device_id,
 			    e.user #>> '{northstarId}' AS northstar_id
-			  FROM ft_heroku_wzsf6b3z.events e 
+			  FROM ft_puck_heroku_wzsf6b3z.events e 
 			  WHERE e.user #>> '{northstarId}' IS NOT NULL) dis
 		GROUP BY dis.device_id) counts
 	LEFT JOIN 
 		(SELECT DISTINCT 
 		    e.user #>> '{deviceId}' AS device_id,
 		    e.user #>> '{northstarId}' AS northstar_id
-		 FROM ft_heroku_wzsf6b3z.events e  
+		 FROM ft_puck_heroku_wzsf6b3z.events e  
 		 WHERE e.user #>> '{northstarId}' IS NOT NULL) nsids
 		ON nsids.device_id = counts.device_id
 	);
