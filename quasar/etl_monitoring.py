@@ -61,7 +61,7 @@ class ETLMonitoring:
             'raw_rogue_posts':
                 'SELECT count(*) FROM rogue.posts',
             'raw_puck_events':
-                'SELECT count(*) FROM puck.events',
+                'SELECT count(*) FROM ft_puck_heroku_wzsf6b3z.events',
             'raw_cio_emails':
                 'SELECT count(*) FROM cio.email_event',
             'raw_cio_customers':
