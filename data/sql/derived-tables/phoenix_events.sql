@@ -19,6 +19,8 @@ CREATE MATERIALIZED VIEW public.path_campaign_lookup AS
 	GROUP BY camps.campaign_name
 	)
 ;
+GRANT SELECT ON public.path_campaign_lookup TO looker;
+GRANT SELECT ON public.path_campaign_lookup TO dsanalyst;
 
 DROP MATERIALIZED VIEW IF EXISTS ft_puck_heroku_wzsf6b3z.phoenix_utms CASCADE;
 CREATE MATERIALIZED VIEW ft_puck_heroku_wzsf6b3z.phoenix_utms AS (
@@ -31,6 +33,7 @@ CREATE MATERIALIZED VIEW ft_puck_heroku_wzsf6b3z.phoenix_utms AS (
 	GROUP BY e."page" #>> '{sessionId}'
 	);
 CREATE INDEX ON ft_puck_heroku_wzsf6b3z.phoenix_utms (session_id);
+
 
 DROP MATERIALIZED VIEW IF EXISTS public.phoenix_events CASCADE;
 CREATE MATERIALIZED VIEW public.phoenix_events AS (
@@ -86,6 +89,9 @@ CREATE MATERIALIZED VIEW public.phoenix_events AS (
 	LEFT JOIN ft_puck_heroku_wzsf6b3z.phoenix_utms utms ON utms.session_id = e.page #>> '{sessionId}'
 ) 
 ;
+CREATE UNIQUE INDEX ON phoenix_events (event_id, event_name, ts, event_datetime, northstar_id, session_id);
+GRANT SELECT ON public.phoenix_events TO looker;
+GRANT SELECT ON public.phoenix_events TO dsanalyst;
 
 DROP MATERIALIZED VIEW IF EXISTS public.phoenix_sessions CASCADE;
 CREATE MATERIALIZED VIEW public.phoenix_sessions AS (
@@ -131,7 +137,11 @@ CREATE MATERIALIZED VIEW public.phoenix_sessions AS (
 		FROM ft_puck_heroku_wzsf6b3z.events e) e1
 	ON e1.session_id = e.page #>> '{sessionId}'
 	GROUP BY e.page #>> '{sessionId}'
-) ;
+)
+;
+CREATE UNIQUE INDEX ON phoenix_sessions (session_id, device_id, landing_ts, landing_datetime);
+GRANT SELECT ON public.phoenix_sessions TO looker;
+GRANT SELECT ON public.phoenix_sessions TO dsanalyst;
 
 DROP MATERIALIZED VIEW IF EXISTS public.device_northstar_crosswalk CASCADE;
 CREATE MATERIALIZED VIEW public.device_northstar_crosswalk AS 
@@ -157,8 +167,8 @@ CREATE MATERIALIZED VIEW public.device_northstar_crosswalk AS
 		 FROM ft_puck_heroku_wzsf6b3z.events e  
 		 WHERE e.user #>> '{northstarId}' IS NOT NULL) nsids
 		ON nsids.device_id = counts.device_id
-	);
-
-CREATE UNIQUE INDEX ON phoenix_events (event_id, event_name, ts, event_datetime, northstar_id, session_id);
-CREATE UNIQUE INDEX ON phoenix_sessions (session_id, device_id, landing_ts, landing_datetime);
+)
+;
 CREATE INDEX ON device_northstar_crosswalk (northstar_id, device_id);
+GRANT SELECT ON public.device_northstar_crosswalk TO looker;
+GRANT SELECT ON public.device_northstar_crosswalk TO dsanalyst;
