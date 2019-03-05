@@ -17,10 +17,9 @@ def main():
     start_time = time.time()
     """Keep track of start time of script."""
 
-    refresh_dms(os.environ.get('CAMPAIGNS_ARN'), 'Campaigns')
     db = Database()
 
-    db.query('REFRESH MATERIALIZED VIEW rogue.campaign_info_all')
+    db.query('REFRESH MATERIALIZED VIEW ft_dosomething_rogue.campaign_info_all')
     db.query('REFRESH MATERIALIZED VIEW public.campaign_info')
     db.query('REFRESH MATERIALIZED VIEW public.campaign_info_international')
     db.disconnect()
