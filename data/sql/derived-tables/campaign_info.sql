@@ -1,5 +1,5 @@
-DROP MATERIALIZED VIEW IF EXISTS rogue.campaign_info_all CASCADE;
-CREATE MATERIALIZED VIEW IF NOT EXISTS rogue.campaign_info_all AS ( 
+DROP MATERIALIZED VIEW IF EXISTS ft_dosomething_rogue.campaign_info_all CASCADE;
+CREATE MATERIALIZED VIEW IF NOT EXISTS ft_dosomething_rogue.campaign_info_all AS ( 
     SELECT c.field_campaigns_target_id as campaign_node_id,
            n2.title as campaign_node_id_title,
            c.entity_id as campaign_run_id,
@@ -59,12 +59,14 @@ CREATE MATERIALIZED VIEW IF NOT EXISTS public.campaign_info AS (
 		i.campaign_noun,
 		i.campaign_verb,
 		i.campaign_cta
-	FROM dosomething_rogue.campaigns c
-	LEFT JOIN rogue.campaign_info_all i ON i.campaign_run_id = c.campaign_run_id
+	FROM ft_dosomething_rogue.campaigns c
+	LEFT JOIN ft_dosomething_rogue.campaign_info_all i ON i.campaign_run_id = c.campaign_run_id
 	WHERE i.campaign_language = 'en' OR i.campaign_language IS NULL 
 );
+CREATE UNIQUE INDEX ON public.campaign_info (campaign_run_id, campaign_id);
 GRANT SELECT ON public.campaign_info TO dsanalyst;
 GRANT SELECT ON public.campaign_info TO looker;
+
 
 DROP MATERIALIZED VIEW IF EXISTS public.campaign_info_international CASCADE;
 CREATE MATERIALIZED VIEW IF NOT EXISTS public.campaign_info_international AS (
@@ -72,11 +74,9 @@ CREATE MATERIALIZED VIEW IF NOT EXISTS public.campaign_info_international AS (
 		c.id AS campaign_id,
 		c.internal_title AS campaign_name,
 		i.*
-	FROM rogue.campaign_info_all i
-	LEFT JOIN dosomething_rogue.campaigns c ON i.campaign_run_id = c.campaign_run_id
+	FROM ft_dosomething_rogue.campaign_info_all i
+	LEFT JOIN ft_dosomething_rogue.campaigns c ON i.campaign_run_id = c.campaign_run_id
 	WHERE campaign_language IS DISTINCT FROM 'en'
 );
 GRANT SELECT ON public.campaign_info_international TO dsanalyst;
 GRANT SELECT ON public.campaign_info_international TO looker;
-
-CREATE UNIQUE INDEX ON public.campaign_info (campaign_run_id, campaign_id);
