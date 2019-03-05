@@ -19,7 +19,8 @@ def main():
 
     db = Database()
 
-    db.query('REFRESH MATERIALIZED VIEW ft_dosomething_rogue.campaign_info_all')
+    db.query(''.join(("REFRESH MATERIALIZED VIEW "
+                      "ft_dosomething_rogue.campaign_info_all")))
     db.query('REFRESH MATERIALIZED VIEW public.campaign_info')
     db.query('REFRESH MATERIALIZED VIEW public.campaign_info_international')
     db.disconnect()
