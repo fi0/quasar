@@ -22,8 +22,7 @@ CREATE MATERIALIZED VIEW ft_gambit_conversations_api.messages_flattened AS
  FROM ft_gambit_conversations_api.messages
 );
 
-CREATE INDEX platformmsgi ON ft_gambit_conversations_api.messages_flattened(platform_message_id);
-CREATE INDEX usermidi ON ft_gambit_conversations_api.messages_flattened(user_id);
+CREATE UNIQUE INDEX ON ft_gambit_conversations_api.messages_flattened (user_id, platform_message_id, delivered_at);
 
 GRANT SELECT ON ft_gambit_conversations_api.messages_flattened TO looker;
 GRANT SELECT ON ft_gambit_conversations_api.messages_flattened to dsanalyst;
