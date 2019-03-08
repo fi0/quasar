@@ -10,12 +10,15 @@ def create_gambit_messages():
 
 
 def refresh_gambit_messages():
-    log("Refreshing ft_gambit_conversations_api.messages_flattened derived table.")
-    refresh_materialized_view("ft_gambit_conversations_api.messages_flattened")
+    log(''.join(("Refreshing ft_gambit_conversations_api.messages_flattened "
+                 "derived table.")))
+    refresh_materialized_view(''.join(("CONCURRENTLY "
+                                       "ft_gambit_conversations_api."
+                                       "messages_flattened")))
     log("Refreshing public.gambit_messages_inbound derived table.")
-    refresh_materialized_view("public.gambit_messages_inbound")
+    refresh_materialized_view("CONCURRENTLY public.gambit_messages_inbound")
     log("Refreshing public.gambit_messages_outbound derived table.")
-    refresh_materialized_view("public.gambit_messages_outbound")
+    refresh_materialized_view("CONCURRENTLY public.gambit_messages_outbound")
 
 
 def refresh_gambit_full():

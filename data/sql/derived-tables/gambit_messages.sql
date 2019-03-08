@@ -22,8 +22,7 @@ CREATE MATERIALIZED VIEW ft_gambit_conversations_api.messages_flattened AS
  FROM ft_gambit_conversations_api.messages
 );
 
-CREATE INDEX platformmsgi ON ft_gambit_conversations_api.messages_flattened(platform_message_id);
-CREATE INDEX usermidi ON ft_gambit_conversations_api.messages_flattened(user_id);
+CREATE UNIQUE INDEX ON ft_gambit_conversations_api.messages_flattened (user_id, platform_message_id, delivered_at);
 
 GRANT SELECT ON ft_gambit_conversations_api.messages_flattened TO looker;
 GRANT SELECT ON ft_gambit_conversations_api.messages_flattened to dsanalyst;
@@ -71,7 +70,7 @@ WHERE
 	g.direction = 'inbound'
 	AND g.user_id IS NULL));
 
-CREATE INDEX inbound_messages_i ON public.gambit_messages_inbound (message_id, created_at, user_id, conversation_id);
+CREATE UNIQUE INDEX ON public.gambit_messages_inbound (message_id, created_at, user_id, conversation_id);
 GRANT SELECT ON public.gambit_messages_inbound to looker;
 GRANT SELECT ON public.gambit_messages_inbound to dsanalyst;
 
@@ -125,7 +124,7 @@ WHERE
 	g.direction <> 'inbound'
 	AND g.user_id IS NULL));
 
-CREATE INDEX outbound_messages_i ON public.gambit_messages_outbound (message_id, created_at, user_id, conversation_id);
+CREATE UNIQUE INDEX ON public.gambit_messages_outbound (message_id, created_at, user_id, conversation_id);
 GRANT SELECT ON public.gambit_messages_outbound to looker;
 GRANT SELECT ON public.gambit_messages_outbound to dsanalyst;
 
