@@ -127,13 +127,9 @@ CREATE MATERIALIZED VIEW public.phoenix_sessions AS (
 	LEFT JOIN (
 		SELECT e.page #>> '{sessionId}' AS session_id,
 		FIRST_VALUE(e.page #>> '{path}') OVER (
-		        PARTITION BY e.user #>> '{northstarId}', e.page #>> '{sessionId}'
-			ORDER BY (
-			(CASE WHEN
-				e.page #>> '{landingTimestamp}' = 'null'
-				THEN e.meta #>> '{timestamp}'
-				ELSE e.meta #>> '{landingTimestamp}' END
-			)::numeric)) AS landing_path
+		        PARTITION BY e.page #>> '{sessionId}'
+			ORDER BY (e.meta #>> '{timestamp}')::numeric)
+			AS landing_path
 		FROM ft_puck_heroku_wzsf6b3z.events e) e1
 	ON e1.session_id = e.page #>> '{sessionId}'
 	GROUP BY e.page #>> '{sessionId}'
