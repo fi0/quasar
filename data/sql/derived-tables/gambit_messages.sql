@@ -124,7 +124,7 @@ WHERE
 	g.direction <> 'inbound'
 	AND g.user_id IS NULL));
 
-CREATE INDEX outbound_messages_i ON public.gambit_messages_outbound (message_id, created_at, user_id, conversation_id);
+CREATE UNIQUE INDEX ON public.gambit_messages_outbound (message_id, created_at, user_id, conversation_id);
 GRANT SELECT ON public.gambit_messages_outbound to looker;
 GRANT SELECT ON public.gambit_messages_outbound to dsanalyst;
 
