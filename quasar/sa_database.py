@@ -27,7 +27,7 @@ class Database:
     def connect(self):
         # Setup SQL Alchemy postgres connection.
         try:
-            engine = create_engine(URL(**pg_vars),
+            engine = create_engine(URL(**pg_opts),
                                    connect_args={'sslmode': pg_ssl})
             self.conn = engine.connect()
         except exc.InterfaceError as e:
@@ -38,4 +38,7 @@ class Database:
     def disconnect(self):
         self.conn.close()
         return self.conn
+
+    def query(self, query):
+        return self.conn.execute(query)
 
