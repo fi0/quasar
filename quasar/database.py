@@ -4,7 +4,7 @@ import psycopg2
 
 from .utils import QuasarException, logerr
 
-# Defaults
+# Psycopg2 vars.
 opts = {
     'user': os.environ.get('PG_USER'),
     'host': os.environ.get('PG_HOST'),
@@ -13,6 +13,7 @@ opts = {
     'database': os.environ.get('PG_DATABASE'),
     'sslmode': os.environ.get('PG_SSL')
 }
+
 
 
 def _connect(opts):
