@@ -8,8 +8,6 @@ logging.getLogger().setLevel(logging.INFO)
 # DoSomething Helper Functions - Code Reused Across Lots of our ETL Scripts
 
 # String Parser
-
-
 def strip_str(base_value):
     """Convert value to string and strips special characters.
 
@@ -22,7 +20,6 @@ def strip_str(base_value):
         strip_special_chars = re.sub(r'[()<>/"\,\'\\]', '', base_string)
         return str(strip_special_chars)
 
-
 def now_minus_hours(hours):
     """Returns time x hours ago"""
     if hours is None:
@@ -31,18 +28,27 @@ def now_minus_hours(hours):
         start_time = int(time.time()) - (int(hours) * 3600)
         return dt.fromtimestamp(start_time).isoformat()
 
-
 def unixtime_to_isotime(unixtime):
     return dt.fromtimestamp(unixtime).isoformat()
-
 
 def log(msg):
     logging.info(msg)
 
-
 def logerr(msg):
     logging.error(msg)
 
+def sql_replace(query, datamap):
+    """Used for find/replace variables in sql_run_file function based
+    on a regular pattern.
+    """
+    # Remove any newlines.
+    final_query = query.replace("\n", "")
+    # Based on variables in datamap, replace ':' prepended values
+    # with actual values.
+    for key in datamap:
+        j = ':' + key
+        final_query = final_query.replace(j, datamap[key])
+    return final_query
 
 class Duration:
     """Simple duration tracker.
