@@ -13,9 +13,6 @@ data = {
      'event_lookup': os.getenv('EVENT_LOOKUP')
 }
 
+
 def main():
     run_sql_file('./data/sql/derived-tables/phoenix_events.sql', data)
-
-
-
-

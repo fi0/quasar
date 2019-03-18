@@ -19,11 +19,13 @@ pg_opts = {
 
 pg_ssl = os.getenv('PG_SSL')
 
+
 class Database:
 
     def __init__(self, options={}):
         pg_opts.update(options)
         self.connect()
+
     def connect(self):
         # Setup SQL Alchemy postgres connection.
         try:
@@ -41,4 +43,3 @@ class Database:
 
     def query(self, query):
         return self.conn.execute(query)
-

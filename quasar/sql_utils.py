@@ -75,6 +75,7 @@ def run_sql_file(file, datamap):
             db.query(i)
     db.disconnect()
 
+
 def refresh_materialized_view(view):
     db = Database()
     start_time = time.time()

@@ -15,7 +15,6 @@ opts = {
 }
 
 
-
 def _connect(opts):
     conn = None
     try:
