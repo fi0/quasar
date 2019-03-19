@@ -4,7 +4,9 @@ import sys
 import time
 
 from .database import Database
+from .sa_database import Database as sadb
 from sqlalchemy import create_engine
+from .utils import log
 
 
 class DataFrameDB:
@@ -54,9 +56,37 @@ class DataFrameDB:
                 sys.exit(1)
 
 
-def run_sql_file(file):
+def run_sql_file_old(file):
     df = DataFrameDB()
     df.run_query(file)
+
+
+def sql_replace(query, datamap):
+    """Used for find/replace variables in sql_run_file function based
+    on a regular pattern.
+    """
+    # Remove any newlines.
+    final_query = query.replace("\n", "")
+    # Based on variables in datamap, replace ':' prepended values
+    # with actual values.
+    for key in datamap:
+        j = ':' + key
+        final_query = final_query.replace(j, datamap[key])
+    return final_query
+
+
+def run_sql_file(file, datamap):
+    template = open(file, 'r').read()
+    queries = template.split(";")
+    db = sadb()
+    for i in queries:
+        i = sql_replace(i, datamap)
+        # If query is empty, will throw an error.
+        if i != "":
+            log("Running query:")
+            log(i)
+            db.query(i)
+    db.disconnect()
 
 
 def refresh_materialized_view(view):
