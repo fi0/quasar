@@ -1,11 +1,9 @@
 import os
-import sys
 
 from sqlalchemy import create_engine, exc
 from sqlalchemy.engine.url import URL
-from sqlalchemy.sql import text
 
-from .utils import QuasarException, log, logerr
+from .utils import log, logerr
 
 # Setup SQL Alchemy vars.
 pg_opts = {
