@@ -1,5 +1,5 @@
-DROP MATERIALIZED VIEW IF EXISTS ft_dosomething_rogue.campaign_info_all CASCADE;
-CREATE MATERIALIZED VIEW IF NOT EXISTS ft_dosomething_rogue.campaign_info_all AS ( 
+DROP MATERIALIZED VIEW IF EXISTS :campaign_info_all CASCADE;
+CREATE MATERIALIZED VIEW IF NOT EXISTS :campaign_info_all AS ( 
     SELECT c.field_campaigns_target_id as campaign_node_id,
            n2.title as campaign_node_id_title,
            c.entity_id as campaign_run_id,
@@ -14,28 +14,28 @@ CREATE MATERIALIZED VIEW IF NOT EXISTS ft_dosomething_rogue.campaign_info_all AS
            array_to_string(array_agg(distinct ttd2.name), ', ') as campaign_cause_type,
            array_to_string(array_agg(distinct fdfcta.field_call_to_action_value), ', ') as campaign_cta,
            array_to_string(array_agg(distinct ttd1.name), ', ') as campaign_action_type 
-    FROM dosomething.field_data_field_campaigns c 
-    LEFT JOIN dosomething.node n1 
+    FROM :field_data_field_campaigns c 
+    LEFT JOIN :node n1 
         ON n1.nid = c.entity_id 
-    LEFT JOIN dosomething.node n2 
+    LEFT JOIN :node n2 
         ON n2.nid = c.field_campaigns_target_id 
-    LEFT JOIN dosomething.field_data_field_campaign_type fdfct 
+    LEFT JOIN :field_data_field_campaign_type fdfct 
         ON c.field_campaigns_target_id = fdfct.entity_id 
-    LEFT JOIN dosomething.field_data_field_run_date fdfrd 
+    LEFT JOIN :field_data_field_run_date fdfrd 
         ON c.entity_id = fdfrd.entity_id and c.language = fdfrd.language 
-    LEFT JOIN dosomething.field_data_field_call_to_action fdfcta 
+    LEFT JOIN :field_data_field_call_to_action fdfcta 
         ON c.field_campaigns_target_id = fdfcta.entity_id and c.language = fdfcta.language 
-    LEFT JOIN dosomething.field_data_field_reportback_noun fdfrn 
+    LEFT JOIN :field_data_field_reportback_noun fdfrn 
         ON c.field_campaigns_target_id = fdfrn.entity_id and c.language = fdfrn.language 
-    LEFT JOIN dosomething.field_data_field_reportback_verb fdfrv 
+    LEFT JOIN :field_data_field_reportback_verb fdfrv 
         ON c.field_campaigns_target_id = fdfrv.entity_id and c.language = fdfrv.language 
-    LEFT JOIN dosomething.field_data_field_action_type fdfat 
+    LEFT JOIN :field_data_field_action_type fdfat 
         ON fdfat.entity_id = c.field_campaigns_target_id 
-    LEFT JOIN dosomething.taxonomy_term_data ttd1 
+    LEFT JOIN :taxonomy_term_data ttd1 
         ON fdfat.field_action_type_tid = ttd1.tid 
-    LEFT JOIN dosomething.field_data_field_cause fdfc 
+    LEFT JOIN :field_data_field_cause fdfc 
         ON fdfc.entity_id = c.field_campaigns_target_id 
-    LEFT JOIN dosomething.taxonomy_term_data ttd2 
+    LEFT JOIN :taxonomy_term_data ttd2 
         ON fdfc.field_cause_tid = ttd2.tid 
     WHERE c.bundle = 'campaign_run' 
     GROUP BY 1,2,3,4,5,6,7,8,9,10,11 
@@ -60,7 +60,7 @@ CREATE MATERIALIZED VIEW IF NOT EXISTS public.campaign_info AS (
 		i.campaign_verb,
 		i.campaign_cta
 	FROM ft_dosomething_rogue.campaigns c
-	LEFT JOIN ft_dosomething_rogue.campaign_info_all i ON i.campaign_run_id = c.campaign_run_id
+	LEFT JOIN :campaign_info_all i ON i.campaign_run_id = c.campaign_run_id
 	WHERE i.campaign_language = 'en' OR i.campaign_language IS NULL 
 );
 CREATE UNIQUE INDEX ON public.campaign_info (campaign_run_id, campaign_id);
@@ -74,7 +74,7 @@ CREATE MATERIALIZED VIEW IF NOT EXISTS public.campaign_info_international AS (
 		c.id AS campaign_id,
 		c.internal_title AS campaign_name,
 		i.*
-	FROM ft_dosomething_rogue.campaign_info_all i
+	FROM :campaign_info_all i
 	LEFT JOIN ft_dosomething_rogue.campaigns c ON i.campaign_run_id = c.campaign_run_id
 	WHERE campaign_language IS DISTINCT FROM 'en'
 );
