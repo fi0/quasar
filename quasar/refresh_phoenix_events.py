@@ -1,22 +1,19 @@
-from .database import Database
-import time
+from .sa_database import Database
+from .utils import Duration
 
 
 def main():
     db = Database()
-    start_time = time.time()
-    """Keep track of start time of script."""
+    duration = Duration()
 
     db.query("REFRESH MATERIALIZED VIEW public.path_campaign_lookup")
     db.query("REFRESH MATERIALIZED VIEW ft_puck_heroku_wzsf6b3z.phoenix_utms")
-    db.query("REFRESH MATERIALIZED VIEW CONCURRENTLY public.phoenix_events")
-    db.query("REFRESH MATERIALIZED VIEW CONCURRENTLY public.phoenix_sessions")
+    db.query("REFRESH MATERIALIZED VIEW public.phoenix_events")
+    db.query("REFRESH MATERIALIZED VIEW public.phoenix_sessions")
     db.query("REFRESH MATERIALIZED VIEW public.device_northstar_crosswalk")
     db.disconnect()
 
-    end_time = time.time()  # Record when script stopped running.
-    duration = end_time - start_time  # Total duration in seconds.
-    print('duration: ', duration)
+    duration.duration()
 
 
 if __name__ == "__main__":
