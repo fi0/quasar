@@ -7,6 +7,7 @@ logging.getLogger().setLevel(logging.INFO)
 
 # DoSomething Helper Functions - Code Reused Across Lots of our ETL Scripts
 
+
 def strip_str(base_value):
     """Convert value to string and strips special characters.
 
