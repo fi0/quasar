@@ -9,11 +9,17 @@ data = {
     'campaign_info_all': os.getenv('CAMPAIGN_INFO_ALL'),
     'field_data_field_campaigns': os.getenv('FIELD_DATA_FIELD_CAMPAIGNS'),
     'node': os.getenv('NODE'),
-    'field_data_field_campaign_type': os.getenv('FIELD_DATA_FIELD_CAMPAIGN_TYPE'),
+    'field_data_field_campaign_type': os.getenv(''.join(('FIELD_DATA_FIELD_'
+                                                         'CAMPAIGN_TYPE'))),
     'field_data_field_run_date': os.getenv('FIELD_DATA_FIELD_RUN_DATE'),
-    'field_data_field_call_to_action': os.getenv('FIELD_DATA_FIELD_CALL_TO_ACTION'),
-    'field_data_field_reportback_noun': os.getenv('FIELD_DATA_FIELD_REPORTBACK_NOUN'),
-    'field_data_field_reportback_verb': os.getenv('FIELD_DATA_FIELD_REPORTBACK_VERB'),
+    'field_data_field_call_to_action': os.getenv(''.join(('FIELD_DATA_FIELD_'
+                                                          'CALL_TO_ACTION'))),
+    'field_data_field_reportback_noun': os.getenv(''.join(('FIELD_DATA_FIELD_'
+                                                           'REPORTBACK_'
+                                                           'NOUN'))),
+    'field_data_field_reportback_verb': os.getenv(''.join(('FIELD_DATA_FIELD_'
+                                                           'REPORTBACK_'
+                                                           'VERB'))),
     'field_data_field_action_type': os.getenv('FIELD_DATA_FIELD_ACTION_TYPE'),
     'taxonomy_term_data': os.getenv('TAXONOMY_TERM_DATA'),
     'field_data_field_cause': os.getenv('FIELD_DATA_FIELD_CAUSE'),
