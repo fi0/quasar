@@ -1,5 +1,4 @@
 import os
-import time
 
 from .sa_database import Database
 from .sql_utils import run_sql_file
@@ -44,6 +43,7 @@ def refresh():
     db.query('REFRESH MATERIALIZED VIEW public.campaign_info')
     db.query('REFRESH MATERIALIZED VIEW public.campaign_info_international')
     db.disconnect()
+    duration.duration()
 
 
 if __name__ == "__create__":

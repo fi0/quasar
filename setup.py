@@ -5,7 +5,7 @@ with open('requirements.txt') as f:
 
 setup(
     name="quasar",
-    version="2019.3.18.0",
+    version="2019.3.25.0",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
@@ -13,7 +13,7 @@ setup(
             'bertly_refresh = quasar.refresh_bertly:main',
             'bertly_create = quasar.create_bertly:main',
             'campaign_info_recreate = quasar.campaign_info:create',
-            'campaign_info_refresh = quasar.campaign_info:main',
+            'campaign_info_refresh = quasar.campaign_info:refresh',
             'campaign_activity_create = quasar.create_campaign_activity:main',
             'campaign_activity_refresh = quasar.refresh_campaign_activity:main',
             'cio_import = quasar.cio_consumer:main',
