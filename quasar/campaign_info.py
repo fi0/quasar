@@ -44,8 +44,9 @@ def refresh():
     db = Database()
     duration = Duration()
 
-    db.query(''.join(("REFRESH MATERIALIZED VIEW "
-                      "ft_dosomething_rogue.campaign_info_all")))
+    # Setting statement for schema diffs of campaign_info_all
+    campaign_all = "REFRESH MATERIALIZED VIEW " + data['campaign_info_all']
+    db.query(campaign_all)
     db.query('REFRESH MATERIALIZED VIEW public.campaign_info')
     db.query('REFRESH MATERIALIZED VIEW public.campaign_info_international')
     db.disconnect()
