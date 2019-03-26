@@ -39,8 +39,6 @@ def create():
 
 
 def refresh():
-    start_time = time.time()
-
     db = Database()
     duration = Duration()
 
