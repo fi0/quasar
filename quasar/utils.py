@@ -54,7 +54,7 @@ class Duration:
 
     def duration(self):
         run_time = time.time() - self.start_time
-        logging.info("Duration in seconds: ".format(run_time))
+        logging.info("Duration in seconds: {}".format(run_time))
         return run_time
 
 
