@@ -28,12 +28,10 @@ setup(
             'mam_retention_refresh = quasar.refresh_mam_retention:main',
             'mel_create = quasar.create_mel:main',
             'mel_refresh = quasar.mel:main',
-            'message_route = quasar.route_queue_process:main',
             'northstar_to_quasar_diff = quasar.northstar_to_user_table:backfill_since',
             'northstar_to_quasar_diff_json = quasar.northstar_to_user_table:backfill_since_json',
             'phoenix_events_refresh = quasar.refresh_phoenix_events:main',
             'phoenix_events_create = quasar.create_phoenix_events:main',
-            'rogue_consume = quasar.rogue_consumer:main',
             'rogue_ghost_killer = quasar.ghost_killer:main',
             'users_create = quasar.create_derived_users:main',
             'users_refresh = quasar.refresh_derived_users:main'
