@@ -12,10 +12,10 @@ class CioQueue(QuasarQueue):
 
     def __init__(self):
         self.amqp_uri = os.environ.get('AMQP_URI')
-        self.cio_queue = os.environ.get('CIO_QUEUE')
-        self.quasar_exchange = os.environ.get('QUASAR_EXCHANGE')
-        super().__init__(self.amqp_uri, self.cio_queue,
-                         self.quasar_exchange)
+        self.cio_queue = os.environ.get('BLINK_QUEUE')
+        self.quasar_exchange = os.environ.get('BLINK_EXCHANGE')
+        super().__init__(self.amqp_uri, self.blink_queue,
+                         self.blink_exchange)
         self.db = Database()
 
     # Save entire c.io JSON blob to event_log table.
@@ -159,34 +159,38 @@ class CioQueue(QuasarQueue):
                      "C.IO event id {}.")).format(data['event_id']))
 
     def process_message(self, message_data):
-        data = message_data['data']
-        event_type = pydash.get(data, 'event_type')
-        # Set for checking email event types.
-        email_event = {
-            'email_bounced',
-            'email_converted',
-            'email_opened',
-            'email_unsubscribed'
-        }
-        # Always capture atomic c.io event in raw format.
-        self._log_event(data)
-        try:
-            if event_type == 'customer_subscribed':
-                self._add_sub_event(data)
-            elif event_type == 'customer_unsubscribed':
-                self._add_unsub_event(data)
-            elif event_type == 'email_clicked':
-                self._add_email_click_event(data)
-            elif event_type == 'email_sent':
-                self._add_email_sent_event(data)
-            elif event_type == 'email_bounced':
-                self._add_email_bounced_event(data)
-            elif event_type in email_event:
-                self._add_email_event(data)
-            else:
-                pass
-        except KeyError as e:
-            logerr("C.IO message missing {}".format(e))
-        except:
-            logerr("Something went wrong with C.IO consumer!")
-            sys.exit(1)
+        if pydash.get(message_data, 'data.meta.message_source') == 'rogue':
+            message_id = pydash.get(message_data, 'data.data.id')
+            log("Ack'ing Rogue message id {}".format(message_id))
+        else:
+            data = message_data['data']
+            event_type = pydash.get(data, 'event_type')
+            # Set for checking email event types.
+            email_event = {
+                'email_bounced',
+                'email_converted',
+                'email_opened',
+                'email_unsubscribed'
+            }
+            # Always capture atomic c.io event in raw format.
+            self._log_event(data)
+            try:
+                if event_type == 'customer_subscribed':
+                    self._add_sub_event(data)
+                elif event_type == 'customer_unsubscribed':
+                    self._add_unsub_event(data)
+                elif event_type == 'email_clicked':
+                    self._add_email_click_event(data)
+                elif event_type == 'email_sent':
+                    self._add_email_sent_event(data)
+                elif event_type == 'email_bounced':
+                    self._add_email_bounced_event(data)
+                elif event_type in email_event:
+                    self._add_email_event(data)
+                else:
+                    pass
+            except KeyError as e:
+                logerr("C.IO message missing {}".format(e))
+            except:
+                logerr("Something went wrong with C.IO consumer!")
+                sys.exit(1)
