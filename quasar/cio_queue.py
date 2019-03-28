@@ -3,7 +3,7 @@ import os
 import pydash
 import sys
 
-from .database import Database
+from .sa_database import Database
 from .queue import QuasarQueue
 from .utils import log, logerr
 
@@ -21,61 +21,73 @@ class CioQueue(QuasarQueue):
     # Save entire c.io JSON blob to event_log table.
     def _log_event(self, data):
         self.db.query_str(''.join(("INSERT INTO cio.event_log "
-                                   "(event) VALUES (%s)")),
-                          (json.dumps(data),))
+                                   "(event) VALUES :event")),
+                          {event: json.dumps(data)})
         log(''.join(("Logged data from "
                      "C.IO event id {}.")).format(data['event_id']))
 
     # Save customer sub data and dates.
     def _add_sub_event(self, data):
+        record = {
+            'email_id': data['data']['email_id'],
+            'customer_id': data['data']['customer_id'],
+            'email_address': data['data']['email_address'],
+            'event_id': data['event_id'], 
+            'timestamp': data['timestamp'],
+            'event_type': data['event_type']
+        }
         self.db.query_str(''.join(("INSERT INTO cio.customer_event "
                                    "(email_id, customer_id, email_address, "
                                    "event_id, timestamp, "
-                                   "event_type) VALUES (%s,%s,%s,%s,"
-                                   "to_timestamp(%s),%s) "
+                                   "event_type) VALUES (:email_id,"
+                                   ":customer_id,:email_address,:event_id,"
+                                   "to_timestamp(:timestamp),:event_type) "
                                    "ON CONFLICT (email_id, customer_id, "
                                    "timestamp, event_type) "
-                                   "DO NOTHING")),
-                          (data['data']['email_id'],
-                           data['data']['customer_id'],
-                           data['data']['email_address'],
-                           data['event_id'], data['timestamp'],
-                           data['event_type']))
+                                   "DO NOTHING")), record)
         return data['event_id']
 
     # Save customer unsub data and dates.
     def _add_unsub_event(self, data):
         if pydash.get(data, 'template_id'):
+            record = {
+                'email_id': data['data']['email_id'],
+                'customer_id': data['data']['customer_id'],
+                'email_address': data['data']['email_address'],
+                'template_id': data['data']['template_id'],
+                'event_id': data['event_id'],
+                'timestamp': data['timestamp'],
+                'event_type': data['event_type']
+            }
             self.db.query_str(''.join(("INSERT INTO cio.customer_event "
                                        "(email_id, customer_id,"
                                        "email_address, template_id, event_id,"
                                        "timestamp, event_type) "
-                                       "VALUES (%s,%s,%s,%s,%s,"
-                                       "to_timestamp(%s),%s) "
+                                       "VALUES (:email_id,:customer_id,"
+                                       ":email_address,:template_id,:event_id,"
+                                       "to_timestamp(:timestamp),:event_type) "
                                        "ON CONFLICT (email_id, customer_id, "
                                        "timestamp, event_type) "
-                                       "DO NOTHING")),
-                              (data['data']['email_id'],
-                               data['data']['customer_id'],
-                               data['data']['email_address'],
-                               data['data']['template_id'],
-                               data['event_id'], data['timestamp'],
-                               data['event_type']))
+                                       "DO NOTHING")), record)
         else:
+            record = {
+                'email_id':data['data']['email_id'],
+                'customer_id': data['data']['customer_id'],
+                'email_address': data['data']['email_address'],
+                'event_id': data['event_id'], 
+                'timestamp': data['timestamp'],
+                'event_type': data['event_type']
+            }
             self.db.query_str(''.join(("INSERT INTO cio.customer_event "
                                        "(email_id, customer_id,"
                                        "email_address, event_id, "
                                        "timestamp, event_type) "
-                                       "VALUES (%s,%s,%s,%s,"
-                                       "to_timestamp(%s),%s) "
+                                       "VALUES (:email_id,:customer_id,"
+                                       ":email_address,:event_id,"
+                                       "to_timestamp(:timestamp),:event_type) "
                                        "ON CONFLICT (email_id, customer_id, "
                                        "timestamp, event_type) "
-                                       "DO NOTHING")),
-                              (data['data']['email_id'],
-                               data['data']['customer_id'],
-                               data['data']['email_address'],
-                               data['event_id'], data['timestamp'],
-                               data['event_type']))
+                                       "DO NOTHING")), record)
         log(''.join(("Added customer event from "
                      "C.IO event id {}.")).format(data['event_id']))
 
