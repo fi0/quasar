@@ -20,9 +20,9 @@ class CioQueue(QuasarQueue):
 
     # Save entire c.io JSON blob to event_log table.
     def _log_event(self, data):
+        record = {'event': json.dumps(data)}
         self.db.query_str(''.join(("INSERT INTO cio.event_log "
-                                   "(event) VALUES :event")),
-                          {event: json.dumps(data)})
+                                   "(event) VALUES :event")), record)
         log(''.join(("Logged data from "
                      "C.IO event id {}.")).format(data['event_id']))
 
@@ -32,7 +32,7 @@ class CioQueue(QuasarQueue):
             'email_id': data['data']['email_id'],
             'customer_id': data['data']['customer_id'],
             'email_address': data['data']['email_address'],
-            'event_id': data['event_id'], 
+            'event_id': data['event_id'],
             'timestamp': data['timestamp'],
             'event_type': data['event_type']
         }
@@ -71,10 +71,10 @@ class CioQueue(QuasarQueue):
                                        "DO NOTHING")), record)
         else:
             record = {
-                'email_id':data['data']['email_id'],
+                'email_id': data['data']['email_id'],
                 'customer_id': data['data']['customer_id'],
                 'email_address': data['data']['email_address'],
-                'event_id': data['event_id'], 
+                'event_id': data['event_id'],
                 'timestamp': data['timestamp'],
                 'event_type': data['event_type']
             }
@@ -93,80 +93,99 @@ class CioQueue(QuasarQueue):
 
     # Save email event data and dates, e.g. email_click.
     def _add_email_event(self, data):
+        record = {
+            'email_id': data['data']['email_id'],
+            'customer_id': data['data']['customer_id'],
+            'email_address': data['data']['email_address'],
+            'template_id': data['data']['template_id'],
+            'event_id': data['event_id'],
+            'timestamp': data['timestamp'],
+            'event_type': data['event_type']
+        }
         self.db.query_str(''.join(("INSERT INTO cio.email_event "
                                    "(email_id, customer_id, email_address, "
                                    "template_id, event_id, timestamp, "
                                    "event_type) VALUES "
-                                   "(%s,%s,%s,%s,%s,to_timestamp(%s),%s) "
+                                   "(:email_id,:customer_id,:email_address,"
+                                   ":template_id,:event_id,"
+                                   "to_timestamp(:timestamp),:event_type) "
                                    "ON CONFLICT (email_id, customer_id, "
                                    "timestamp, event_type) "
-                                   "DO NOTHING")),
-                          (data['data']['email_id'],
-                           data['data']['customer_id'],
-                           data['data']['email_address'],
-                           data['data']['template_id'],
-                           data['event_id'], data['timestamp'],
-                           data['event_type']))
+                                   "DO NOTHING")), record)
         log(''.join(("Added email event from "
                      "C.IO event id {}.")).format(data['event_id']))
 
     # Save email sent event.
     def _add_email_sent_event(self, data):
+        record = {
+            'email_id': data['data']['email_id'],
+            'customer_id': data['data']['customer_id'],
+            'email_address': data['data']['email_address'],
+            'template_id': data['data']['template_id'],
+            'subject': data['data']['subject'],
+            'event_id': data['event_id'],
+            'timestamp': data['timestamp']
+        }
         self.db.query_str(''.join(("INSERT INTO cio.email_sent "
                                    "(email_id, customer_id, email_address, "
                                    "template_id, subject, event_id, "
                                    "timestamp) VALUES "
-                                   "(%s,%s,%s,%s,%s,%s,to_timestamp(%s)) "
+                                   "(:email_id,:customer_id,:email_address,"
+                                   ":template_id,:subject,:event_id,"
+                                   "to_timestamp(:timestamp)) "
                                    "ON CONFLICT (email_id, customer_id, "
-                                   "timestamp) DO NOTHING")),
-                          (data['data']['email_id'],
-                           data['data']['customer_id'],
-                           data['data']['email_address'],
-                           data['data']['template_id'],
-                           data['data']['subject'],
-                           data['event_id'], data['timestamp']))
+                                   "timestamp) DO NOTHING")), record)
         log(''.join(("Added email event from "
                      "C.IO event id {}.")).format(data['event_id']))
 
     # Save email event data and dates, e.g. email_click.
     def _add_email_click_event(self, data):
+        record = {
+            'email_id': data['data']['email_id'],
+            'customer_id': data['data']['customer_id'],
+            'email_address': data['data']['email_address'],
+            'template_id': data['data']['template_id'],
+            'subject': data['data']['subject'],
+            'href': data['data']['href'],
+            'link_id': data['data']['link_id'],
+            'event_id': data['event_id'],
+            'timestamp': data['timestamp'],
+            'event_type': data['event_type']
+        }
         self.db.query_str(''.join(("INSERT INTO cio.email_event "
                                    "(email_id, customer_id, email_address, "
                                    "template_id, subject, href, link_id, "
                                    "event_id, timestamp, "
                                    "event_type) VALUES "
-                                   "(%s,%s,%s,%s,%s,%s,%s,%s,"
-                                   "to_timestamp(%s),%s) "
-                                   "ON CONFLICT (email_id, customer_id, "
-                                   "timestamp, event_type) "
-                                   "DO NOTHING")),
-                          (data['data']['email_id'],
-                           data['data']['customer_id'],
-                           data['data']['email_address'],
-                           data['data']['template_id'],
-                           data['data']['subject'],
-                           data['data']['href'],
-                           data['data']['link_id'],
-                           data['event_id'], data['timestamp'],
-                           data['event_type']))
+                                   "(:email_id,:customer_id,:email_address,"
+                                   ":template_id,:subject,:href,:link_id,"
+                                   ":event_id,to_timestamp(:timestamp),"
+                                   ":event_type) ON CONFLICT (email_id, "
+                                   "customer_id, timestamp, event_type) "
+                                   "DO NOTHING")), record)
         log(''.join(("Added email event from "
                      "C.IO event id {}.")).format(data['event_id']))
 
         # Save email bounced event.
     def _add_email_bounced_event(self, data):
+        record = {
+            'email_id': data['data']['email_id'],
+            'customer_id': data['data']['customer_id'],
+            'email_address': data['data']['email_address'],
+            'template_id': data['data']['template_id'],
+            'subject': data['data']['subject'],
+            'event_id': data['event_id'],
+            'timestamp': data['timestamp']
+        }
         self.db.query_str(''.join(("INSERT INTO cio.email_bounced "
                                    "(email_id, customer_id, email_address, "
                                    "template_id, subject, event_id, "
                                    "timestamp) VALUES "
-                                   "(%s,%s,%s,%s,%s, %s, to_timestamp(%s)) "
+                                   "(:email_id,:customer_id,:email_address,"
+                                   ":template_id,:subject,:event_id,"
+                                   "to_timestamp(:timestamp)) "
                                    "ON CONFLICT (email_id, customer_id, "
-                                   "timestamp) DO NOTHING")),
-                          (data['data']['email_id'],
-                           data['data']['customer_id'],
-                           data['data']['email_address'],
-                           data['data']['template_id'],
-                           data['data']['subject'],
-                           data['event_id'], data['timestamp']))
+                                   "timestamp) DO NOTHING")), record)
         log(''.join(("Added email bounced event from "
                      "C.IO event id {}.")).format(data['event_id']))
 
