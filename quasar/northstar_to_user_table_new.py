@@ -113,9 +113,6 @@ def backfill(hours_ago):
     intervals.reverse()
 
     for start, end in intervals:
-        create_params = {'after[created_at]': str(
-            start), 'before[created_at]': str(end),
-            'pagination': 'cursor'}
         update_params = {'after[updated_at]': str(
             start), 'before[updated_at]': str(end),
             'pagination': 'cursor'}
