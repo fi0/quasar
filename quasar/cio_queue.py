@@ -12,8 +12,8 @@ class CioQueue(QuasarQueue):
 
     def __init__(self):
         self.amqp_uri = os.environ.get('AMQP_URI')
-        self.cio_queue = os.environ.get('BLINK_QUEUE')
-        self.quasar_exchange = os.environ.get('BLINK_EXCHANGE')
+        self.blink_queue = os.environ.get('BLINK_QUEUE')
+        self.blink_exchange = os.environ.get('BLINK_EXCHANGE')
         super().__init__(self.amqp_uri, self.blink_queue,
                          self.blink_exchange)
         self.db = Database()
