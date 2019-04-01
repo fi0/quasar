@@ -5,7 +5,7 @@ with open('requirements.txt') as f:
 
 setup(
     name="quasar",
-    version="2019.3.26.0",
+    version="2019.4.1.0",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
@@ -29,6 +29,7 @@ setup(
             'mel_create = quasar.create_mel:main',
             'mel_refresh = quasar.mel:main',
             'message_route = quasar.route_queue_process:main',
+            'northstar_backfill = quasar.northstar_to_user_table_new:main',
             'northstar_to_quasar_diff = quasar.northstar_to_user_table:backfill_since',
             'northstar_to_quasar_diff_json = quasar.northstar_to_user_table:backfill_since_json',
             'phoenix_events_refresh = quasar.refresh_phoenix_events:main',
