@@ -113,33 +113,27 @@ def backfill(hours_ago):
     intervals.reverse()
 
     for start, end in intervals:
-        update_params = {'after[updated_at]': str(
-            start), 'before[updated_at]': str(end),
+        params = {'after[updated_at]': str(start),
+            'before[updated_at]': str(end),
             'pagination': 'cursor'}
-        scraper.get(
-            '/v2/users', create_params, _process_page)
-        scraper.process_all_pages(
-            '/v2/users', update_params, _process_page)
+
+        # Set page param and next page to true assuming at least
+        # one page of results exist.
+        i = 1
+        params['page'] = i
+        path = '/v2/users'
+        next = True
+        while next is True:
+            response = scraper.get(path, params).json()
+            _process_page(response)
+            if response['meta']['cursor']['next'] is None:
+                next = False
+            else:
+                i += 1
+                params['page'] = i
 
     db.disconnect()
-
     duration.duration()
 
-
-# Move logic below inline to this file 
 if __name__ == "__main__":
-    _backfill()
-
-    def process_all_pages(self, path, params, process_fn):
-        i = 1
-        if 'page' in params:
-            i = params['page']
-
-        _next = True
-        while _next is True:
-            params['page'] = i
-            response = self.get(path, params).json()
-            process_fn(i, response)
-            i += 1
-            if response['meta']['cursor']['next'] is None:
-                _next = False
+    backfill()
