@@ -34,7 +34,7 @@ def _save_user(user):
         'email': user['email'],
         'mobile': user['mobile'],
         'facebook_id': user['facebook_id'],
-        'interest': user['interests'],
+        'interests': user['interests'],
         'birthdate': user['birthdate'],
         'addr_street1': user['addr_street1'],
         'addr_street2': user['addr_street2'],
@@ -51,12 +51,12 @@ def _save_user(user):
         'country': user['country'],
         'role': user['role'],
         'last_accessed_at': user['last_accessed_at'],
-        'last_authenticated at': user['last_authenticated_at'],
+        'last_authenticated_at': user['last_authenticated_at'],
         'last_messaged_at': user['last_messaged_at'],
         'updated_at': user['updated_at'],
         'created_at': user['created_at']
     }
-    db.query_str(''.join(("INSERT INTO northstar.users (id, "
+    query = ''.join(("INSERT INTO northstar.users (id, "
                           "first_name, last_name, last_initial, "
                           "photo, email, mobile, facebook_id, "
                           "interests, birthdate, addr_street1, "
@@ -65,7 +65,7 @@ def _save_user(user):
                           "source_detail, slack_id, sms_status, "
                           "sms_paused, voter_registration_status, "
                           "language, country, "
-                          "drupal_id, role, last_accessed_at, "
+                          "role, last_accessed_at, "
                           "last_authenticated_at, "
                           "last_messaged_at, "
                           "updated_at, created_at) "
@@ -80,7 +80,8 @@ def _save_user(user):
                           ":last_authenticated_at,:last_messaged_at,"
                           ":updated_at,:created_at) "
                           "ON CONFLICT (id, created_at, updated_at) "
-                          "DO NOTHING")), record)
+                          "DO NOTHING"))
+    db.query_str(query, record)
 
 
 def _interval(hours_ago):
