@@ -41,7 +41,6 @@ def _save_user(user):
         'addr_city': user['addr_city'],
         'addr_state': user['addr_state'],
         'addr_zip': user['addr_zip'],
-        'addr_source': user['addr_source'],
         'source': user['source'],
         'source_detail': user['source_detail'],
         'slack_id': user['slack_id'],
@@ -50,7 +49,6 @@ def _save_user(user):
         'voter_registration_status': user['voter_registration_status'],
         'language': user['language'],
         'country': user['country'],
-        'drupal_id': user['drupal_id'],
         'role': user['role'],
         'last_accessed_at': user['last_accessed_at'],
         'last_authenticated at': user['last_authenticated_at'],
@@ -63,7 +61,7 @@ def _save_user(user):
                           "photo, email, mobile, facebook_id, "
                           "interests, birthdate, addr_street1, "
                           "addr_street2, addr_city, addr_state, "
-                          "addr_zip, addr_source, source, "
+                          "addr_zip, source, "
                           "source_detail, slack_id, sms_status, "
                           "sms_paused, voter_registration_status, "
                           "language, country, "
@@ -74,11 +72,11 @@ def _save_user(user):
                           "VALUES (:id,:first_name,:last_name,:last_initial,"
                           ":photo,:email,:mobile,:facebook_id,:interests,"
                           ":birthdate,:addr_street1,:addr_street2,"
-                          ":addr_city,:addr_state,:addr_zip,:addr_source,"
+                          ":addr_city,:addr_state,:addr_zip,"
                           ":source,:source_detail,:slack_id,"
                           ":sms_status,:sms_paused,"
                           ":voter_registration_status,:language,:country,"
-                          ":drupal_id,:role,:last_accessed_at,"
+                          ":role,:last_accessed_at,"
                           ":last_authenticated_at,:last_messaged_at,"
                           ":updated_at,:created_at) "
                           "ON CONFLICT (id, created_at, updated_at) "
@@ -102,10 +100,10 @@ def _interval(hours_ago):
 def _process_page(results):
     users = results
     for user in users['data']:
-        save_user(user)
+        _save_user(user)
 
 
-def backfill(hours_ago):
+def _backfill(hours_ago):
     duration = Duration()
     # Get list of 1 hour chunks for total backfill hours_ago.
     intervals = [_interval(hour) for hour in
@@ -137,5 +135,5 @@ def backfill(hours_ago):
     duration.duration()
 
 
-if __name__ == "__main__":
-    backfill()
+def backfill():
+    _backfill(sys.argv[1])
