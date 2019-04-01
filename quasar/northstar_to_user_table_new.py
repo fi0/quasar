@@ -23,6 +23,7 @@ that gets updated on ingestion loop.
 db = Database()
 scraper = NorthstarScraper(os.environ.get('NS_URI'))
 
+
 def _save_user(user):
     record = {
         'id': user['id'],
@@ -85,7 +86,7 @@ def _save_user(user):
 
 
 def _interval(hours_ago):
-    # Return list of ISO8601 formatted timestamps 
+    # Return list of ISO8601 formatted timestamps
     # from hours_ago in format (hours_ago, hours_ago-1).
     def _format(hr):
         # Get ISO8601 formatted time from 'hr' hours ago.
@@ -114,8 +115,8 @@ def backfill(hours_ago):
 
     for start, end in intervals:
         params = {'after[updated_at]': str(start),
-            'before[updated_at]': str(end),
-            'pagination': 'cursor'}
+                  'before[updated_at]': str(end),
+                  'pagination': 'cursor'}
 
         # Set page param and next page to true assuming at least
         # one page of results exist.
@@ -134,6 +135,7 @@ def backfill(hours_ago):
 
     db.disconnect()
     duration.duration()
+
 
 if __name__ == "__main__":
     backfill()
