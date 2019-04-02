@@ -42,7 +42,8 @@ def log(msg):
 def logerr(msg):
     logging.error(msg)
 
-def vali_date(timestamp):
+def validate_date(timestamp):
+    # If date is invalid, e.g. year is 0000, return NULL.
     try:
         date.fromisoformat(str(timestamp))
         return timestamp
