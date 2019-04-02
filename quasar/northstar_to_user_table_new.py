@@ -1,5 +1,4 @@
 from datetime import datetime as dt
-import json
 import os
 import sys
 import time
@@ -57,30 +56,30 @@ def _save_user(user):
         'created_at': user['created_at']
     }
     query = ''.join(("INSERT INTO northstar.users (id, "
-                          "first_name, last_name, last_initial, "
-                          "photo, email, mobile, facebook_id, "
-                          "interests, birthdate, addr_street1, "
-                          "addr_street2, addr_city, addr_state, "
-                          "addr_zip, source, "
-                          "source_detail, slack_id, sms_status, "
-                          "sms_paused, voter_registration_status, "
-                          "language, country, "
-                          "role, last_accessed_at, "
-                          "last_authenticated_at, "
-                          "last_messaged_at, "
-                          "updated_at, created_at) "
-                          "VALUES (:id,:first_name,:last_name,:last_initial,"
-                          ":photo,:email,:mobile,:facebook_id,:interests,"
-                          ":birthdate,:addr_street1,:addr_street2,"
-                          ":addr_city,:addr_state,:addr_zip,"
-                          ":source,:source_detail,:slack_id,"
-                          ":sms_status,:sms_paused,"
-                          ":voter_registration_status,:language,:country,"
-                          ":role,:last_accessed_at,"
-                          ":last_authenticated_at,:last_messaged_at,"
-                          ":updated_at,:created_at) "
-                          "ON CONFLICT (id, created_at, updated_at) "
-                          "DO NOTHING"))
+                     "first_name, last_name, last_initial, "
+                     "photo, email, mobile, facebook_id, "
+                     "interests, birthdate, addr_street1, "
+                     "addr_street2, addr_city, addr_state, "
+                     "addr_zip, source, "
+                     "source_detail, slack_id, sms_status, "
+                     "sms_paused, voter_registration_status, "
+                     "language, country, "
+                     "role, last_accessed_at, "
+                     "last_authenticated_at, "
+                     "last_messaged_at, "
+                     "updated_at, created_at) "
+                     "VALUES (:id,:first_name,:last_name,:last_initial,"
+                     ":photo,:email,:mobile,:facebook_id,:interests,"
+                     ":birthdate,:addr_street1,:addr_street2,"
+                     ":addr_city,:addr_state,:addr_zip,"
+                     ":source,:source_detail,:slack_id,"
+                     ":sms_status,:sms_paused,"
+                     ":voter_registration_status,:language,:country,"
+                     ":role,:last_accessed_at,"
+                     ":last_authenticated_at,:last_messaged_at,"
+                     ":updated_at,:created_at) "
+                     "ON CONFLICT (id, created_at, updated_at) "
+                     "DO NOTHING"))
     db.query_str(query, record)
 
 
