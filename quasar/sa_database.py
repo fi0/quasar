@@ -43,9 +43,9 @@ class Database:
     def query(self, query):
         return self.conn.execute(query)
 
-    def query_str(self, query, **record):
+    def query_str(self, query, record):
         # Run query with string substitution using ':thisvar' SQL Alchemy
         # standard based formatting. e.g.
         # query = 'INSERT :bar into foo;', record = {bar: 'baz'}
         run_query = text(query)
-        return self.conn.execute(run_query, **record)
+        return self.conn.execute(run_query, record)
