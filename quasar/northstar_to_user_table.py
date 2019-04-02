@@ -1,11 +1,11 @@
 from datetime import datetime as dt
-import json
 import os
 import sys
 import time
 
-from .northstarscraper import NorthstarScraper
-from .database import NorthstarDatabase
+from .northstar_scraper import NorthstarScraper
+from .sa_database import Database
+from .utils import Duration
 
 """DS Northstar to Quasar User ETL script.
 
@@ -19,63 +19,76 @@ that gets updated on ingestion loop.
 
 """
 
+db = Database()
+scraper = NorthstarScraper(os.environ.get('NS_URI'))
 
-class NorthstarDB:
 
-    def __init__(self):
-        db_opts = {}
-        self.db = NorthstarDatabase(db_opts)
-
-    def teardown(self):
-        self.db.disconnect()
-
-    def save_user(self, user):
-        self.db.query_str(''.join(("INSERT INTO northstar.users (id, "
-                                   "first_name, last_name, last_initial, "
-                                   "photo, email, mobile, facebook_id, "
-                                   "interests, birthdate, addr_street1, "
-                                   "addr_street2, addr_city, addr_state, "
-                                   "addr_zip, addr_source, source, "
-                                   "source_detail, slack_id, sms_status, "
-                                   "sms_paused, voter_registration_status, "
-                                   "language, country, "
-                                   "drupal_id, role, last_accessed_at, "
-                                   "last_authenticated_at, "
-                                   "last_messaged_at, "
-                                   "updated_at, created_at) "
-                                   "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,"
-                                   "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,"
-                                   "%s,%s,%s,%s,%s,%s,%s,%s,%s) "
-                                   "ON CONFLICT (id, created_at, updated_at) "
-                                   "DO NOTHING")),
-                          (user['id'], user['first_name'],
-                           user['last_name'], user['last_initial'],
-                           user['photo'], user['email'], user['mobile'],
-                           user['facebook_id'], user['interests'],
-                           user['birthdate'], user['addr_street1'],
-                           user['addr_street2'], user['addr_city'],
-                           user['addr_state'], user['addr_zip'],
-                           user['addr_source'], user['source'],
-                           user['source_detail'], user['slack_id'],
-                           user['sms_status'], user['sms_paused'],
-                           user['voter_registration_status'],
-                           user['language'], user['country'],
-                           user['drupal_id'], user['role'],
-                           user['last_accessed_at'],
-                           user['last_authenticated_at'],
-                           user['last_messaged_at'],
-                           user['updated_at'], user['created_at']),
-                          user)
-
-    def save_user_json(self, user):
-        self.db.query_str(''.join(("INSERT INTO "
-                                   "northstar.users_json "
-                                   "(user_record) VALUES (%s)")),
-                          (json.dumps(user),), user)
+def _save_user(user):
+    record = {
+        'id': user['id'],
+        'first_name': user['first_name'],
+        'last_name': user['last_name'],
+        'last_initial': user['last_initial'],
+        'photo': user['photo'],
+        'email': user['email'],
+        'mobile': user['mobile'],
+        'facebook_id': user['facebook_id'],
+        'interests': user['interests'],
+        'birthdate': user['birthdate'],
+        'addr_street1': user['addr_street1'],
+        'addr_street2': user['addr_street2'],
+        'addr_city': user['addr_city'],
+        'addr_state': user['addr_state'],
+        'addr_zip': user['addr_zip'],
+        'source': user['source'],
+        'source_detail': user['source_detail'],
+        'slack_id': user['slack_id'],
+        'sms_status': user['sms_status'],
+        'sms_paused': user['sms_paused'],
+        'voter_registration_status': user['voter_registration_status'],
+        'language': user['language'],
+        'country': user['country'],
+        'role': user['role'],
+        'last_accessed_at': user['last_accessed_at'],
+        'last_authenticated_at': user['last_authenticated_at'],
+        'last_messaged_at': user['last_messaged_at'],
+        'updated_at': user['updated_at'],
+        'created_at': user['created_at'],
+        'email_subscription_status': user['email_subscription_status']
+    }
+    query = ''.join(("INSERT INTO northstar.users (id, "
+                     "first_name, last_name, last_initial, "
+                     "photo, email, mobile, facebook_id, "
+                     "interests, birthdate, addr_street1, "
+                     "addr_street2, addr_city, addr_state, "
+                     "addr_zip, source, "
+                     "source_detail, slack_id, sms_status, "
+                     "sms_paused, voter_registration_status, "
+                     "language, country, "
+                     "role, last_accessed_at, "
+                     "last_authenticated_at, "
+                     "last_messaged_at, "
+                     "updated_at, created_at, email_subscription_status) "
+                     "VALUES (:id,:first_name,:last_name,:last_initial,"
+                     ":photo,:email,:mobile,:facebook_id,:interests,"
+                     ":birthdate,:addr_street1,:addr_street2,"
+                     ":addr_city,:addr_state,:addr_zip,"
+                     ":source,:source_detail,:slack_id,"
+                     ":sms_status,:sms_paused,"
+                     ":voter_registration_status,:language,:country,"
+                     ":role,:last_accessed_at,"
+                     ":last_authenticated_at,:last_messaged_at,"
+                     ":updated_at,:created_at,:email_subscription_status) "
+                     "ON CONFLICT (id, created_at, updated_at) "
+                     "DO NOTHING"))
+    db.query_str(query, record)
 
 
 def _interval(hours_ago):
+    # Return list of ISO8601 formatted timestamps
+    # from hours_ago in format (hours_ago, hours_ago-1).
     def _format(hr):
+        # Get ISO8601 formatted time from 'hr' hours ago.
         _time = int(time.time()) - (int(hr) * 3600)
         formatted = dt.fromtimestamp(_time).isoformat()
         return formatted
@@ -85,57 +98,43 @@ def _interval(hours_ago):
     return (start, end)
 
 
-def backfill_since():
+def _process_page(results):
+    users = results
+    for user in users['data']:
+        _save_user(user)
+
+
+def _backfill(hours_ago):
+    duration = Duration()
+    # Get list of 1 hour chunks for total backfill hours_ago.
+    intervals = [_interval(hour) for hour in
+                 range(int(hours_ago) + 1) if hour > 0]
+    # Backfill from most recent going backwards.
+    intervals.reverse()
+
+    for start, end in intervals:
+        params = {'after[updated_at]': str(start),
+                  'before[updated_at]': str(end),
+                  'pagination': 'cursor'}
+
+        # Set page param and next page to true assuming at least
+        # one page of results exist.
+        i = 1
+        params['page'] = i
+        path = '/v2/users'
+        next = True
+        while next is True:
+            response = scraper.get(path, params).json()
+            _process_page(response)
+            if response['meta']['cursor']['next'] is None:
+                next = False
+            else:
+                i += 1
+                params['page'] = i
+
+    db.disconnect()
+    duration.duration()
+
+
+def backfill():
     _backfill(sys.argv[1])
-
-
-def backfill_since_json():
-    _backfill(sys.argv[1], sys.argv[2])
-
-
-def _backfill(hours_ago=None, store_json=False):
-    start_time = time.time()
-
-    db = NorthstarDB()
-    scraper = NorthstarScraper(os.environ.get('NS_URI'))
-    save_progress = hours_ago is None
-
-    def _process_page(page_n, page_response):
-        res = page_response
-        for user in res['data']:
-            db.save_user(user)
-        if store_json:
-            for user in res['data']:
-                db.save_user_json(user)
-        if save_progress:
-            db.update_start_page(page_n)
-
-    if hours_ago is not None:
-        intervals = [_interval(hour) for hour in range(
-            int(hours_ago) + 1) if hour > 0]
-
-        intervals.reverse()
-        for start, end in intervals:
-            create_params = {'after[created_at]': str(
-                start), 'before[created_at]': str(end)}
-            update_params = {'after[updated_at]': str(
-                start), 'before[updated_at]': str(end)}
-            scraper.process_all_pages(
-                '/v1/users', create_params, _process_page)
-            scraper.process_all_pages(
-                '/v1/users', update_params, _process_page)
-
-    else:
-        start_page = db.get_start_page()
-        scraper.process_all_pages(
-            '/v1/users', {'page': start_page}, _process_page)
-
-    db.teardown()
-
-    end_time = time.time()  # Record when script stopped running.
-    duration = end_time - start_time  # Total duration in seconds.
-    print('duration: ', duration)
-
-
-if __name__ == "__main__":
-    _backfill()
