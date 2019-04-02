@@ -18,14 +18,6 @@ class CioQueue(QuasarQueue):
                          self.blink_exchange)
         self.db = Database()
 
-    # Save entire c.io JSON blob to event_log table.
-    def _log_event(self, data):
-        record = {'event': json.dumps(data)}
-        query = ''.join(("INSERT INTO cio.event_log (event) VALUES :event"))
-        self.db.query_str(query, record)
-        log(''.join(("Logged data from "
-                     "C.IO event id {}.")).format(data['event_id']))
-
     # Save customer sub data and dates.
     def _add_sub_event(self, data):
         record = {
@@ -210,8 +202,6 @@ class CioQueue(QuasarQueue):
                 'email_opened',
                 'email_unsubscribed'
             }
-            # Always capture atomic c.io event in raw format.
-            self._log_event(data)
             try:
                 if event_type == 'customer_subscribed':
                     self._add_sub_event(data)
