@@ -42,13 +42,16 @@ def log(msg):
 def logerr(msg):
     logging.error(msg)
 
+
 def validate_date(timestamp):
     # If date is invalid, e.g. year is 0000, return NULL.
+    # The original testing function name was vali_date. :D
     try:
         date.fromisoformat(str(timestamp))
         return timestamp
     except ValueError:
         return None
+
 
 class Duration:
     """Simple duration tracker.
