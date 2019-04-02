@@ -15,9 +15,11 @@ class NorthstarScraper(Scraper):
         oauth = OAuth2Session(client=BackendApplicationClient(
             client_id=os.environ.get('NS_CLIENT_ID')))
         scopes = ['admin', 'user']
+        ns_client_id = os.environ.get('NS_CLIENT_ID')
+        ns_client_secret = os.environ.get('NS_CLIENT_SECRET')
         new_token = oauth.fetch_token(self.url + '/v2/auth/token',
-                                      client_id=os.environ.get('NS_CLIENT_ID'),
-                                      client_secret=os.environ.get('NS_CLIENT_SECRET'),
+                                      client_id=ns_client_id,
+                                      client_secret=ns_client_secret,
                                       scope=scopes)
         return {'Authorization': 'Bearer ' + str(new_token['access_token'])}
 
