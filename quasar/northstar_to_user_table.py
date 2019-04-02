@@ -5,7 +5,7 @@ import time
 
 from .northstar_scraper import NorthstarScraper
 from .sa_database import Database
-from .utils import Duration
+from .utils import Duration, vali_date
 
 """DS Northstar to Quasar User ETL script.
 
@@ -34,7 +34,7 @@ def _save_user(user):
         'mobile': user['mobile'],
         'facebook_id': user['facebook_id'],
         'interests': user['interests'],
-        'birthdate': user['birthdate'],
+        'birthdate': vali_date(user['birthdate']),
         'addr_street1': user['addr_street1'],
         'addr_street2': user['addr_street2'],
         'addr_city': user['addr_city'],

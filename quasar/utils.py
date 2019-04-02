@@ -1,4 +1,5 @@
 from datetime import datetime as dt
+from datetime import date
 import logging
 import re
 import time
@@ -41,6 +42,12 @@ def log(msg):
 def logerr(msg):
     logging.error(msg)
 
+def vali_date(timestamp):
+    try:
+        date.fromisoformat(str(timestamp))
+        return timestamp
+    except ValueError:
+        return None
 
 class Duration:
     """Simple duration tracker.
