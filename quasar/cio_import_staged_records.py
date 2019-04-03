@@ -8,9 +8,10 @@ duration = Duration()
 def import_records(table):
     # Import records from cio staging tables that are populated
     # by the cio consumer into primary queried tables.
+    staging = table + '_staging'
     record = {
         'base_table': table
-        'staging_table': table + '_staging'
+        'staging_table': staging
     }
     query = ''.join(("INSERT INTO :base_table "
                      "SELECT * FROM :staging_table"))
