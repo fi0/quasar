@@ -21,9 +21,8 @@ def import_records(table):
 def truncate_staging(table):
     # Truncate staging tables so consumer can resume updating
     # tables after ingestion.
-    record = {
-        'staging_table: 'table + '_staging'
-    }
+    staging = table + '_staging'
+    record = { 'staging_table': staging }
     query = "TRUNCATE TABLE :staging_table"
     db.query_str(query, record)
 
