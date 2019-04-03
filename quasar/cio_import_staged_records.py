@@ -7,9 +7,9 @@ duration = Duration()
 
 def import_records(table):
     # Import records from cio staging tables that are populated
-    # by the cio consumer into primary queried tables. 
+    # by the cio consumer into primary queried tables.
     record = {
-        'base_table' : table
+        'base_table': table
         'staging_table': table + '_staging'
     }
     query = ''.join(("INSERT INTO :base_table "
@@ -29,7 +29,7 @@ def truncate_staging(table):
 
 def cio_import():
     # List of cio tables to process.
-    tables = ['cio.customer_event', 
+    tables = ['cio.customer_event',
               'cio.email_event',
               'cio.email_sent',
               'cio.email_bounced']
