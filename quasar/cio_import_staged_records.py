@@ -8,22 +8,22 @@ duration = Duration()
 def import_records(table):
     # Import records from cio staging tables that are populated
     # by the cio consumer into primary queried tables.
-    staging = table + '_staging'
+    scratch = table + '_scratch'
     record = {
         'base_table': table,
-        'staging_table': staging
+        'scratch_table': scratch
     }
     query = ''.join(("INSERT INTO :base_table "
-                     "SELECT * FROM :staging_table"))
+                     "SELECT * FROM :scratch_table"))
     db.query_str(query, record)
 
 
-def truncate_staging(table):
+def truncate_scratch(table):
     # Truncate staging tables so consumer can resume updating
     # tables after ingestion.
-    staging = table + '_staging'
-    record = {'staging_table': staging}
-    query = "TRUNCATE TABLE :staging_table"
+    scratch = table + '_scratch'
+    record = {'scratch_table': scratch}
+    query = "TRUNCATE TABLE :scratch_table"
     db.query_str(query, record)
 
 
@@ -36,6 +36,6 @@ def cio_import():
     for table in tables:
         log("Importing records for table {}.".format(table))
         import_records(table)
-        staging_table = table + '_staging'
-        log("Truncating table {}.".format(staging_table))
-        truncate_staging(staging_table)
+        scratch = table + '_scratch'
+        log("Truncating table {}.".format(scratch))
+        truncate_scratch(table)
