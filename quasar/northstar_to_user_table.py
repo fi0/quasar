@@ -23,6 +23,13 @@ db = Database()
 scraper = NorthstarScraper(os.environ.get('NS_URI'))
 
 
+def _undict_value(value):
+    if isinstance(value, dict):
+        return value['value']
+    else:
+        return value
+
+
 def _save_user(user):
     record = {
         'id': user['id'],
@@ -35,11 +42,11 @@ def _save_user(user):
         'facebook_id': user['facebook_id'],
         'interests': user['interests'],
         'birthdate': validate_date(user['birthdate']),
-        'addr_street1': user['addr_street1'],
-        'addr_street2': user['addr_street2'],
-        'addr_city': user['addr_city'],
-        'addr_state': user['addr_state'],
-        'addr_zip': user['addr_zip'],
+        'addr_street1': _undict_value(user['addr_street1']),
+        'addr_street2': _undict_value(user['addr_street2']),
+        'addr_city': _undict_value(user['addr_city']),
+        'addr_state': _undict_value(user['addr_state']),
+        'addr_zip': _undict_value(user['addr_zip']),
         'source': user['source'],
         'source_detail': user['source_detail'],
         'slack_id': user['slack_id'],
