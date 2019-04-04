@@ -33,10 +33,7 @@ class CioQueue(QuasarQueue):
                          "event_id, timestamp, "
                          "event_type) VALUES (:email_id,"
                          ":customer_id,:email_address,:event_id,"
-                         "to_timestamp(:timestamp),:event_type) "
-                         "ON CONFLICT (email_id, customer_id, "
-                         "timestamp, event_type) "
-                         "DO NOTHING"))
+                         "to_timestamp(:timestamp),:event_type)"))
         self.db.query_str(query, record)
         return data['event_id']
 
@@ -58,10 +55,7 @@ class CioQueue(QuasarQueue):
                              "timestamp, event_type) "
                              "VALUES (:email_id,:customer_id,"
                              ":email_address,:template_id,:event_id,"
-                             "to_timestamp(:timestamp),:event_type) "
-                             "ON CONFLICT (email_id, customer_id, "
-                             "timestamp, event_type) "
-                             "DO NOTHING"))
+                             "to_timestamp(:timestamp),:event_type)"))
             self.db.query_str(query, record)
         else:
             record = {
@@ -78,10 +72,7 @@ class CioQueue(QuasarQueue):
                              "timestamp, event_type) "
                              "VALUES (:email_id,:customer_id,"
                              ":email_address,:event_id,"
-                             "to_timestamp(:timestamp),:event_type) "
-                             "ON CONFLICT (email_id, customer_id, "
-                             "timestamp, event_type) "
-                             "DO NOTHING"))
+                             "to_timestamp(:timestamp),:event_type)"))
             self.db.query_str(query, record)
         log(''.join(("Added customer event from "
                      "C.IO event id {}.")).format(data['event_id']))
@@ -103,10 +94,7 @@ class CioQueue(QuasarQueue):
                          "event_type) VALUES "
                          "(:email_id,:customer_id,:email_address,"
                          ":template_id,:event_id,"
-                         "to_timestamp(:timestamp),:event_type) "
-                         "ON CONFLICT (email_id, customer_id, "
-                         "timestamp, event_type) "
-                         "DO NOTHING"))
+                         "to_timestamp(:timestamp),:event_type)"))
         self.db.query_str(query, record)
         log(''.join(("Added email event from "
                      "C.IO event id {}.")).format(data['event_id']))
@@ -128,9 +116,7 @@ class CioQueue(QuasarQueue):
                          "timestamp) VALUES "
                          "(:email_id,:customer_id,:email_address,"
                          ":template_id,:subject,:event_id,"
-                         "to_timestamp(:timestamp)) "
-                         "ON CONFLICT (email_id, customer_id, "
-                         "timestamp) DO NOTHING"))
+                         "to_timestamp(:timestamp))"))
         self.db.query_str(query, record)
         log(''.join(("Added email event from "
                      "C.IO event id {}.")).format(data['event_id']))
@@ -157,9 +143,7 @@ class CioQueue(QuasarQueue):
                          "(:email_id,:customer_id,:email_address,"
                          ":template_id,:subject,:href,:link_id,"
                          ":event_id,to_timestamp(:timestamp),"
-                         ":event_type) ON CONFLICT (email_id, "
-                         "customer_id, timestamp, event_type) "
-                         "DO NOTHING"))
+                         ":event_type)"))
         self.db.query_str(query, record)
         log(''.join(("Added email event from "
                      "C.IO event id {}.")).format(data['event_id']))
@@ -181,9 +165,7 @@ class CioQueue(QuasarQueue):
                          "timestamp) VALUES "
                          "(:email_id,:customer_id,:email_address,"
                          ":template_id,:subject,:event_id,"
-                         "to_timestamp(:timestamp)) "
-                         "ON CONFLICT (email_id, customer_id, "
-                         "timestamp) DO NOTHING"))
+                         "to_timestamp(:timestamp))"))
         self.db.query_str(query, record)
         log(''.join(("Added email bounced event from "
                      "C.IO event id {}.")).format(data['event_id']))
