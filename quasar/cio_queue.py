@@ -28,7 +28,7 @@ class CioQueue(QuasarQueue):
             'timestamp': data['timestamp'],
             'event_type': data['event_type']
         }
-        query = ''.join(("INSERT INTO cio.customer_event_staging "
+        query = ''.join(("INSERT INTO cio.customer_event_scratch "
                          "(email_id, customer_id, email_address, "
                          "event_id, timestamp, "
                          "event_type) VALUES (:email_id,"
@@ -52,7 +52,7 @@ class CioQueue(QuasarQueue):
                 'timestamp': data['timestamp'],
                 'event_type': data['event_type']
             }
-            query = ''.join(("INSERT INTO cio.customer_event_staging "
+            query = ''.join(("INSERT INTO cio.customer_event_scratch "
                              "(email_id, customer_id,"
                              "email_address, template_id, event_id,"
                              "timestamp, event_type) "
@@ -72,7 +72,7 @@ class CioQueue(QuasarQueue):
                 'timestamp': data['timestamp'],
                 'event_type': data['event_type']
             }
-            query = ''.join(("INSERT INTO cio.customer_event_staging "
+            query = ''.join(("INSERT INTO cio.customer_event_scratch "
                              "(email_id, customer_id,"
                              "email_address, event_id, "
                              "timestamp, event_type) "
@@ -97,7 +97,7 @@ class CioQueue(QuasarQueue):
             'timestamp': data['timestamp'],
             'event_type': data['event_type']
         }
-        query = ''.join(("INSERT INTO cio.email_event_staging "
+        query = ''.join(("INSERT INTO cio.email_event_scratch "
                          "(email_id, customer_id, email_address, "
                          "template_id, event_id, timestamp, "
                          "event_type) VALUES "
@@ -122,7 +122,7 @@ class CioQueue(QuasarQueue):
             'event_id': data['event_id'],
             'timestamp': data['timestamp']
         }
-        query = ''.join(("INSERT INTO cio.email_sent_staging "
+        query = ''.join(("INSERT INTO cio.email_sent_scratch "
                          "(email_id, customer_id, email_address, "
                          "template_id, subject, event_id, "
                          "timestamp) VALUES "
@@ -149,7 +149,7 @@ class CioQueue(QuasarQueue):
             'timestamp': data['timestamp'],
             'event_type': data['event_type']
         }
-        query = ''.join(("INSERT INTO cio.email_event_staging "
+        query = ''.join(("INSERT INTO cio.email_event_scratch "
                          "(email_id, customer_id, email_address, "
                          "template_id, subject, href, link_id, "
                          "event_id, timestamp, "
@@ -175,7 +175,7 @@ class CioQueue(QuasarQueue):
             'event_id': data['event_id'],
             'timestamp': data['timestamp']
         }
-        query = ''.join(("INSERT INTO cio.email_bounced_staging "
+        query = ''.join(("INSERT INTO cio.email_bounced_scratch "
                          "(email_id, customer_id, email_address, "
                          "template_id, subject, event_id, "
                          "timestamp) VALUES "
