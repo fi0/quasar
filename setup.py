@@ -5,7 +5,7 @@ with open('requirements.txt') as f:
 
 setup(
     name="quasar",
-    version="2019.4.4.1",
+    version="2019.4.5.0",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
@@ -17,7 +17,7 @@ setup(
             'campaign_activity_create = quasar.create_campaign_activity:main',
             'campaign_activity_refresh = quasar.refresh_campaign_activity:main',
             'cio_consume = quasar.cio_consumer:main',
-            'cio_import = quasar.cio_import_staged_records:cio_import',
+            'cio_import = quasar.cio_import_scratch_records:cio_import',
             'cio_bounced_backfill = quasar.cio_bounced_backfill:main',
             'cio_sent_backfill = quasar.cio_sent_backfill:main',
             'etl_monitoring = quasar.etl_monitoring:run_monitoring',

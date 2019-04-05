@@ -12,7 +12,8 @@ def import_records(table):
     query = ''.join(("INSERT INTO {} "
                      "SELECT * FROM {}"
                      "")).format(table, scratch)
-    db.query(query)
+    # db.query(query)
+    print(query)
 
 
 def truncate_scratch(table):
@@ -20,7 +21,8 @@ def truncate_scratch(table):
     # tables after ingestion.
     scratch = table + '_scratch'
     query = "TRUNCATE TABLE {}".format(scratch)
-    db.query(query)
+    # db.query(query)
+    print(query)
 
 
 def cio_import():
@@ -35,5 +37,3 @@ def cio_import():
         scratch = table + '_scratch'
         log("Truncating table {}.".format(scratch))
         truncate_scratch(table)
-    db.disconnect()
-    duration.duration()
