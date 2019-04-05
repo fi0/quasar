@@ -57,9 +57,9 @@ class ETLMonitoring:
             'raw_northstar':
                 'SELECT count(*) FROM northstar.users',
             'raw_rogue_signups':
-                'SELECT count(*) FROM rogue.signups',
+                'SELECT count(*) FROM ft_dosomething_rogue.signups',
             'raw_rogue_posts':
-                'SELECT count(*) FROM rogue.posts',
+                'SELECT count(*) FROM ft_dosomething_rogue.posts',
             'raw_puck_events':
                 'SELECT count(*) FROM ft_puck_heroku_wzsf6b3z.events',
             'raw_cio_emails':
