@@ -16,6 +16,7 @@ def import_records_event(table):
                      "")).format(table, scratch)
     db.query(query)
 
+
 def import_records(table):
     # Import records from cio staging tables that are populated
     # by the cio consumer into primary queried tables.
@@ -25,6 +26,7 @@ def import_records(table):
                      "DO NOTHING"
                      "")).format(table, scratch)
     db.query(query)
+
 
 def truncate_scratch(table):
     # Truncate staging tables so consumer can resume updating
@@ -49,6 +51,6 @@ def cio_import():
         import_records_event(table)
         scratch = table + '_scratch'
         log("Truncating table {}.".format(scratch))
-        truncate_scratch(table)    
+        truncate_scratch(table)
     db.disconnect()
     duration.duration()
