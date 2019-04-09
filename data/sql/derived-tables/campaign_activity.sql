@@ -13,7 +13,7 @@ CREATE MATERIALIZED VIEW public.signups AS
 	     WHEN sd."source" in ('rock-the-vote', 'turbovote') THEN 'voter-reg'
 	     ELSE 'web' END AS source_bucket,
         sd.created_at AS created_at
-    FROM ft_dosomething_rogue.signups sd
+    FROM :ft_rogue_signups sd
     WHERE sd._fivetran_deleted = 'false'
 	AND sd.deleted_at IS NULL
 	AND sd."source" IS DISTINCT FROM 'rogue-oauth'
@@ -23,8 +23,8 @@ CREATE UNIQUE INDEX ON public.signups (created_at, id);
 GRANT SELECT ON public.signups TO looker;
 GRANT SELECT ON public.signups TO dsanalyst;
 
-DROP MATERIALIZED VIEW IF EXISTS ft_dosomething_rogue.turbovote CASCADE;
-CREATE MATERIALIZED VIEW ft_dosomething_rogue.turbovote AS
+DROP MATERIALIZED VIEW IF EXISTS :ft_rogue_turbovote CASCADE;
+CREATE MATERIALIZED VIEW :ft_rogue_turbovote AS
 	(SELECT id AS post_id, 
 			details::jsonb->>'hostname' AS hostname,
 			details::jsonb->>'referral_code' AS referral_code,
@@ -38,14 +38,14 @@ CREATE MATERIALIZED VIEW ft_dosomething_rogue.turbovote AS
 			details::jsonb->>'voter_registration_preference' AS voter_registration_preference,
 			details::jsonb->>'email_subscribed' AS email_subscribed,
 			details::jsonb->>'sms_subscribed' AS sms_subscribed
-	 FROM ft_dosomething_rogue.posts
+	 FROM :ft_rogue_posts
 	 WHERE source = 'turbovote');
-CREATE UNIQUE INDEX ON ft_dosomething_rogue.turbovote (post_id, created_at, updated_at);
-GRANT SELECT ON ft_dosomething_rogue.turbovote TO looker;
-GRANT SELECT ON ft_dosomething_rogue.turbovote TO dsanalyst;
+CREATE UNIQUE INDEX ON :ft_rogue_turbovote (post_id, created_at, updated_at);
+GRANT SELECT ON :ft_rogue_turbovote TO looker;
+GRANT SELECT ON :ft_rogue_turbovote TO dsanalyst;
 
-DROP MATERIALIZED VIEW IF EXISTS ft_dosomething_rogue.rock_the_vote CASCADE;
-CREATE MATERIALIZED VIEW ft_dosomething_rogue.rock_the_vote AS
+DROP MATERIALIZED VIEW IF EXISTS :ft_rogue_rtv CASCADE;
+CREATE MATERIALIZED VIEW :ft_rogue_rtv AS
 	(SELECT id AS post_id, 
 	   details::jsonb->>'Tracking Source' AS tracking_source,
 	   (details::jsonb->>'Started registration')::timestamp AS started_registration,
@@ -53,11 +53,11 @@ CREATE MATERIALIZED VIEW ft_dosomething_rogue.rock_the_vote AS
 	   details::jsonb->>'Status' AS status,
 	   details::jsonb->>'Email address' AS email,
 	   details::jsonb->>'Home zip code' AS zip
-	 FROM ft_dosomething_rogue.posts
+	 FROM :ft_rogue_posts
 	 WHERE source = 'rock-the-vote');
-CREATE INDEX ON ft_dosomething_rogue.rock_the_vote (post_id, started_registration);
-GRANT SELECT ON ft_dosomething_rogue.turbovote TO looker;
-GRANT SELECT ON ft_dosomething_rogue.turbovote TO dsanalyst;
+CREATE INDEX ON :ft_rogue_rtv (post_id, started_registration);
+GRANT SELECT ON :ft_rogue_turbovote TO looker;
+GRANT SELECT ON :ft_rogue_turbovote TO dsanalyst;
 
 DROP MATERIALIZED VIEW IF EXISTS public.posts CASCADE;
 CREATE MATERIALIZED VIEW public.posts AS
@@ -102,18 +102,18 @@ CREATE MATERIALIZED VIEW public.posts AS
 	    a.reportback AS is_reportback,
 	    a.civic_action,
 	    a.scholarship_entry
-    FROM ft_dosomething_rogue.posts pd
+    FROM :ft_rogue_posts pd
     INNER JOIN public.signups s
     	  ON pd.signup_id = s.id
-    LEFT JOIN ft_dosomething_rogue.turbovote tv ON tv.post_id::bigint = pd.id::bigint
+    LEFT JOIN :ft_rogue_turbovote tv ON tv.post_id::bigint = pd.id::bigint
     LEFT JOIN
 	(SELECT DISTINCT r.*,
 		CASE WHEN r.started_registration < '2017-01-01'
 		THEN r.started_registration + interval '4 year'
 		ELSE r.started_registration END AS created_at
-	FROM ft_dosomething_rogue.rock_the_vote r
+	FROM :ft_rogue_rtv r
 	) rtv ON rtv.post_id::bigint = pd.id::bigint
-    LEFT JOIN ft_dosomething_rogue.actions a
+    LEFT JOIN :ft_rogue_actions a
     	 ON pd.action_id = a.id
     WHERE pd.deleted_at IS NULL
 	 AND pd."text" IS DISTINCT FROM 'test runscope upload'
