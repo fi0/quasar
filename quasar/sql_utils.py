@@ -1,64 +1,11 @@
 import os
-import pandas as pd
 import sys
 import time
 
 from .database import Database
 from .sa_database import Database as sadb
 from sqlalchemy import create_engine
-from .utils import log
-
-
-class DataFrameDB:
-    def __init__(self, opts={}):
-
-        self.opts = {
-            'user': os.environ.get('PG_USER'),
-            'host': os.environ.get('PG_HOST'),
-            'password': os.environ.get('PG_PASSWORD'),
-            'db': os.environ.get('PG_DATABASE'),
-            'port': str(os.environ.get('PG_PORT')),
-            'use_unicode': True,
-            'charset': 'utf8'
-        }
-
-        self.engine = create_engine(
-            'postgresql+psycopg2://' +
-            self.opts['user'] +
-            ':' +
-            self.opts['password'] +
-            '@' +
-            self.opts['host'] +
-            ':' +
-            self.opts['port'] +
-            '/' +
-            self.opts['db'])
-
-    def run_query(self, query):
-        if '.sql' in query:
-            q = open(query, 'r').read()
-        else:
-            q = query
-        try:
-            pd.read_sql_query(q, self.engine)
-        except Exception as e:
-            success = ''.join(("This result object does not return rows. "
-                               "It has been closed automatically."))
-
-            if str(e) == success:
-                print("From Team Storm Engineers:")
-                print("The query ran successfully if you're reading this.")
-                print("We'll make this more graceful in the future.")
-                sys.exit(0)
-            else:
-                print("Query did not run successfully. Error is:")
-                print(e)
-                sys.exit(1)
-
-
-def run_sql_file_old(file):
-    df = DataFrameDB()
-    df.run_query(file)
+from .utils import log, Duration
 
 
 def sql_replace(query, datamap):
@@ -76,6 +23,9 @@ def sql_replace(query, datamap):
 
 
 def run_sql_file(file, datamap):
+    # Run SQL from file with SQL Alchemy style
+    # text replacement/string substitution.
+    duration = Duration()
     template = open(file, 'r').read()
     queries = template.split(";")
     db = sadb()
@@ -87,6 +37,23 @@ def run_sql_file(file, datamap):
             log(i)
             db.query(i)
     db.disconnect()
+    duration.duration()
+
+def run_sql_file_raw(file):
+    # Corrolary function to run_sql_file that doesn't require
+    # any string replacements, and can run from a file with no var subs.
+    duration = Duration()
+    template = open(file, 'r').read()
+    queries = template.split(";")
+    db = sadb()
+    for i in queries:
+        # If query is empty, will throw an error.
+        if i != "":
+            log("Running query:")
+            log(i)
+            db.query(i)
+    db.disconnect()
+    duration.duration()
 
 
 def refresh_materialized_view(view):
