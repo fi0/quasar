@@ -39,6 +39,7 @@ def run_sql_file(file, datamap):
     db.disconnect()
     duration.duration()
 
+
 def run_sql_file_raw(file):
     # Corrolary function to run_sql_file that doesn't require
     # any string replacements, and can run from a file with no var subs.
