@@ -77,7 +77,10 @@ CREATE MATERIALIZED VIEW public.posts AS
 	    CASE WHEN pd."source" IS NULL THEN NULL
 		 WHEN pd."source" ilike '%%sms%%' THEN 'sms'
 		 ELSE 'web' END AS source_bucket,
-	    COALESCE(rtv.created_at, tv.created_at, pd.created_at) AS created_at,
+	    CASE WHEN pd."type" = 'phone-call'
+	    	 THEN (pd.details::json ->> 'call_timestamp')::timestamptz
+		 ELSE COALESCE(rtv.created_at, tv.created_at, pd.created_at)
+		 END AS created_at,
 	    pd.url AS url,
 	    pd.text,
 	    CASE WHEN s."source" = 'importer-client'
@@ -95,6 +98,7 @@ CREATE MATERIALIZED VIEW public.posts AS
 	    	 THEN 1
 	    	 ELSE NULL END AS is_accepted,
 	    pd.action_id,
+	    pd.location,
 	    a.reportback AS is_reportback,
 	    a.civic_action,
 	    a.scholarship_entry
@@ -139,6 +143,7 @@ CREATE MATERIALIZED VIEW public.reportbacks AS
 	pd.reportback_volume,
 	pd.civic_action,
 	pd.scholarship_entry,
+	pd.location,
 	CASE WHEN (pd.post_class ilike '%%vote%%' AND pd.status = 'confirmed')
 	     THEN 'self-reported registrations'
 	     WHEN (pd.post_class ilike '%%vote%%' AND pd.status <> 'confirmed')
@@ -149,6 +154,8 @@ CREATE MATERIALIZED VIEW public.reportbacks AS
 	     THEN 'text_rbs'
 	     WHEN pd.post_class ilike '%%social%%'
 	     THEN 'social'
+	     WHEN pd.post_class ilike '%%call%%'
+	     THEN 'phone_calls'
 	     ELSE NULL END AS post_bucket
     FROM
 	public.posts pd
