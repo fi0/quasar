@@ -1,5 +1,5 @@
-DROP MATERIALIZED VIEW IF EXISTS ft_gambit_conversations_api.messages_flattened CASCADE;
-CREATE MATERIALIZED VIEW ft_gambit_conversations_api.messages_flattened AS
+DROP MATERIALIZED VIEW IF EXISTS :ft_gambit_messages_flattened CASCADE;
+CREATE MATERIALIZED VIEW :ft_gambit_messages_flattened AS
 (SELECT 
     agent_id AS agent_id,
     attachments->0->>'contentType' AS attachment_content_type,
@@ -19,21 +19,21 @@ CREATE MATERIALIZED VIEW ft_gambit_conversations_api.messages_flattened AS
     text AS text,
     topic AS topic,
     user_id AS user_id
- FROM ft_gambit_conversations_api.messages
+ FROM :ft_gambit_messages
 );
 
-CREATE INDEX ON ft_gambit_conversations_api.messages_flattened (user_id);
-CREATE INDEX ON ft_gambit_conversations_api.messages_flattened (platform_message_id);
+CREATE INDEX ON :ft_gambit_messages_flattened (user_id);
+CREATE INDEX ON :ft_gambit_messages_flattened (platform_message_id);
 
-GRANT SELECT ON ft_gambit_conversations_api.messages_flattened TO looker;
-GRANT SELECT ON ft_gambit_conversations_api.messages_flattened to dsanalyst;
+GRANT SELECT ON :ft_gambit_messages_flattened TO looker;
+GRANT SELECT ON :ft_gambit_messages_flattened to dsanalyst;
 
 DROP MATERIALIZED VIEW IF EXISTS public.gambit_messages_inbound CASCADE;
 CREATE MATERIALIZED VIEW public.gambit_messages_inbound AS
 (SELECT
 	*
 FROM
-	ft_gambit_conversations_api.messages_flattened f
+	:ft_gambit_messages_flattened f
 WHERE
 	f.direction = 'inbound'
 	AND f.user_id IS NOT NULL
@@ -58,9 +58,9 @@ UNION ALL
 	g.topic,
 	u.northstar_id AS user_id
 FROM
-	ft_gambit_conversations_api.messages_flattened g
+	:ft_gambit_messages_flattened g
 LEFT JOIN
-	ft_gambit_conversations_api.conversations c
+	:ft_gambit_conversations c
 	ON g.conversation_id = c._id
 LEFT JOIN
 	public.users u
@@ -92,7 +92,7 @@ CREATE MATERIALIZED VIEW public.gambit_messages_outbound AS
 	f.topic,
 	f.user_id
 FROM
-	ft_gambit_conversations_api.messages_flattened f
+	:ft_gambit_messages_flattened f
 WHERE
 	f.direction <> 'inbound'
 	AND f.user_id IS NOT NULL
@@ -112,9 +112,9 @@ UNION ALL
 	g.topic,
 	u.northstar_id AS user_id
 FROM
-	ft_gambit_conversations_api.messages_flattened g
+	:ft_gambit_messages_flattened g
 LEFT JOIN
-	ft_gambit_conversations_api.conversations c
+	:ft_gambit_conversations c
 	ON g.conversation_id = c._id
 LEFT JOIN
 	public.users u
