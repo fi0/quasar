@@ -7,6 +7,7 @@ data = {
     'ft_rogue_posts': os.getenv('FT_ROGUE_POSTS'),
     'ft_rogue_turbovote': os.getenv('FT_ROGUE_TURBOVOTE'),
     'ft_rogue_rtv': os.getenv('FT_ROGUE_RTV'),
+    'ft_rogue_actions': os.getenv('FT_ROGUE_ACTIONS')
 }
 
 
