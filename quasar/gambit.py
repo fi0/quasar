@@ -6,7 +6,7 @@ from .utils import log
 data = {
     'ft_gambit_messages_flattened': os.getenv('FT_GAMBIT_MESSAGES_FLATTENED'),
     'ft_gambit_conversations': os.getenv('FT_GAMBIT_CONVERSATIONS'),
-    'ft_gambit_messages ': os.getenv('FT_GAMBIT_MESSAGES')
+    'ft_gambit_messages': os.getenv('FT_GAMBIT_MESSAGES')
 }
 
 def create_gambit_messages():
