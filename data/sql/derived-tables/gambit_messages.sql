@@ -1,6 +1,6 @@
 DROP MATERIALIZED VIEW IF EXISTS :ft_gambit_messages_flattened CASCADE;
 CREATE MATERIALIZED VIEW :ft_gambit_messages_flattened AS
-(SELECT 
+ (SELECT 
     agent_id AS agent_id,
     attachments->0->>'contentType' AS attachment_content_type,
     attachments->0->>'url' AS attachment_url,
@@ -19,7 +19,7 @@ CREATE MATERIALIZED VIEW :ft_gambit_messages_flattened AS
     text AS text,
     topic AS topic,
     user_id AS user_id
- FROM :ft_gambit_messages
+  FROM :ft_gambit_messages
 );
 
 CREATE INDEX ON :ft_gambit_messages_flattened (user_id);
@@ -30,15 +30,15 @@ GRANT SELECT ON :ft_gambit_messages_flattened to dsanalyst;
 
 DROP MATERIALIZED VIEW IF EXISTS public.gambit_messages_inbound CASCADE;
 CREATE MATERIALIZED VIEW public.gambit_messages_inbound AS
-(SELECT
+ (SELECT
 	*
-FROM
+  FROM
 	:ft_gambit_messages_flattened f
-WHERE
+  WHERE
 	f.direction = 'inbound'
 	AND f.user_id IS NOT NULL
-UNION ALL
-(SELECT
+  UNION ALL
+  (SELECT
 	g.agent_id,
 	g.attachment_url,
 	g.attachment_content_type,
@@ -57,17 +57,17 @@ UNION ALL
 	g.text,
 	g.topic,
 	u.northstar_id AS user_id
-FROM
+  FROM
 	:ft_gambit_messages_flattened g
-LEFT JOIN
+  LEFT JOIN
 	:ft_gambit_conversations c
 	ON g.conversation_id = c._id
-LEFT JOIN
+  LEFT JOIN
 	public.users u
 	ON substring(c.platform_user_id, 3, 10) = u.mobile
 	AND u.mobile IS NOT NULL
 	AND u.mobile <> ''
-WHERE
+  WHERE
 	g.direction = 'inbound'
 	AND g.user_id IS NULL));
 
@@ -77,7 +77,7 @@ GRANT SELECT ON public.gambit_messages_inbound to dsanalyst;
 
 DROP MATERIALIZED VIEW IF EXISTS public.gambit_messages_outbound CASCADE;
 CREATE MATERIALIZED VIEW public.gambit_messages_outbound AS
-(SELECT
+ (SELECT
 	f.campaign_id,
 	f.conversation_id,
 	f.broadcast_id,
@@ -91,13 +91,13 @@ CREATE MATERIALIZED VIEW public.gambit_messages_outbound AS
 	f.text,
 	f.topic,
 	f.user_id
-FROM
+  FROM
 	:ft_gambit_messages_flattened f
-WHERE
+  WHERE
 	f.direction <> 'inbound'
 	AND f.user_id IS NOT NULL
-UNION ALL
-(SELECT
+  UNION ALL
+ (SELECT
 	g.campaign_id,
 	g.conversation_id,
 	g.broadcast_id,
@@ -111,22 +111,20 @@ UNION ALL
 	g.text,
 	g.topic,
 	u.northstar_id AS user_id
-FROM
+  FROM
 	:ft_gambit_messages_flattened g
-LEFT JOIN
+  LEFT JOIN
 	:ft_gambit_conversations c
 	ON g.conversation_id = c._id
-LEFT JOIN
+  LEFT JOIN
 	public.users u
 	ON substring(c.platform_user_id, 3, 10) = u.mobile
 	AND u.mobile IS NOT NULL
 	AND u.mobile <> ''
-WHERE
+  WHERE
 	g.direction <> 'inbound'
 	AND g.user_id IS NULL));
 
 CREATE INDEX ON public.gambit_messages_outbound (message_id, created_at, user_id, conversation_id);
 GRANT SELECT ON public.gambit_messages_outbound to looker;
 GRANT SELECT ON public.gambit_messages_outbound to dsanalyst;
-
-
