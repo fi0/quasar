@@ -18,7 +18,7 @@ CREATE MATERIALIZED VIEW public.member_event_log AS
     	OVER 
     	(PARTITION BY a.northstar_id, date_trunc('month', a."timestamp")) 
     	AS first_action_month
-FROM ( 
+  FROM ( 
     SELECT -- CAMPAIGN SIGNUP WITH CHANNEL
         DISTINCT s.northstar_id AS northstar_id,
         s.created_at AS "timestamp",
