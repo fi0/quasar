@@ -48,11 +48,12 @@ def run_sql_file_raw(file):
     queries = template.split(";")
     db = sadb()
     for i in queries:
+        query = i.replace("\n", "")
         # If query is empty, will throw an error.
-        if i != "":
+        if query != "":
             log("Running query:")
-            log(i)
-            db.query(i)
+            log(query)
+            db.query(query)
     db.disconnect()
     duration.duration()
 
