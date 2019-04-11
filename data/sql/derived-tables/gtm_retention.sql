@@ -40,7 +40,7 @@ CREATE MATERIALIZED VIEW public.gtm_retention AS
           ) as data
         ON data.event_month = month_list.event_month AND data.northstar_id = ca.northstar_id
         WHERE ca.campaign_id = '8017')
-        a) ;;
+        a) ;
 CREATE INDEX ON public.gtm_retention (northstar_id);
 GRANT SELECT ON public.gtm_retention TO looker;
 GRANT SELECT ON public.gtm_retention TO dsanalyst;
