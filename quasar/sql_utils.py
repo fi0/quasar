@@ -25,6 +25,7 @@ def sql_replace(query, datamap):
 def run_sql_file(file, datamap):
     # Run SQL from file with SQL Alchemy style
     # text replacement/string substitution.
+    # "--" style SQL comments break this, so remove them from .sql files! 
     duration = Duration()
     template = open(file, 'r').read()
     queries = template.split(";")
@@ -43,6 +44,7 @@ def run_sql_file(file, datamap):
 def run_sql_file_raw(file):
     # Corrolary function to run_sql_file that doesn't require
     # any string replacements, and can run from a file with no var subs.
+    # "--" style SQL comments break this, so remove them from .sql files! 
     duration = Duration()
     template = open(file, 'r').read()
     queries = template.split(";")
