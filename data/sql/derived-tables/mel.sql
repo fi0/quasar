@@ -19,7 +19,7 @@ CREATE MATERIALIZED VIEW public.member_event_log AS
     	(PARTITION BY a.northstar_id, date_trunc('month', a."timestamp")) 
     	AS first_action_month
   FROM ( 
-    SELECT -- CAMPAIGN SIGNUP WITH CHANNEL
+    SELECT
         DISTINCT s.northstar_id AS northstar_id,
         s.created_at AS "timestamp",
         'signup' AS "action",
@@ -36,7 +36,7 @@ CREATE MATERIALIZED VIEW public.member_event_log AS
 	AND s."source" IS DISTINCT FROM 'rock-the-vote'
 	AND s."source" IS DISTINCT FROM 'turbovote'
     UNION ALL
-    SELECT -- CAMPAIGN POSTS WITH CHANNEL
+    SELECT
         DISTINCT p.northstar_id AS northstar_id,
         p.created_at AS "timestamp",
         'post' AS "action",
@@ -49,7 +49,7 @@ CREATE MATERIALIZED VIEW public.member_event_log AS
 	WHEN p."source" NOT LIKE '%%phoenix%%' AND p."source" NOT LIKE '%%sms%%' AND p."source" IS NOT NULL AND p."source" NOT LIKE '%%app%%' and p."source" NOT LIKE '%%turbovote%%' THEN 'other' END) AS "channel"
     FROM public.posts p
     WHERE p.status IN ('accepted', 'confirmed', 'register-OVR', 'register-form', 'pending')
-    UNION ALL -- SITE ACCESS
+    UNION ALL
     SELECT DISTINCT 
         u_access.id AS northstar_id,
         u_access.last_accessed_at AS "timestamp",
@@ -82,7 +82,7 @@ CREATE MATERIALIZED VIEW public.member_event_log AS
 	AND u_login.email IS DISTINCT FROM 'juy+runscopescheduledtests@dosomething.org'
 	AND (u_login.email NOT ILIKE '%%@example.org%%' OR u_login.email IS NULL) 
     UNION ALL 
-    SELECT -- ACCOUNT CREATION 
+    SELECT
         DISTINCT u.id AS northstar_id,
         u.created_at AS "timestamp",
         'account_creation' AS action, 
@@ -107,7 +107,7 @@ CREATE MATERIALIZED VIEW public.member_event_log AS
 	AND (u_create.email NOT ILIKE '%%@example.org%%' OR u_create.email IS NULL) 
         GROUP BY u_create.id) u
     UNION ALL 
-    SELECT -- LAST MESSAGED SMS 
+    SELECT
         DISTINCT g.user_id AS northstar_id,
         g.created_at AS "timestamp",
         'messaged_gambit' AS "action", 
@@ -121,7 +121,7 @@ CREATE MATERIALIZED VIEW public.member_event_log AS
     	g.user_id IS NOT NULL
     	AND g.macro <> 'subscriptionStatusStop' 
     UNION ALL 
-        SELECT -- CLICKED EMAIL LINK 
+        SELECT
             DISTINCT cio.customer_id AS northstar_id,
             cio."timestamp" AS "timestamp",
             'clicked_link' AS "action",
@@ -135,7 +135,7 @@ CREATE MATERIALIZED VIEW public.member_event_log AS
             cio.event_type = 'email_clicked'
 	    AND cio.customer_id IS NOT NULL
     UNION ALL 
-    SELECT DISTINCT -- SMS LINK CLICKS FROM BERTLY 
+    SELECT DISTINCT
         b.northstar_id AS northstar_id,
         b.click_time AS "timestamp",
         CONCAT('bertly_link_', b.interaction_type) AS "action",
