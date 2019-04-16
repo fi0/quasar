@@ -41,7 +41,7 @@ CREATE MATERIALIZED VIEW public.mam_retention AS
         ON data.event_month = month_list.event_month
         AND data.northstar_id = u.northstar_id
         AND u.created_at >= '2015-01-01 00:00:00')
-        a) ;;
+        a) ;
 CREATE INDEX ON public.mam_retention (northstar_id);
 GRANT SELECT ON public.mam_retention TO looker;
 GRANT SELECT ON public.mam_retention TO dsanalyst;
