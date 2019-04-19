@@ -87,7 +87,7 @@ def _save_user(user):
                      ":last_authenticated_at,:last_messaged_at,"
                      ":updated_at,:created_at,:email_subscription_status) "
                      "ON CONFLICT (id, created_at, updated_at) "
-                     "DO NOTHING"))
+                     "DO UPDATE SET email_subscription_status = :email_subscription_status"))
     db.query_str(query, record)
 
 
