@@ -151,6 +151,7 @@ CREATE MATERIALIZED VIEW public.member_event_log AS
     ) AS a
  LEFT JOIN public.users u ON u.northstar_id = a.northstar_id
    );
-CREATE UNIQUE INDEX ON public.member_event_log (event_id, northstar_id, action_id, action_serial_id, channel, "timestamp", "source");
+CREATE UNIQUE INDEX ON public.member_event_log ("timestamp", northstar_id, event_id);
+CREATE INDEX ON public.member_event_log (northstar_id, "timestamp");
 GRANT SELECT ON public.member_event_log TO looker;
 GRANT SELECT ON public.member_event_log TO dsanalyst;
