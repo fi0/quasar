@@ -9,6 +9,7 @@ data = {
     'ft_gambit_messages': os.getenv('FT_GAMBIT_MESSAGES')
 }
 
+
 def create_gambit_messages():
     # Gambit conversations is a necessary precursor to exist
     # before messages can be created.
