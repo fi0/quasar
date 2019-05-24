@@ -1,5 +1,3 @@
-import os
-
 from .sql_utils import run_sql_file_raw, refresh_materialized_view
 
 
@@ -8,7 +6,7 @@ def create():
 
 
 def refresh():
-    refresh_materialized_view('REFRESH MATERIALIZED VIEW CONCURRENTLY public.member_event_log')
+    refresh_materialized_view('public.member_event_log')
 
 
 if __name__ == "__create__":
