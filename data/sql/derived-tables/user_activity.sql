@@ -1,3 +1,4 @@
+DROP MATERIALIZED VIEW IF EXISTS public.user_activity CASCADE; 
 CREATE MATERIALIZED VIEW user_activity AS (
     SELECT
 	u.northstar_id,
