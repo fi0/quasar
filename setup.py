@@ -5,7 +5,7 @@ with open('requirements.txt') as f:
 
 setup(
     name="quasar",
-    version="2019.4.26.0",
+    version="2019.5.29.0",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
@@ -27,8 +27,8 @@ setup(
             'gtm_retention_refresh = quasar.refresh_gtm_retention:main',
             'mam_retention_create = quasar.create_mam_retention:main',
             'mam_retention_refresh = quasar.refresh_mam_retention:main',
-            'mel_create = quasar.create_mel:main',
-            'mel_refresh = quasar.mel:main',
+            'mel_create = quasar.mel:create',
+            'mel_refresh = quasar.mel:refresh',
             'northstar_backfill = quasar.northstar_to_user_table:backfill',
             'northstar_full_backfill = quasar.northstar_to_user_table_full_backfill:backfill',
             'phoenix_events_refresh = quasar.refresh_phoenix_events:main',
@@ -36,7 +36,9 @@ setup(
             'post_actions_create = quasar.create_post_actions:main',
             'rogue_ghost_killer = quasar.ghost_killer:main',
             'users_create = quasar.create_derived_users:main',
-            'users_refresh = quasar.refresh_derived_users:main'
+            'users_refresh = quasar.refresh_derived_users:main',
+            'user_activity_create = quasar.user_activity:main',
+            'user_activity_refresh = quasar.user_activity:main'
         ],
     },
     author="",
