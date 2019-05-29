@@ -17,8 +17,8 @@ CREATE MATERIALIZED VIEW user_activity AS (
 	mel.most_recent_action AS most_recent_mam_action,
 	email_event.most_recent_email_open,
 	greatest(mel.most_recent_action, email_event.most_recent_email_open) AS most_recent_all_actions,
-	CASE WHEN time_to_actions.days_to_next_action_after_last_rb IS NULL AND r.num_rbs > 0 THEN TRUE
-	    END AS last_action_is_rb,
+	CASE WHEN time_to_actions.days_to_next_action_after_last_rb IS NULL AND r.num_rbs > 0
+	    THEN TRUE END AS last_action_is_rb,
 	DATE_PART(
 	    'day', now() - greatest(mel.most_recent_action, email_event.most_recent_email_open)
 	) as days_since_last_action,
@@ -53,9 +53,10 @@ CREATE MATERIALIZED VIEW user_activity AS (
 	    min(r_with_lag.post_created_at) AS first_rb,
 	    avg(r_with_lag.time_betw_rbs) AS avg_time_betw_rbs
 	FROM (
-	    SELECT *,
-		    post_created_at - lag(post_created_at) OVER (
-			PARTITION BY northstar_id ORDER BY post_created_at) AS time_betw_rbs
+	    SELECT
+		*,
+		post_created_at - lag(post_created_at) OVER (
+		    PARTITION BY northstar_id ORDER BY post_created_at) AS time_betw_rbs
 	    FROM reportbacks
 	) r_with_lag
 	GROUP BY r_with_lag.northstar_id
