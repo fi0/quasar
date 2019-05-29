@@ -31,7 +31,9 @@ CREATE MATERIALIZED VIEW user_activity AS (
 	    	sms_undeliverable.unsub_ts,
 	    	email_unsub.email_unsubscribed_at
 	    )
-	    ELSE NULL END AS user_unsubscribed_at
+	    ELSE NULL END AS user_unsubscribed_at,
+	CASE WHEN u."source" = 'importer-client' AND p.first_post = 'voter-reg'
+	    THEN 1 ELSE 0 END AS voter_reg_acquisition
     FROM users u
     LEFT JOIN (
 	SELECT
@@ -144,6 +146,13 @@ CREATE MATERIALIZED VIEW user_activity AS (
 	GROUP BY f.northstar_id
     ) time_to_actions
     ON u.northstar_id = time_to_actions.northstar_id
+    LEFT JOIN (
+	SELECT DISTINCT
+	    northstar_id,
+	    FIRST_VALUE("type") OVER (PARTITION BY northstar_id ORDER BY created_at) AS first_post
+	FROM posts
+    ) p
+    ON u.northstar_id = p.northstar_id
 );
 CREATE UNIQUE INDEX ON public.user_activity (created_at, northstar_id);
 CREATE INDEX ON public.user_activity (most_recent_all_actions);
