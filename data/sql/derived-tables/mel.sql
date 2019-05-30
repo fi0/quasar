@@ -58,14 +58,14 @@ CREATE MATERIALIZED VIEW public.member_event_log AS
         NULL AS "source",
         '0' AS action_serial_id,
         'web' AS channel
-    FROM :northstar_users u_access
+    FROM northstar.users u_access
     WHERE u_access.last_accessed_at IS NOT NULL
     AND u_access."source" IS DISTINCT FROM 'runscope'
 	AND u_access."source" IS DISTINCT FROM 'runscope-client'
 	AND u_access.email IS DISTINCT FROM 'runscope-scheduled-test@dosomething.org'
 	AND u_access.email IS DISTINCT FROM 'juy+runscopescheduledtests@dosomething.org'
 	AND (u_access.email NOT ILIKE '%%@example.org%%' OR u_access.email IS NULL) 
-    UNION ALL -- SITE LOGIN
+    UNION ALL
     SELECT DISTINCT 
         u_login.id AS northstar_id,
         u_login.last_authenticated_at AS "timestamp",
@@ -74,7 +74,7 @@ CREATE MATERIALIZED VIEW public.member_event_log AS
         NULL AS "source",
         '0' AS action_serial_id,
         'web' AS channel
-    FROM :northstar_users u_login
+    FROM northstar.users u_login
     WHERE u_login.last_authenticated_at IS NOT NULL 
     AND u_login."source" IS DISTINCT FROM 'runscope'
 	AND u_login."source" IS DISTINCT FROM 'runscope-client'
@@ -98,7 +98,7 @@ CREATE MATERIALIZED VIEW public.member_event_log AS
                 u_create.id,
                 max(u_create."source") AS "source",
                 min(u_create.created_at) AS created_at
-        FROM :northstar_users u_create
+        FROM northstar.users u_create
 	WHERE u_create."source" IS DISTINCT FROM 'importer-client'
 	AND u_create."source" IS DISTINCT FROM 'runscope'
 	AND u_create."source" IS DISTINCT FROM 'runscope-client'
@@ -130,7 +130,7 @@ CREATE MATERIALIZED VIEW public.member_event_log AS
             cio.event_id AS action_serial_id, 
             'email' AS "channel"
         FROM
-            :cio_email_event cio
+            cio.email_event cio
         WHERE 
             cio.event_type = 'email_clicked'
 	    AND cio.customer_id IS NOT NULL
