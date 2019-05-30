@@ -5,7 +5,7 @@ with open('requirements.txt') as f:
 
 setup(
     name="quasar",
-    version="2019.5.29.0",
+    version="2019.5.30.0",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
@@ -37,8 +37,8 @@ setup(
             'rogue_ghost_killer = quasar.ghost_killer:main',
             'users_create = quasar.create_derived_users:main',
             'users_refresh = quasar.refresh_derived_users:main',
-            'user_activity_create = quasar.user_activity:main',
-            'user_activity_refresh = quasar.user_activity:main'
+            'user_activity_create = quasar.user_activity:create',
+            'user_activity_refresh = quasar.user_activity:refresh'
         ],
     },
     author="",
