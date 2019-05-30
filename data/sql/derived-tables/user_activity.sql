@@ -103,12 +103,12 @@ CREATE MATERIALIZED VIEW user_activity AS (
 	email_opens.most_recent_email_open,
 	greatest(
 	    mel.most_recent_action,
-	    email_event.most_recent_email_open
+	    email_opens.most_recent_email_open
 	) AS most_recent_all_actions,
 	CASE WHEN time_to_actions.days_to_next_action_after_last_rb IS NULL
 	    AND r.num_rbs > 0 THEN TRUE END AS last_action_is_rb,
 	DATE_PART(
-	    'day', now() - greatest(mel.most_recent_action, email_event.most_recent_email_open)
+	    'day', now() - greatest(mel.most_recent_action, email_opens.most_recent_email_open)
 	) as days_since_last_action,
 	(r.first_rb - u.created_at) AS time_to_first_rb,
 	COALESCE(gambit_unsub.unsub_ts, sms_undeliverable.unsub_ts) AS sms_unsubscribed_at,
