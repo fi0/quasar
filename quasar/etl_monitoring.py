@@ -99,6 +99,8 @@ class ETLMonitoring:
                 """SELECT count(*) FROM public.gambit_messages_inbound""",
             'derived_gambit_messages_outbound':
                 """SELECT count(*) FROM public.gambit_messages_outbound""",
+            'user_activity':
+                """SELECT count(*) FROM public.user_activity"""
         }
 
     @staticmethod
