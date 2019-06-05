@@ -14,6 +14,7 @@ data = {
 def create():
     run_sql_file('./data/sql/derived-tables/campaign_activity.sql', data)
 
+
 def refresh():
     refresh_materialized_view('public.signups')
     refresh_materialized_view(data['ft_rogue_turbovote'])
