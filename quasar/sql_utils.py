@@ -62,12 +62,9 @@ def run_sql_file_raw(file):
 
 def refresh_materialized_view(view):
     db = Database()
-    start_time = time.time()
-    """Keep track of start time of script."""
+    duration = Duration()
 
+    log("Refreshing Materialized View: {}".format(view))
     db.query("REFRESH MATERIALIZED VIEW " + view)
     db.disconnect()
-
-    end_time = time.time()  # Record when script stopped running.
-    duration = end_time - start_time  # Total duration in seconds.
-    print('duration: ', duration)
+    duration.duration()
