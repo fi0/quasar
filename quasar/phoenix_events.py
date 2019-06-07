@@ -21,7 +21,7 @@ def refresh():
     refresh_materialized_view('public.path_campaign_lookup')
     refresh_materialized_view(data['phoenix_utms'])
     refresh_materialized_view('public.phoenix_events')
-    refresh_materialized_view('public.public.phoenix_sessions')
+    refresh_materialized_view('public.phoenix_sessions')
     refresh_materialized_view('public.device_northstar_crosswalk')
 
 
