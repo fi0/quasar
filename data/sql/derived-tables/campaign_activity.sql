@@ -101,7 +101,9 @@ CREATE MATERIALIZED VIEW public.posts AS
 	    pd.location,
 	    a.reportback AS is_reportback,
 	    a.civic_action,
-	    a.scholarship_entry
+	    a.scholarship_entry,
+	    tag.tag_name,
+	    tag.tag_slug
     FROM :ft_rogue_posts pd
     INNER JOIN public.signups s
     	  ON pd.signup_id = s.id
@@ -115,6 +117,10 @@ CREATE MATERIALIZED VIEW public.posts AS
 	) rtv ON rtv.post_id::bigint = pd.id::bigint
     LEFT JOIN :ft_rogue_actions a
     	 ON pd.action_id = a.id
+    LEFT JOIN ft_dosomething_rogue.post_tag ptag
+    	ON pd.id = ptag.post_id
+    LEFT JOIN ft_dosomething_rogue.tags tag
+    	ON ptag.tag_id = tag.id
     WHERE pd.deleted_at IS NULL
 	 AND pd."text" IS DISTINCT FROM 'test runscope upload'
 	 AND a."name" IS NOT NULL
