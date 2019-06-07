@@ -151,7 +151,7 @@ CREATE MATERIALIZED VIEW public.reportbacks AS
 	pd.scholarship_entry,
 	pd.location,
 	pd.tag_name,
-	pd.tag_slug
+	pd.tag_slug,
 	CASE WHEN (pd.post_class ilike '%%vote%%' AND pd.status = 'confirmed')
 	     THEN 'self-reported registrations'
 	     WHEN (pd.post_class ilike '%%vote%%' AND pd.status <> 'confirmed')
