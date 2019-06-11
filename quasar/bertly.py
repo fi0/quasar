@@ -1,3 +1,4 @@
+import os
 from .refresh_dms import refresh_dms
 from .sql_utils import run_sql_file_raw, refresh_materialized_view
 
