@@ -146,6 +146,8 @@ CREATE TABLE public.snowplow_sessions_stage AS (
         session_id,
         first_value("path") OVER (PARTITION BY session_id ORDER BY event_datetime 
         ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS landing_page,
+        first_value(event_id) OVER (PARTITION BY session_id ORDER BY event_datetime 
+        ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS event_id,
         last_value("path") OVER (PARTITION BY session_id ORDER BY event_datetime 
         ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS exit_page
     FROM snowplow_phoenix_events
@@ -161,6 +163,7 @@ CREATE TABLE public.snowplow_sessions_stage AS (
     )
     SELECT
     s.session_id,
+    p.event_id,
     s.device_id,
     s.landing_datetime,
     s.ending_datetime,
