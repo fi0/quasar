@@ -91,3 +91,54 @@ CREATE MATERIALIZED VIEW :phoenix_events AS (
 CREATE UNIQUE INDEX ON :phoenix_events (event_id, event_name, ts, event_datetime, northstar_id, session_id);
 GRANT SELECT ON :phoenix_events TO looker;
 GRANT SELECT ON :phoenix_events TO dsanalyst;
+
+DROP MATERIALIZED VIEW IF EXISTS :phoenix_sessions CASCADE;
+CREATE MATERIALIZED VIEW :phoenix_sessions AS (
+       SELECT
+                e.page #>> '{sessionId}' AS session_id,
+                max(e1.event_id) as event_id,
+                max(e.user #>> '{deviceId}') AS device_id,
+                min(
+                        CASE WHEN 
+                                e.page #>> '{landingTimestamp}' = 'null' 
+                                THEN e.meta #>> '{timestamp}' 
+                                ELSE e.page #>> '{landingTimestamp}' END
+                        )::numeric AS landing_ts,
+                max(e.meta #>> '{timestamp}')::numeric AS end_ts,
+                min(
+                        to_timestamp(
+                        (CASE WHEN 
+                                e.page #>> '{landingTimestamp}' = 'null' 
+                                THEN e.meta #>> '{timestamp}' 
+                                ELSE e.page #>> '{landingTimestamp}' 
+                                END)::numeric/1000)
+                        )  AS landing_datetime,
+                max(to_timestamp((e.meta #>> '{timestamp}')::numeric/1000)) AS end_datetime,
+                max(e.page #>> '{referrer, path}') AS referrer_path,
+                max(e.page #>> '{referrer, host}') AS referrer_host,
+                max(e.page #>> '{referrer, href}') AS referrer_href,
+                max(e.page #>> '{referrer, query, from_session}') AS from_session,
+                max(e.page #>> '{referrer, query, source}') AS referrer_source,
+                max(e.page #>> '{query, utm_source}') AS utm_source,
+                max(e.page #>> '{query, utm_medium}') AS utm_medium,
+                max(e.page #>> '{query, utm_campaign}') AS utm_campaign,
+                max(e1.landing_path) AS landing_page
+        FROM :events e
+        LEFT JOIN (
+                SELECT e.page #>> '{sessionId}' AS session_id,
+                FIRST_VALUE(e._id) OVER (
+                        PARTITION BY e.page #>> '{sessionId}'
+                        ORDER BY (e.meta #>> '{timestamp}')::numeric)
+                        AS event_id,
+                FIRST_VALUE(e.page #>> '{path}') OVER (
+                        PARTITION BY e.page #>> '{sessionId}'
+                        ORDER BY (e.meta #>> '{timestamp}')::numeric)
+                        AS landing_path
+                FROM :events e) e1
+        ON e1.session_id = e.page #>> '{sessionId}'
+        GROUP BY e.page #>> '{sessionId}'
+)
+;
+CREATE UNIQUE INDEX ON :phoenix_sessions (session_id, device_id, landing_ts, landing_datetime);
+GRANT SELECT ON :phoenix_sessions TO looker;
+GRANT SELECT ON :phoenix_sessions TO dsanalyst;

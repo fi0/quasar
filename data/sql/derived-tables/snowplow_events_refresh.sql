@@ -31,6 +31,12 @@ INSERT INTO public.snowplow_base_event
 CREATE INDEX base_event_id ON public.snowplow_base_event (event_id);
 DROP TABLE IF EXISTS public.snowplow_base_event_stage;
 
+DELETE FROM public.snowplow_base_event
+WHERE event_id IN 
+(SELECT event_id
+FROM ft_snowplow.ua_parser_context u
+WHERE u.useragent_family SIMILAR TO '%(bot|crawl|slurp|spider|archiv|spinn|sniff|seo|audit|survey|pingdom|worm|capture|(browser|screen)shots|analyz|index|thumb|check|facebook|YandexBot|Twitterbot|a_archiver|facebookexternalhit|Bingbot|Googlebot|Baiduspider|360(Spider|User-agent))%');
+
 DROP TABLE IF EXISTS public.snowplow_payload_event_stage;
 CREATE TABLE public.snowplow_payload_event_stage AS
 (SELECT
@@ -52,6 +58,7 @@ INSERT INTO public.snowplow_payload_event
   SELECT * FROM public.snowplow_payload_event_stage;
 CREATE INDEX payload_event_id ON public.snowplow_payload_event (event_id);
 DROP TABLE IF EXISTS public.snowplow_payload_event_stage;
+
 
 DROP TABLE IF EXISTS public.snowplow_raw_events_stage;
 CREATE TABLE public.snowplow_raw_events_stage AS
@@ -92,6 +99,7 @@ INSERT INTO public.snowplow_raw_events
 CREATE INDEX event_index ON public.snowplow_raw_events (event_id);
 DROP TABLE IF EXISTS public.snowplow_raw_events_stage;
 
+
 DROP TABLE IF EXISTS public.snowplow_phoenix_events_stage;
 CREATE TABLE public.snowplow_phoenix_events_stage AS (
     SELECT
@@ -125,6 +133,7 @@ INSERT INTO public.snowplow_phoenix_events
 CREATE UNIQUE INDEX spe_unique ON public.snowplow_phoenix_events (event_datetime, event_name, event_id);
 CREATE INDEX spe_session_id ON public.snowplow_phoenix_events (session_id);
 DROP TABLE IF EXISTS public.snowplow_phoenix_events_stage;
+
 
 DROP TABLE IF EXISTS public.snowplow_sessions_stage;
 CREATE TABLE public.snowplow_sessions_stage AS (
@@ -185,3 +194,91 @@ INSERT INTO public.snowplow_sessions
   SELECT * FROM public.snowplow_sessions_stage;
 CREATE INDEX sps_landing ON public.snowplow_sessions (landing_datetime, landing_page);
 DROP TABLE IF EXISTS public.snowplow_sessions_stage;
+
+
+DROP TABLE IF EXISTS public.phoenix_events_combined_stage;
+CREATE TABLE public.phoenix_events_combined_stage AS (
+    SELECT
+        p.event_id,
+        p.event_datetime,
+        p.event_name,
+        p.event_source,
+        p."path",
+        p."host",
+        p.page_utm_source,
+        p.page_utm_medium,
+        p.page_utm_campaign,
+        p.campaign_id,
+        p.campaign_name,
+        p.modal_type,
+        p.session_id,
+        p.browser_size,
+        p.northstar_id,
+        p.device_id
+    FROM
+        public.puck_phoenix_events p
+    UNION ALL
+    SELECT
+        s.event_id,
+        s.event_datetime,
+        s.event_name,
+        s.event_source,
+        s."path",
+        s."host",
+        s.page_utm_source,
+        s.page_utm_medium,
+        s.page_utm_campaign,
+        s.campaign_id,
+        s.campaign_name,
+        s.modal_type,
+        s.session_id,
+        s.browser_size,
+        s.northstar_id,
+        s.device_id
+    FROM
+        public.snowplow_phoenix_events s);
+
+DROP INDEX IF EXISTS pec_unique;
+DROP INDEX IF EXISTS pec_session_id;
+TRUNCATE public.phoenix_events_combined;
+INSERT INTO public.phoenix_events_combined
+  SELECT * FROM public.phoenix_events_combined_stage;
+CREATE UNIQUE INDEX pec_unique ON public.phoenix_events_combined (event_datetime, event_name, event_id);
+CREATE INDEX pec_session_id ON public.phoenix_events_combined (session_id);
+DROP TABLE IF EXISTS public.phoenix_events_combined_stage;
+
+
+DROP TABLE IF EXISTS public.phoenix_sessions_combined_stage;
+CREATE TABLE public.phoenix_sessions_combined_stage AS (
+    SELECT 
+        p.session_id,
+        p.event_id,
+        p.device_id,
+        p.landing_datetime,
+        p.end_datetime as ending_datetime,
+        EXTRACT(EPOCH FROM (end_datetime - landing_datetime)) AS session_duration_seconds,
+        NULL as num_pages_viewed,
+        p.landing_page,
+        NULL as exit_page,
+        NULL as days_since_last_session
+    FROM public.puck_phoenix_sessions p
+    UNION ALL
+    SELECT
+        s.session_id,
+        s.event_id,
+        s.device_id,
+        s.landing_datetime,
+        s.ending_datetime,
+        s.session_duration_seconds,
+        s.num_pages_viewed,
+        s.landing_page,
+        s.exit_page,
+        s.days_since_last_session
+    FROM public.snowplow_sessions s);
+
+DROP INDEX IF EXISTS psc_landing;
+TRUNCATE public.phoenix_sessions_combined;
+INSERT INTO public.phoenix_sessions_combined
+  SELECT * FROM public.phoenix_sessions_combined_stage;
+CREATE INDEX psc_landing ON public.phoenix_sessions_combined (landing_datetime, landing_page);
+DROP TABLE IF EXISTS public.phoenix_sessions_combined_stage;

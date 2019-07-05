@@ -25,6 +25,13 @@ CREATE INDEX base_event_id ON public.snowplow_base_event (event_id);
 GRANT SELECT ON public.snowplow_base_event TO dsanalyst;
 
 
+DELETE FROM public.snowplow_base_event
+WHERE event_id IN 
+(SELECT event_id
+FROM ft_snowplow.ua_parser_context u
+WHERE u.useragent_family SIMILAR TO '%(bot|crawl|slurp|spider|archiv|spinn|sniff|seo|audit|survey|pingdom|worm|capture|(browser|screen)shots|analyz|index|thumb|check|facebook|YandexBot|Twitterbot|a_archiver|facebookexternalhit|Bingbot|Googlebot|Baiduspider|360(Spider|User-agent))%');
+
+
 DROP TABLE IF EXISTS public.snowplow_payload_event;
 CREATE TABLE public.snowplow_payload_event AS
 (SELECT
@@ -161,3 +168,82 @@ CREATE TABLE public.snowplow_sessions AS (
 CREATE INDEX sps_landing ON public.snowplow_sessions (landing_datetime, landing_page);
 GRANT SELECT ON public.snowplow_sessions TO looker;
 GRANT SELECT ON public.snowplow_sessions TO dsanalyst;
+
+
+DROP TABLE IF EXISTS public.phoenix_events_combined;
+CREATE TABLE public.phoenix_events_combined AS (
+    SELECT
+        p.event_id,
+        p.event_datetime,
+        p.event_name,
+        p.event_source,
+        p."path",
+        p."host",
+        p.page_utm_source,
+        p.page_utm_medium,
+        p.page_utm_campaign,
+        p.campaign_id,
+        p.campaign_name,
+        p.modal_type,
+        p.session_id,
+        p.browser_size,
+        p.northstar_id,
+        p.device_id
+    FROM
+        public.puck_phoenix_events p
+    UNION ALL
+    SELECT
+        s.event_id,
+        s.event_datetime,
+        s.event_name,
+        s.event_source,
+        s."path",
+        s."host",
+        s.page_utm_source,
+        s.page_utm_medium,
+        s.page_utm_campaign,
+        s.campaign_id,
+        s.campaign_name,
+        s.modal_type,
+        s.session_id,
+        s.browser_size,
+        s.northstar_id,
+        s.device_id
+    FROM
+        public.snowplow_phoenix_events s);
+CREATE UNIQUE INDEX pec_unique ON public.phoenix_events_combined (event_datetime, event_name, event_id);
+CREATE INDEX pec_session_id ON public.phoenix_events_combined (session_id);
+GRANT SELECT ON public.phoenix_events_combined TO looker;
+GRANT SELECT ON public.phoenix_events_combined TO dsanalyst;
+
+
+DROP TABLE IF EXISTS public.phoenix_sessions_combined;
+CREATE TABLE public.phoenix_sessions_combined AS (
+    SELECT 
+        p.session_id,
+        p.event_id,
+        p.device_id,
+        p.landing_datetime,
+        p.end_datetime as ending_datetime,
+        EXTRACT(EPOCH FROM (end_datetime - landing_datetime)) AS session_duration_seconds,
+        NULL as num_pages_viewed,
+        p.landing_page,
+        NULL as exit_page,
+        NULL as days_since_last_session
+    FROM public.puck_phoenix_sessions p
+    UNION ALL
+    SELECT
+        s.session_id,
+        s.event_id,
+        s.device_id,
+        s.landing_datetime,
+        s.ending_datetime,
+        s.session_duration_seconds,
+        s.num_pages_viewed,
+        s.landing_page,
+        s.exit_page,
+        s.days_since_last_session
+    FROM public.snowplow_sessions s);
+CREATE INDEX psc_landing ON public.phoenix_sessions_combined (landing_datetime, landing_page);
+GRANT SELECT ON public.phoenix_sessions_combined TO looker;
+GRANT SELECT ON public.phoenix_sessions_combined TO dsanalyst;
