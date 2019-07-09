@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS public.puck_phoenix_events;
 CREATE TABLE public.puck_phoenix_events AS (
 SELECT DISTINCT event_id, 
                 puck_id, 
@@ -10,6 +11,9 @@ SELECT DISTINCT event_id,
                 page_utm_source, 
                 page_utm_medium, 
                 page_utm_campaign,
+                referrer_host,
+                referrer_path,
+                referrer_source,
                 parent_source,
                 campaign_id,
                 campaign_name,
@@ -29,6 +33,7 @@ ALTER TABLE public.puck_phoenix_events RENAME COLUMN new_event_name TO event_nam
 CREATE UNIQUE INDEX ON public.puck_phoenix_events (event_id, event_name, ts, event_datetime, northstar_id, session_id);
 
 
+DROP TABLE IF EXISTS public.puck_phoenix_sessions;
 CREATE TABLE public.puck_phoenix_sessions AS (
 SELECT * 
 FROM public.phoenix_sessions
