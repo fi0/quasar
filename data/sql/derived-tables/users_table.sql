@@ -54,6 +54,9 @@ CREATE MATERIALIZED VIEW public.users AS
 		email_status."timestamp" AS cio_status_timestamp,
 		u.sms_status,
 		u.source_detail,
+		substring(source_detail from '(?<=utm_medium\:)(.*)(?=\,)') AS utm_medium,
+		substring(source_detail from '(?<=utm_source\:)([^\,]*)') AS utm_source,
+		substring(source_detail from '(?<=utm_campaign\:)(.*)(?=)') AS utm_campaign
 		CASE WHEN 
 			u.sms_status in ('active','less','pending') OR 
 			email_status.event_type = 'customer_subscribed' 
