@@ -1,5 +1,5 @@
 DROP TABLE IF EXISTS public.snowplow_base_event_stage;
-CREATE TABLE public.snowplow_base_event_stage AS
+CREATE UNLOGGED TABLE public.snowplow_base_event_stage AS
 (SELECT 
     event_id AS event_id,
     app_id AS event_source,
@@ -37,7 +37,7 @@ DROP TABLE IF EXISTS public.snowplow_base_event_stage;
 
 
 DROP TABLE IF EXISTS public.snowplow_payload_event_stage;
-CREATE TABLE public.snowplow_payload_event_stage AS
+CREATE UNLOGGED TABLE public.snowplow_payload_event_stage AS
 (SELECT
     event_id,
     payload::jsonb #>> '{utmSource}' AS utm_source,
@@ -60,7 +60,7 @@ DROP TABLE IF EXISTS public.snowplow_payload_event_stage;
 
 
 DROP TABLE IF EXISTS public.snowplow_raw_events_stage;
-CREATE TABLE public.snowplow_raw_events_stage AS
+CREATE UNLOGGED TABLE public.snowplow_raw_events_stage AS
 (SELECT
 	b.event_id,
 	b.event_source,
@@ -100,7 +100,7 @@ DROP TABLE IF EXISTS public.snowplow_raw_events_stage;
 
 
 DROP TABLE IF EXISTS public.snowplow_phoenix_events_stage;
-CREATE TABLE public.snowplow_phoenix_events_stage AS (
+CREATE UNLOGGED TABLE public.snowplow_phoenix_events_stage AS (
     SELECT
         e.event_id,
         e.event_datetime,
@@ -138,7 +138,7 @@ DROP TABLE IF EXISTS public.snowplow_phoenix_events_stage;
 
 
 DROP TABLE IF EXISTS public.snowplow_sessions_stage;
-CREATE TABLE public.snowplow_sessions_stage AS (
+CREATE UNLOGGED TABLE public.snowplow_sessions_stage AS (
     WITH sessions AS (
     SELECT
         session_id,
@@ -199,7 +199,7 @@ DROP TABLE IF EXISTS public.snowplow_sessions_stage;
 
 
 DROP TABLE IF EXISTS public.phoenix_events_combined_stage;
-CREATE TABLE public.phoenix_events_combined_stage AS (
+CREATE UNLOGGED TABLE public.phoenix_events_combined_stage AS (
     SELECT
         p.event_id,
         p.event_datetime,
@@ -210,9 +210,9 @@ CREATE TABLE public.phoenix_events_combined_stage AS (
         p.page_utm_source,
         p.page_utm_medium,
         p.page_utm_campaign,
-        p.page_utm_source,
-        p.page_utm_medium,
-        p.page_utm_campaign,
+        p.referrer_host,
+        p.referrer_path,
+        p.referrer_source,
         p.campaign_id,
         p.campaign_name,
         p.modal_type,
@@ -233,9 +233,9 @@ CREATE TABLE public.phoenix_events_combined_stage AS (
         s.page_utm_source,
         s.page_utm_medium,
         s.page_utm_campaign,
-        s.page_utm_source,
-        s.page_utm_medium,
-        s.page_utm_campaign,
+        s.referrer_host,
+        s.referrer_path,
+        s.referrer_source,
         s.campaign_id,
         s.campaign_name,
         s.modal_type,
@@ -257,7 +257,7 @@ DROP TABLE IF EXISTS public.phoenix_events_combined_stage;
 
 
 DROP TABLE IF EXISTS public.phoenix_sessions_combined_stage;
-CREATE TABLE public.phoenix_sessions_combined_stage AS (
+CREATE UNLOGGED TABLE public.phoenix_sessions_combined_stage AS (
     SELECT 
         p.session_id,
         p.event_id,
