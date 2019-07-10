@@ -2,6 +2,7 @@ from datetime import datetime as dt
 import os
 import sys
 import time
+import re
 
 from .northstar_scraper import NorthstarScraper
 from .sa_database import Database
@@ -29,6 +30,17 @@ def _undict_value(value):
     else:
         return value
 
+def _utm_extract(field, value):
+    if field == 'utm_medium':
+        pattern = "(?<=utm_medium\:)(.*)(?=\,)"
+    elif field == 'utm_source':
+        pattern = "(?<=utm_source\:)([^\,]*)"
+    elif field == 'utm_campaign':
+        pattern = "(?<=utm_campaign\:)(.*)(?=)"
+
+    source = re.search(pattern, value)
+
+    return source.group()
 
 def _save_user(user):
     record = {
@@ -49,6 +61,9 @@ def _save_user(user):
         'addr_zip': _undict_value(user['addr_zip']),
         'source': user['source'],
         'source_detail': user['source_detail'],
+        'utm_medium': _utm_extract('utm_medium', user['source_detail']),
+        'utm_source': _utm_extract('utm_source', user['source_detail']),
+        'utm_campaign': _utm_extract('utm_campaign', user['source_detail']),
         'slack_id': user['slack_id'],
         'sms_status': user['sms_status'],
         'sms_paused': user['sms_paused'],
@@ -80,8 +95,9 @@ def _save_user(user):
                      ":photo,:email,:mobile,:facebook_id,:interests,"
                      ":birthdate,:addr_street1,:addr_street2,"
                      ":addr_city,:addr_state,:addr_zip,"
-                     ":source,:source_detail,:slack_id,"
-                     ":sms_status,:sms_paused,"
+                     ":source,:source_detail,"
+                     ":utm_medium,:utm_source,:utm_campaign,"
+                     ":slack_id,:sms_status,:sms_paused,"
                      ":voter_registration_status,:language,:country,"
                      ":role,:last_accessed_at,"
                      ":last_authenticated_at,:last_messaged_at,"
