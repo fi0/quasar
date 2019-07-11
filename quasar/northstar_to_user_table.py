@@ -30,6 +30,7 @@ def _undict_value(value):
     else:
         return value
 
+
 def _utm_extract(field, value):
     if field == 'utm_medium':
         pattern = "(?<=utm_medium\:)(.*)(?=\,)"
@@ -41,6 +42,7 @@ def _utm_extract(field, value):
     source = re.search(pattern, value)
 
     return source.group()
+
 
 def _save_user(user):
     record = {
