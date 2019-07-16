@@ -30,14 +30,13 @@ def _undict_value(value):
     else:
         return value
 
-
 def _utm_extract(field, value):
     if field == 'utm_medium':
-        pattern = "(?<=utm_medium\:)(.*)(?=\,)"
+        pattern = "(?<=utm_medium\:)([\w*]+)"
     elif field == 'utm_source':
-        pattern = "(?<=utm_source\:)([^\,]*)"
+        pattern = "(?<=utm_source\:)([\w]*)"
     elif field == 'utm_campaign':
-        pattern = "(?<=utm_campaign\:)(.*)(?=)"
+        pattern = "(?<=utm_campaign\:)(\w*)"
 
     source = re.search(pattern, value)
 
