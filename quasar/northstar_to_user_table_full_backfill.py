@@ -30,19 +30,6 @@ def _undict_value(value):
     else:
         return value
 
-def _utm_extract(field, value):
-    if field == 'utm_medium':
-        pattern = "(?<=utm_medium\:)([\w*]+)"
-    elif field == 'utm_source':
-        pattern = "(?<=utm_source\:)([\w]*)"
-    elif field == 'utm_campaign':
-        pattern = "(?<=utm_campaign\:)(\w*)"
-
-    source = re.search(pattern, value)
-
-    return source.group()
-
-
 def _save_user(user):
     record = {
         'id': user['id'],
@@ -62,9 +49,6 @@ def _save_user(user):
         'addr_zip': _undict_value(user['addr_zip']),
         'source': user['source'],
         'source_detail': user['source_detail'],
-        'utm_medium': _utm_extract('utm_medium', user['source_detail']),
-        'utm_source': _utm_extract('utm_source', user['source_detail']),
-        'utm_campaign': _utm_extract('utm_campaign', user['source_detail']),
         'slack_id': user['slack_id'],
         'sms_status': user['sms_status'],
         'sms_paused': user['sms_paused'],
@@ -85,8 +69,7 @@ def _save_user(user):
                      "interests, birthdate, addr_street1, "
                      "addr_street2, addr_city, addr_state, "
                      "addr_zip, source, "
-                     "source_detail,utm_medium,:utm_source,:utm_campaign,"
-                     "slack_id, sms_status,"
+                     "source_detail,slack_id, sms_status,"
                      "sms_paused, voter_registration_status, "
                      "language, country, "
                      "role, last_accessed_at, "
@@ -98,7 +81,6 @@ def _save_user(user):
                      ":birthdate,:addr_street1,:addr_street2,"
                      ":addr_city,:addr_state,:addr_zip,"
                      ":source,:source_detail,"
-                     ":utm_medium,:utm_source,:utm_campaign,"
                      ":slack_id,:sms_status,:sms_paused,"
                      ":voter_registration_status,:language,:country,"
                      ":role,:last_accessed_at,"
