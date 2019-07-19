@@ -30,6 +30,7 @@ def _undict_value(value):
     else:
         return value
 
+
 # Returns a proper NULL value when the API returns 'null' string
 def _null_value(value):
     if json.dumps(value) == 'null':
