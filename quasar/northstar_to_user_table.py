@@ -2,7 +2,6 @@ from datetime import datetime as dt
 import os
 import sys
 import time
-import re
 
 from .northstar_scraper import NorthstarScraper
 from .sa_database import Database
