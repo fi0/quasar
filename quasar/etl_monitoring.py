@@ -60,8 +60,6 @@ class ETLMonitoring:
                 'SELECT count(*) FROM ft_dosomething_rogue.signups',
             'raw_rogue_posts':
                 'SELECT count(*) FROM ft_dosomething_rogue.posts',
-            'raw_puck_events':
-                'SELECT count(*) FROM ft_puck_heroku_wzsf6b3z.events',
             'raw_cio_emails':
                 'SELECT count(*) FROM cio.email_event',
             'raw_cio_customers':
@@ -72,6 +70,12 @@ class ETLMonitoring:
                 """SELECT count(*) FROM ft_gambit_conversations_api.messages""",
             'raw_gambit_conversations':
                 """SELECT count(*) FROM ft_gambit_conversations_api.conversations""",
+            'raw_snowplow_event':
+                'SELECT count(*) FROM ft_snowplow.snowplow_event',
+            'raw_snowplow.event':
+                'SELECT count(*) FROM ft_snowplow.event',
+            'raw_snowplow_ua_parser':
+                'SELECT count(*) FROM ft_snowplow.ua_parser',
             'flattened_gambit_messages':
                 """SELECT count(*)
                     FROM ft_gambit_conversations_api.messages_flattened""",
@@ -89,10 +93,20 @@ class ETLMonitoring:
                 'SELECT count(*) FROM public.posts p',
             'derived_reportbacks_count':
                 'SELECT count(*) FROM public.reportbacks r',
-            'derived_puck_events':
-                'SELECT count(*) FROM public.phoenix_events',
-            'derived_puck_sessions':
-                'SELECT count(*) FROM public.phoenix_sessions',
+            'derived_snowplow_base_event':
+                'SELECT count(*) FROM public.snowplow_base_event',
+            'derived_snowplow_payload_event':
+                'SELECT count(*) FROM public.snowplow_payload_event',
+            'derived_snowplow_raw_events':
+                'SELECT count(*) FROM public.snowplow_raw_events',
+            'derived_snowplow_phoenix_events':
+                'SELECT count(*) FROM public.snowplow_phoenix_events',
+            'derived_snowplow_sessions':
+                'SELECT count(*) FROM public.snowplow_sessions',
+            'derived_phoenix_events_combined':
+                'SELECT count(*) FROM public.phoenix_events_combined',
+            'derived_phoenix_sessions_combined':
+                'SELECT count(*) FROM public.phoenix_sessions_combined',
             'derived_bertly_clicks':
                 'SELECT count(*) FROM public.bertly_clicks',
             'derived_gambit_messages_inbound':

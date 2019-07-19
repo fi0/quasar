@@ -27,7 +27,7 @@ SELECT DISTINCT event_id,
                 northstar_id,
                 device_id                
 FROM public.phoenix_events
-WHERE event_datetime < '06-26-2019 00:00:00'
+WHERE event_datetime < '07-12-2019 00:00:00'
 );
 ALTER TABLE public.puck_phoenix_events RENAME COLUMN new_event_name TO event_name;
 CREATE UNIQUE INDEX ON public.puck_phoenix_events (event_id, event_name, ts, event_datetime, northstar_id, session_id);
@@ -37,6 +37,12 @@ DROP TABLE IF EXISTS public.puck_phoenix_sessions;
 CREATE TABLE public.puck_phoenix_sessions AS (
 SELECT * 
 FROM public.phoenix_sessions
-WHERE landing_datetime < '06-26-2019 00:00:00'
+WHERE landing_datetime < '07-12-2019 00:00:00'
 );
 CREATE UNIQUE INDEX ON public.puck_phoenix_sessions (session_id, device_id, landing_ts, landing_datetime);
+
+DELETE FROM ft_snowplow."event"
+WHERE collector_tstamp < '07-12-2019 00:00:00';
+
+DELETE FROM ft_snowplow.snowplow_event
+WHERE _fivetran_synced < '07-12-2019 00:00:00';
