@@ -30,6 +30,15 @@ def _undict_value(value):
     else:
         return value
 
+
+# Returns a proper NULL value when the API returns 'null' string
+def _null_value(value):
+    if json.dumps(value) == 'null':
+        return None
+    else:
+        return json.dumps(value)
+
+
 def _save_user(user):
     record = {
         'id': user['id'],
@@ -62,7 +71,7 @@ def _save_user(user):
         'updated_at': user['updated_at'],
         'created_at': user['created_at'],
         'email_subscription_status': user['email_subscription_status'],
-        'feature_flags': json.dumps(user['feature_flags'])
+        'feature_flags': _null_value(user['feature_flags'])
     }
     query = ''.join(("INSERT INTO northstar.users_backfill (id, "
                      "first_name, last_name, last_initial, "
