@@ -2,6 +2,7 @@ from datetime import datetime as dt
 import os
 import sys
 import time
+import json
 
 from .northstar_scraper import NorthstarScraper
 from .sa_database import Database
@@ -28,7 +29,6 @@ def _undict_value(value):
         return value['value']
     else:
         return value
-
 
 def _save_user(user):
     record = {
@@ -69,7 +69,7 @@ def _save_user(user):
                      "interests, birthdate, addr_street1, "
                      "addr_street2, addr_city, addr_state, "
                      "addr_zip, source, "
-                     "source_detail, slack_id, sms_status, "
+                     "source_detail,slack_id, sms_status,"
                      "sms_paused, voter_registration_status, "
                      "language, country, "
                      "role, last_accessed_at, "
@@ -80,8 +80,8 @@ def _save_user(user):
                      ":photo,:email,:mobile,:facebook_id,:interests,"
                      ":birthdate,:addr_street1,:addr_street2,"
                      ":addr_city,:addr_state,:addr_zip,"
-                     ":source,:source_detail,:slack_id,"
-                     ":sms_status,:sms_paused,"
+                     ":source,:source_detail,"
+                     ":slack_id,:sms_status,:sms_paused,"
                      ":voter_registration_status,:language,:country,"
                      ":role,:last_accessed_at,"
                      ":last_authenticated_at,:last_messaged_at,"
