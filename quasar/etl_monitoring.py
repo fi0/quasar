@@ -70,9 +70,9 @@ class ETLMonitoring:
                 """SELECT count(*) FROM ft_gambit_conversations_api.messages""",
             'raw_gambit_conversations':
                 """SELECT count(*) FROM ft_gambit_conversations_api.conversations""",
-            'raw_snowplow_event':
+            'raw_snowplow_struct_event':
                 'SELECT count(*) FROM ft_snowplow.snowplow_event',
-            'raw_snowplow.event':
+            'raw_snowplow_event':
                 'SELECT count(*) FROM ft_snowplow.event',
             'raw_snowplow_ua_parser':
                 'SELECT count(*) FROM ft_snowplow.ua_parser',
