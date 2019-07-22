@@ -74,8 +74,8 @@ class ETLMonitoring:
                 'SELECT count(*) FROM ft_snowplow.snowplow_event',
             'raw_snowplow_event':
                 'SELECT count(*) FROM ft_snowplow.event',
-            'raw_snowplow_ua_parser':
-                'SELECT count(*) FROM ft_snowplow.ua_parser',
+            'raw_snowplow_ua_parser_context':
+                'SELECT count(*) FROM ft_snowplow.ua_parser_context',
             'flattened_gambit_messages':
                 """SELECT count(*)
                     FROM ft_gambit_conversations_api.messages_flattened""",
