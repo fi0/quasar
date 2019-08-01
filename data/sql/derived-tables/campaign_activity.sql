@@ -15,15 +15,15 @@ CREATE MATERIALIZED VIEW public.signups AS
         sd.created_at AS created_at,
         sd.source_details,
         CASE 
-			WHEN source_details ILIKE '\{%%' 
+			WHEN source_details ILIKE '%%\}'
 			THEN (CAST(source_details as json) ->> 'utm_medium') 
 			ELSE NULL END AS utm_medium,
 		CASE 
-			WHEN source_details ILIKE '\{%%' 
+			WHEN source_details ILIKE '%%\}'
 			THEN (CAST(source_details as json) ->> 'utm_source') 
 			ELSE NULL END AS utm_source,
 		CASE 
-			WHEN source_details ILIKE '\{%%' 
+			WHEN source_details ILIKE '%%\}'
 			THEN (CAST(source_details as json) ->> 'utm_campaign') 
 			ELSE NULL END AS utm_campaign
     FROM :ft_rogue_signups sd
