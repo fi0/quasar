@@ -13,7 +13,7 @@ CREATE MATERIALIZED VIEW :ft_gambit_messages_flattened AS
     macro AS macro,
     match AS match,
     metadata #>> '{delivery,queuedAt}' AS delivered_at,
-		metadata #>> '{delivery,failedAt}' as failed_at,
+	  metadata #>> '{delivery,failedAt}' as failed_at,
     metadata #>> '{delivery,failureData,code}' as failure_code,
     (metadata #> '{delivery}' ->> 'totalSegments')::INT AS total_segments,
     platform_message_id as platform_message_id,
