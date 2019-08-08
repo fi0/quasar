@@ -38,12 +38,6 @@ def _null_value(value):
     else:
         return json.dumps(value)
 
-# Returns a proper NULL value when the API returns 'null' string
-def _null_value(value):
-    if json.dumps(value) == 'null':
-        return None
-    else:
-        return json.dumps(value)
 
 def _save_user(user):
     record = {
