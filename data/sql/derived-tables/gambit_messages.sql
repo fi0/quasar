@@ -16,6 +16,7 @@ CREATE MATERIALIZED VIEW :ft_gambit_messages_flattened AS
 		metadata #>> '{delivery,deliveredAt}' AS delivered_at,
 	  metadata #>> '{delivery,failedAt}' as failed_at,
     metadata #>> '{delivery,failureData,code}' as failure_code,
+    COALESCE(metadata #> '{retryCount}', 0) AS retry_count,
     (metadata #> '{delivery}' ->> 'totalSegments')::INT AS total_segments,
     platform_message_id as platform_message_id,
     template AS template,
@@ -57,6 +58,7 @@ CREATE MATERIALIZED VIEW public.gambit_messages_inbound AS
 	g.delivered_at,
 	g.failed_at,
 	g.failure_code,
+  g.retry_count,
 	g.total_segments,
 	g.platform_message_id,
 	g.template,
@@ -96,6 +98,7 @@ CREATE MATERIALIZED VIEW public.gambit_messages_outbound AS
 	f.delivered_at,
 	f.failed_at,
 	f.failure_code,
+  f.retry_count,
 	f.platform_message_id,
 	f.template,
 	f.text,
@@ -120,6 +123,7 @@ CREATE MATERIALIZED VIEW public.gambit_messages_outbound AS
 	g.delivered_at,
 	g.failed_at,
 	g.failure_code,
+  g.retry_count,
 	g.platform_message_id,
 	g.template,
 	g.text,
@@ -140,5 +144,6 @@ CREATE MATERIALIZED VIEW public.gambit_messages_outbound AS
 	AND g.user_id IS NULL));
 
 CREATE INDEX ON public.gambit_messages_outbound (message_id, created_at, user_id, conversation_id);
+CREATE INDEX deliverability ON public.gambit_messages_outbound (created_at, failure_code);
 GRANT SELECT ON public.gambit_messages_outbound to looker;
 GRANT SELECT ON public.gambit_messages_outbound to dsanalyst;
