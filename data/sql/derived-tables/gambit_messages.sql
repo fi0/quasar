@@ -16,7 +16,7 @@ CREATE MATERIALIZED VIEW :ft_gambit_messages_flattened AS
 		metadata #>> '{delivery,deliveredAt}' AS delivered_at,
 	  metadata #>> '{delivery,failedAt}' as failed_at,
     metadata #>> '{delivery,failureData,code}' as failure_code,
-    COALESCE(metadata #> '{retryCount}', 0) AS retry_count,
+    (metadata #>> '{retryCount}')::INT AS retry_count,
     (metadata #> '{delivery}' ->> 'totalSegments')::INT AS total_segments,
     platform_message_id as platform_message_id,
     template AS template,
