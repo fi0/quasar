@@ -1,6 +1,6 @@
 DROP MATERIALIZED VIEW IF EXISTS :ft_gambit_messages_flattened CASCADE;
 CREATE MATERIALIZED VIEW :ft_gambit_messages_flattened AS
- (SELECT 
+ (SELECT
     agent_id AS agent_id,
     attachments->0->>'contentType' AS attachment_content_type,
     attachments->0->>'url' AS attachment_url,
@@ -12,7 +12,8 @@ CREATE MATERIALIZED VIEW :ft_gambit_messages_flattened AS
     _id AS message_id,
     macro AS macro,
     match AS match,
-    metadata #>> '{delivery,queuedAt}' AS delivered_at,
+		metadata #>> '{delivery,deliveredAt}' AS carrier_delivered_at,
+    metadata #>> '{delivery,failureData,code}' as carrier_failure_code,
     (metadata #> '{delivery}' ->> 'totalSegments')::INT AS total_segments,
     platform_message_id as platform_message_id,
     template AS template,
@@ -50,7 +51,8 @@ CREATE MATERIALIZED VIEW public.gambit_messages_inbound AS
 	g.message_id,
 	g.macro,
 	g."match",
-	g.delivered_at,
+	g.carrier_delivered_at,
+	g.carrier_failure_code,
 	g.total_segments,
 	g.platform_message_id,
 	g.template,
@@ -86,6 +88,8 @@ CREATE MATERIALIZED VIEW public.gambit_messages_outbound AS
 	f.message_id,
 	f.macro,
 	f."match",
+	f.carrier_delivered_at,
+	f.carrier_failure_code,
 	f.platform_message_id,
 	f.template,
 	f.text,
@@ -106,6 +110,8 @@ CREATE MATERIALIZED VIEW public.gambit_messages_outbound AS
 	g.message_id,
 	g.macro,
 	g."match",
+	g.carrier_delivered_at,
+	g.carrier_failure_code,
 	g.platform_message_id,
 	g.template,
 	g.text,
@@ -126,5 +132,6 @@ CREATE MATERIALIZED VIEW public.gambit_messages_outbound AS
 	AND g.user_id IS NULL));
 
 CREATE INDEX ON public.gambit_messages_outbound (message_id, created_at, user_id, conversation_id);
+CREATE INDEX deliverability ON public.gambit_messages_outbound (created_at, carrier_failure_code);
 GRANT SELECT ON public.gambit_messages_outbound to looker;
 GRANT SELECT ON public.gambit_messages_outbound to dsanalyst;
