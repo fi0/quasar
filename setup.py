@@ -5,7 +5,7 @@ with open('requirements.txt') as f:
 
 setup(
     name="quasar",
-    version="2019.7.20.0",
+    version="2019.08.12.0",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
@@ -23,6 +23,7 @@ setup(
             'etl_monitoring = quasar.etl_monitoring:run_monitoring',
             'gambit_messages_create = quasar.gambit:create_gambit_messages',
             'gambit_messages_refresh = quasar.gambit:refresh_gambit_messages',
+            'gdpr = quasar.gdpr_comply:gdpr_from_file',
             'gtm_retention_create = quasar.gtm_retention:create',
             'gtm_retention_refresh = quasar.gtm_retention:refresh',
             'mam_retention_create = quasar.mam_retention:create',
