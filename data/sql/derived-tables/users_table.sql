@@ -57,6 +57,7 @@ CREATE MATERIALIZED VIEW public.users AS
 		substring(u.source_detail from '(?<=utm_medium\:)(\w*)') AS utm_medium,
 		substring(u.source_detail from '(?<=utm_source\:)(\w*)') AS utm_source,
 		substring(u.source_detail from '(?<=utm_campaign\:)(\w*)') AS utm_campaign,
+		to_jsonb(u.feature_flags::jsonb #>> '{badges}') as badges,
 		CASE WHEN 
 			u.sms_status in ('active','less','pending') OR 
 			email_status.event_type = 'customer_subscribed' 

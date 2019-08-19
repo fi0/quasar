@@ -30,6 +30,15 @@ def _undict_value(value):
     else:
         return value
 
+
+# Returns a proper NULL value when the API returns 'null' string
+def _null_value(value):
+    if json.dumps(value) == 'null':
+        return None
+    else:
+        return json.dumps(value)
+
+
 def _save_user(user):
     record = {
         'id': user['id'],
@@ -61,7 +70,8 @@ def _save_user(user):
         'last_messaged_at': user['last_messaged_at'],
         'updated_at': user['updated_at'],
         'created_at': user['created_at'],
-        'email_subscription_status': user['email_subscription_status']
+        'email_subscription_status': user['email_subscription_status'],
+        'feature_flags': _null_value(user['feature_flags'])
     }
     query = ''.join(("INSERT INTO northstar.users_backfill (id, "
                      "first_name, last_name, last_initial, "
@@ -74,8 +84,8 @@ def _save_user(user):
                      "language, country, "
                      "role, last_accessed_at, "
                      "last_authenticated_at, "
-                     "last_messaged_at, "
-                     "updated_at, created_at, email_subscription_status) "
+                     "last_messaged_at, updated_at, created_at,"
+                     "email_subscription_status, feature_flags) "
                      "VALUES (:id,:first_name,:last_name,:last_initial,"
                      ":photo,:email,:mobile,:facebook_id,:interests,"
                      ":birthdate,:addr_street1,:addr_street2,"
@@ -84,8 +94,9 @@ def _save_user(user):
                      ":slack_id,:sms_status,:sms_paused,"
                      ":voter_registration_status,:language,:country,"
                      ":role,:last_accessed_at,"
-                     ":last_authenticated_at,:last_messaged_at,"
-                     ":updated_at,:created_at,:email_subscription_status) "
+                     ":last_authenticated_at,:last_messaged_at,:updated_at,"
+                     ":created_at,:email_subscription_status, "
+                     ":feature_flags)"
                      "ON CONFLICT (id, created_at, updated_at) "
                      "DO UPDATE SET "
                      "email_subscription_status = :email_subscription_status"
