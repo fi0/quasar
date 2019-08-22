@@ -2,7 +2,7 @@
 # Name your package! Package names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
-name: 'dbt'
+name: 'ds_dbt'
 version: '1.0'
 
 # This setting configures which "profile" dbt uses for this project. Profiles contain
@@ -31,7 +31,7 @@ clean-targets:         # directories to be removed by `dbt clean`
 # as views (the default). These settings can be overridden in the individual model files
 # using the `{{ config(...) }}` macro.
 models:
-  dosomething:
+  ds_dbt:
       # Applies to all files under models/phoenix_events/
       phoenix_events:
         snowplow_base_event:
@@ -54,3 +54,34 @@ models:
           post-hook:
             - "CREATE INDEX IF NOT EXISTS raw_event_id ON {{ this }}(event_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
+        snowplow_phoenix_events:
+          materialized: incremental
+          sql_where: "event_datetime > (select max(event_datetime) from {{ this }}"
+          post-hook:
+            - "CREATE UNIQUE INDEX spe_unique ON {{ this }}(event_datetime, event_name, event_id)"
+            - "CREATE INDEX spe_session_id ON {{ this }} (session_id)"
+            - "GRANT SELECT ON {{ this }} TO looker"
+            - "GRANT SELECT ON {{ this }} TO dsanalyst"
+        snowplow_sessions:
+          materialized: incremental
+          sql_where: "ending_datetime > (select max(ending_datetime) from {{ this }}"
+          post-hook:
+            - "CREATE INDEX sps_landing ON {{ this }}(landing_datetime, landing_page)"
+            - "GRANT SELECT ON {{ this }} TO looker"
+            - "GRANT SELECT ON {{ this }} TO dsanalyst"
+        phoenix_events_combined:
+          materialized: incremental
+          sql_where: "event_datetime > (select max(event_datetime) from {{ this }}"
+          post-hook:
+            - "CREATE UNIQUE INDEX pec_unique ON {{ this }}(event_datetime, event_name, event_id)"
+            - "CREATE INDEX pec_session_id ON {{ this }} (session_id)"
+            - "GRANT SELECT ON {{ this }} TO looker"
+            - "GRANT SELECT ON {{ this }} TO dsanalyst"
+        phoenix_sessions_combined:
+          materialized: incremental
+          sql_where: "ending_datetime > (select max(ending_datetime) from {{ this }}"
+          post-hook:
+            - "CREATE INDEX psc_landing ON {{ this }}(landing_datetime, landing_page)"
+            - "GRANT SELECT ON {{ this }} TO looker"
+            - "GRANT SELECT ON {{ this }} TO dsanalyst"
+
