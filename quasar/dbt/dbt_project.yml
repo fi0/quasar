@@ -84,4 +84,25 @@ models:
             - "CREATE INDEX psc_landing ON {{ this }}(landing_datetime, landing_page)"
             - "GRANT SELECT ON {{ this }} TO looker"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
-
+      gambit_messages:
+        messages_flattened:
+          alias: messages_flattened
+          materialized: table
+          post-hook:
+            - "CREATE INDEX IF NOT EXISTS messages_user_id ON {{ this }}(user_id)"
+            - "CREATE INDEX IF NOT EXISTS platform_message_id ON {{ this }}(platform_message_id)"
+            - "GRANT SELECT ON {{ this }} TO dsanalyst"
+            - "GRANT SELECT ON {{ this }} TO looker"
+        gambit_messages_inbound:
+          materialized: table
+          post-hook:
+            - "CREATE INDEX IF NOT EXISTS messages_in_index ON {{ this }}(message_id, created_at, user_id, conversation_id)"
+            - "GRANT SELECT ON {{ this }} TO dsanalyst"
+            - "GRANT SELECT ON {{ this }} TO looker"        
+        gambit_messages_outbound:
+          materialized: table
+          post-hook:
+            - "CREATE INDEX IF NOT EXISTS messages_out_index ON {{ this }}(message_id, created_at, user_id, conversation_id)"
+            - "CREATE INDEX IF NOT EXISTS deliverability ON {{ this }}(created_at, carrier_failure_code)"
+            - "GRANT SELECT ON {{ this }} TO dsanalyst"
+            - "GRANT SELECT ON {{ this }} TO looker" 
