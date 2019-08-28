@@ -162,4 +162,13 @@ models:
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
            - "GRANT SELECT ON {{ this }} TO public"
+      user_activity:
+        user_activity:
+          materialized: table
+          sql_where: "created_at > (select max(created_at) from {{ this }}"
+          post-hook:
+           - "CREATE UNIQUE INDEX ON {{ this }}(created_at, northstar_id)"
+           - "CREATE INDEX ON {{ this }}(most_recent_all_actions)"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
 
