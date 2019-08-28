@@ -39,8 +39,8 @@ SELECT
     a.reportback AS is_reportback,
     a.civic_action,
     a.scholarship_entry
-FROM {{ env_var('FT_ROGUE') }}.posts pd
-INNER JOIN public.signups s
+FROM public.posts pd
+INNER JOIN {{ ref('signups') }} s
 	  ON pd.signup_id = s.id
 LEFT JOIN {{ env_var('FT_ROGUE') }}.turbovote tv ON tv.post_id::bigint = pd.id::bigint
 LEFT JOIN

@@ -59,7 +59,7 @@ models:
           sql_where: "event_datetime > (select max(event_datetime) from {{ this }}"
           post-hook:
             - "CREATE UNIQUE INDEX spe_unique ON {{ this }}(event_datetime, event_name, event_id)"
-            - "CREATE INDEX spe_session_id ON {{ this }} (session_id)"
+            - "CREATE INDEX IF NOT EXISTS spe_session_id ON {{ this }} (session_id)"
             - "GRANT SELECT ON {{ this }} TO looker"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
         snowplow_sessions:
@@ -74,7 +74,7 @@ models:
           sql_where: "event_datetime > (select max(event_datetime) from {{ this }}"
           post-hook:
             - "CREATE UNIQUE INDEX pec_unique ON {{ this }}(event_datetime, event_name, event_id)"
-            - "CREATE INDEX pec_session_id ON {{ this }} (session_id)"
+            - "CREATE INDEX IF NOT EXISTS pec_session_id ON {{ this }} (session_id)"
             - "GRANT SELECT ON {{ this }} TO looker"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
         phoenix_sessions_combined:
@@ -108,6 +108,7 @@ models:
             - "GRANT SELECT ON {{ this }} TO looker" 
       campaign_activity:
         signups:
+          alias: signups
           materialized: table
           sql_where: "event_datetime > (select max(event_datetime) from {{ this }}"
           post-hook:
@@ -115,6 +116,7 @@ models:
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
         turbovote:
+          alias: turbovote
           schema: "{{ env_var('FT_ROGUE') }}"
           materialized: table
           sql_where: "event_datetime > (select max(event_datetime) from {{ this }}"
@@ -123,6 +125,7 @@ models:
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
         rock_the_vote:
+          alias: rock_the_vote
           schema: "{{ env_var('FT_ROGUE') }}"
           materialized: table
           sql_where: "event_datetime > (select max(event_datetime) from {{ this }}"
@@ -131,20 +134,21 @@ models:
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
         posts:
-          schema: "{{ env_var('FT_ROGUE') }}"
+          alias: posts
           materialized: table
           sql_where: "event_datetime > (select max(event_datetime) from {{ this }}"
           post-hook:
            - "CREATE UNIQUE INDEX ON {{ this }}(created_at, campaign_id, id)"
-           - "CREATE INDEX ON {{ this }}(is_reportback, is_accepted, signup_id, id, post_class)"
+           - "CREATE INDEX IF NOT EXISTS ON {{ this }}(is_reportback, is_accepted, signup_id, id, post_class)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
         reportbacks:
+          alias: reportbacks
           materialized: table
           sql_where: "event_datetime > (select max(event_datetime) from {{ this }}"
           post-hook:
            - "CREATE UNIQUE INDEX ON {{ this }}(post_id)"
-           - "CREATE INDEX ON {{ this }}(post_created_at, campaign_id, post_class, reportback_volume)"
+           - "CREATE INDEX IF NOT EXISTS ON {{ this }}(post_created_at, campaign_id, post_class, reportback_volume)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
 

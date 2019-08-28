@@ -5,5 +5,5 @@ SELECT id AS post_id,
    details::jsonb->>'Status' AS status,
    details::jsonb->>'Email address' AS email,
    details::jsonb->>'Home zip code' AS zip
- FROM {{ env_var('FT_ROGUE') }}.posts
+ FROM {{ ref('posts') }}
  WHERE source = 'rock-the-vote'

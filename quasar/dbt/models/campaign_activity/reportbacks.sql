@@ -28,7 +28,7 @@ CASE WHEN (pd.post_class ilike '%%vote%%' AND pd.status = 'confirmed')
      THEN 'phone_calls'
      ELSE NULL END AS post_bucket
 FROM
-public.posts pd
+{{ ref('posts') }} pd
 WHERE pd.id IN (
 	  SELECT min(id)
   FROM public.posts p
