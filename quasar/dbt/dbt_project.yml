@@ -146,5 +146,20 @@ models:
            - "CREATE INDEX IF NOT EXISTS reportbacks_i ON {{ this }}(post_created_at, campaign_id, post_class, reportback_volume)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
-
+      users:
+        cio_latest_status:
+          materialized: table
+          sql_where: "timestamp > (select max(timestamp) from {{ this }}"
+          post-hook:
+           - "CREATE INDEX cio_indices ON {{ this }}(customer_id)"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
+        users:
+          materialized: table
+          sql_where: "last_updated_at > (select max(last_updated_at) from {{ this }}"
+          post-hook:
+           - "CREATE UNIQUE INDEX du_indicies ON {{ this }}(northstar_id, created_at, email, mobile, 'source')"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
+           - "GRANT SELECT ON {{ this }} TO public"
 
