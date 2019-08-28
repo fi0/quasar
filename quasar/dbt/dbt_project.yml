@@ -146,7 +146,7 @@ models:
            - "CREATE INDEX IF NOT EXISTS reportbacks_i ON {{ this }}(post_created_at, campaign_id, post_class, reportback_volume)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
-      users:
+      users_table:
         cio_latest_status:
           materialized: table
           sql_where: "timestamp > (select max(timestamp) from {{ this }}"
