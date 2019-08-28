@@ -206,4 +206,11 @@ models:
             - "CREATE UNIQUE INDEX IF NOT EXISTS post_actions_unique ON {{ this }}(created_at, id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
-
+      mel:
+        member_event_log:
+          materialized: table
+          post-hook:
+           - "CREATE UNIQUE INDEX mel_unique_i IF NOT EXISTS ON {{ this }}(timestamp, northstar_id, event_id)"
+           - "CREATE INDEX ON {{ this }}(northstar_id, timestamp)"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
