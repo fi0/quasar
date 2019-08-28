@@ -173,4 +173,18 @@ models:
            - "CREATE INDEX IF NOT EXISTS most_recent_all_actions_i ON {{ this }}(most_recent_all_actions)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
-
+      campaign_info:
+        campaign_info_all:
+          schema: "{{ env_var('FT_ROGUE') }}"
+          materialized: table
+          sql_where: "campaign_created_date > (select max(campaign_created_date) from {{ this }}"
+        campaign_info:
+          materialized: table
+          sql_where: "campaign_created_date > (select max(campaign_created_date) from {{ this }}"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
+        campaign_info_international:
+          materialized: table
+          sql_where: "campaign_created_date > (select max(campaign_created_date) from {{ this }}"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
