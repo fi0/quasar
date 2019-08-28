@@ -106,3 +106,46 @@ models:
             - "CREATE INDEX IF NOT EXISTS deliverability ON {{ this }}(created_at, carrier_failure_code)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker" 
+      campaign_activity:
+        signups:
+          materialized: table
+          sql_where: "event_datetime > (select max(event_datetime) from {{ this }}"
+          post-hook:
+           - "CREATE UNIQUE INDEX ON {{ this }}(created_at, id)"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
+        turbovote:
+          schema: "{{ env_var('FT_ROGUE') }}"
+          materialized: table
+          sql_where: "event_datetime > (select max(event_datetime) from {{ this }}"
+          post-hook:
+           - "CREATE UNIQUE INDEX ON {{ this }}(post_id, created_at, updated_at)"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
+        rock_the_vote:
+          schema: "{{ env_var('FT_ROGUE') }}"
+          materialized: table
+          sql_where: "event_datetime > (select max(event_datetime) from {{ this }}"
+          post-hook:
+           - "CREATE UNIQUE INDEX ON {{ this }}(post_id, started_registration)"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
+        posts:
+          schema: "{{ env_var('FT_ROGUE') }}"
+          materialized: table
+          sql_where: "event_datetime > (select max(event_datetime) from {{ this }}"
+          post-hook:
+           - "CREATE UNIQUE INDEX ON {{ this }}(created_at, campaign_id, id)"
+           - "CREATE INDEX ON {{ this }}(is_reportback, is_accepted, signup_id, id, post_class)"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
+        reportbacks:
+          materialized: table
+          sql_where: "event_datetime > (select max(event_datetime) from {{ this }}"
+          post-hook:
+           - "CREATE UNIQUE INDEX ON {{ this }}(post_id)"
+           - "CREATE INDEX ON {{ this }}(post_created_at, campaign_id, post_class, reportback_volume)"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
+
+
