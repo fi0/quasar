@@ -7,3 +7,4 @@ SELECT id AS post_id,
    details::jsonb->>'Home zip code' AS zip
  FROM {{ ref('posts') }}
  WHERE source = 'rock-the-vote'
+ 
