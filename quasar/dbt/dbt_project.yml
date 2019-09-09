@@ -59,7 +59,7 @@ models:
           sql_where: "event_datetime > (select max(event_datetime) from {{ this }}"
           post-hook:
             - "CREATE UNIQUE INDEX spe_unique ON {{ this }}(event_datetime, event_name, event_id)"
-            - "CREATE INDEX spe_session_id ON {{ this }} (session_id)"
+            - "CREATE INDEX IF NOT EXISTS spe_session_id ON {{ this }} (session_id)"
             - "GRANT SELECT ON {{ this }} TO looker"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
         snowplow_sessions:
@@ -74,7 +74,7 @@ models:
           sql_where: "event_datetime > (select max(event_datetime) from {{ this }}"
           post-hook:
             - "CREATE UNIQUE INDEX pec_unique ON {{ this }}(event_datetime, event_name, event_id)"
-            - "CREATE INDEX pec_session_id ON {{ this }} (session_id)"
+            - "CREATE INDEX IF NOT EXISTS pec_session_id ON {{ this }} (session_id)"
             - "GRANT SELECT ON {{ this }} TO looker"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
         phoenix_sessions_combined:
@@ -106,3 +106,45 @@ models:
             - "CREATE INDEX IF NOT EXISTS deliverability ON {{ this }}(created_at, carrier_failure_code)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker" 
+      campaign_activity:
+        signups:
+          alias: signups
+          materialized: table
+          post-hook:
+           - "CREATE UNIQUE INDEX signups_unique ON {{ this }}(created_at, id)"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
+        turbovote:
+          alias: turbovote
+          schema: "{{ env_var('FT_ROGUE') }}"
+          materialized: table
+          post-hook:
+           - "CREATE UNIQUE INDEX turbovote_unique ON {{ this }}(post_id, created_at, updated_at)"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
+        rock_the_vote:
+          alias: rock_the_vote
+          schema: "{{ env_var('FT_ROGUE') }}"
+          materialized: table
+          post-hook:
+           - "CREATE UNIQUE INDEX rtv_unique ON {{ this }}(post_id, started_registration)"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
+        posts:
+          alias: posts
+          materialized: table
+          post-hook:
+           - "CREATE UNIQUE INDEX posts_unique ON {{ this }}(created_at, campaign_id, id)"
+           - "CREATE INDEX IF NOT EXISTS posts_i ON {{ this }}(is_reportback, is_accepted, signup_id, id, post_class)"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
+        reportbacks:
+          alias: reportbacks
+          materialized: table
+          post-hook:
+           - "CREATE UNIQUE reportbacks_unique INDEX ON {{ this }}(post_id)"
+           - "CREATE INDEX IF NOT EXISTS reportbacks_i ON {{ this }}(post_created_at, campaign_id, post_class, reportback_volume)"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
+
+
