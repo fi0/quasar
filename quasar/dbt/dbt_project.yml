@@ -177,16 +177,13 @@ models:
         campaign_info_all:
           schema: "{{ env_var('FT_ROGUE') }}"
           materialized: table
-          sql_where: "campaign_created_date > (select max(campaign_created_date) from {{ this }}"
         campaign_info:
           materialized: table
-          sql_where: "campaign_created_date > (select max(campaign_created_date) from {{ this }}"
           post-hook:
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
         campaign_info_international:
           materialized: table
-          sql_where: "campaign_created_date > (select max(campaign_created_date) from {{ this }}"
           post-hook:
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
