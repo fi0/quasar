@@ -202,7 +202,6 @@ models:
       post_actions:
         post_actions:
           alias: post_actions
-          schema: "{{ env_var('FT_ROGUE') }}"
           materialized: table
           post-hook:
             - "CREATE UNIQUE post_actions_unique INDEX ON {{ this }}(created_at, id)"

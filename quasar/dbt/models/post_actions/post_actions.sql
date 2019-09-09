@@ -1,3 +1,3 @@
 	SELECT
 		*
-	FROM {{ env_var('FT_ROGUE') }}.actions
+	FROM {{ env_var('FT_ROGUE_ACTIONS') }}
