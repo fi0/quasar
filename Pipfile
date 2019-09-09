@@ -27,6 +27,7 @@ pydash = "*"
 python-dateutil = "==2.6.1"
 SQLAlchemy = "*"
 pycodestyle = "*"
+dbt = "*"
 
 [requires]
 python_version = "3.7"
