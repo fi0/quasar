@@ -190,3 +190,12 @@ models:
           post-hook:
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
+      bertly:
+        clicks:
+          alias: clicks
+          schema: "{{ env_var('BERTLY')}}"
+          materialized: table
+          post-hook:
+            - "CREATE UNIQUE clicks_unique INDEX ON {{ this }}(click_id)"
+            - "GRANT SELECT ON {{ this }} TO dsanalyst"
+            - "GRANT SELECT ON {{ this }} TO looker"
