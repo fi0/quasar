@@ -74,7 +74,7 @@ time_to_actions AS (
 	FROM {{ ref('reportbacks') }} r
 	LEFT JOIN LATERAL (
 	    SELECT "timestamp" AS next_action_ts, action_type AS next_action_type
-	    FROM member_event_log
+	    FROM {{ ref('member_event_log') }}
 	    WHERE northstar_id = r.northstar_id AND "timestamp" > r.post_created_at
 	    ORDER BY "timestamp" ASC
 	    LIMIT 1
@@ -133,7 +133,7 @@ LEFT JOIN rb_summary r
 ON u.northstar_id = r.northstar_id
 LEFT JOIN (
     SELECT northstar_id, max("timestamp") AS most_recent_action
-    FROM member_event_log
+    FROM {{ ref('member_event_log') }}
     GROUP BY northstar_id
 ) mel
 ON u.northstar_id = mel.northstar_id
