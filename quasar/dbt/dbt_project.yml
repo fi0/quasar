@@ -175,11 +175,14 @@ models:
            - "GRANT SELECT ON {{ this }} TO looker"
       campaign_info:
         campaign_info_all:
+          alias: campaign_info_all
           schema: "{{ env_var('FT_ROGUE') }}"
           materialized: table
         campaign_info:
+          alias: campaign_info
           materialized: table
           post-hook:
+           - "CREATE UNIQUE INDEX campaign_info_i ON {{ this }} (campaign_run_id, campaign_id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
         campaign_info_international:

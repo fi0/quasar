@@ -21,5 +21,5 @@ SELECT
     e.northstar_id,
     e.device_id
 FROM public.snowplow_raw_events e
-LEFT JOIN public.campaign_info i ON i.campaign_id = e.campaign_id::bigint
+LEFT JOIN {{ ref('campaign_info') }} i ON i.campaign_id = e.campaign_id::bigint
 
