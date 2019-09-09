@@ -58,7 +58,9 @@ pip install -r requirements.txt
 
 ### Development
 
-Run this everytime:
+#### Environment
+
+Run this every time:
 
 ```
 cd $QUASAR_PROJECT_DIR
@@ -70,6 +72,7 @@ To exit out of virtualenv:
 deactivate
 ```
 
+#### PostgreSQL (Vagrant)
 Current PostgreSQL Major Version: `10`.
 
 You use the provided Vagrant file to run PostgreSQL locally in a VM (make sure you have [Virtualbox](https://www.virtualbox.org/wiki/Downloads) and [Vagrant](https://www.vagrantup.com/) installed.)
@@ -79,6 +82,8 @@ Start the vagrant machine. It runs PostgreSQL 10. Username/password are `root/pa
 ```
 vagrant up
 ```
+
+#### PostgreSQL (Docker) - [Troubleshooting](/docs/postgresql-docker-troubleshooting.md)
 
 Alternately, you can use Docker to pull a PostgreSQL image based on version/image tag.
 (Instructions here modified from [here](https://hackernoon.com/dont-install-postgres-docker-pull-postgres-bee20e200198).)
