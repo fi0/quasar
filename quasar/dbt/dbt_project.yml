@@ -199,3 +199,12 @@ models:
             - "CREATE UNIQUE clicks_unique INDEX ON {{ this }}(click_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
+      post_actions:
+        post_actions:
+          alias: post_actions
+          schema: "{{ env_var('FT_ROGUE') }}"
+          materialized: table
+          post-hook:
+            - "CREATE UNIQUE post_actions_unique INDEX ON {{ this }}(created_at, id)"
+            - "GRANT SELECT ON {{ this }} TO dsanalyst"
+            - "GRANT SELECT ON {{ this }} TO looker"
