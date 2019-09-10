@@ -167,7 +167,7 @@ models:
           alias: user_activity
           materialized: table
           post-hook:
-           - "CREATE UNIQUE INDEX ON {{ this }}(created_at, northstar_id)"
+           - "CREATE UNIQUE INDEX user_activity_unique_i ON {{ this }}(created_at, northstar_id)"
            - "CREATE INDEX IF NOT EXISTS most_recent_all_actions_i ON {{ this }}(most_recent_all_actions)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
