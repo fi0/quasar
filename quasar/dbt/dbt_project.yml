@@ -203,6 +203,6 @@ models:
           alias: post_actions
           materialized: table
           post-hook:
-            - "CREATE UNIQUE post_actions_unique INDEX ON {{ this }}(created_at, id)"
+            - "CREATE UNIQUE INDEX post_actions_unique ON {{ this }}(created_at, id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
