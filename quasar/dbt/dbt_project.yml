@@ -195,7 +195,7 @@ models:
           alias: bertly_clicks
           materialized: table
           post-hook:
-            - "CREATE UNIQUE INDEX clicks_unique ON {{ this }}(click_id)"
+            - "CREATE UNIQUE INDEX IF NOT EXISTS clicks_unique ON {{ this }}(click_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
       post_actions:
