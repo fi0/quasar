@@ -30,7 +30,7 @@ gambit_unsub AS (
 		RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS last_topic,
 	    LAST_VALUE(created_at) OVER (PARTITION BY user_id ORDER BY created_at
 		RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS last_ts
-	FROM gambit_messages_inbound
+	FROM {{ ref('gambit_messages_inbound') }}
     ) f
 ),
 sms_undeliverable AS (
@@ -71,7 +71,7 @@ time_to_actions AS (
 		PARTITION BY r.northstar_id ORDER BY r.post_created_at
 		ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
 	    ) AS time_to_next_action_last_rb
-	FROM reportbacks r
+	FROM {{ ref('reportbacks') }} r
 	LEFT JOIN LATERAL (
 	    SELECT "timestamp" AS next_action_ts, action_type AS next_action_type
 	    FROM member_event_log
@@ -119,7 +119,7 @@ CASE WHEN u.subscribed_member IS FALSE
     END AS user_unsubscribed_at,
 CASE WHEN u."source" = 'importer-client' AND p.first_post = 'voter-reg'
     THEN 1 ELSE 0 END AS voter_reg_acquisition
-FROM users u
+FROM {{ ref('users') }} u
 LEFT JOIN (
 SELECT
     northstar_id,
