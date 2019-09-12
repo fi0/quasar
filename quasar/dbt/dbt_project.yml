@@ -94,6 +94,7 @@ models:
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
         gambit_messages_inbound:
+          alias: gambit_messages_inbound
           materialized: table
           post-hook:
             - "CREATE INDEX IF NOT EXISTS messages_in_index ON {{ this }}(message_id, created_at, user_id, conversation_id)"
@@ -132,6 +133,7 @@ models:
            - "GRANT SELECT ON {{ this }} TO looker"
         posts:
           alias: posts
+          schema: "{{ env_var('FT_ROGUE') }}"
           materialized: table
           post-hook:
            - "CREATE UNIQUE INDEX posts_unique ON {{ this }}(created_at, campaign_id, id)"
@@ -162,4 +164,13 @@ models:
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
            - "GRANT SELECT ON {{ this }} TO public"
+      user_activity:
+        user_activity:
+          alias: user_activity
+          materialized: table
+          post-hook:
+           - "CREATE UNIQUE INDEX user_activity_unique_i ON {{ this }}(created_at, northstar_id)"
+           - "CREATE INDEX IF NOT EXISTS most_recent_all_actions_i ON {{ this }}(most_recent_all_actions)"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
 
