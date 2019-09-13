@@ -20,6 +20,6 @@ SELECT
     e.browser_size,
     e.northstar_id,
     e.device_id
-FROM public.snowplow_raw_events e
+FROM {{ ref('snowplow_raw_event') }} e
 LEFT JOIN {{ ref('campaign_info') }} i ON i.campaign_id = e.campaign_id::bigint
 

@@ -29,7 +29,7 @@ WHEN s."source" NOT LIKE '%%sms%%'AND s."source" NOT LIKE '%%email%%' AND s."sou
 WHEN s."source" ILIKE '%%email%%' THEN 'email'
 WHEN s."source" ILIKE '%%niche%%' THEN 'niche_coregistration'
 WHEN s."source" NOT LIKE '%%sms%%'AND s."source" NOT LIKE '%%email%%' AND s."source" NOT LIKE '%%niche%%' AND s."source" NOT IN ('rock-the-vote', 'turbovote') AND s."source" IS NOT NULL THEN 'other' END) AS "channel"
-FROM public.signups s
+FROM {{ ref('signups') }} s
 WHERE s."source" IS DISTINCT FROM 'importer-client'
 AND s."source" IS DISTINCT FROM 'rock-the-vote'
 AND s."source" IS DISTINCT FROM 'turbovote'
@@ -45,7 +45,7 @@ SELECT
 WHEN p."source" ILIKE '%%phoenix%%' OR p."source" IS NULL or p."source" ILIKE '%%turbovote%%' THEN 'web'
 WHEN p."source" ILIKE '%%app%%' THEN 'mobile_app'
 WHEN p."source" NOT LIKE '%%phoenix%%' AND p."source" NOT LIKE '%%sms%%' AND p."source" IS NOT NULL AND p."source" NOT LIKE '%%app%%' and p."source" NOT LIKE '%%turbovote%%' THEN 'other' END) AS "channel"
-FROM public.posts p
+FROM {{ ref('posts') }} p
 WHERE p.status IN ('accepted', 'confirmed', 'register-OVR', 'register-form', 'pending')
 UNION ALL
 SELECT DISTINCT 
@@ -114,7 +114,7 @@ SELECT
     g.message_id AS action_serial_id,
     'sms' AS "channel"
 FROM
-    public.gambit_messages_inbound g
+    {{ ref('gambit_messages_inbound') }} g
 WHERE 
 	g.user_id IS NOT NULL
 	AND g.macro <> 'subscriptionStatusStop' 
@@ -141,7 +141,7 @@ SELECT DISTINCT
     'bertly' AS "source",
     b.click_id AS action_serial_id,
     b."source" AS "channel"
-FROM public.bertly_clicks b
+FROM {{ ref('bertly_clicks') }} b
 INNER JOIN public.users u
 ON b.northstar_id = u.northstar_id
 WHERE b.northstar_id IS NOT NULL

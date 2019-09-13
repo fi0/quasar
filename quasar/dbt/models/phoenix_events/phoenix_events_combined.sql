@@ -42,5 +42,5 @@ SELECT
     s.northstar_id,
     s.device_id
 FROM
-    public.snowplow_phoenix_events s
+    {{ ref('snowplow_phoenix_events') }} s
 
