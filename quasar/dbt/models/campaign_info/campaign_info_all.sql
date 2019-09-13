@@ -12,7 +12,7 @@ SELECT c.field_campaigns_target_id as campaign_node_id,
        array_to_string(array_agg(distinct ttd2.name), ', ') as campaign_cause_type,
        array_to_string(array_agg(distinct fdfcta.field_call_to_action_value), ', ') as campaign_cta,
        array_to_string(array_agg(distinct ttd1.name), ', ') as campaign_action_type 
-FROM :field_data_field_campaigns c 
+FROM {{ env_var('FIELD_DATA_FIELD_CAMPAIGNS') }} c 
 LEFT JOIN :node n1 
     ON n1.nid = c.entity_id 
 LEFT JOIN :node n2 

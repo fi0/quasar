@@ -12,7 +12,7 @@ rb_summary AS (
 	    *,
 	    post_created_at - lag(post_created_at) OVER (
 		PARTITION BY northstar_id ORDER BY post_created_at) AS time_betw_rbs
-	FROM reportbacks
+	FROM {{ ref('reportbacks') }}
     ) r_with_lag
     GROUP BY r_with_lag.northstar_id
 ),
@@ -125,7 +125,7 @@ SELECT
     northstar_id,
     count(DISTINCT campaign_id) AS num_signups,
     max(created_at) AS most_recent_signup
-FROM signups
+FROM {{ ref('signups') }}
 GROUP BY northstar_id
 ) s
 ON u.northstar_id = s.northstar_id
@@ -157,6 +157,6 @@ LEFT JOIN (
 	northstar_id,
 	FIRST_VALUE("type") OVER (
 	    PARTITION BY northstar_id ORDER BY created_at) AS first_post
-    FROM posts
+    FROM {{ ref('posts') }}
 ) p
 ON u.northstar_id = p.northstar_id

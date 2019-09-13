@@ -49,12 +49,14 @@ models:
            - "CREATE INDEX IF NOT EXISTS payload_event_id ON {{ this }}(event_id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
         snowplow_raw_event:
+          alias: snowplow_raw_event
           materialized: incremental
           sql_where: "event_datetime > (select max(event_datetime) from {{ this }}"
           post-hook:
             - "CREATE INDEX IF NOT EXISTS raw_event_id ON {{ this }}(event_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
         snowplow_phoenix_events:
+          alias: snowplow_phoenix_events
           materialized: incremental
           sql_where: "event_datetime > (select max(event_datetime) from {{ this }}"
           post-hook:
