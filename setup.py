@@ -1,7 +1,9 @@
 from setuptools import setup, find_packages
+from pipenv.project import Project
+from pipenv.utils import convert_deps_to_pip
 
-with open('requirements.txt') as f:
-    requirements = f.read().splitlines()
+pfile = Project(chdir=False).parsed_pipfile
+requirements = convert_deps_to_pip(pfile['packages'], r=False)
 
 setup(
     name="quasar",

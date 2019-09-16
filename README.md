@@ -14,35 +14,16 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-These instructions use `virtualenv` to isolate project dependencies in a lightweight virtual environment.
+These instructions use [pipenv](https://docs.pipenv.org/en/latest/) to manage dependencies and virtual environments.
 
 Setup Homebrew and Python 3 via:
 ```
 http://docs.python-guide.org/en/latest/starting/install3/osx/
 ```
 
-Create directory for your virtual environments:
+Install Pipenv via:
 ```
-mkdir -p ~/.venv/quasar
-```
-
-Set up environment directory for quasar:
-
-```
-python3 -m venv ~/.venv/quasar
-source ~/.venv/quasar/bin/activate
-```
-
-You should now see the environment name prefixing your command line. Check Python and `pip` versions:
-
-```
-(quasar) affogato:quasar sheydari$
-(quasar) affogato:quasar sheydari$ python --version
-Python 3.6.4
-(quasar) affogato:quasar sheydari$ pip --version
-pip 9.0.1 from /Users/sheydari/.venv/quasar/lib/python3.6/site-packages (python 3.6)
-(quasar) affogato:quasar sheydari$ 
-
+brew install pipenv
 ```
 
 ### Installing
@@ -50,42 +31,31 @@ pip 9.0.1 from /Users/sheydari/.venv/quasar/lib/python3.6/site-packages (python 
 Install Python requirements:
 
 ```
-Make sure you're in your virtualenv!
 cd $QUASAR_PROJECT_DIR
-pip install -r requirements.txt
+pipenv install
 ```
-
 
 ### Development
 
 #### Environment
 
-Run this every time:
-
+To test changes, Pipenv provides a default virtual environment. Access it using:
 ```
-cd $QUASAR_PROJECT_DIR
-source ~/.venv/quasar/bin/activate
+pipenv shell
 ```
 
-To exit out of virtualenv:
+You can then test commands after running `make build`.
+
+To exit the virtual environment, simple type:
 ```
-deactivate
+exit
 ```
 
-#### PostgreSQL (Vagrant)
-Current PostgreSQL Major Version: `11`.
-
-You use the provided Vagrant file to run PostgreSQL locally in a VM (make sure you have [Virtualbox](https://www.virtualbox.org/wiki/Downloads) and [Vagrant](https://www.vagrantup.com/) installed.)
-
-Start the vagrant machine. It runs PostgreSQL 10. Username/password are `root/password`:
-
-```
-vagrant up
-```
+*Note*: Your environment variables aren't pulled into the virtual environment by default, so you may have to `source` any env files.
 
 #### PostgreSQL (Docker) - [Troubleshooting](/docs/postgresql-docker-troubleshooting.md)
 
-Alternately, you can use Docker to pull a PostgreSQL image based on version/image tag.
+We use Docker to pull a PostgreSQL image based on version/image tag.
 (Instructions here modified from [here](https://hackernoon.com/dont-install-postgres-docker-pull-postgres-bee20e200198).)
 
 * Install [Docker for Desktop](https://hub.docker.com/editions/community/docker-ce-desktop-mac) for MacOS.
@@ -105,7 +75,7 @@ Alternately, you can use Docker to pull a PostgreSQL image based on version/imag
 
 ```
 cd $QUASAR_PROJECT_DIR
-pip install -e .
+pipenv install
 make build
 ```
 
@@ -135,13 +105,20 @@ https://docs.python.org/3/distutils/setupscript.html
 
 ## Running the tests
 
-```
-make test
-```
+We currently don't have any tests setup. :frowning:
 
 ### End to end tests
 
 ### Coding style tests
+Multiple options are available here, but usually we stick to PEP8 syntax checking. 
+You can set one up in your editor/IDE of choice.
+If you like to stick to the CLI or run a manual check,
+`pycodestyle` is included as a Pipenv dev package, which can be installed via:
+```
+pipenv install --dev
+```
+
+We use [Stickler CI](https://stickler-ci.com/) for linting on PR's before merging to master.
 
 ### Unit tests
 
