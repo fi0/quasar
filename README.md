@@ -124,6 +124,49 @@ We use [Stickler CI](https://stickler-ci.com/) for linting on PR's before mergin
 
 ## Deployment
 
+We currently deploy with Jenkins. The commands for the Jenkins deployment job 
+bash shell, using Pipenv for install are:
+```
+#!/bin/bash -e
+
+source ~/.profile
+git checkout ${BRANCH} (for QA) OR git checkout master && git pull (for Prod)
+pipenv install
+source $(pipenv --venv)/bin/activate
+make build
+deactivate
+```
+We have to use a somewhat hacky pipenv virtualenv activation here since `pipenv shell` only 
+runs interactively and fails out in the Jenkins job.
+
+Deployments are automatic to QA once a branch is merged into `master`. Prod deployments
+are handled manually from the Jenkins job once QA testing is done.
+
+## Running Jenkins Jobs using Pipenv
+
+We use Pipenv to manage Quasar code, _and_ run the our commands in Jenkins jobs. The details
+for DBT vs non-DBT jobs are close, but with a crucial difference.
+
+To setup a non-DBT jobs, here's the syntax:
+```
+#!/bin/bash -e
+
+source ~/.profile
+source ~/quasar-env.src
+cd /home/quasar/workspace/"Deploy Branch" (for QA) or cd /home/quasar/workspace/"Deploy Master" (for Prod)
+pipenv run COMMAND ARGS
+```
+
+To setup DBT jobs, you need to include the proper path to the DBT directory:
+```
+#!/bin/bash -e
+
+source ~/.profile
+source ~/quasar-env.src
+cd /home/quasar/workspace/"Deploy Branch"/quasar/dbt (for QA) or cd /home/quasar/workspace/"Deploy Master"/quasar/dbt (for Prod)
+pipenv run dbt ARGS
+```
+
 ## Built With
 
 [SPECIFICATIONS.md](SPECIFICATIONS.md)
@@ -136,7 +179,9 @@ We use [Stickler CI](https://stickler-ci.com/) for linting on PR's before mergin
 
 ## Versioning
 
-We should figure this out.
+We use the [CalVer](https://calver.org/#youtube-dl) versioning release similar to what the youtube-dl project uses.
+
+Format is: `YYYY.MM.MM.MINORVERSION`, e.g. `2019.01.01.00` for the first release in 2019.
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
