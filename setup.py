@@ -7,7 +7,7 @@ requirements = convert_deps_to_pip(pfile['packages'], r=False)
 
 setup(
     name="quasar",
-    version="2019.09.05.0",
+    version="2019.09.17.0",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
@@ -34,8 +34,6 @@ setup(
             'mel_refresh = quasar.mel:refresh',
             'northstar_backfill = quasar.northstar_to_user_table:backfill',
             'northstar_full_backfill = quasar.northstar_to_user_table_full_backfill:backfill',
-            'phoenix_events_create = quasar.phoenix_events:create',
-            'phoenix_events_refresh = quasar.phoenix_events:refresh',
             'post_actions_create = quasar.create_post_actions:main',
             'rogue_ghost_killer = quasar.ghost_killer:main',
             'snowplow_create = quasar.snowplow:create',
