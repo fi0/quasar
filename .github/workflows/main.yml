@@ -1,0 +1,15 @@
+name: DAG Generation
+
+on:
+  merge:
+    branches:    
+      - master         # Merge events on master branch
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Generate DBT Docs
+      run: dbt docs generate
