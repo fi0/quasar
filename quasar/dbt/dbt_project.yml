@@ -217,3 +217,11 @@ models:
            - "CREATE INDEX nid_timestamp_i IF NOT EXISTS ON {{ this }}(northstar_id, timestamp)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
+      news_subscription:
+        email_subscription_topics:
+          alias: email_subscription_topics
+          materialized: table
+          post-hook:
+           - "CREATE UNIQUE INDEX email_subscription_topics_unique_i IF NOT EXISTS ON {{ this }}(updated_at, id)"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
