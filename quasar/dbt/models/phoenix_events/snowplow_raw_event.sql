@@ -6,6 +6,7 @@ SELECT
 	b.event_type,
 	b."host",
 	b."path",
+    b.query_parameters,
 	b.se_category,
 	b.se_action,
 	b.se_label,
@@ -20,7 +21,7 @@ SELECT
 	p.utm_source,
 	p.utm_medium,
 	p.utm_campaign,
-	p.url,
+	p.url AS clicked_link_url,
 	p.campaign_id,
 	p.modal_type
   FROM {{ ref('snowplow_base_event') }} b

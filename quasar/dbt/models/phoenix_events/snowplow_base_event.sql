@@ -6,6 +6,7 @@ SELECT
     "event" AS event_type,
     page_urlhost AS host,
     page_urlpath AS "path",
+    page_urlquery AS query_parameters,
     se_category,
     se_action,
     se_label,

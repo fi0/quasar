@@ -8,6 +8,7 @@ CREATE TABLE public.snowplow_base_event AS
     "event" AS event_type,
     page_urlhost AS host,
     page_urlpath AS "path",
+    page_urlquery AS query_parameters,
     se_category,
     se_action,
     se_label,
@@ -48,30 +49,31 @@ GRANT SELECT ON public.snowplow_payload_event TO dsanalyst;
 DROP TABLE IF EXISTS public.snowplow_raw_events;
 CREATE TABLE public.snowplow_raw_events AS
 (SELECT
-	b.event_id,
-	b.event_source,
-	b.event_datetime,
-	b.event_name,
-	b.event_type,
-	b."host",
-	b."path",
-	b.se_category,
-	b.se_action,
-	b.se_label,
-	b.session_id,
-	b.session_counter,
-	b.browser_size,
-	b.northstar_id,
-	b.device_id,
-	b.referrer_host,
-	b.referrer_path,
-	b.referrer_source,
-	p.utm_source,
-	p.utm_medium,
-	p.utm_campaign,
-	p.url,
-	p.campaign_id,
-	p.modal_type
+    b.event_id,
+    b.event_source,
+    b.event_datetime,
+    b.event_name,
+    b.event_type,
+    b."host",
+    b."path",
+    b.query_parameters,
+    b.se_category,
+    b.se_action,
+    b.se_label,
+    b.session_id,
+    b.session_counter,
+    b.browser_size,
+    b.northstar_id,
+    b.device_id,
+    b.referrer_host,
+    b.referrer_path,
+    b.referrer_source,
+    p.utm_source,
+    p.utm_medium,
+    p.utm_campaign,
+    p.url AS clicked_link_url,
+    p.campaign_id,
+    p.modal_type
   FROM public.snowplow_base_event b
   LEFT JOIN public.snowplow_payload_event p 
   ON b.event_id = p.event_id
@@ -86,11 +88,13 @@ CREATE TABLE public.snowplow_phoenix_events AS (
         e.event_id,
         e.event_datetime,
         CASE WHEN e.event_name IS NULL
-	    AND e.event_type = 'pv'
-	    THEN 'view' ELSE e.event_name END AS event_name,
+        AND e.event_type = 'pv'
+        THEN 'view' ELSE e.event_name END AS event_name,
         e.event_source,
         e."path",
         e."host",
+        e.query_parameters,
+        e.clicked_link_url,
         e.utm_source AS page_utm_source,
         e.utm_medium AS page_utm_medium,
         e.utm_campaign AS page_utm_campaign,
@@ -98,7 +102,7 @@ CREATE TABLE public.snowplow_phoenix_events AS (
         e.referrer_path,
         e.referrer_source,
         e.campaign_id,
-	    i.campaign_name,
+        i.campaign_name,
         e.modal_type,
         e.session_id,
         e.browser_size,
@@ -116,49 +120,49 @@ GRANT SELECT ON public.snowplow_phoenix_events TO dsanalyst;
 DROP TABLE IF EXISTS public.snowplow_sessions;
 CREATE TABLE public.snowplow_sessions AS (
     WITH sessions AS (
-	SELECT
-	    session_id,
-	    min(device_id) AS device_id,
-	    min(event_datetime) AS landing_datetime,
-	    max(event_datetime) AS ending_datetime,
-	    date_part(
-		'seconds', max(event_datetime) - min(event_datetime)
-	    ) AS session_duration_seconds,
-	    count(DISTINCT CASE WHEN event_name = 'view' THEN "path" END) AS num_pages_viewed
-	FROM snowplow_phoenix_events
-	GROUP BY session_id
+    SELECT
+        session_id,
+        min(device_id) AS device_id,
+        min(event_datetime) AS landing_datetime,
+        max(event_datetime) AS ending_datetime,
+        date_part(
+        'seconds', max(event_datetime) - min(event_datetime)
+        ) AS session_duration_seconds,
+        count(DISTINCT CASE WHEN event_name = 'view' THEN "path" END) AS num_pages_viewed
+    FROM snowplow_phoenix_events
+    GROUP BY session_id
     ),
     entry_exit_pages AS (
-	SELECT DISTINCT
-	    session_id,
-	    first_value("path") OVER (PARTITION BY session_id ORDER BY event_datetime 
-		ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS landing_page,
-	    first_value(event_id) OVER (PARTITION BY session_id ORDER BY event_datetime 
-		ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS event_id,
-	    last_value("path") OVER (PARTITION BY session_id ORDER BY event_datetime 
-		ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS exit_page
-	FROM snowplow_phoenix_events
+    SELECT DISTINCT
+        session_id,
+        first_value("path") OVER (PARTITION BY session_id ORDER BY event_datetime 
+        ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS landing_page,
+        first_value(event_id) OVER (PARTITION BY session_id ORDER BY event_datetime 
+        ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS event_id,
+        last_value("path") OVER (PARTITION BY session_id ORDER BY event_datetime 
+        ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS exit_page
+    FROM snowplow_phoenix_events
     ),
     time_between_sessions AS (
-	SELECT DISTINCT
-	    device_id,
-	    session_id,
-	    LAG(ending_datetime) OVER (PARTITION BY device_id ORDER BY landing_datetime
-		ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
-	    ) AS prev_session_endtime
-	FROM sessions
+    SELECT DISTINCT
+        device_id,
+        session_id,
+        LAG(ending_datetime) OVER (PARTITION BY device_id ORDER BY landing_datetime
+        ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+        ) AS prev_session_endtime
+    FROM sessions
     )
     SELECT
-	s.session_id,
-	p.event_id,
-	s.device_id,
-	s.landing_datetime,
-	s.ending_datetime,
-	s.session_duration_seconds,
-	s.num_pages_viewed,
-	p.landing_page,
-	p.exit_page,
-	date_part('day', s.landing_datetime - t.prev_session_endtime) AS days_since_last_session
+    s.session_id,
+    p.event_id,
+    s.device_id,
+    s.landing_datetime,
+    s.ending_datetime,
+    s.session_duration_seconds,
+    s.num_pages_viewed,
+    p.landing_page,
+    p.exit_page,
+    date_part('day', s.landing_datetime - t.prev_session_endtime) AS days_since_last_session
     FROM sessions s
     LEFT JOIN entry_exit_pages p
     ON p.session_id = s.session_id
@@ -179,6 +183,8 @@ CREATE TABLE public.phoenix_events_combined AS (
         p.event_source,
         p."path",
         p."host",
+        p.query_parameters,
+        p.clicked_link_url,
         p.page_utm_source,
         p.page_utm_medium,
         p.page_utm_campaign,
@@ -202,6 +208,8 @@ CREATE TABLE public.phoenix_events_combined AS (
         s.event_source,
         s."path",
         s."host",
+        NULL AS query_parameters,
+        NULL AS clicked_link_url,
         s.page_utm_source,
         s.page_utm_medium,
         s.page_utm_campaign,

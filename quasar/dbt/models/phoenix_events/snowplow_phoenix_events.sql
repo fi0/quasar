@@ -7,6 +7,8 @@ SELECT
     e.event_source,
     e."path",
     e."host",
+    e.query_parameters,
+    e.clicked_link_url,
     e.utm_source AS page_utm_source,
     e.utm_medium AS page_utm_medium,
     e.utm_campaign AS page_utm_campaign,
