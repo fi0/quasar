@@ -1,6 +1,6 @@
-SELECT 
+SELECT DISTINCT
 	_id as id,
-	updated_at,
+	(audit #>> '{email_subscription_topics,updated_at,date}')::timestamptz AS email_subs_updated,
 	CASE 
 		WHEN u.email_subscription_topics::text like '%community%'
 		THEN true 
@@ -22,3 +22,4 @@ SELECT
 		ELSE NULL END 
 		AS "scholarships_subscription_status"
 FROM {{ env_var('NORTHSTAR_FIVETRAN') }}.northstar_users_snapshot u
+WHERE audit #>> '{email_subscription_topics,updated_at,date}' IS NOT null
