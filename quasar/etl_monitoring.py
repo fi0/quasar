@@ -6,7 +6,7 @@ import sqlalchemy as sal
 
 from .utils import QuasarException
 from sqlalchemy import create_engine
-from slackclient import SlackClient
+from slack import WebClient
 
 
 class DataFrameDB:
@@ -292,9 +292,8 @@ class ETLMonitoring:
 
     @staticmethod
     def send_message(message):
-        sc = SlackClient(os.environ.get('ETLMON_SLACKBOT_TOKEN'))
-        sc.api_call(
-            "chat.postMessage",
+        sc = WebClient(token=os.getenv('ETLMON_SLACKBOT_TOKEN'))
+        sc.chat_postMessage(
             channel="#storm-watch",
             text=message
         )
