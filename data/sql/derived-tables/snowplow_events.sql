@@ -25,7 +25,7 @@ CREATE TABLE public.snowplow_base_event AS
   (SELECT event_id
    FROM ft_snowplow.ua_parser_context u
    WHERE u.useragent_family SIMILAR TO 
-   '%%(bot|crawl|slurp|spider|archiv|spinn|sniff|seo|audit|survey|pingdom|worm|capture|(browser|screen)shots|analyz|index|thumb|check|facebook|YandexBot|Twitterbot|a_archiver|facebookexternalhit|Bingbot|Googlebot|Baiduspider|360(Spider|User-agent))%%'));
+   '%%(bot|crawl|slurp|spider|archiv|spinn|sniff|seo|audit|survey|pingdom|worm|capture|(browser|screen)shots|analyz|index|thumb|check|facebook|YandexBot|Twitterbot|a_archiver|facebookexternalhit|Bingbot|Googlebot|Baiduspider|360(Spider|User-agent)|Ghost)%%'));
 CREATE INDEX base_event_id ON public.snowplow_base_event (event_id);
 GRANT SELECT ON public.snowplow_base_event TO dsanalyst;
 
