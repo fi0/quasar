@@ -7,7 +7,7 @@ requirements = convert_deps_to_pip(pfile['packages'], r=False)
 
 setup(
     name="quasar",
-    version="2019.09.17.0",
+    version="2019.09.30.0",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
@@ -26,10 +26,6 @@ setup(
             'gambit_messages_create = quasar.gambit:create_gambit_messages',
             'gambit_messages_refresh = quasar.gambit:refresh_gambit_messages',
             'gdpr = quasar.gdpr_comply:gdpr_from_file',
-            'gtm_retention_create = quasar.gtm_retention:create',
-            'gtm_retention_refresh = quasar.gtm_retention:refresh',
-            'mam_retention_create = quasar.mam_retention:create',
-            'mam_retention_refresh = quasar.mam_retention:refresh',
             'mel_create = quasar.mel:create',
             'mel_refresh = quasar.mel:refresh',
             'northstar_backfill = quasar.northstar_to_user_table:backfill',
