@@ -58,9 +58,10 @@ CREATE MATERIALIZED VIEW public.users AS
 		substring(u.source_detail from '(?<=utm_source\:)(\w*)') AS utm_source,
 		substring(u.source_detail from '(?<=utm_campaign\:)(\w*)') AS utm_campaign,
 		(u.feature_flags #>> '{badges}')::boolean as badges,
+		(u.feature_flags #>> '{refer-friends}')::boolean as refer_friends,
 		CASE WHEN 
 			u.sms_status in ('active','less','pending') OR 
-			email_status.event_type = 'customer_subscribed' 
+			email_status.event_type = 'customer_subscribed'
 			THEN TRUE ELSE FALSE END AS subscribed_member,
 		umax.max_update AS last_updated_at
 	FROM northstar.users u
