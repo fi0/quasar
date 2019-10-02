@@ -224,11 +224,11 @@ models:
           post-hook:
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
-        email_subscription_topics:
-          alias: email_subscription_topics
+        user_newsletter_subscriptions:
+          alias: user_newsletter_subscriptions
           materialized: table
           post-hook:
-           - "CREATE INDEX IF NOT EXISTS email_subscription_topics_i ON {{ this }}(topic_updated_at, id)"
+           - "CREATE INDEX IF NOT EXISTS email_subscription_topics_i ON {{ this }}(topic_updated_at, northstar_id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
 
