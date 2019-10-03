@@ -2,7 +2,6 @@ SELECT DISTINCT
 	f.northstar_id,
 	f.newsletter_topic,
 	f.topic_subscribed_at,
-	f.topic_updated_at,
 	CASE WHEN topic_unsubscribed_at IS NOT NULL 
 		THEN topic_unsubscribed_at
 		WHEN f.topic_updated_at = f.user_updated_at
@@ -18,7 +17,7 @@ FROM (
 			ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS topic_updated_at,	
 		last_value(s.newsletter_updated_at) OVER (PARTITION BY s.northstar_id ORDER BY s.newsletter_updated_at
 			ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS user_updated_at,
-		s.newsletter_updated_at AS topic_unsubscribed_at
+		u.topic_unsubscribed_at
 	FROM {{ ref('email_subscription_topics_raw') }} s
 	LEFT JOIN (
 		SELECT 
