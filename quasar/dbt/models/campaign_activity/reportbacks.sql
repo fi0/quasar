@@ -14,6 +14,7 @@ pd.reportback_volume,
 pd.civic_action,
 pd.scholarship_entry,
 pd.location,
+pd.postal_code,
 CASE WHEN (pd.post_class ilike '%%vote%%' AND pd.status = 'confirmed')
      THEN 'self-reported registrations'
      WHEN (pd.post_class ilike '%%vote%%' AND pd.status <> 'confirmed')

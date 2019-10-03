@@ -112,6 +112,7 @@ CREATE MATERIALIZED VIEW public.posts AS
 	    	 ELSE NULL END AS is_accepted,
 	    pd.action_id,
 	    pd.location,
+		pd.postal_code,
 	    a.reportback AS is_reportback,
 	    a.civic_action,
 	    a.scholarship_entry
@@ -157,6 +158,7 @@ CREATE MATERIALIZED VIEW public.reportbacks AS
 	pd.civic_action,
 	pd.scholarship_entry,
 	pd.location,
+	pd.postal_code,
 	CASE WHEN (pd.post_class ilike '%%vote%%' AND pd.status = 'confirmed')
 	     THEN 'self-reported registrations'
 	     WHEN (pd.post_class ilike '%%vote%%' AND pd.status <> 'confirmed')

@@ -36,6 +36,7 @@ SELECT
     	 ELSE NULL END AS is_accepted,
     pd.action_id,
     pd.location,
+	pd.postal_code,
     a.reportback AS is_reportback,
     a.civic_action,
     a.scholarship_entry
