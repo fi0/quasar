@@ -8,7 +8,10 @@ class NorthstarScraper(Scraper):
 
     def __init__(self, url):
         Scraper.__init__(self, url, params={
-                         'limit': 100, 'pagination': 'cursor'})
+                         'limit': 100, 'pagination': 'cursor',
+                         'include': ''.join(("last_name,email,mobile,"
+                                             "birthdate,addr_street1,"
+                                             "addr_street2,age"))})
         self.auth_headers = self.fetch_auth_headers()
 
     def fetch_auth_headers(self):
