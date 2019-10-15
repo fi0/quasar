@@ -1,7 +1,7 @@
 SELECT DISTINCT
 	f.northstar_id,
 	f.newsletter_topic,
-	f.topic_subscribed_at::timestamp,
+	f.topic_subscribed_at::timestamptz,
 	CASE WHEN newsletters_unsubscribed_at IS NOT NULL
 	    THEN newsletters_unsubscribed_at
 	    WHEN topic_unsubscribed_at IS NOT NULL
