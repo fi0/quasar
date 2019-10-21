@@ -22,5 +22,4 @@ SELECT
     s.landing_page,
     s.exit_page,
     s.days_since_last_session
-FROM {{ ref('snowplow_sessions') }} s
-
+FROM "quasar_prod_warehouse"."dbt_sena"."snowplow_sessions" s
