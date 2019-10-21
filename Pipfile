@@ -5,6 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 pycodestyle = "*"
+pylint = "*"
 
 [packages]
 fixtures = "*"
@@ -28,6 +29,7 @@ python-dateutil = "==2.6.1"
 SQLAlchemy = "*"
 dbt = "*"
 pipenv = "*"
+snowflake-connector-python = "*"
 
 [requires]
 python_version = "3.7"
