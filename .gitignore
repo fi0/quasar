@@ -9,3 +9,4 @@ dist/
 quasar/config/dev.py
 quasar/config/dev_priv.py
 .venv*
+.vscode
