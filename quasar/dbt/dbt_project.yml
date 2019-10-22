@@ -36,37 +36,32 @@ models:
       phoenix_events:
         snowplow_base_event:
           alias: snowplow_base_event
-          materialized: incremental
-          sql_where: "event_datetime > (select max(event_datetime) from {{ this }}"
+          materialized: table
           post-hook:
            - "CREATE INDEX IF NOT EXISTS event_index ON {{ this }}(event_id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
         snowplow_payload_event:
           alias: snowplow_payload_event
-          materialized: incremental
-          sql_where: "ft_timestamp > (select max(ft_timestamp) from {{ this }}"
+          materialized: table
           post-hook:
            - "CREATE INDEX IF NOT EXISTS payload_event_id ON {{ this }}(event_id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
         snowplow_raw_event:
           alias: snowplow_raw_event
-          materialized: incremental
-          sql_where: "event_datetime > (select max(event_datetime) from {{ this }}"
+          materialized: table
           post-hook:
             - "CREATE INDEX IF NOT EXISTS raw_event_id ON {{ this }}(event_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
         snowplow_phoenix_events:
           alias: snowplow_phoenix_events
-          materialized: incremental
-          sql_where: "event_datetime > (select max(event_datetime) from {{ this }}"
+          materialized: table
           post-hook:
             - "CREATE UNIQUE INDEX spe_unique ON {{ this }}(event_datetime, event_name, event_id)"
             - "CREATE INDEX IF NOT EXISTS spe_session_id ON {{ this }} (session_id)"
             - "GRANT SELECT ON {{ this }} TO looker"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
         snowplow_sessions:
-          materialized: incremental
-          sql_where: "ending_datetime > (select max(ending_datetime) from {{ this }}"
+          materialized: table
           post-hook:
             - "CREATE INDEX sps_landing ON {{ this }}(landing_datetime, landing_page)"
             - "GRANT SELECT ON {{ this }} TO looker"
