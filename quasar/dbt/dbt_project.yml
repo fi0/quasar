@@ -56,21 +56,21 @@ models:
           alias: snowplow_phoenix_events
           materialized: table
           post-hook:
-            - "CREATE UNIQUE INDEX spe_unique ON {{ this }}(event_datetime, event_name, event_id)"
+            - "CREATE UNIQUE INDEX IF NOT EXISTS spe_unique ON {{ this }}(event_datetime, event_name, event_id)"
             - "CREATE INDEX IF NOT EXISTS spe_session_id ON {{ this }} (session_id)"
             - "GRANT SELECT ON {{ this }} TO looker"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
         snowplow_sessions:
           materialized: table
           post-hook:
-            - "CREATE INDEX sps_landing ON {{ this }}(landing_datetime, landing_page)"
+            - "CREATE INDEX IF NOT EXISTS sps_landing ON {{ this }}(landing_datetime, landing_page)"
             - "GRANT SELECT ON {{ this }} TO looker"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
         phoenix_events_combined:
           alias: phoenix_events_combined
           materialized: table
           post-hook:
-            - "CREATE UNIQUE INDEX pec_unique ON {{ this }}(event_datetime, event_name, event_id)"
+            - "CREATE UNIQUE INDEX IF NOT EXISTS pec_unique ON {{ this }}(event_datetime, event_name, event_id)"
             - "CREATE INDEX IF NOT EXISTS pec_session_id ON {{ this }} (session_id)"
             - "GRANT SELECT ON {{ this }} TO looker"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
@@ -78,7 +78,7 @@ models:
           alias: phoenix_sessions_combined
           materialized: table
           post-hook:
-            - "CREATE INDEX psc_landing ON {{ this }}(landing_datetime, landing_page)"
+            - "CREATE INDEX IF NOT EXISTS psc_landing ON {{ this }}(landing_datetime, landing_page)"
             - "GRANT SELECT ON {{ this }} TO looker"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
       gambit_messages:
