@@ -11,5 +11,5 @@ SELECT id AS post_id,
 	details::jsonb->>'voter_registration_preference' AS voter_registration_preference,
 	details::jsonb->>'email_subscribed' AS email_subscribed,
 	details::jsonb->>'sms_subscribed' AS sms_subscribed
-FROM "quasar_prod_warehouse"."dbt_sena_ft_dosomething_rogue"."posts"
+FROM ft_dosomething_rogue.posts
 WHERE source = 'turbovote'

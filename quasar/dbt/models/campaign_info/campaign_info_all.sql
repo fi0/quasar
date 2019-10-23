@@ -13,27 +13,27 @@ SELECT c.field_campaigns_target_id as campaign_node_id,
        array_to_string(array_agg(distinct fdfcta.field_call_to_action_value), ', ') as campaign_cta,
        array_to_string(array_agg(distinct ttd1.name), ', ') as campaign_action_type 
 FROM {{ env_var('FIELD_DATA_FIELD_CAMPAIGNS') }} c 
-LEFT JOIN :node n1 
+LEFT JOIN {{ env_var('NODE') }} n1 
     ON n1.nid = c.entity_id 
-LEFT JOIN :node n2 
+LEFT JOIN {{ env_var('NODE') }} n2 
     ON n2.nid = c.field_campaigns_target_id 
-LEFT JOIN :field_data_field_campaign_type fdfct 
+LEFT JOIN {{ env_var('FIELD_DATA_FIELD_CAMPAIGN_TYPE') }} fdfct 
     ON c.field_campaigns_target_id = fdfct.entity_id 
-LEFT JOIN :field_data_field_run_date fdfrd 
+LEFT JOIN {{ env_var('FIELD_DATA_FIELD_RUN_DATE') }} fdfrd 
     ON c.entity_id = fdfrd.entity_id and c.language = fdfrd.language 
-LEFT JOIN :field_data_field_call_to_action fdfcta 
+LEFT JOIN {{ env_var('FIELD_DATA_FIELD_CALL_TO_ACTION') }} fdfcta 
     ON c.field_campaigns_target_id = fdfcta.entity_id and c.language = fdfcta.language 
-LEFT JOIN :field_data_field_reportback_noun fdfrn 
+LEFT JOIN {{ env_var('FIELD_DATA_FIELD_REPORTBACK_NOUN') }} fdfrn 
     ON c.field_campaigns_target_id = fdfrn.entity_id and c.language = fdfrn.language 
-LEFT JOIN :field_data_field_reportback_verb fdfrv 
+LEFT JOIN {{ env_var('FIELD_DATA_FIELD_REPORTBACK_VERB') }} fdfrv 
     ON c.field_campaigns_target_id = fdfrv.entity_id and c.language = fdfrv.language 
-LEFT JOIN :field_data_field_action_type fdfat 
+LEFT JOIN {{ env_var('FIELD_DATA_FIELD_ACTION_TYPE') }} fdfat 
     ON fdfat.entity_id = c.field_campaigns_target_id 
-LEFT JOIN :taxonomy_term_data ttd1 
+LEFT JOIN {{ env_var('TAXONOMY_TERM_DATA') }} ttd1 
     ON fdfat.field_action_type_tid = ttd1.tid 
-LEFT JOIN :field_data_field_cause fdfc 
+LEFT JOIN {{ env_var('FIELD_DATA_FIELD_CAUSE') }} fdfc 
     ON fdfc.entity_id = c.field_campaigns_target_id 
-LEFT JOIN :taxonomy_term_data ttd2 
+LEFT JOIN {{ env_var('TAXONOMY_TERM_DATA') }} ttd2 
     ON fdfc.field_cause_tid = ttd2.tid 
 WHERE c.bundle = 'campaign_run' 
 GROUP BY 1,2,3,4,5,6,7,8,9,10,11 

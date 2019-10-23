@@ -39,7 +39,7 @@ SELECT
       FROM
         {{ ref('messages_flattened') }} g
       LEFT JOIN
-        {{ env_var('FT_GAMBIT_CONVERSATIONS') }} c
+        {{ env_var('FT_GAMBIT') }}.conversations c
       ON g.conversation_id = c._id
       LEFT JOIN
         public.users u

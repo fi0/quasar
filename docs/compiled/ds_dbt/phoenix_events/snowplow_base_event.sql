@@ -18,7 +18,7 @@ SELECT
     refr_urlhost AS referrer_host,
     refr_urlpath AS referrer_path,
     refr_source AS referrer_source
-  FROM ft_snowplow."event"
+  FROM puck_heroku_wzsf6b3z.events
   WHERE event_id NOT IN 
   (SELECT event_id
    FROM ft_snowplow.ua_parser_context u
