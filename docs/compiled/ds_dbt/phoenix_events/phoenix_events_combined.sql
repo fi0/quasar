@@ -46,4 +46,4 @@ SELECT
     s.northstar_id,
     s.device_id
 FROM
-    "quasar_prod_warehouse"."dbt_sena"."snowplow_phoenix_events" s
+    "postgres"."rpacas"."snowplow_phoenix_events" s

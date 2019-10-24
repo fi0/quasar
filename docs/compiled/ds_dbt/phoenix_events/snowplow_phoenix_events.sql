@@ -22,5 +22,5 @@ SELECT
     e.browser_size,
     e.northstar_id,
     e.device_id
-FROM "quasar_prod_warehouse"."dbt_sena"."snowplow_raw_event" e
-LEFT JOIN "quasar_prod_warehouse"."dbt_sena"."campaign_info" i ON i.campaign_id = e.campaign_id::bigint
+FROM "postgres"."rpacas"."snowplow_raw_event" e
+LEFT JOIN "postgres"."rpacas"."campaign_info" i ON i.campaign_id = e.campaign_id::bigint

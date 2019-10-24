@@ -12,7 +12,7 @@ rb_summary AS (
 	    *,
 	    post_created_at - lag(post_created_at) OVER (
 		PARTITION BY northstar_id ORDER BY post_created_at) AS time_betw_rbs
-	FROM "quasar_prod_warehouse"."dbt_sena"."reportbacks"
+	FROM "postgres"."rpacas"."reportbacks"
     ) r_with_lag
     GROUP BY r_with_lag.northstar_id
 ),
@@ -30,7 +30,7 @@ gambit_unsub AS (
 		RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS last_topic,
 	    LAST_VALUE(created_at) OVER (PARTITION BY user_id ORDER BY created_at
 		RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS last_ts
-	FROM "quasar_prod_warehouse"."dbt_sena"."gambit_messages_inbound"
+	FROM "postgres"."rpacas"."gambit_messages_inbound"
     ) f
 ),
 sms_undeliverable AS (
@@ -71,10 +71,10 @@ time_to_actions AS (
 		PARTITION BY r.northstar_id ORDER BY r.post_created_at
 		ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
 	    ) AS time_to_next_action_last_rb
-	FROM "quasar_prod_warehouse"."dbt_sena"."reportbacks" r
+	FROM "postgres"."rpacas"."reportbacks" r
 	LEFT JOIN LATERAL (
 	    SELECT "timestamp" AS next_action_ts, action_type AS next_action_type
-	    FROM "quasar_prod_warehouse"."dbt_sena"."mel"
+	    FROM "postgres"."rpacas"."mel"
 	    WHERE northstar_id = r.northstar_id AND "timestamp" > r.post_created_at
 	    ORDER BY "timestamp" ASC
 	    LIMIT 1
@@ -119,13 +119,13 @@ CASE WHEN u.subscribed_member IS FALSE
     END AS user_unsubscribed_at,
 CASE WHEN u."source" = 'importer-client' AND p.first_post = 'voter-reg'
     THEN 1 ELSE 0 END AS voter_reg_acquisition
-FROM "quasar_prod_warehouse"."dbt_sena"."users" u
+FROM "postgres"."rpacas"."users" u
 LEFT JOIN (
 SELECT
     northstar_id,
     count(DISTINCT campaign_id) AS num_signups,
     max(created_at) AS most_recent_signup
-FROM "quasar_prod_warehouse"."dbt_sena"."signups"
+FROM "postgres"."rpacas"."signups"
 GROUP BY northstar_id
 ) s
 ON u.northstar_id = s.northstar_id
@@ -133,7 +133,7 @@ LEFT JOIN rb_summary r
 ON u.northstar_id = r.northstar_id
 LEFT JOIN (
     SELECT northstar_id, max("timestamp") AS most_recent_action
-    FROM "quasar_prod_warehouse"."dbt_sena"."mel"
+    FROM "postgres"."rpacas"."mel"
     GROUP BY northstar_id
 ) mel
 ON u.northstar_id = mel.northstar_id
@@ -157,6 +157,6 @@ LEFT JOIN (
 	northstar_id,
 	FIRST_VALUE("type") OVER (
 	    PARTITION BY northstar_id ORDER BY created_at) AS first_post
-    FROM "quasar_prod_warehouse"."dbt_sena_ft_dosomething_rogue"."posts"
+    FROM "postgres"."rpacas_ft_dosomething_rogue_qa"."posts"
 ) p
 ON u.northstar_id = p.northstar_id
