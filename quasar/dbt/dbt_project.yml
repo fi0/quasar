@@ -174,7 +174,6 @@ models:
       campaign_info:
         campaign_info_all:
           alias: campaign_info_all
-          schema: "{{ env_var('FT_ROGUE') }}"
           materialized: table
         campaign_info:
           alias: campaign_info
