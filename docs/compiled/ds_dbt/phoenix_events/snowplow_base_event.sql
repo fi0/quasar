@@ -1,4 +1,4 @@
-SELECT 
+SELECT
     event_id AS event_id,
     app_id AS event_source,
     collector_tstamp AS event_datetime,
@@ -18,9 +18,9 @@ SELECT
     refr_urlhost AS referrer_host,
     refr_urlpath AS referrer_path,
     refr_source AS referrer_source
-  FROM puck_heroku_wzsf6b3z.events
+  FROM {{ env_var('PUCK_EVENTS') }}.events
   WHERE event_id NOT IN 
   (SELECT event_id
-   FROM ft_snowplow.ua_parser_context u
+   FROM {{ env_var('SNOWPLOW_EVENTS') }}.ua_parser_context u
    WHERE u.useragent_family SIMILAR TO 
    '%%(bot|crawl|slurp|spider|archiv|spinn|sniff|seo|audit|survey|pingdom|worm|capture|(browser|screen)shots|analyz|index|thumb|check|facebook|YandexBot|Twitterbot|a_archiver|facebookexternalhit|Bingbot|Googlebot|Baiduspider|360(Spider|User-agent)|Ghost)%%')
