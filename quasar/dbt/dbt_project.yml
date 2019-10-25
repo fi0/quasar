@@ -179,7 +179,7 @@ models:
           alias: campaign_info
           materialized: table
           post-hook:
-           - "CREATE UNIQUE INDEX campaign_info_i ON {{ this }} (campaign_run_id, campaign_id)"
+           - "CREATE UNIQUE INDEX IF NOT EXISTS campaign_info_i ON {{ this }} (campaign_run_id, campaign_id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
         campaign_info_international:
