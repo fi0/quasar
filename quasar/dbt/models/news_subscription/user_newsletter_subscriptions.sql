@@ -2,13 +2,13 @@ SELECT DISTINCT
 	f.northstar_id,
 	f.newsletter_topic,
 	f.topic_subscribed_at::timestamptz,
-	CASE WHEN newsletters_unsubscribed_at IS NOT NULL
+	CASE WHEN topic_unsubscribed_at IS NOT NULL
+	    THEN topic_unsubscribed_at
+	    WHEN newsletters_unsubscribed_at IS NOT NULL
 	    THEN newsletters_unsubscribed_at
-	    WHEN topic_unsubscribed_at IS NOT NULL
-		THEN topic_unsubscribed_at
-		WHEN f.topic_updated_at = f.user_updated_at
-		THEN NULL
-		ELSE f.user_updated_at END AS topic_unsubscribed_at
+	    WHEN f.topic_updated_at = f.user_updated_at
+	    THEN NULL
+	    ELSE f.user_updated_at END AS topic_unsubscribed_at
 FROM (
 	SELECT DISTINCT
 		s.northstar_id AS northstar_id,
