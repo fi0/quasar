@@ -18,9 +18,9 @@ SELECT
     refr_urlhost AS referrer_host,
     refr_urlpath AS referrer_path,
     refr_source AS referrer_source
-  FROM {{ env_var('EVENTS') }}
-  WHERE event_id NOT IN 
+  FROM {{ env_var('FT_SNOWPLOW') }}."event"
+  WHERE event_id NOT IN
   (SELECT event_id
-   FROM {{ env_var('UA_PARSER') }} u
-   WHERE u.useragent_family SIMILAR TO 
+   FROM {{ env_var('FT_SNOWPLOW') }}.ua_parser_context u
+   WHERE u.useragent_family SIMILAR TO
    '%%(bot|crawl|slurp|spider|archiv|spinn|sniff|seo|audit|survey|pingdom|worm|capture|(browser|screen)shots|analyz|index|thumb|check|facebook|YandexBot|Twitterbot|a_archiver|facebookexternalhit|Bingbot|Googlebot|Baiduspider|360(Spider|User-agent)|Ghost)%%')

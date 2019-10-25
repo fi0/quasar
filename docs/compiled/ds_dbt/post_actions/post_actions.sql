@@ -1,2 +1,2 @@
 SELECT *
-FROM ft_dosomething_rogue.actions
+FROM ft_dosomething_rogue_qa.actions

@@ -24,6 +24,6 @@ SELECT
 	p.url AS clicked_link_url,
 	p.campaign_id,
 	p.modal_type
-  FROM "quasar_prod_warehouse"."dbt_sena"."snowplow_base_event" b
-  LEFT JOIN "quasar_prod_warehouse"."dbt_sena"."snowplow_payload_event" p 
+  FROM "postgres"."rpacas"."snowplow_base_event" b
+  LEFT JOIN "postgres"."rpacas"."snowplow_payload_event" p 
   ON b.event_id = p.event_id

@@ -7,4 +7,4 @@ SELECT
     payload::jsonb #>> '{campaignId}' AS campaign_id,
     payload::jsonb #>> '{modalType}' AS modal_type,
     _fivetran_synced AS ft_timestamp
-  FROM {{ env_var('SNOWPLOW_EVENTS') }}
+  FROM {{ env_var('FT_SNOWPLOW') }}.snowplow_event
