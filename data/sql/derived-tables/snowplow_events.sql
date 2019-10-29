@@ -20,11 +20,11 @@ CREATE TABLE public.snowplow_base_event AS
     refr_urlhost AS referrer_host,
     refr_urlpath AS referrer_path,
     refr_source AS referrer_source
-  FROM {{ env_var('FT_SNOWPLOW') }}."event"
+  FROM ft_snowplow."event"
   WHERE event_id NOT IN
   (SELECT event_id
-   FROM {{ env_var('FT_SNOWPLOW') }}.ua_parser_context u
-   WHERE u.useragent_family SIMILAR TO 
+   FROM ft_snowplow.ua_parser_context u
+   WHERE u.useragent_family SIMILAR TO
    '%%(bot|crawl|slurp|spider|archiv|spinn|sniff|seo|audit|survey|pingdom|worm|capture|(browser|screen)shots|analyz|index|thumb|check|facebook|YandexBot|Twitterbot|a_archiver|facebookexternalhit|Bingbot|Googlebot|Baiduspider|360(Spider|User-agent)|Ghost)%%'));
 CREATE INDEX base_event_id ON public.snowplow_base_event (event_id);
 GRANT SELECT ON public.snowplow_base_event TO dsanalyst;
@@ -40,7 +40,7 @@ CREATE TABLE public.snowplow_payload_event AS
     payload::jsonb #>> '{url}' AS url,
     payload::jsonb #>> '{campaignId}' AS campaign_id,
     payload::jsonb #>> '{modalType}' AS modal_type
-  FROM {{ env_var('FT_SNOWPLOW') }}.snowplow_event
+  FROM ft_snowplow.snowplow_event
 );
 CREATE INDEX payload_event_id ON public.snowplow_payload_event (event_id);
 GRANT SELECT ON public.snowplow_payload_event TO dsanalyst;
