@@ -16,7 +16,7 @@ SELECT
     p.campaign_id,
     p.campaign_name,
     p.modal_type,
-    NULL AS p.search_query,
+    NULL AS search_query,
     p.session_id,
     p.browser_size,
     p.northstar_id,
