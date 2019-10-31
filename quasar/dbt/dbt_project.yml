@@ -46,8 +46,8 @@ models:
           post-hook:
            - "CREATE INDEX IF NOT EXISTS payload_event_id ON {{ this }}(event_id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
-        snowplow_raw_event:
-          alias: snowplow_raw_event
+        snowplow_raw_events:
+          alias: snowplow_raw_events
           materialized: table
           post-hook:
             - "CREATE INDEX IF NOT EXISTS raw_event_id ON {{ this }}(event_id)"

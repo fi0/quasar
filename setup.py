@@ -7,7 +7,7 @@ requirements = convert_deps_to_pip(pfile['packages'], r=False)
 
 setup(
     name="quasar",
-    version="2019.10.30.1",
+    version="2019.10.31.0",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
@@ -31,8 +31,6 @@ setup(
             'northstar_full_backfill = quasar.northstar_to_user_table_full_backfill:backfill',
             'post_actions_create = quasar.create_post_actions:main',
             'rogue_ghost_killer = quasar.ghost_killer:main',
-            'snowplow_create = quasar.snowplow:create',
-            'snowplow_refresh = quasar.snowplow:refresh',
             'users_create = quasar.users:create',
             'users_refresh = quasar.users:refresh',
             'user_activity_create = quasar.user_activity:create',
