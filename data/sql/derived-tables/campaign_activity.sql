@@ -70,8 +70,8 @@ CREATE MATERIALIZED VIEW :ft_rogue_rtv AS
 		FROM :ft_rogue_posts
 		WHERE source = 'rock-the-vote');
 CREATE INDEX ON :ft_rogue_rtv (post_id, started_registration);
-GRANT SELECT ON :ft_rogue_turbovote TO looker;
-GRANT SELECT ON :ft_rogue_turbovote TO dsanalyst;
+GRANT SELECT ON :ft_rogue_rtv TO looker;
+GRANT SELECT ON :ft_rogue_rtv TO dsanalyst;
 
 DROP MATERIALIZED VIEW IF EXISTS public.posts CASCADE;
 CREATE MATERIALIZED VIEW public.posts AS
