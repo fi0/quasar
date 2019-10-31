@@ -84,7 +84,6 @@ models:
       gambit_messages:
         messages_flattened:
           alias: messages_flattened
-          schema: "{{ env_var('FT_GAMBIT') }}"
           materialized: table
           post-hook:
             - "CREATE INDEX IF NOT EXISTS messages_user_id ON {{ this }}(user_id)"
