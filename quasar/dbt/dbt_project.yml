@@ -99,6 +99,7 @@ models:
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"        
         gambit_messages_outbound:
+          alias: gambit_messages_outbound
           materialized: table
           post-hook:
             - "CREATE INDEX IF NOT EXISTS messages_out_index ON {{ this }}(message_id, created_at, user_id, conversation_id)"
