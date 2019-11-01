@@ -142,9 +142,9 @@ SELECT DISTINCT
     b.click_id AS action_serial_id,
     b."source" AS "channel"
 FROM {{ ref('bertly_clicks') }} b
-INNER JOIN public.users u
+INNER JOIN {{ ref('users') }} u
 ON b.northstar_id = u.northstar_id
 WHERE b.northstar_id IS NOT NULL
 AND b.interaction_type IS DISTINCT FROM 'preview'
 ) AS a
-LEFT JOIN public.users u ON u.northstar_id = a.northstar_id
+LEFT JOIN {{ ref('users') }} u ON u.northstar_id = a.northstar_id
