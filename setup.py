@@ -35,6 +35,7 @@ setup(
             'users_create = quasar.users:create',
             'users_refresh = quasar.users:refresh',
             'user_activity_create = quasar.user_activity:create',
+            'user_activity_create_for_dbt_validation = quasar.user_activity:create_for_dbt_validation',
             'user_activity_refresh = quasar.user_activity:refresh'
         ],
     },
