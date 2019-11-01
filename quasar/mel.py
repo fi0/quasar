@@ -5,7 +5,7 @@ def create():
     run_sql_file_raw('./data/sql/derived-tables/mel.sql')
 
 def create_for_dbt_validation():
-    run_sql_file_raw('../data/sql/derived-tables/mel_dbt_validation.sql')
+    run_sql_file_raw('./data/sql/derived-tables/mel_dbt_validation.sql')
 
 def refresh():
     refresh_materialized_view('public.member_event_log')
