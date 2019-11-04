@@ -5,6 +5,11 @@ def create():
     run_sql_file_raw('./data/sql/derived-tables/user_activity.sql')
 
 
+def create_for_dbt_validation():
+    run_sql_file_raw(''.join(("./data/sql/derived-tables/"
+                              "user_activity_dbt_validation.sql")))
+
+
 def refresh():
     refresh_materialized_view('public.user_activity')
 
