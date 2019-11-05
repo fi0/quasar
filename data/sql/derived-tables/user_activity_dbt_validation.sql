@@ -14,7 +14,7 @@ CREATE MATERIALIZED VIEW ds_dbt.user_activity AS (
 		    *,
 		    post_created_at - lag(post_created_at) OVER (
 			PARTITION BY northstar_id ORDER BY post_created_at) AS time_betw_rbs
-		FROM public.reportbacks
+		FROM ds_dbt.reportbacks
 	    ) r_with_lag
 	    GROUP BY r_with_lag.northstar_id
 	),
@@ -73,7 +73,7 @@ CREATE MATERIALIZED VIEW ds_dbt.user_activity AS (
 			PARTITION BY r.northstar_id ORDER BY r.post_created_at
 			ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
 		    ) AS time_to_next_action_last_rb
-		FROM public.reportbacks r
+		FROM ds_dbt.reportbacks r
 		LEFT JOIN LATERAL (
 		    SELECT "timestamp" AS next_action_ts, action_type AS next_action_type
 		    FROM ds_dbt.member_event_log
@@ -127,7 +127,7 @@ CREATE MATERIALIZED VIEW ds_dbt.user_activity AS (
 	    northstar_id,
 	    count(DISTINCT campaign_id) AS num_signups,
 	    max(created_at) AS most_recent_signup
-	FROM public.signups
+	FROM ds_dbt.signups
 	GROUP BY northstar_id
     ) s
 	ON u.northstar_id = s.northstar_id
@@ -159,7 +159,7 @@ CREATE MATERIALIZED VIEW ds_dbt.user_activity AS (
 		northstar_id,
 		FIRST_VALUE("type") OVER (
 		    PARTITION BY northstar_id ORDER BY created_at) AS first_post
-	    FROM public.posts
+	    FROM ds_dbt.posts
 	) p
 	ON u.northstar_id = p.northstar_id
 );

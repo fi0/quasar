@@ -31,7 +31,7 @@ CREATE MATERIALIZED VIEW ds_dbt.member_event_log AS
 	WHEN s."source" ILIKE '%%email%%' THEN 'email'
 	WHEN s."source" ILIKE '%%niche%%' THEN 'niche_coregistration'
 	WHEN s."source" NOT LIKE '%%sms%%'AND s."source" NOT LIKE '%%email%%' AND s."source" NOT LIKE '%%niche%%' AND s."source" NOT IN ('rock-the-vote', 'turbovote') AND s."source" IS NOT NULL THEN 'other' END) AS "channel"
-    FROM public.signups s
+    FROM ds_dbt.signups s
     WHERE s."source" IS DISTINCT FROM 'importer-client'
 	AND s."source" IS DISTINCT FROM 'rock-the-vote'
 	AND s."source" IS DISTINCT FROM 'turbovote'
@@ -47,7 +47,7 @@ CREATE MATERIALIZED VIEW ds_dbt.member_event_log AS
 	WHEN p."source" ILIKE '%%phoenix%%' OR p."source" IS NULL or p."source" ILIKE '%%turbovote%%' THEN 'web'
 	WHEN p."source" ILIKE '%%app%%' THEN 'mobile_app'
 	WHEN p."source" NOT LIKE '%%phoenix%%' AND p."source" NOT LIKE '%%sms%%' AND p."source" IS NOT NULL AND p."source" NOT LIKE '%%app%%' and p."source" NOT LIKE '%%turbovote%%' THEN 'other' END) AS "channel"
-    FROM public.posts p
+    FROM ds_dbt.posts p
     WHERE p.status IN ('accepted', 'confirmed', 'register-OVR', 'register-form', 'pending')
     UNION ALL
     SELECT DISTINCT 
