@@ -32,7 +32,7 @@ CREATE MATERIALIZED VIEW ds_dbt.user_activity AS (
 			RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS last_topic,
 		    LAST_VALUE(created_at) OVER (PARTITION BY user_id ORDER BY created_at
 			RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS last_ts
-		FROM ds_dbt.gambit_messages_inbound
+		FROM public.gambit_messages_inbound
 	    ) f
 	),
 	sms_undeliverable AS (

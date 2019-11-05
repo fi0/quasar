@@ -116,7 +116,7 @@ CREATE MATERIALIZED VIEW ds_dbt.member_event_log AS
         g.message_id AS action_serial_id,
         'sms' AS "channel"
     FROM
-        ds_dbt.gambit_messages_inbound g
+        public.gambit_messages_inbound g
     WHERE 
     	g.user_id IS NOT NULL
     	AND g.macro <> 'subscriptionStatusStop' 
