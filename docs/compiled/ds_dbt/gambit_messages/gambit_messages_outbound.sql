@@ -15,7 +15,7 @@ SELECT
     f.topic,
     f.user_id
   FROM
-    "quasar_prod_warehouse"."dbt_sena"."messages_flattened" f
+    "quasar_prod_warehouse"."ds_dbt"."messages_flattened" f
   WHERE
     f.direction <> 'inbound'
     AND f.user_id IS NOT NULL
@@ -37,7 +37,7 @@ SELECT
       g.topic,
       u.northstar_id AS user_id
       FROM
-        "quasar_prod_warehouse"."dbt_sena"."messages_flattened" g
+        "quasar_prod_warehouse"."ds_dbt"."messages_flattened" g
       LEFT JOIN
         ft_gambit_conversations_api.conversations c
       ON g.conversation_id = c._id
