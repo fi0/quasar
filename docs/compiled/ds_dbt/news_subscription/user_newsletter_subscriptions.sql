@@ -2,13 +2,13 @@ SELECT DISTINCT
 	f.northstar_id,
 	f.newsletter_topic,
 	f.topic_subscribed_at::timestamptz,
-	CASE WHEN newsletters_unsubscribed_at IS NOT NULL
+	CASE WHEN topic_unsubscribed_at IS NOT NULL
+	    THEN topic_unsubscribed_at
+	    WHEN newsletters_unsubscribed_at IS NOT NULL
 	    THEN newsletters_unsubscribed_at
-	    WHEN topic_unsubscribed_at IS NOT NULL
-		THEN topic_unsubscribed_at
-		WHEN f.topic_updated_at = f.user_updated_at
-		THEN NULL
-		ELSE f.user_updated_at END AS topic_unsubscribed_at
+	    WHEN f.topic_updated_at = f.user_updated_at
+	    THEN NULL
+	    ELSE f.user_updated_at END AS topic_unsubscribed_at
 FROM (
 	SELECT DISTINCT
 		s.northstar_id AS northstar_id,
@@ -21,7 +21,7 @@ FROM (
 			ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS user_updated_at,
 		u.topic_unsubscribed_at,
 		ua.newsletters_unsubscribed_at
-	FROM "postgres"."rpacas"."email_subscription_topics_raw" s
+	FROM "quasar_prod_warehouse"."dbt_sena"."email_subscription_topics_raw" s
 	LEFT JOIN (
 		SELECT
 			_id AS id,

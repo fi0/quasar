@@ -8,7 +8,7 @@ SELECT
 	'seconds', max(event_datetime) - min(event_datetime)
     ) AS session_duration_seconds,
     count(DISTINCT CASE WHEN event_name = 'view' THEN "path" END) AS num_pages_viewed
-FROM "postgres"."rpacas"."snowplow_phoenix_events"
+FROM "quasar_prod_warehouse"."dbt_sena"."snowplow_phoenix_events"
 GROUP BY session_id
 ),
 entry_exit_pages AS (
@@ -20,7 +20,7 @@ SELECT DISTINCT
 	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS event_id,
     last_value("path") OVER (PARTITION BY session_id ORDER BY event_datetime 
 	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS exit_page
-FROM "postgres"."rpacas"."snowplow_phoenix_events"
+FROM "quasar_prod_warehouse"."dbt_sena"."snowplow_phoenix_events"
 ),
 time_between_sessions AS (
 SELECT DISTINCT

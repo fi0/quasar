@@ -16,6 +16,7 @@ SELECT
     p.campaign_id,
     p.campaign_name,
     p.modal_type,
+    NULL AS search_query,
     p.session_id,
     p.browser_size,
     p.northstar_id,
@@ -41,9 +42,10 @@ SELECT
     s.campaign_id,
     s.campaign_name,
     s.modal_type,
+    s.search_query,
     s.session_id,
     s.browser_size,
     s.northstar_id,
     s.device_id
 FROM
-    "postgres"."rpacas"."snowplow_phoenix_events" s
+    "quasar_prod_warehouse"."dbt_sena"."snowplow_phoenix_events" s

@@ -14,6 +14,6 @@ SELECT
 	i.campaign_noun,
 	i.campaign_verb,
 	i.campaign_cta
-FROM ft_dosomething_rogue_qa.campaigns c
-LEFT JOIN "postgres"."rpacas_ft_dosomething_rogue_qa"."campaign_info_all" i ON i.campaign_run_id = c.campaign_run_id
+FROM ft_dosomething_rogue.campaigns c
+LEFT JOIN "quasar_prod_warehouse"."dbt_sena"."campaign_info_all" i ON i.campaign_run_id = c.campaign_run_id
 WHERE i.campaign_language = 'en' OR i.campaign_language IS NULL

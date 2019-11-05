@@ -24,7 +24,7 @@ SELECT
 		WHEN source_details ILIKE '%%\}'
 		THEN (CAST(source_details as json) ->> 'utm_campaign') 
 		ELSE NULL END AS utm_campaign
-FROM ft_dosomething_rogue_qa.signups sd
+FROM ft_dosomething_rogue.signups sd
 WHERE sd._fivetran_deleted = 'false'
 AND sd.deleted_at IS NULL
 AND sd."source" IS DISTINCT FROM 'rogue-oauth'

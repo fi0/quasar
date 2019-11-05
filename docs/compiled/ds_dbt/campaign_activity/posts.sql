@@ -46,10 +46,10 @@ SELECT
 	a.reportback AS is_reportback,
 	a.civic_action,
 	a.scholarship_entry
-FROM ft_dosomething_rogue_qa.posts pd
-INNER JOIN "postgres"."rpacas"."signups" s
+FROM ft_dosomething_rogue.posts pd
+INNER JOIN "quasar_prod_warehouse"."dbt_sena"."signups" s
 	ON pd.signup_id = s.id
-LEFT JOIN "postgres"."rpacas_ft_dosomething_rogue_qa"."turbovote" tv
+LEFT JOIN "quasar_prod_warehouse"."dbt_sena_ft_dosomething_rogue"."turbovote" tv
 	ON tv.post_id::bigint = pd.id::bigint
 LEFT JOIN
 	(SELECT
@@ -58,10 +58,10 @@ LEFT JOIN
 			WHEN r.started_registration < '2017-01-01'
 			THEN r.started_registration + interval '4 year'
 			ELSE r.started_registration END AS created_at
-		FROM "postgres"."rpacas_ft_dosomething_rogue_qa"."rock_the_vote" r
+		FROM "quasar_prod_warehouse"."dbt_sena_ft_dosomething_rogue"."rock_the_vote" r
 	) rtv
 	ON rtv.post_id::bigint = pd.id::bigint
-LEFT JOIN ft_dosomething_rogue_qa.actions a
+LEFT JOIN ft_dosomething_rogue.actions a
 	ON pd.action_id = a.id
 WHERE pd.deleted_at IS NULL
 AND pd."text" IS DISTINCT FROM 'test runscope upload'
