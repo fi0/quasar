@@ -29,10 +29,10 @@ SELECT
         WHEN pd.post_class ilike '%%call%%'
         THEN 'phone_calls'
         ELSE NULL END AS post_bucket
-FROM "quasar_prod_warehouse"."dbt_sena_ft_dosomething_rogue"."posts" pd
+FROM "quasar_prod_warehouse"."ds_dbt"."posts" pd
 WHERE pd.id IN
     (SELECT
         min(id)
-    FROM "quasar_prod_warehouse"."dbt_sena_ft_dosomething_rogue"."posts" p
+    FROM "quasar_prod_warehouse"."ds_dbt"."posts" p
     WHERE p.is_reportback = 'true' AND p.is_accepted = 1
     GROUP BY p.northstar_id, p.campaign_id, p.signup_id, p.post_class, p.reportback_volume)
