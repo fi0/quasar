@@ -7,7 +7,7 @@ requirements = convert_deps_to_pip(pfile['packages'], r=False)
 
 setup(
     name="quasar",
-    version="2019.11.05.0",
+    version="2019.11.05.1",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={

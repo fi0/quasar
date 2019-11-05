@@ -110,28 +110,28 @@ models:
           alias: signups
           materialized: table
           post-hook:
-           - "CREATE UNIQUE INDEX signups_unique ON {{ this }}(created_at, id)"
+           - "CREATE UNIQUE INDEX IF NOT EXISTS signups_unique ON {{ this }}(created_at, id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
         turbovote:
           alias: turbovote
           materialized: table
           post-hook:
-           - "CREATE UNIQUE INDEX turbovote_unique ON {{ this }}(post_id, created_at, updated_at)"
+           - "CREATE UNIQUE INDEX IF NOT EXISTS turbovote_unique ON {{ this }}(post_id, created_at, updated_at)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
         rock_the_vote:
           alias: rock_the_vote
           materialized: table
           post-hook:
-           - "CREATE UNIQUE INDEX rtv_unique ON {{ this }}(post_id, started_registration)"
+           - "CREATE UNIQUE INDEX IF NOT EXISTS rtv_unique ON {{ this }}(post_id, started_registration)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
         posts:
           alias: posts
           materialized: table
           post-hook:
-           - "CREATE UNIQUE INDEX posts_unique ON {{ this }}(created_at, campaign_id, id)"
+           - "CREATE UNIQUE INDEX IF NOT EXISTS posts_unique ON {{ this }}(created_at, campaign_id, id)"
            - "CREATE INDEX IF NOT EXISTS posts_i ON {{ this }}(is_reportback, is_accepted, signup_id, id, post_class)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
@@ -139,7 +139,7 @@ models:
           alias: reportbacks
           materialized: table
           post-hook:
-           - "CREATE UNIQUE reportbacks_unique INDEX ON {{ this }}(post_id)"
+           - "CREATE UNIQUE INDEX IF NOT EXISTS reportbacks_unique ON {{ this }}(post_id)"
            - "CREATE INDEX IF NOT EXISTS reportbacks_i ON {{ this }}(post_created_at, campaign_id, post_class, reportback_volume)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
