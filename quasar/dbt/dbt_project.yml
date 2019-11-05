@@ -115,7 +115,6 @@ models:
            - "GRANT SELECT ON {{ this }} TO looker"
         turbovote:
           alias: turbovote
-          schema: "{{ env_var('FT_ROGUE') }}"
           materialized: table
           post-hook:
            - "CREATE UNIQUE INDEX turbovote_unique ON {{ this }}(post_id, created_at, updated_at)"
@@ -123,7 +122,6 @@ models:
            - "GRANT SELECT ON {{ this }} TO looker"
         rock_the_vote:
           alias: rock_the_vote
-          schema: "{{ env_var('FT_ROGUE') }}"
           materialized: table
           post-hook:
            - "CREATE UNIQUE INDEX rtv_unique ON {{ this }}(post_id, started_registration)"
@@ -131,7 +129,6 @@ models:
            - "GRANT SELECT ON {{ this }} TO looker"
         posts:
           alias: posts
-          schema: "{{ env_var('FT_ROGUE') }}"
           materialized: table
           post-hook:
            - "CREATE UNIQUE INDEX posts_unique ON {{ this }}(created_at, campaign_id, id)"
