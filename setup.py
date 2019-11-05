@@ -7,7 +7,7 @@ requirements = convert_deps_to_pip(pfile['packages'], r=False)
 
 setup(
     name="quasar",
-    version="2019.11.05.0",
+    version="2019.11.05.1",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
@@ -22,8 +22,6 @@ setup(
             'cio_bounced_backfill = quasar.cio_bounced_backfill:main',
             'cio_sent_backfill = quasar.cio_sent_backfill:main',
             'etl_monitoring = quasar.etl_monitoring:run_monitoring',
-            'gambit_messages_create = quasar.gambit:create_gambit_messages',
-            'gambit_messages_refresh = quasar.gambit:refresh_gambit_messages',
             'gdpr = quasar.gdpr_comply:gdpr_from_file',
             'mel_create = quasar.mel:create',
             'mel_create_for_dbt_validation = quasar.mel:create_for_dbt_validation',
