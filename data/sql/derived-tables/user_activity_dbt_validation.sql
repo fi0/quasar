@@ -1,5 +1,5 @@
 DROP MATERIALIZED VIEW IF EXISTS ds_dbt.user_activity CASCADE;
-CREATE MATERIALIZED VIEW user_activity AS (
+CREATE MATERIALIZED VIEW ds_dbt.user_activity AS (
     WITH
 	rb_summary AS (
 	    SELECT
