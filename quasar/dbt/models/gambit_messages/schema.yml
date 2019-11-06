@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: messages_flattened
+    description: TBD
+    columns:
+        - name: message_id
+          description: Message's Unique identifier.
+          tests:
+              - unique
+              - not_null:
+                - severity: warn
+        - name: platform_message_id
+          description: Message's SMS Platform's Unique identifier.
