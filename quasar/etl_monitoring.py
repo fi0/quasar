@@ -78,7 +78,7 @@ class ETLMonitoring:
                 'SELECT count(*) FROM ft_snowplow.ua_parser_context',
             'flattened_gambit_messages':
                 """SELECT count(*)
-                    FROM ft_gambit_conversations_api.messages_flattened""",
+                    FROM public.messages_flattened""",
             'derived_user_count':
                 'SELECT count(*) FROM public.users',
             'derived_user_distinct_user_count':
