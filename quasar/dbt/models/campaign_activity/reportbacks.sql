@@ -20,13 +20,13 @@ SELECT
         THEN 'self-reported registrations'
         WHEN (pd.post_class ilike '%%vote%%' AND pd.status <> 'confirmed')
         THEN 'voter_registrations'
-        WHEN pd.post_class ilike '%%photo%%'
+        WHEN pd.post_type ilike '%%photo%%' AND pd.post_class NOT ilike '%%vote%%'
         THEN 'photo_rbs'
-        WHEN pd.post_class ilike '%%text%%'
+        WHEN pd.post_type ilike '%%text%%'
         THEN 'text_rbs'
-        WHEN pd.post_class ilike '%%social%%'
+        WHEN pd.post_type ilike '%%social%%'
         THEN 'social'
-        WHEN pd.post_class ilike '%%call%%'
+        WHEN pd.post_type ilike '%%call%%'
         THEN 'phone_calls'
         ELSE NULL END AS post_bucket
 FROM {{ ref('posts') }} pd
