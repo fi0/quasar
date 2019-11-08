@@ -4,11 +4,41 @@ models:
   - name: messages_flattened
     description: TBD
     columns:
-        - name: message_id
-          description: Message's Unique identifier.
-          tests:
-              - unique
-              - not_null:
-                - severity: warn
-        - name: platform_message_id
-          description: Message's SMS Platform's Unique identifier.
+      - name: agent_id
+        description: If set, the handle of the Front agent this outbound support message is from.
+      - name: attachment_content_type
+        description:
+      - name: attachment_url
+        description:
+      - name: broadcast_id
+        description: If set, this message was an outbound broadcast (when direction == 'outbound-api-send'), or the User's reply to an outbound broadcast (when direction == 'inbound')
+      - name: campaign_id
+        description: If set, holds a reference to the last campaign topic the member's conversation was in.
+      - name: conversation_id
+        description: Conversation the Message belongs to.
+      - name: created_at
+        description:
+      - name: direction
+        description: Describes if the message is being received (inbound) or being sent (outbound-*).
+      - name: message_id
+        description: Unique identifier for a Message (MongoDB id).
+      - name: macro
+        description:
+      - name: match
+        description:
+      - name: carrier_delivered_at
+        description:
+      - name: carrier_failure_code
+        description:
+      - name: total_segments
+        description:
+      - name: platform_message_id
+        description: The Message identifier per platform.
+      - name: template
+        description: If set, template of outbound message sent (e.g. askQuantity, completedMenu).
+      - name: text
+        description:
+      - name: topic
+        description: Holds a reference to the last campaign topic the member's conversation was in.
+      - name: user_id
+        description: The Northstar id of the member.
