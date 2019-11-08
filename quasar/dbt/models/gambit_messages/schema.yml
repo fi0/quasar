@@ -7,9 +7,9 @@ models:
       - name: agent_id
         description: If set, the handle of the Front agent this outbound support message is from.
       - name: attachment_content_type
-        description:
+        description: If set, the content type of the picture the member is sending us. Exp. image/png.
       - name: attachment_url
-        description:
+        description: If set, link to the picture sent by the member.
       - name: broadcast_id
         description: If set, this message was an outbound broadcast (when direction == 'outbound-api-send'), or the User's reply to an outbound broadcast (when direction == 'inbound')
       - name: campaign_id
@@ -17,27 +17,27 @@ models:
       - name: conversation_id
         description: Conversation the Message belongs to.
       - name: created_at
-        description:
+        description: Message's created date.
       - name: direction
         description: Describes if the message is being received (inbound) or being sent (outbound-*).
       - name: message_id
         description: Unique identifier for a Message (MongoDB id).
       - name: macro
-        description:
+        description: "If set, this message is part of this macro's workflow. Example: subscription status updates, voting plan submission, aswering a multichoice broadcast, etc."
       - name: match
-        description:
+        description: Rivescript trigger matched by inbound text.
       - name: carrier_delivered_at
-        description:
+        description: Date when we received a delivery confirmation from the carrier.
       - name: carrier_failure_code
-        description:
+        description: Error code reported by the carrier (Only for outbound messages).
       - name: total_segments
-        description:
+        description: Number of chunks the message is broken into by the SMS API.
       - name: platform_message_id
         description: The Message identifier per platform.
       - name: template
         description: If set, template of outbound message sent (e.g. askQuantity, completedMenu).
       - name: text
-        description:
+        description: Body of the message.
       - name: topic
         description: Holds a reference to the last campaign topic the member's conversation was in.
       - name: user_id
