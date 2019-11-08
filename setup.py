@@ -7,7 +7,7 @@ requirements = convert_deps_to_pip(pfile['packages'], r=False)
 
 setup(
     name="quasar",
-    version="2019.11.05.5",
+    version="2019.11.08.0",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
@@ -15,8 +15,6 @@ setup(
             'bertly_refresh = quasar.bertly:refresh',
             'campaign_info_recreate = quasar.campaign_info:create',
             'campaign_info_refresh = quasar.campaign_info:refresh',
-            'campaign_activity_create = quasar.campaign_activity:create',
-            'campaign_activity_refresh = quasar.campaign_activity:refresh',
             'cio_consume = quasar.cio_consumer:main',
             'cio_import = quasar.cio_import_scratch_records:cio_import',
             'cio_bounced_backfill = quasar.cio_bounced_backfill:main',
