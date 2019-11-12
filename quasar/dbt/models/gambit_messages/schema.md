@@ -1,9 +1,11 @@
-{% docs attachment_content_type %}
-If set, the handle of the Front agent this outbound support message is from.
-{% enddocs %}
+
 
 {% docs agent_id %}
 If set, the content type of the picture the member is sending us. Exp. image/png.
+{% enddocs %}
+
+{% docs attachment_content_type %}
+If set, the handle of the Front agent this outbound support message is from.
 {% enddocs %}
 
 {% docs topic %}
