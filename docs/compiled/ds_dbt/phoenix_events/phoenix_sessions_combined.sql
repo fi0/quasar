@@ -22,4 +22,4 @@ SELECT
     s.landing_page,
     s.exit_page,
     s.days_since_last_session
-FROM "quasar_prod_warehouse"."ds_dbt"."snowplow_sessions" s
+FROM "quasar_prod_warehouse"."public"."snowplow_sessions" s

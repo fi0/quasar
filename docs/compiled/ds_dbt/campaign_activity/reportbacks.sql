@@ -20,19 +20,19 @@ SELECT
         THEN 'self-reported registrations'
         WHEN (pd.post_class ilike '%%vote%%' AND pd.status <> 'confirmed')
         THEN 'voter_registrations'
-        WHEN pd.post_class ilike '%%photo%%'
+        WHEN pd."type" ilike '%%photo%%' AND pd.post_class NOT ilike '%%vote%%'
         THEN 'photo_rbs'
-        WHEN pd.post_class ilike '%%text%%'
+        WHEN pd."type" ilike '%%text%%'
         THEN 'text_rbs'
-        WHEN pd.post_class ilike '%%social%%'
+        WHEN pd."type" ilike '%%social%%'
         THEN 'social'
-        WHEN pd.post_class ilike '%%call%%'
+        WHEN pd."type" ilike '%%call%%'
         THEN 'phone_calls'
         ELSE NULL END AS post_bucket
-FROM "quasar_prod_warehouse"."ds_dbt"."posts" pd
+FROM "quasar_prod_warehouse"."public"."posts" pd
 WHERE pd.id IN
     (SELECT
         min(id)
-    FROM "quasar_prod_warehouse"."ds_dbt"."posts" p
+    FROM "quasar_prod_warehouse"."public"."posts" p
     WHERE p.is_reportback = 'true' AND p.is_accepted = 1
     GROUP BY p.northstar_id, p.campaign_id, p.signup_id, p.post_class, p.reportback_volume)
