@@ -11,7 +11,7 @@ class NorthstarScraper(Scraper):
                          'limit': 100, 'pagination': 'cursor',
                          'include': ''.join(("last_name,email,mobile,"
                                              "birthdate,addr_street1,"
-                                             "addr_street2,age"))})
+                                             "addr_street2,age,school_id"))})
         self.auth_headers = self.fetch_auth_headers()
 
     def fetch_auth_headers(self):
