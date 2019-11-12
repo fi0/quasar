@@ -71,6 +71,11 @@ We use Docker to pull a PostgreSQL image based on version/image tag.
 * Run `qp` to run bring up Postgres Docker image.
 * You can kill the Docker image with `qpk`.
 
+#### DBT Profile
+You need to setup a DBT profile file (defaut location is `~/.dbt/profile.yml`).
+
+An example profile is provided [here](example-dbt-profile.yml), which has the doc block needed for `dbt docs generate`.
+
 ## Usage
 
 ```
