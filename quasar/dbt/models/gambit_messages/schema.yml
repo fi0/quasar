@@ -2,7 +2,7 @@ version: 2
 
 models:
   - name: messages_flattened
-    description: TBD
+    description: Messages which nested values have been flattened for easier querying.
     columns:
       - name: agent_id
         description: If set, the handle of the Front agent this outbound support message is from.
@@ -13,7 +13,7 @@ models:
       - name: broadcast_id
         description: If set, this message was an outbound broadcast (when direction == 'outbound-api-send'), or the User's reply to an outbound broadcast (when direction == 'inbound')
       - name: campaign_id
-        description: If set, holds a reference to the last campaign topic the member's conversation was in.
+        description: '{{ doc("campaign_id") }}'
       - name: conversation_id
         description: Conversation the Message belongs to.
       - name: created_at
@@ -39,6 +39,12 @@ models:
       - name: text
         description: Body of the message.
       - name: topic
-        description: Holds a reference to the last campaign topic the member's conversation was in.
+        description: '{{ doc("topic") }}'
       - name: user_id
         description: The Northstar id of the member.
+  - name: gambit_messages_inbound
+    description: TBD
+    columns:
+  - name: gambit_messages_outbound
+    description: TBD
+    columns:
