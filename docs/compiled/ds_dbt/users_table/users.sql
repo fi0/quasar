@@ -47,7 +47,7 @@ INNER JOIN
 		max(utemp.last_messaged_at) AS max_last_message
 	FROM northstar.users utemp
 	GROUP BY utemp.id) umax ON umax.id = u.id AND umax.max_update = u.updated_at
-LEFT JOIN "quasar_prod_warehouse"."public"."cio_latest_status" email_status ON email_status.customer_id = u.id
+LEFT JOIN "quasar_prod_warehouse"."ds_dbt"."cio_latest_status" email_status ON email_status.customer_id = u.id
 WHERE u."source" IS DISTINCT FROM 'runscope'
 AND u."source" IS DISTINCT FROM 'runscope-client'
 AND u.email IS DISTINCT FROM 'runscope-scheduled-test@dosomething.org'

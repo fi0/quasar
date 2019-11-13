@@ -48,4 +48,4 @@ SELECT
     s.northstar_id,
     s.device_id
 FROM
-    "quasar_prod_warehouse"."public"."snowplow_phoenix_events" s
+    "quasar_prod_warehouse"."ds_dbt"."snowplow_phoenix_events" s
