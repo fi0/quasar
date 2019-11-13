@@ -144,12 +144,12 @@ CREATE MATERIALIZED VIEW ds_dbt.member_event_log AS
         b.click_id AS action_serial_id,
         b."source" AS "channel"
     FROM public.bertly_clicks b
-    INNER JOIN public.users u
+    INNER JOIN ds_dbt.users u
     ON b.northstar_id = u.northstar_id
     WHERE b.northstar_id IS NOT NULL
     AND b.interaction_type IS DISTINCT FROM 'preview'
     ) AS a
- LEFT JOIN public.users u ON u.northstar_id = a.northstar_id
+ LEFT JOIN ds_dbt.users u ON u.northstar_id = a.northstar_id
    );
 CREATE UNIQUE INDEX ON ds_dbt.member_event_log ("timestamp", northstar_id, event_id);
 CREATE INDEX ON ds_dbt.member_event_log (northstar_id, "timestamp");
