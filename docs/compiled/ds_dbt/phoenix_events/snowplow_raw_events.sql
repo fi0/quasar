@@ -25,6 +25,6 @@ SELECT
 	p.campaign_id,
 	p.modal_type,
 	p.search_query
-  FROM "quasar_prod_warehouse"."ds_dbt"."snowplow_base_event" b
-  LEFT JOIN "quasar_prod_warehouse"."ds_dbt"."snowplow_payload_event" p 
+  FROM "quasar_prod_warehouse"."public"."snowplow_base_event" b
+  LEFT JOIN "quasar_prod_warehouse"."public"."snowplow_payload_event" p 
   ON b.event_id = p.event_id

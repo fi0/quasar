@@ -21,7 +21,7 @@ FROM (
 			ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS user_updated_at,
 		u.topic_unsubscribed_at,
 		ua.newsletters_unsubscribed_at
-	FROM "quasar_prod_warehouse"."ds_dbt"."email_subscription_topics_raw" s
+	FROM "quasar_prod_warehouse"."public"."email_subscription_topics_raw" s
 	LEFT JOIN (
 		SELECT
 			_id AS id,

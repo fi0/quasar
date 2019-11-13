@@ -29,7 +29,7 @@ WHEN s."source" NOT LIKE '%%sms%%'AND s."source" NOT LIKE '%%email%%' AND s."sou
 WHEN s."source" ILIKE '%%email%%' THEN 'email'
 WHEN s."source" ILIKE '%%niche%%' THEN 'niche_coregistration'
 WHEN s."source" NOT LIKE '%%sms%%'AND s."source" NOT LIKE '%%email%%' AND s."source" NOT LIKE '%%niche%%' AND s."source" NOT IN ('rock-the-vote', 'turbovote') AND s."source" IS NOT NULL THEN 'other' END) AS "channel"
-FROM "quasar_prod_warehouse"."ds_dbt"."signups" s
+FROM "quasar_prod_warehouse"."public"."signups" s
 WHERE s."source" IS DISTINCT FROM 'importer-client'
 AND s."source" IS DISTINCT FROM 'rock-the-vote'
 AND s."source" IS DISTINCT FROM 'turbovote'
@@ -45,7 +45,7 @@ SELECT
 WHEN p."source" ILIKE '%%phoenix%%' OR p."source" IS NULL or p."source" ILIKE '%%turbovote%%' THEN 'web'
 WHEN p."source" ILIKE '%%app%%' THEN 'mobile_app'
 WHEN p."source" NOT LIKE '%%phoenix%%' AND p."source" NOT LIKE '%%sms%%' AND p."source" IS NOT NULL AND p."source" NOT LIKE '%%app%%' and p."source" NOT LIKE '%%turbovote%%' THEN 'other' END) AS "channel"
-FROM "quasar_prod_warehouse"."ds_dbt"."posts" p
+FROM "quasar_prod_warehouse"."public"."posts" p
 WHERE p.status IN ('accepted', 'confirmed', 'register-OVR', 'register-form', 'pending')
 UNION ALL
 SELECT DISTINCT 
@@ -114,7 +114,7 @@ SELECT
     g.message_id AS action_serial_id,
     'sms' AS "channel"
 FROM
-    "quasar_prod_warehouse"."ds_dbt"."gambit_messages_inbound" g
+    "quasar_prod_warehouse"."public"."gambit_messages_inbound" g
 WHERE 
 	g.user_id IS NOT NULL
 	AND g.macro <> 'subscriptionStatusStop' 
@@ -141,10 +141,10 @@ SELECT DISTINCT
     'bertly' AS "source",
     b.click_id AS action_serial_id,
     b."source" AS "channel"
-FROM "quasar_prod_warehouse"."ds_dbt"."bertly_clicks" b
-INNER JOIN "quasar_prod_warehouse"."ds_dbt"."users" u
+FROM "quasar_prod_warehouse"."public"."bertly_clicks" b
+INNER JOIN "quasar_prod_warehouse"."public"."users" u
 ON b.northstar_id = u.northstar_id
 WHERE b.northstar_id IS NOT NULL
 AND b.interaction_type IS DISTINCT FROM 'preview'
 ) AS a
-LEFT JOIN "quasar_prod_warehouse"."ds_dbt"."users" u ON u.northstar_id = a.northstar_id
+LEFT JOIN "quasar_prod_warehouse"."public"."users" u ON u.northstar_id = a.northstar_id
