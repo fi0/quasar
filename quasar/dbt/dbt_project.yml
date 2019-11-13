@@ -155,7 +155,7 @@ models:
           alias: users
           materialized: table
           post-hook:
-           - "CREATE UNIQUE INDEX IF NOT EXISTS du_indicies ON {{ this }}(northstar_id, created_at, email, mobile, 'source')"
+           - "CREATE UNIQUE INDEX IF NOT EXISTS du_indicies ON {{ this }}(northstar_id, created_at, email, mobile, source)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
            - "GRANT SELECT ON {{ this }} TO public"
