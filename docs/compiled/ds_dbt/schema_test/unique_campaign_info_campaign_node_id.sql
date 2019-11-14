@@ -1,0 +1,17 @@
+
+
+
+
+select count(*)
+from (
+
+    select
+        campaign_node_id
+
+    from "quasar_prod_warehouse"."public"."campaign_info"
+    where campaign_node_id is not null
+    group by campaign_node_id
+    having count(*) > 1
+
+) validation_errors
+
