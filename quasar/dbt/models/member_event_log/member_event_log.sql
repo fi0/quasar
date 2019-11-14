@@ -42,9 +42,9 @@ SELECT
     p."source" AS "source",
     p.id::varchar AS action_serial_id,
 (CASE WHEN p."source" ILIKE '%%sms%%' THEN 'sms'
-WHEN p."source" ILIKE '%%phoenix%%' OR p."source" IS NULL or p."source" ILIKE '%%turbovote%%' THEN 'web'
+WHEN p."source" ILIKE '%%phoenix%%' OR p."source" IS NULL OR p."source" ILIKE '%%turbovote%%' THEN 'web'
 WHEN p."source" ILIKE '%%app%%' THEN 'mobile_app'
-WHEN p."source" NOT LIKE '%%phoenix%%' AND p."source" NOT LIKE '%%sms%%' AND p."source" IS NOT NULL AND p."source" NOT LIKE '%%app%%' and p."source" NOT LIKE '%%turbovote%%' THEN 'other' END) AS "channel"
+WHEN p."source" NOT LIKE '%%phoenix%%' AND p."source" NOT LIKE '%%sms%%' AND p."source" IS NOT NULL AND p."source" NOT LIKE '%%app%%' AND p."source" NOT LIKE '%%turbovote%%' THEN 'other' END) AS "channel"
 FROM {{ ref('posts') }} p
 WHERE p.status IN ('accepted', 'confirmed', 'register-OVR', 'register-form', 'pending')
 UNION ALL

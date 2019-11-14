@@ -200,7 +200,7 @@ models:
             - "CREATE UNIQUE INDEX IF NOT EXISTS post_actions_unique ON {{ this }}(created_at, id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
-      mel:
+      member_event_log:
         member_event_log:
           alias: mel
           materialized: table
