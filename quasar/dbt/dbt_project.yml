@@ -205,7 +205,7 @@ models:
           alias: mel
           materialized: table
           post-hook:
-           - "CREATE UNIQUE INDEX mel_unique_i IF NOT EXISTS ON {{ this }}(timestamp, northstar_id, event_id)"
+           - "CREATE UNIQUE INDEX IF NOT EXISTS mel_unique_i ON {{ this }}(timestamp, northstar_id, event_id)"
            - "CREATE INDEX nid_timestamp_i IF NOT EXISTS ON {{ this }}(northstar_id, timestamp)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
