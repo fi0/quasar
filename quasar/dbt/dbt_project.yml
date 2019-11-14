@@ -206,7 +206,7 @@ models:
           materialized: table
           post-hook:
            - "CREATE UNIQUE INDEX IF NOT EXISTS mel_unique_i ON {{ this }}(timestamp, northstar_id, event_id)"
-           - "CREATE INDEX nid_timestamp_i IF NOT EXISTS ON {{ this }}(northstar_id, timestamp)"
+           - "CREATE INDEX IF NOT EXISTS nid_timestamp_i ON {{ this }}(northstar_id, timestamp)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
       news_subscription:
