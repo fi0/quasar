@@ -121,7 +121,7 @@ CREATE MATERIALIZED VIEW ds_dbt.user_activity AS (
 	    END AS user_unsubscribed_at,
 	CASE WHEN u."source" = 'importer-client' AND p.first_post = 'voter-reg'
 	    THEN 1 ELSE 0 END AS voter_reg_acquisition
-    FROM ds_dbt.users u
+    FROM public.users u
     LEFT JOIN (
 	SELECT
 	    northstar_id,
