@@ -202,7 +202,7 @@ models:
             - "GRANT SELECT ON {{ this }} TO looker"
       member_event_log:
         member_event_log:
-          alias: mel
+          alias: member_event_log
           materialized: table
           post-hook:
            - "CREATE UNIQUE INDEX IF NOT EXISTS mel_unique_i ON {{ this }}(timestamp, northstar_id, event_id)"
