@@ -7,14 +7,12 @@ requirements = convert_deps_to_pip(pfile['packages'], r=False)
 
 setup(
     name="quasar",
-    version="2019.11.14.4",
+    version="2019.11.15.2",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
         'console_scripts': [
             'bertly_refresh = quasar.bertly:refresh',
-            'campaign_info_recreate = quasar.campaign_info:create',
-            'campaign_info_refresh = quasar.campaign_info:refresh',
             'cio_consume = quasar.cio_consumer:main',
             'cio_import = quasar.cio_import_scratch_records:cio_import',
             'cio_bounced_backfill = quasar.cio_bounced_backfill:main',
@@ -25,7 +23,6 @@ setup(
             'mel_refresh = quasar.mel:refresh',
             'northstar_backfill = quasar.northstar_to_user_table:backfill',
             'northstar_full_backfill = quasar.northstar_to_user_table_full_backfill:backfill',
-            'post_actions_create = quasar.create_post_actions:main',
             'rogue_ghost_killer = quasar.ghost_killer:main',
             'user_activity_create = quasar.user_activity:create',
             'user_activity_refresh = quasar.user_activity:refresh'
