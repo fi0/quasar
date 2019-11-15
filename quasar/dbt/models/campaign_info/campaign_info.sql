@@ -10,7 +10,7 @@ SELECT
 	i.campaign_node_id_title,
 	i.campaign_run_id_title,
 	i.campaign_action_type,
-	i.campaign_cause_type,
+	COALESCE(c.cause, i.campaign_cause_type) AS campaign_cause_type,
 	i.campaign_noun,
 	i.campaign_verb,
 	i.campaign_cta
