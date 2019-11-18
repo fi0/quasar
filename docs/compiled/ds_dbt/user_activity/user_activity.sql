@@ -74,7 +74,7 @@ time_to_actions AS (
 	FROM "quasar_prod_warehouse"."public"."reportbacks" r
 	LEFT JOIN LATERAL (
 	    SELECT "timestamp" AS next_action_ts, action_type AS next_action_type
-	    FROM "quasar_prod_warehouse"."public"."mel"
+	    FROM "quasar_prod_warehouse"."public"."member_event_log"
 	    WHERE northstar_id = r.northstar_id AND "timestamp" > r.post_created_at
 	    ORDER BY "timestamp" ASC
 	    LIMIT 1
@@ -133,7 +133,7 @@ LEFT JOIN rb_summary r
 ON u.northstar_id = r.northstar_id
 LEFT JOIN (
     SELECT northstar_id, max("timestamp") AS most_recent_action
-    FROM "quasar_prod_warehouse"."public"."mel"
+    FROM "quasar_prod_warehouse"."public"."member_event_log"
     GROUP BY northstar_id
 ) mel
 ON u.northstar_id = mel.northstar_id
