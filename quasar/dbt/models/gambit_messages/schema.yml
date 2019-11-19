@@ -13,7 +13,7 @@ models:
       - name: broadcast_id
         description: If set, this message was an outbound broadcast (when direction == 'outbound-api-send'), or the User's reply to an outbound broadcast (when direction == 'inbound')
       - name: campaign_id
-        description: '{{ doc("campaign_id") }}'
+        description: If set, holds a reference to the **last** campaign topic the member's conversation was in. This is useful to allow members to talk to Gambit and get quick responses (through Rivescript), without Gambit completely forgetting what state the member's interaction with a campaign topic was in. '{{ doc("campaign_id") }}'
       - name: conversation_id
         description: Conversation the Message belongs to.
       - name: created_at
