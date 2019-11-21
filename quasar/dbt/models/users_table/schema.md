@@ -1,6 +1,3 @@
-{% docs customer_id %}
-Users' unique identifier from CIO.
-{% enddocs %}
 
 {% docs created_at %}
 When the user was created
