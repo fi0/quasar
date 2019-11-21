@@ -111,4 +111,7 @@ models:
         - name: last_updated_at
           description: '{{ doc("last_updated_at") }}'
 
+        - name: school_id
+          description: '{{ doc("school_id") }}'
+
 

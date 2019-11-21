@@ -103,7 +103,9 @@ Whether the user is subscribed. (bool)
 Timestamp when users's was updated.
 {% enddocs %}
 
-
+{% docs school_id %}
+Unique identifier for the user's school. This info comes from the school finder.
+{% enddocs %}
 
 
 
