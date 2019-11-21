@@ -6,7 +6,7 @@ models:
 
     columns:
         - name: customer_id
-          description: '{{ doc("customer_id") }}'
+          description: This customer_id we set when we send data to Customer.io, and is the Northstar ID of the user. '{{ doc("northstar_id") }}'
 
         - name: event_type
           description: '{{ doc("event_type") }}'
