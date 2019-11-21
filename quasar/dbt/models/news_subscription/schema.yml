@@ -24,7 +24,7 @@ models:
           description: '{{ doc("northstar_id") }}'
 
         - name: newsletter_topic
-          description: Newsletter topic. (e.g. community, lifestyle)
+          description: '{{ doc("newsletter_topic") }}'
 
         - name: topic_subscribed_at
           description: Timestamp when user subscribed to the newsletter topic

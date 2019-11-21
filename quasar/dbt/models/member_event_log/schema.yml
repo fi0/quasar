@@ -12,7 +12,7 @@ models:
           description: '{{ doc("northstar_id") }}'
 
         - name: timestamp
-          description: '{{ doc("timestamp") }}'
+          description: '{{ doc("created_at") }}'
 
         - name: action_type
           description: '{{ doc("action_type") }}'

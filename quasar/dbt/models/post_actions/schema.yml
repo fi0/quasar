@@ -9,7 +9,7 @@ models:
           description: '{{ doc("id") }}'
 
         - name: name
-          description: '{{ doc("name") }}'
+          description: Name of the action. (e.g. Huddle for Heroes Photo Reportback)
 
         - name: campaign_id
           description: '{{ doc("campaign_id") }}'
