@@ -1,0 +1,248 @@
+version: 2
+
+models:
+  - name: posts
+    description: A table containing information about posts
+
+    columns:
+        - name: northstar_id
+          description: '{{ doc("northstar_id") }}'
+          tests:
+              - not_null
+
+        - name: id
+          description: '{{ doc("id") }}'
+
+        - name: type
+          description: '{{ doc("type") }}'
+
+        - name: action
+          description: '{{ doc("action") }}'
+
+        - name: status
+          description: '{{ doc("status") }}'
+
+        - name: quantity
+          description: '{{ doc("quantity") }}'
+
+        - name: campaign_id
+          description: '{{ doc("campaign_id") }}'
+
+        - name: reportback_volume
+          description: '{{ doc("reportback_volume") }}'
+
+        - name: source
+          description: '{{ doc("source") }}'
+
+        - name: source_bucket
+          description: '{{ doc("source_bucket") }}'
+
+        - name: created_at
+          description: '{{ doc("created_at") }}'
+
+        - name: url
+          description: '{{ doc("url") }}'
+
+        - name: text
+          description: '{{ doc("text") }}'
+
+        - name: signup_id
+          description: '{{ doc("signup_id") }}'
+
+        - name: post_class
+          description: '{{ doc("post_class") }}'
+
+        - name: is_accepted
+          description: '{{ doc("is_accepted") }}'
+
+        - name: action_id
+          description: '{{ doc("action_id") }}'
+
+        - name: location
+          description: '{{ doc("location") }}'
+
+        - name: postal_code
+          description: '{{ doc("postal_code") }}'
+
+        - name: is_reportback
+          description: '{{ doc("is_reportback") }}'
+
+        - name: civic_action
+          description: '{{ doc("civic_action") }}'
+
+        - name: scholarship_entry
+          description: '{{ doc("scholarship_entry") }}'
+
+  - name: reportbacks
+    description: A table containing information about reportbacks
+
+    columns:
+        - name: northstar_id
+          description: '{{ doc("northstar_id") }}'
+          tests:
+              - not_null
+
+        - name: post_id
+          description: '{{ doc("id") }}'
+
+        - name: signup_id
+          description: '{{ doc("signup_id") }}'
+
+        - name: campaign_id
+          description: '{{ doc("campaign_id") }}'
+
+        - name: post_action
+          description: '{{ doc("action") }}'
+
+        - name: post_type
+          description: '{{ doc("type") }}'
+
+        - name: post_status
+          description: '{{ doc("status") }}'
+
+        - name: post_class
+          description: '{{ doc("post_class") }}'
+
+        - name: post_created_at
+          description: '{{ doc("created_at") }}'
+
+        - name: post_source
+          description: '{{ doc("source") }}'
+
+        - name: post_source_bucket
+          description: '{{ doc("source_bucket") }}'
+
+        - name: reportback_volume
+          description: '{{ doc("reportback_volume") }}'        
+
+        - name: civic_action
+          description: '{{ doc("civic_action") }}'
+
+        - name: scholarship_entry
+          description: '{{ doc("scholarship_entry") }}'
+
+        - name: location
+          description: '{{ doc("location") }}'
+
+        - name: postal_code
+          description: '{{ doc("postal_code") }}'
+
+        - name: post_bucket
+          description: Grouping to which a post belongs (e.g. photo_rbs, phone_calls, social)
+
+  - name: rock_the_vote
+    description: A table containing ingested Rock the Vote data
+
+    columns:
+        - name: post_id
+          description: '{{ doc("id") }}'
+
+        - name: tracking_source
+          description: CSV string representing source of record (e.g. campaignID:822,campaignRunID:8171,source:web,source_details:STV_Affirmation) '{{ doc("source_details") }}'
+
+        - name: started_registration
+          description: When the user started registration. '{{ doc("created_at") }}'
+
+        - name: finish_with_state
+          description: Whether the user ?
+
+        - name: status
+          description: Status of the submission. (e.g. complete, rejected, step 1)
+
+        - name: email
+          description: '{{ doc("email") }}'
+
+        - name: zip
+          description: '{{ doc("postal_code") }}'
+
+  - name: signups
+    description: A table containing information about signups
+
+    columns:
+        - name: northstar_id
+          description: '{{ doc("northstar_id") }}'
+          tests:
+              - not_null
+
+        - name: id
+          description: '{{ doc("id") }}'
+
+        - name: campaign_id
+          description: '{{ doc("campaign_id") }}'
+
+        - name: campaign_run_id
+          description: Defined in web events docs. Fix this.
+
+        - name: why_participated
+          description: '{{ doc("why_participated") }}'
+
+        - name: source
+          description: '{{ doc("source") }}'
+
+        - name: details
+          description: '{{ doc("details") }}'
+
+        - name: source_bucket
+          description: '{{ doc("source_bucket") }}'
+
+        - name: created_at
+          description: '{{ doc("created_at") }}'
+
+        - name: source_details
+          description: '{{ doc("source_details") }}'
+
+        - name: utm_medium
+          description: '{{ doc("utm_medium") }}'
+
+        - name: utm_source
+          description: '{{ doc("utm_source") }}'
+
+        - name: utm_campaign
+          description: '{{ doc("utm_campaign") }}'
+
+  - name: turbovote
+    description: A table containing information about Turbovote registrations
+
+    columns:
+        - name: post_id
+          description: '{{ doc("id") }}'
+
+        - name: hostname
+          description: '{{ doc("host") }}'
+
+        - name: referral_code
+          description: "???"
+
+        - name: partner_comms_opt_in
+          description: "??? Always NULL?"
+
+        - name: created_at
+          description: '{{ doc("created_at") }}'
+
+        - name: updated_at
+          description: '{{ doc("updated_at") }}'
+
+        - name: source_details
+          description: '{{ doc("source_details") }}'
+
+        - name: source_details
+          description: '{{ doc("source_details") }}'
+
+        - name: voter_registration_status
+          description: Status of the voter's registration. Always NULL?
+
+        - name: voter_registration_source
+          description: Source of the registration. Always NULL?
+
+        - name: voter_registration_method
+          description: Method of registration. Always NULL?
+
+        - name: voter_registration_preference
+          description: Preference of registration. Always NULL?
+
+        - name: email_subscribed
+          description: Whether the use is subscribed to email
+
+        - name: sms_subscribed
+          description: Whether the use is subscribed to SMS
+
