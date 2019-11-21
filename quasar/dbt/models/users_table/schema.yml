@@ -1,0 +1,114 @@
+version: 2
+
+models:
+  - name: cio_latest_status
+    description: Table containing users' latest status from CIO API.
+
+    columns:
+        - name: customer_id
+          description: '{{ doc("customer_id") }}'
+
+        - name: event_type
+          description: '{{ doc("event_type") }}'
+
+        - name: timestamp
+          description: '{{ doc("event_datetime") }}'
+
+  - name: users
+    description: A table containing aggregated user data.
+
+    columns:
+        - name: northstar_id
+          description: '{{ doc("northstar_id") }}'
+
+        - name: created_at
+          description: '{{ doc("created_at") }}'
+
+        - name: last_logged_in
+          description: '{{ doc("last_logged_in") }}'
+
+        - name: last_accessed
+          description: '{{ doc("last_accessed") }}'
+
+        - name: last_messaged_at
+          description: '{{ doc("last_messaged_at") }}'
+
+        - name: source
+          description: '{{ doc("source") }}'
+
+        - name: email
+          description: '{{ doc("email") }}'
+
+        - name: facebook_id
+          description: '{{ doc("facebook_id") }}'
+
+        - name: mobile
+          description: '{{ doc("mobile") }}'
+
+        - name: birthdate
+          description: '{{ doc("birthdate") }}'
+
+        - name: first_name
+          description: '{{ doc("first_name") }}'
+
+        - name: last_name
+          description: '{{ doc("last_name") }}'
+
+        - name: voter_registration_status
+          description: '{{ doc("voter_registration_status") }}'
+
+        - name: address_street_1
+          description: '{{ doc("address_street_1") }}'
+
+        - name: address_street_2
+          description: '{{ doc("address_street_2") }}'
+
+        - name: city
+          description: '{{ doc("city") }}'
+
+        - name: state
+          description: '{{ doc("state") }}'
+
+        - name: zipcode
+          description: '{{ doc("postal_code") }}'
+
+        - name: country
+          description: '{{ doc("country") }}'
+
+        - name: language
+          description: '{{ doc("language") }}'
+
+        - name: cio_status
+          description: '{{ doc("cio_status") }}'
+
+        - name: cio_status_timestamp
+          description: '{{ doc("cio_status_timestamp") }}'
+
+        - name: sms_status
+          description: '{{ doc("sms_status") }}'
+
+        - name: source_detail
+          description: '{{ doc("source_detail") }}'
+
+        - name: utm_medium
+          description: '{{ doc("utm_medium") }}'
+
+        - name: utm_source
+          description: '{{ doc("utm_source") }}'
+
+        - name: utm_campaign
+          description: '{{ doc("utm_campaign") }}'
+
+        - name: badges
+          description: '{{ doc("badges") }}'
+
+        - name: refer_friends
+          description: '{{ doc("refer_friends") }}'
+
+        - name: subscribed_member
+          description: '{{ doc("subscribed_member") }}'
+
+        - name: last_updated_at
+          description: '{{ doc("last_updated_at") }}'
+
+
