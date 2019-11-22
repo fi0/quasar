@@ -63,7 +63,7 @@ models:
           description: '{{ doc("time_to_first_rb") }}'
 
         - name: sms_unsubscribed_at
-          description: '{{ doc("email_unsubscribed_at") }}'
+          description: '{{ doc("user_unsubscribed_at") }}'
 
         - name: user_unsubscribed_at
           description: '{{ doc("user_unsubscribed_at") }}'
