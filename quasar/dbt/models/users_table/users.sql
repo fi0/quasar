@@ -49,5 +49,8 @@ INNER JOIN
 	FROM northstar.users utemp
 	GROUP BY utemp.id) umax ON umax.id = u.id AND umax.max_update = u.updated_at
 LEFT JOIN {{ ref('cio_latest_status') }} email_status ON email_status.customer_id = u.id
-WHERE u.email NOT SIMILAR TO '%runscope%@%'
-AND (u.email NOT SIMILAR TO '%@%dosomething%' OR u.email IS NULL)
+WHERE
+	(u."source" IS DISTINCT FROM 'runscope'
+	AND u."source" IS DISTINCT FROM 'runscope-client'
+	AND u.email NOT SIMILAR TO '%runscope%@%'
+	AND u.email NOT SIMILAR TO '%@%dosomething%') OR u.email IS NULL
