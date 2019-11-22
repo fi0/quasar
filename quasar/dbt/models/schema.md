@@ -561,3 +561,7 @@ Unique identifier for the user's school. This info comes from the school finder.
 Newsletter topic. (e.g. community, lifestyle)
 {% enddocs %}
 
+{% docs user_agent %}
+Full user agent string for a user's browser (e.g. "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:24.0) Gecko/20100101 Firefox/24.0")
+{% enddocs %}
+
