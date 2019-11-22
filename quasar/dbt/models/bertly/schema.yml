@@ -18,7 +18,7 @@ models:
           description: '{{ doc("target_url") }}'
 
         - name: user_agent
-          description: '{{ doc("user_agent") }}'
+          description: '{{ doc("browser_size") }}'
 
         - name: northstar_id
           description: '{{ doc("northstar_id") }}'
