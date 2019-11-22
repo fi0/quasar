@@ -1,4 +1,4 @@
-SELECT 
+SELECT
 	u.id AS northstar_id,
 	u.created_at,
 	umax.max_last_auth AS last_logged_in,
@@ -9,7 +9,7 @@ SELECT
 	u.email,
 	u.facebook_id,
 	u.mobile,
-	CASE WHEN 
+	CASE WHEN
 		u.birthdate < '1900-01-01' OR 
 		u.birthdate > (date('now') - INTERVAL '10 years') 
 		THEN NULL ELSE u.birthdate END AS birthdate,
@@ -32,14 +32,14 @@ SELECT
 	substring(u.source_detail from '(?<=utm_campaign\:)(\w*)') AS utm_campaign,
 	(u.feature_flags #>> '{badges}')::boolean as badges,
 	(u.feature_flags #>> '{refer-friends}')::boolean as refer_friends,
-	CASE WHEN 
-		u.sms_status in ('active','less','pending') OR 
+	CASE WHEN
+		u.sms_status in ('active','less','pending') OR
 		email_status.event_type = 'customer_subscribed' 
 		THEN TRUE ELSE FALSE END AS subscribed_member,
 	umax.max_update AS last_updated_at,
 	u.school_id
 FROM northstar.users u
-INNER JOIN 
+INNER JOIN
 	(SELECT
 		utemp.id,
 		max(utemp.updated_at) AS max_update,
@@ -49,8 +49,8 @@ INNER JOIN
 	FROM northstar.users utemp
 	GROUP BY utemp.id) umax ON umax.id = u.id AND umax.max_update = u.updated_at
 LEFT JOIN {{ ref('cio_latest_status') }} email_status ON email_status.customer_id = u.id
-WHERE u."source" IS DISTINCT FROM 'runscope'
-AND u."source" IS DISTINCT FROM 'runscope-client'
-AND u.email IS DISTINCT FROM 'runscope-scheduled-test@dosomething.org'
-AND u.email IS DISTINCT FROM 'juy+runscopescheduledtests@dosomething.org'
-AND (u.email NOT ILIKE '%%@example.org%%' OR u.email IS NULL) 
+WHERE
+	(u."source" IS DISTINCT FROM 'runscope'
+	AND u."source" IS DISTINCT FROM 'runscope-client'
+	AND u.email NOT SIMILAR TO '%runscope%@%'
+	AND u.email NOT SIMILAR TO '%@%dosomething%') OR u.email IS NULL
