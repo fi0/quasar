@@ -36,7 +36,8 @@ SELECT
 		u.sms_status in ('active','less','pending') OR
 		email_status.event_type = 'customer_subscribed' 
 		THEN TRUE ELSE FALSE END AS subscribed_member,
-	umax.max_update AS last_updated_at
+	umax.max_update AS last_updated_at,
+	u.school_id
 FROM northstar.users u
 INNER JOIN
 	(SELECT
