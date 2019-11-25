@@ -22,6 +22,17 @@ SELECT DISTINCT
 	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS exit_page
 FROM {{ ref('snowplow_phoenix_events') }}
 ),
+session_referrer AS (
+SELECT DISTINCT
+    session_id,
+    first_value(referrer_host) OVER (PARTITION BY session_id ORDER BY event_datetime 
+	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS session_referrer_host,
+    first_value(page_utm_source) OVER (PARTITION BY session_id ORDER BY event_datetime 
+	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS session_utm_source,
+    first_value(page_utm_campaign) OVER (PARTITION BY session_id ORDER BY event_datetime 
+	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS session_utm_campaign 
+FROM {{ ref('snowplow_phoenix_events') }}
+),
 time_between_sessions AS (
 SELECT DISTINCT
     device_id,
@@ -37,6 +48,9 @@ p.event_id,
 s.device_id,
 s.landing_datetime,
 s.ending_datetime,
+r.session_referrer_host,
+r.session_utm_source,
+r.session_utm_campaign,
 s.session_duration_seconds,
 s.num_pages_viewed,
 p.landing_page,
@@ -45,5 +59,7 @@ date_part('day', s.landing_datetime - t.prev_session_endtime) AS days_since_last
 FROM sessions s
 LEFT JOIN entry_exit_pages p
 ON p.session_id = s.session_id
+LEFT JOIN session_referrer r
+ON r.session_id = s.session_id
 LEFT JOIN time_between_sessions t
 ON t.session_id = s.session_id
