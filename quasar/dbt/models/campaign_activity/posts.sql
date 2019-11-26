@@ -44,6 +44,7 @@ SELECT
 	pd.location,
 	pd.postal_code,
 	a.reportback AS is_reportback,
+	pd.details::json ->> 'number_of_participants' AS num_participants,
 	a.civic_action,
 	a.scholarship_entry
 FROM {{ env_var('FT_ROGUE') }}.posts pd
