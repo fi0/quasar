@@ -107,10 +107,6 @@ Why the user participated in this action. Entered by the user.
 Details about the post. Contains contentfulId and other information (e.g. {"campaignContentfulId":"6ATBgGEQEeJoIcxs1qbwaC"})
 {% enddocs %}
 
-{% docs reportback_volume %}
-"???"
-{% enddocs %}
-
 {% docs email %}
 Email address of the user.
 {% enddocs %}
@@ -118,7 +114,6 @@ Email address of the user.
 {% docs source_details %}
 Details about the source of the item. This is sometimes represented as a JSON object, and for other tables like Turbovote its represented as a string. (e.g. "{"contentful_id":"3CTLlXfbwtz1FOMpl31SKV","utm_source":"scholarship_listing","utm_medium":"referral","utm_campaign":"fastweb_2019_08"}", newsletter_456)
 {% enddocs %}
-
 
 {% docs campaign_id %}
 This is a unique identifier for the campaign
@@ -349,7 +344,7 @@ Date time in UTC when a user deleted their post.
 {% enddocs %}
 
 {% docs _fivetran_deleted %}
- marks rows that were deleted in the source table
+Marks rows that were deleted in the source table
 {% enddocs %}
 
 {% docs _fivetran_synced %}
@@ -387,7 +382,6 @@ Whether the action is a online as opposed to IRL.
 {% docs time_commitment %}
 Estimated time required to do the action (e.g. 3.0+, <0.5)
 {% enddocs %}
-
 
 {% docs num_signups %}
 Quantity of campaign signups
@@ -495,6 +489,14 @@ User's last name
 
 {% docs voter_registration_status %}
 User's registration status. (e.g. registration_complete, confirmed, uncertain) 
+{% enddocs %}
+
+{% docs finish_with_state %}
+If the registrant was eligible to use and passed through to complete their registration with their state’s OVR system, it will be indicated in this field (direct quote from Rock-The-Vote documentation). Yes/No value in field.
+{% enddocs %}
+
+{% docs reportback_volume %}
+This field returns 1 if non voter-reg action, since campaigns team only counts those a 1 reportback. If voter-reg action, we want to count quantity of post as number of registered voters.
 {% enddocs %}
 
 {% docs address_street_1 %}
