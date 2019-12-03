@@ -32,6 +32,7 @@ SELECT
 	substring(u.source_detail from '(?<=utm_campaign\:)(\w*)') AS utm_campaign,
 	(u.feature_flags #>> '{badges}')::boolean as badges,
 	(u.feature_flags #>> '{refer-friends}')::boolean as refer_friends,
+	(u.feature_flags #>> '{refer-friends-scholarship}')::boolean as refer_friends_scholarship,
 	CASE WHEN
 		u.sms_status in ('active','less','pending') OR
 		email_status.event_type = 'customer_subscribed' 
