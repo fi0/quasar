@@ -45,7 +45,7 @@ SELECT
 	pd.postal_code,
 	a.reportback AS is_reportback,
 	CASE 
-	    WHEN pd.details <> '' THEN pd.details::json ->> 'number_of_participants' 
+	    WHEN pd.details <> '' THEN (pd.details::json ->> 'number_of_participants')::INT
 	    ELSE NULL END AS num_participants,
 	a.civic_action,
 	a.scholarship_entry
