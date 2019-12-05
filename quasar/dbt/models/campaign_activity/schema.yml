@@ -73,6 +73,9 @@ models:
         - name: scholarship_entry
           description: '{{ doc("scholarship_entry") }}'
 
+        - name: school_id
+          description: '{{ doc("school_id") }}'
+
   - name: reportbacks
     description: A table containing information about reportbacks
 

@@ -48,7 +48,8 @@ SELECT
 	    WHEN pd.details <> '' THEN (pd.details::json ->> 'number_of_participants')::INT
 	    ELSE NULL END AS num_participants,
 	a.civic_action,
-	a.scholarship_entry
+	a.scholarship_entry,
+	pd.school_id
 FROM ft_dosomething_rogue.posts pd
 INNER JOIN "quasar_prod_warehouse"."public"."signups" s
 	ON pd.signup_id = s.id
