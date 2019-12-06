@@ -16,9 +16,8 @@ devices_an AS (
     FROM devices_all
     WHERE northstar_id IS NOT NULL
 )
-
 SELECT device_id, northstar_id
 FROM devices_all
 UNION ALL
 SELECT device_id, NULL
-FROM devices_an;
+FROM devices_an
