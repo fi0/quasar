@@ -223,3 +223,12 @@ models:
            - "CREATE INDEX IF NOT EXISTS email_subscription_topics_i ON {{ this }}(topic_subscribed_at, northstar_id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
+      user_journey:
+        device_northstar:
+          alias: device_northstar
+          materialized: table
+          post-hook:
+            - "CREATE INDEX ON {{ this }}(device_id)"
+            - "CREATE INDEX ON {{ this }}(northstar_id)"
+            - "GRANT SELECT ON {{ this }} TO dsanalyst"
+            - "GRANT SELECT ON {{ this }} TO looker"
