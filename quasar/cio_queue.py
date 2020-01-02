@@ -171,36 +171,32 @@ class CioQueue(QuasarQueue):
                      "C.IO event id {}.")).format(data['event_id']))
 
     def process_message(self, message_data):
-        if pydash.get(message_data, 'data.meta.message_source') == 'rogue':
-            message_id = pydash.get(message_data, 'data.data.id')
-            log("Ack'ing Rogue message id {}".format(message_id))
-        else:
-            data = message_data['data']
-            event_type = pydash.get(data, 'event_type')
-            # Set for checking email event types.
-            email_event = {
-                'email_bounced',
-                'email_converted',
-                'email_opened',
-                'email_unsubscribed'
-            }
-            try:
-                if event_type == 'customer_subscribed':
-                    self._add_sub_event(data)
-                elif event_type == 'customer_unsubscribed':
-                    self._add_unsub_event(data)
-                elif event_type == 'email_clicked':
-                    self._add_email_click_event(data)
-                elif event_type == 'email_sent':
-                    self._add_email_sent_event(data)
-                elif event_type == 'email_bounced':
-                    self._add_email_bounced_event(data)
-                elif event_type in email_event:
-                    self._add_email_event(data)
-                else:
-                    pass
-            except KeyError as e:
-                logerr("C.IO message missing {}".format(e))
-            except:
-                logerr("Something went wrong with C.IO consumer!")
-                sys.exit(1)
+        data = message_data['data']
+        event_type = pydash.get(data, 'event_type')
+        # Set for checking email event types.
+        email_event = {
+            'email_bounced',
+            'email_converted',
+            'email_opened',
+            'email_unsubscribed'
+        }
+        try:
+            if event_type == 'customer_subscribed':
+                self._add_sub_event(data)
+            elif event_type == 'customer_unsubscribed':
+                self._add_unsub_event(data)
+            elif event_type == 'email_clicked':
+                self._add_email_click_event(data)
+            elif event_type == 'email_sent':
+                self._add_email_sent_event(data)
+            elif event_type == 'email_bounced':
+                self._add_email_bounced_event(data)
+            elif event_type in email_event:
+                self._add_email_event(data)
+            else:
+                pass
+        except KeyError as e:
+            logerr("C.IO message missing {}".format(e))
+        except:
+            logerr("Something went wrong with C.IO consumer!")
+            sys.exit(1)
