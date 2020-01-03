@@ -16,17 +16,17 @@ SELECT
     pd.location,
     pd.postal_code,
     CASE
-        WHEN (pd.post_class ilike '%%vote%%' AND pd.status = 'confirmed')
+        WHEN (pd.post_class ilike '%vote%' AND pd.status = 'confirmed')
         THEN 'self-reported registrations'
-        WHEN (pd.post_class ilike '%%vote%%' AND pd.status <> 'confirmed')
+        WHEN (pd.post_class ilike '%vote%' AND pd.status <> 'confirmed')
         THEN 'voter_registrations'
-        WHEN pd."type" ilike '%%photo%%' AND pd.post_class NOT ilike '%%vote%%'
+        WHEN pd."type" ilike '%photo%' AND pd.post_class NOT ilike '%vote%'
         THEN 'photo_rbs'
-        WHEN pd."type" ilike '%%text%%'
+        WHEN pd."type" ilike '%text%'
         THEN 'text_rbs'
-        WHEN pd."type" ilike '%%social%%'
+        WHEN pd."type" ilike '%social%'
         THEN 'social'
-        WHEN pd."type" ilike '%%call%%'
+        WHEN pd."type" ilike '%call%'
         THEN 'phone_calls'
         ELSE NULL END AS post_bucket
 FROM "quasar_prod_warehouse"."public"."posts" pd

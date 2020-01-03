@@ -14,7 +14,7 @@ SELECT
 	pd."source" AS "source",
 	CASE
 		WHEN pd."source" IS NULL THEN NULL
-		WHEN pd."source" ilike '%%sms%%' THEN 'sms'
+		WHEN pd."source" ilike '%sms%' THEN 'sms'
 		ELSE 'web' END AS source_bucket,
 	CASE
 		WHEN pd."type" = 'phone-call' AND pd.details <> ''
@@ -34,10 +34,10 @@ SELECT
 		THEN NULL
 		ELSE CONCAT(pd."type", ' - ', a."name") END AS post_class,
 	CASE WHEN pd.status IN ('accepted', 'pending')
-		AND a."name" NOT ILIKE '%%vote%%'
+		AND a."name" NOT ILIKE '%vote%'
 		THEN 1
 		WHEN pd.status IN ('accepted', 'confirmed', 'register-OVR', 'register-form')
-		AND a."name" ILIKE '%%vote%%'
+		AND a."name" ILIKE '%vote%'
 		THEN 1
 		ELSE NULL END AS is_accepted,
 	pd.action_id,
