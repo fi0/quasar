@@ -213,11 +213,11 @@ models:
         - name: hostname
           description: '{{ doc("host") }}'
 
-        - name: referral_code
+        - name: referral-code
           description: "???"
 
-        - name: partner_comms_opt_in
-          description: "??? Always NULL?"
+        - name: partner-comms-opt-in
+          description: "???"
 
         - name: created_at
           description: '{{ doc("created_at") }}'
@@ -228,24 +228,20 @@ models:
         - name: source_details
           description: '{{ doc("source_details") }}'
 
-        - name: source_details
-          description: '{{ doc("source_details") }}'
+        - name: voter-registration-status
+          description: Status of the voter's registration.
 
-        - name: voter_registration_status
-          description: Status of the voter's registration. Always NULL?
+        - name: voter-registration-source
+          description: Source of the registration.
 
-        - name: voter_registration_source
-          description: Source of the registration. Always NULL?
+        - name: voter-registration-method
+          description: Method of registration.
 
-        - name: voter_registration_method
-          description: Method of registration. Always NULL?
+        - name: voter-registration-preference
+          description: Preference of registration.
 
-        - name: voter_registration_preference
-          description: Preference of registration. Always NULL?
-
-        - name: email_subscribed
+        - name: email subscribed
           description: Whether the use is subscribed to email
 
-        - name: sms_subscribed
+        - name: sms subscribed
           description: Whether the use is subscribed to SMS
-
