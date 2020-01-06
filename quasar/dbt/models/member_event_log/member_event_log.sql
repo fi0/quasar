@@ -10,11 +10,11 @@ SELECT
     CASE 
     	WHEN date_trunc('month', a."timestamp") = date_trunc('month', u.created_at) 
     	THEN 'New' 
-    	ELSE 'Returning' END 
+    	ELSE 'Returning' END
     	AS "type",
     MIN("timestamp") 
     	OVER 
-    	(PARTITION BY a.northstar_id, date_trunc('month', a."timestamp")) 
+    	(PARTITION BY a.northstar_id, date_trunc('month', a."timestamp"))
     	AS first_action_month
 FROM ( 
 SELECT
@@ -24,11 +24,11 @@ SELECT
     '1' AS action_id, 
     s."source" AS "source",
     s.id::varchar AS action_serial_id,
-(CASE WHEN s."source" ILIKE '%%sms%%' THEN 'sms'
-WHEN s."source" NOT LIKE '%%sms%%'AND s."source" NOT LIKE '%%email%%' AND s."source" NOT LIKE '%%niche%%' OR s."source" IN ('rock-the-vote', 'turbovote') THEN 'web'
-WHEN s."source" ILIKE '%%email%%' THEN 'email'
-WHEN s."source" ILIKE '%%niche%%' THEN 'niche_coregistration'
-WHEN s."source" NOT LIKE '%%sms%%'AND s."source" NOT LIKE '%%email%%' AND s."source" NOT LIKE '%%niche%%' AND s."source" NOT IN ('rock-the-vote', 'turbovote') AND s."source" IS NOT NULL THEN 'other' END) AS "channel"
+(CASE WHEN s."source" ILIKE '%sms%' THEN 'sms'
+WHEN s."source" NOT LIKE '%sms%'AND s."source" NOT LIKE '%email%' AND s."source" NOT LIKE '%niche%' OR s."source" IN ('rock-the-vote', 'turbovote') THEN 'web'
+WHEN s."source" ILIKE '%email%' THEN 'email'
+WHEN s."source" ILIKE '%niche%' THEN 'niche_coregistration'
+WHEN s."source" NOT LIKE '%sms%'AND s."source" NOT LIKE '%email%' AND s."source" NOT LIKE '%niche%' AND s."source" NOT IN ('rock-the-vote', 'turbovote') AND s."source" IS NOT NULL THEN 'other' END) AS "channel"
 FROM {{ ref('signups') }} s
 WHERE s."source" IS DISTINCT FROM 'importer-client'
 AND s."source" IS DISTINCT FROM 'rock-the-vote'
@@ -41,10 +41,10 @@ SELECT
     '2' AS action_id,
     p."source" AS "source",
     p.id::varchar AS action_serial_id,
-(CASE WHEN p."source" ILIKE '%%sms%%' THEN 'sms'
-WHEN p."source" ILIKE '%%phoenix%%' OR p."source" IS NULL OR p."source" ILIKE '%%turbovote%%' THEN 'web'
-WHEN p."source" ILIKE '%%app%%' THEN 'mobile_app'
-WHEN p."source" NOT LIKE '%%phoenix%%' AND p."source" NOT LIKE '%%sms%%' AND p."source" IS NOT NULL AND p."source" NOT LIKE '%%app%%' AND p."source" NOT LIKE '%%turbovote%%' THEN 'other' END) AS "channel"
+(CASE WHEN p."source" ILIKE '%sms%' THEN 'sms'
+WHEN p."source" ILIKE '%phoenix%' OR p."source" IS NULL OR p."source" ILIKE '%turbovote%' THEN 'web'
+WHEN p."source" ILIKE '%app%' THEN 'mobile_app'
+WHEN p."source" NOT LIKE '%phoenix%' AND p."source" NOT LIKE '%sms%' AND p."source" IS NOT NULL AND p."source" NOT LIKE '%app%' AND p."source" NOT LIKE '%turbovote%' THEN 'other' END) AS "channel"
 FROM {{ ref('posts') }} p
 WHERE p.status IN ('accepted', 'confirmed', 'register-OVR', 'register-form', 'pending')
 UNION ALL
@@ -62,7 +62,7 @@ AND u_access."source" IS DISTINCT FROM 'runscope'
 AND u_access."source" IS DISTINCT FROM 'runscope-client'
 AND u_access.email IS DISTINCT FROM 'runscope-scheduled-test@dosomething.org'
 AND u_access.email IS DISTINCT FROM 'juy+runscopescheduledtests@dosomething.org'
-AND (u_access.email NOT ILIKE '%%@example.org%%' OR u_access.email IS NULL) 
+AND (u_access.email NOT ILIKE '%@example.org%' OR u_access.email IS NULL) 
 UNION ALL
 SELECT DISTINCT 
     u_login.id AS northstar_id,
@@ -78,7 +78,7 @@ AND u_login."source" IS DISTINCT FROM 'runscope'
 AND u_login."source" IS DISTINCT FROM 'runscope-client'
 AND u_login.email IS DISTINCT FROM 'runscope-scheduled-test@dosomething.org'
 AND u_login.email IS DISTINCT FROM 'juy+runscopescheduledtests@dosomething.org'
-AND (u_login.email NOT ILIKE '%%@example.org%%' OR u_login.email IS NULL) 
+AND (u_login.email NOT ILIKE '%@example.org%' OR u_login.email IS NULL) 
 UNION ALL 
 SELECT
     DISTINCT u.id AS northstar_id,
@@ -87,10 +87,10 @@ SELECT
     '5' AS action_id,
     u."source" AS "source",
     '0' AS action_serial_id, 
-    (CASE WHEN u."source" ILIKE '%%sms%%' THEN 'sms'
-    WHEN u."source" ILIKE '%%phoenix%%' OR u."source" IS NULL THEN 'web'
-    WHEN u."source" ILIKE '%%niche%%' THEN 'niche_coregistration'
-    WHEN u."source" NOT LIKE '%%niche%%' AND u."source" NOT LIKE '%%sms%%' AND u."source" NOT LIKE '%%phoenix%%' AND u."source" IS NOT NULL THEN 'other' END) AS "channel"
+    (CASE WHEN u."source" ILIKE '%sms%' THEN 'sms'
+    WHEN u."source" ILIKE '%phoenix%' OR u."source" IS NULL THEN 'web'
+    WHEN u."source" ILIKE '%niche%' THEN 'niche_coregistration'
+    WHEN u."source" NOT LIKE '%niche%' AND u."source" NOT LIKE '%sms%' AND u."source" NOT LIKE '%phoenix%' AND u."source" IS NOT NULL THEN 'other' END) AS "channel"
 FROM
     (SELECT 
             u_create.id,
@@ -102,7 +102,7 @@ AND u_create."source" IS DISTINCT FROM 'runscope'
 AND u_create."source" IS DISTINCT FROM 'runscope-client'
 AND u_create.email IS DISTINCT FROM 'runscope-scheduled-test@dosomething.org'
 AND u_create.email IS DISTINCT FROM 'juy+runscopescheduledtests@dosomething.org'
-AND (u_create.email NOT ILIKE '%%@example.org%%' OR u_create.email IS NULL) 
+AND (u_create.email NOT ILIKE '%@example.org%' OR u_create.email IS NULL) 
     GROUP BY u_create.id) u
 UNION ALL 
 SELECT

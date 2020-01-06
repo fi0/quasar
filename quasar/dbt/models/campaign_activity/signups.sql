@@ -7,21 +7,21 @@ SELECT
     sd."source" AS "source",
     sd.details,
 	CASE WHEN sd."source" = 'niche' THEN 'niche'
-	     WHEN sd."source" ilike '%%sms%%' THEN 'sms'
+	     WHEN sd."source" ilike '%sms%' THEN 'sms'
 	     WHEN sd."source" in ('rock-the-vote', 'turbovote') THEN 'voter-reg'
 	     ELSE 'web' END AS source_bucket,
     sd.created_at AS created_at,
     sd.source_details,
     CASE 
-		WHEN source_details ILIKE '%%\}'
+		WHEN source_details ILIKE '%\}'
 		THEN (CAST(source_details as json) ->> 'utm_medium') 
 		ELSE NULL END AS utm_medium,
 	CASE 
-		WHEN source_details ILIKE '%%\}'
+		WHEN source_details ILIKE '%\}'
 		THEN (CAST(source_details as json) ->> 'utm_source') 
 		ELSE NULL END AS utm_source,
 	CASE 
-		WHEN source_details ILIKE '%%\}'
+		WHEN source_details ILIKE '%\}'
 		THEN (CAST(source_details as json) ->> 'utm_campaign') 
 		ELSE NULL END AS utm_campaign
 FROM {{ env_var('FT_ROGUE') }}.signups sd
