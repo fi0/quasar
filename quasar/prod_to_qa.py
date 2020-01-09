@@ -21,7 +21,8 @@ prod_pg_opts = {
 
 
 def main():
-    schemas = ["bertly", "cio", "dosomething", "ft_dosomething_rogue", "ft_gambit_conversations_api", "ft_snowplow", "northstar", "northstar_ft_userapi", "public"]
+    schemas = ["bertly", "cio", "dosomething", "ft_dosomething_rogue",
+               "ft_gambit_conversations_api", "ft_snowplow", "northstar", "northstar_ft_userapi", "public"]
 
     for schema in schemas:
         psql(pg_dump(
@@ -34,5 +35,3 @@ def main():
             '-U', qa_pg_opts['username'],
             '-d', qa_pg_opts['database']
         )
-
-
