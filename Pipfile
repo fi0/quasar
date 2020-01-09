@@ -30,6 +30,7 @@ SQLAlchemy = "*"
 dbt = "*"
 pipenv = "*"
 snowflake-connector-python = "*"
+sh = "*"
 
 [requires]
 python_version = "3.7"
