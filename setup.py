@@ -7,7 +7,7 @@ requirements = convert_deps_to_pip(pfile['packages'], r=False)
 
 setup(
     name="quasar",
-    version="2020.01.07.0",
+    version="2020.1.9.0",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
@@ -23,6 +23,7 @@ setup(
             'mel_refresh = quasar.mel:refresh',
             'northstar_backfill = quasar.northstar_to_user_table:backfill',
             'northstar_full_backfill = quasar.northstar_to_user_table_full_backfill:backfill',
+            'prod_to_qa = quasar.prod_to_qa:main',
             'rogue_ghost_killer = quasar.ghost_killer:main',
             'user_activity_create = quasar.user_activity:create',
             'user_activity_refresh = quasar.user_activity:refresh'
