@@ -169,9 +169,6 @@ models:
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
       campaign_info:
-        campaign_info_all:
-          alias: campaign_info_all
-          materialized: table
         campaign_info:
           alias: campaign_info
           materialized: table

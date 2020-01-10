@@ -15,5 +15,5 @@ SELECT
 	i.campaign_verb,
 	i.campaign_cta
 FROM {{ env_var('FT_ROGUE') }}.campaigns c
-LEFT JOIN {{ ref('campaign_info_all') }} i ON i.campaign_run_id = c.campaign_run_id
-WHERE i.campaign_language = 'en' OR i.campaign_language IS NULL 
+LEFT JOIN {{ env_var('CAMPAIGN_INFO_ASHES_SNAPSHOT') }}  i ON i.campaign_run_id = c.campaign_run_id
+WHERE i.campaign_language = 'en' OR i.campaign_language IS NULL
