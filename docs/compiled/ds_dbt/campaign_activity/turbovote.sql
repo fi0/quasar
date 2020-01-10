@@ -8,7 +8,7 @@ SELECT id AS post_id,
 	details::jsonb->>'voter-registration-status' AS voter_registration_status,
 	details::jsonb->>'voter-registration-source' AS voter_registration_source,
 	details::jsonb->>'voter-registration-method' AS voter_registration_method,
-	details::jsonb->>'voter-registration-preference' AS voter_registration_preference,
+	details::jsonb->>'voting-method-preference' AS voter_registration_preference,
 	details::jsonb->>'email subscribed' AS email_subscribed,
 	details::jsonb->>'sms subscribed' AS sms_subscribed
 FROM ft_dosomething_rogue.posts
