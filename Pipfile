@@ -28,9 +28,9 @@ xmltodict = "*"
 pydash = "*"
 python-dateutil = "==2.6.1"
 SQLAlchemy = "*"
-dbt = "==0.14.0"
+dbt = "==0.14.4"
+dbt-snowflake = "*"
 pipenv = "*"
-snowflake-connector-python = "*"
 sh = "*"
 
 [requires]
