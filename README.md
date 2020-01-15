@@ -107,14 +107,7 @@ More info on Python setup.py file can be found here:
 https://docs.python.org/3/distutils/setupscript.html
 ```
 
-
-## Running the tests
-
-We currently don't have any tests setup. :frowning:
-
-### End to end tests
-
-### Coding style tests
+## Coding style tests
 Multiple options are available here, but usually we stick to PEP8 syntax checking. 
 You can set one up in your editor/IDE of choice.
 If you like to stick to the CLI or run a manual check,
@@ -124,28 +117,6 @@ pipenv install --dev
 ```
 
 We use [Stickler CI](https://stickler-ci.com/) for linting on PR's before merging to master.
-
-### Unit tests
-
-## Deployment
-
-We currently deploy with Jenkins. The commands for the Jenkins deployment job 
-bash shell, using Pipenv for install are:
-```
-#!/bin/bash -e
-
-source ~/.profile
-git checkout ${BRANCH} (for QA) OR git checkout master && git pull (for Prod)
-pipenv install
-source $(pipenv --venv)/bin/activate
-make build
-deactivate
-```
-We have to use a somewhat hacky pipenv virtualenv activation here since `pipenv shell` only 
-runs interactively and fails out in the Jenkins job.
-
-Deployments are automatic to QA once a branch is merged into `master`. Prod deployments
-are handled manually from the Jenkins job once QA testing is done.
 
 ## Running Jenkins Jobs using Pipenv
 
@@ -171,6 +142,10 @@ source ~/quasar-env.src
 cd /home/quasar/workspace/"Deploy Branch"/quasar/dbt (for QA) or cd /home/quasar/workspace/"Deploy Master"/quasar/dbt (for Prod)
 pipenv run dbt ARGS
 ```
+
+## Deployment
+
+[DEPLOYMENT.md](/docs/deployment.md)
 
 ## Built With
 
