@@ -7,13 +7,11 @@
 
 ## Fivetran Refresh Schedule
 
-Data Source | Refresh Cadence
------------ | ---------------
-Rogue | 1 Hour
-Gambit | 1 Hour
-Snowplow | 1 Hour
-Northstar | 5 minutes
+Data Source | Refresh Cadence | Notes
+----------- | --------------- | -----
+Gambit | 1 Hour |
+Northstar | 5 minutes | Northstar cadence is set to 5 minutes vs other data sources since we perform DBT snapshots to capture user change diffs to create a log table.
+Rogue | 1 Hour |
+Snowplow | 1 Hour |
 
-Northstar cadence is set to 5 minutes vs other data sources since we perform DBT snapshots to capture user change diffs to create a log table.
-
-The refresh cadence is the same in Quasar Prod or QA environments.   
+The refresh cadence is the same in Quasar Prod or QA environments.
