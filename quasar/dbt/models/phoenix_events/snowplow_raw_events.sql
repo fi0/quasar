@@ -24,7 +24,8 @@ SELECT
 	p.url AS clicked_link_url,
 	p.campaign_id,
 	p.modal_type,
-	p.search_query
+	p.search_query,
+	p.context_source
   FROM {{ ref('snowplow_base_event') }} b
   LEFT JOIN {{ ref('snowplow_payload_event') }} p 
   ON b.event_id = p.event_id
