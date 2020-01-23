@@ -39,7 +39,7 @@ SELECT
 		THEN TRUE ELSE FALSE END AS subscribed_member,
 	umax.max_update AS last_updated_at,
 	u.school_id
-FROM "quasar_prod_warehouse"."public"."northstar_raw" u
+FROM "quasar_prod_warehouse"."public"."northstar_users_raw" u
 INNER JOIN
 	(SELECT
 		utemp.id,

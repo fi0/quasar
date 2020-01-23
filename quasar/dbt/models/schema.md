@@ -567,3 +567,86 @@ Newsletter topic. (e.g. community, lifestyle)
 Full user agent string for a user's browser (e.g. "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:24.0) Gecko/20100101 Firefox/24.0")
 {% enddocs %}
 
+{% docs drupal_id %}
+Old Drupal user ID
+{% enddocs %}
+
+{% docs campaigns %}
+Campaigns a user is signed up for.
+{% enddocs %}
+
+{% docs audit %}
+A very useful field with data containing information about changes to a user, e.g. timestamps when the user subscribed and unsubscribed.
+{% enddocs %}
+
+{% docs voting_plan_status %}
+The indication of the user's plan to vote, e.g. voting, not_voting, cant_vote
+{% enddocs %}
+
+{% docs voting_plan_time_of_day %}
+The time of day when the user plans to vote, e.g morning, afternoon, evening
+{% enddocs %}
+
+{% docs voting_plan_method_of_transport %}
+How the user plans to get to their polling place. e.g. walk, drive
+{% enddocs %}
+
+{% docs voting_plan_attending_with %}
+With Whom the user plans to go voting, e.g. family, friends, alone
+{% enddocs %}
+
+{% docs feature_flags %}
+JSON containing info on features like badges and refer-a-friend.
+{% enddocs %}
+
+{% docs dbt_updated_at %}
+DBT snapshot table data. The updated_at timestamp of the source record when this snapshot row was inserted.
+{% enddocs %}
+
+{% docs dbt_scd_id %}
+DBT snapshot table data. A unique key generated for each snapshotted record.
+{% enddocs %}
+
+{% docs dbt_valid_from %}
+DBT snapshot table data. The dbt_valid_from and dbt_valid_to columns indicate the historical state for a given record. The current value for a row is represented with a null value for dbt_valid_to. The timestamp when this snapshot row was first inserted
+{% enddocs %}
+
+{% docs dbt_valid_to %}
+DBT snapshot table data. The dbt_valid_from and dbt_valid_to columns indicate the historical state for a given record. The current value for a row is represented with a null value for dbt_valid_to. The timestamp when this row row became invalidated.
+{% enddocs %}
+
+{% docs google_id %}
+User's Google ID obtained from login.
+{% enddocs %}
+
+{% docs causes %}
+Causes in which a user is interested. e.g. animal welfare, education, mental_health
+{% enddocs %}
+
+{% docs email_subscription_status %}
+Email subscription status of the user
+{% enddocs %}
+
+{% docs role %}
+User's role, e.g. user, staff
+{% enddocs %}
+
+{% docs cio_backfilled %}
+Whether this user's data was backfilled from CIO
+{% enddocs %}
+
+{% docs addr_source %}
+Where the user submitted their address, e.g. sms, GDPR
+{% enddocs %}
+
+{% docs email_subscription_topics %}
+Email subscription topics correspond to categories in CIO in which the user is interested. e.g. lifestyle, community, scholarship
+{% enddocs %}
+
+{% docs sms_paused %}
+Whether we've paused sending sms messages to the user.
+{% enddocs %}
+
+
+
+

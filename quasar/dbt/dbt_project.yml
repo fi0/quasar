@@ -160,7 +160,7 @@ models:
            - "GRANT SELECT ON {{ this }} TO looker"
            - "GRANT SELECT ON {{ this }} TO public"
         northstar_users_raw:
-          alias: northstar_raw
+          alias: northstar_users_raw
           materialized: table
           post-hook:
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
