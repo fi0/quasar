@@ -45,7 +45,7 @@ SELECT
 	nus.causes::jsonb,
 	nus.school_id
 FROM northstar_ft_userapi.northstar_users_snapshot nus
-UNION
+UNION ALL
 SELECT
 	nu.id,
 	nu.country,
