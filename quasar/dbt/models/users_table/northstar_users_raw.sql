@@ -45,7 +45,7 @@ SELECT
 	nus.causes::jsonb,
 	nus.school_id
 FROM {{ env_var('NORTHSTAR_FT_SCHEMA') }}.northstar_users_snapshot nus
-UNION
+UNION ALL
 SELECT
 	nu.id,
 	nu.country,
