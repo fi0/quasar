@@ -19,6 +19,7 @@ SELECT
     i.campaign_name,
     e.modal_type,
     e.search_query,
+    e.context_source,
     e.session_id,
     e.browser_size,
     e.northstar_id,

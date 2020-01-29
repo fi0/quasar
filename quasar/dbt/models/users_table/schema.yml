@@ -114,4 +114,143 @@ models:
         - name: school_id
           description: '{{ doc("school_id") }}'
 
+  - name: northstar_users_raw
+    description: A table containing aggregated user data.
+
+    columns:
+        - name: northstar_id
+          description: '{{ doc("northstar_id") }}'
+
+        - name: country
+          description: '{{ doc("country") }}'
+
+        - name: birthdate
+          description: '{{ doc("birthdate") }}'
+
+        - name: drupal_id
+          description: '{{ doc("drupal_id") }}'
+
+        - name: email_subscription_status
+          description: '{{ doc("email_subscription_status") }}'
+
+        - name: created_at
+          description: '{{ doc("created_at") }}'
+
+        - name: addr_zip
+          description: '{{ doc("postal_code") }}'
+
+        - name: language
+          description: '{{ doc("language") }}'
+
+        - name: source
+          description: '{{ doc("source") }}'
+
+        - name: updated_at
+          description: '{{ doc("updated_at") }}'
+
+        - name: campaigns
+          description: '{{ doc("campaigns") }}'
+
+        - name: audit
+          description: '{{ doc("audit") }}'
+
+        - name: first_name
+          description: '{{ doc("first_name") }}'
+
+        - name: email
+          description: '{{ doc("email") }}'
+
+        - name: last_name
+          description: '{{ doc("last_name") }}'
+
+        - name: addr_state
+          description: '{{ doc("state") }}'
+
+        - name: addr_street_2
+          description: '{{ doc("address_street_2") }}'
+
+        - name: addr_street_1
+          description: '{{ doc("address_street_1") }}'
+
+        - name: addr_city
+          description: '{{ doc("city") }}'
+
+        - name: role
+          description: '{{ doc("role") }}'
+
+        - name: sms_status
+          description: '{{ doc("sms_status") }}'
+
+        - name: last_authenticated_at
+          description: '{{ doc("last_logged_in") }}'
+
+        - name: last_accessed
+          description: '{{ doc("last_accessed") }}'
+
+        - name: mobile
+          description: '{{ doc("mobile") }}'
+
+        - name: cio_backfilled
+          description: '{{ doc("cio_backfilled") }}'
+
+        - name: addr_source
+          description: '{{ doc("addr_source") }}'
+
+        - name: source_detail
+          description: '{{ doc("source_detail") }}'
+
+        - name: last_messaged_at
+          description: '{{ doc("last_messaged_at") }}'
+
+        - name: email_subscription_topics
+          description: '{{ doc("email_subscription_topics") }}'
+
+        - name: sms_paused
+          description: '{{ doc("sms_paused") }}'
+
+        - name: voting_plan_status
+          description: '{{ doc("voting_plan_status") }}'
+
+        - name: voting_plan_time_of_day
+          description: '{{ doc("voting_plan_time_of_day") }}'
+
+        - name: voting_plan_method_of_transport
+          description: '{{ doc("voting_plan_method_of_transport") }}'
+
+        - name: voting_plan_attending_with
+          description: '{{ doc("voting_plan_attending_with") }}'
+
+        - name: voter_registration_status
+          description: '{{ doc("voter_registration_status") }}'
+
+        - name: facebook_id
+          description: '{{ doc("facebook_id") }}'
+
+        - name: deleted_at
+          description: '{{ doc("deleted_at") }}'
+
+        - name: feature_flags
+          description: '{{ doc("feature_flags") }}'
+
+        - name: dbt_scd_id
+          description: '{{ doc("dbt_scd_id") }}'
+
+        - name: dbt_updated_at
+          description: '{{ doc("dbt_updated_at") }}'
+
+        - name: dbt_valid_from
+          description: '{{ doc("dbt_valid_from") }}'
+
+        - name: dbt_valid_to
+          description: '{{ doc("dbt_valid_to") }}'
+
+        - name: google_id
+          description: '{{ doc("google_id") }}'
+
+        - name: causes
+          description: '{{ doc("causes") }}'
+
+        - name: school_id
+          description: '{{ doc("school_id") }}'
+
 

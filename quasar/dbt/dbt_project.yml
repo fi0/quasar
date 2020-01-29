@@ -159,6 +159,23 @@ models:
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
            - "GRANT SELECT ON {{ this }} TO public"
+        northstar_users_raw:
+          alias: northstar_users_raw
+          materialized: table
+          post-hook:
+           - "CREATE INDEX IF NOT EXISTS northstar_users_raw_northstar_id_updated_at_i ON {{ this }}(northstar_id, updated_at)"
+           - "CREATE INDEX IF NOT EXISTS northstar_users_raw_northstar_id_updated_at_dbt_scd_id_idx ON {{ this }}(northstar_id DESC, updated_at DESC, dbt_scd_id DESC)"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
+           - "GRANT SELECT ON {{ this }} TO public"
+        northstar_users_deduped:
+          alias: northstar_users_deduped
+          materialized: table
+          post-hook:
+           - "CREATE INDEX IF NOT EXISTS northstar_users_deduped_northstar_id_updated_at_i ON {{ this }}(northstar_id, updated_at)"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
+           - "GRANT SELECT ON {{ this }} TO public"
       user_activity:
         user_activity:
           alias: user_activity
