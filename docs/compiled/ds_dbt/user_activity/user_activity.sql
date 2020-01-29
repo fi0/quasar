@@ -38,7 +38,7 @@ sms_undeliverable AS (
 	    id,
 	    FIRST_VALUE(updated_at) OVER (PARTITION BY id ORDER BY updated_at
 		ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS unsub_ts
-    FROM northstar.users
+    FROM "quasar_prod_warehouse"."public"."northstar_users_deduped"
     WHERE sms_status IN ('unknown', 'undeliverable', 'GDPR')
 ),
 email_unsub AS (
