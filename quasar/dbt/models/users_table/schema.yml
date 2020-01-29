@@ -1,6 +1,14 @@
 version: 2
 
+sources:
+  - name: northstar
+    database: '{{ env_var("NORTHSTAR_TARGET_DB") }}'
+    schema: '{{ env_var("NORTHSTAR_FT_SCHEMA") }}'
+    tables:
+      - name: users
+
 models:
+
   - name: cio_latest_status
     description: Table containing users' latest status from CIO API.
 
