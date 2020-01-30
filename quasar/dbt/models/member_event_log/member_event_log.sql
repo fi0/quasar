@@ -56,7 +56,7 @@ SELECT DISTINCT
     NULL AS "source",
     '0' AS action_serial_id,
     'web' AS channel
-FROM northstar.users u_access
+FROM {{ ref('northstar_users_deduped') }} u_access
 WHERE u_access.last_accessed_at IS NOT NULL
 AND u_access."source" IS DISTINCT FROM 'runscope'
 AND u_access."source" IS DISTINCT FROM 'runscope-client'
@@ -72,7 +72,7 @@ SELECT DISTINCT
     NULL AS "source",
     '0' AS action_serial_id,
     'web' AS channel
-FROM northstar.users u_login
+FROM {{ ref('northstar_users_deduped') }} u_login
 WHERE u_login.last_authenticated_at IS NOT NULL 
 AND u_login."source" IS DISTINCT FROM 'runscope'
 AND u_login."source" IS DISTINCT FROM 'runscope-client'
@@ -96,7 +96,7 @@ FROM
             u_create.id,
             max(u_create."source") AS "source",
             min(u_create.created_at) AS created_at
-    FROM northstar.users u_create
+    FROM {{ ref('northstar_users_deduped') }} u_create
 WHERE u_create."source" IS DISTINCT FROM 'importer-client'
 AND u_create."source" IS DISTINCT FROM 'runscope'
 AND u_create."source" IS DISTINCT FROM 'runscope-client'
