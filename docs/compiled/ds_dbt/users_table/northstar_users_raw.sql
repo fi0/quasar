@@ -92,4 +92,4 @@ SELECT
 	NULL AS google_id,
 	NULL AS causes,
 	nu.school_id
-FROM northstar.users nu
+FROM "quasar_prod_warehouse"."northstar_ft_userapi"."users" nu
