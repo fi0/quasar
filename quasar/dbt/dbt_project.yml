@@ -246,3 +246,8 @@ models:
             - "CREATE INDEX ON {{ this }}(northstar_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
+      tmc_users:
+        tmc_users_out:
+          alias: tmc_users_out
+          materialized: table
+          target_schema: tmc_out
