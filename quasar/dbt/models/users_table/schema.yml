@@ -3,7 +3,7 @@ version: 2
 sources:
   - name: northstar
     database: '{{ env_var("NORTHSTAR_TARGET_DB") }}'
-    schema: '{{ env_var("NORTHSTAR_FT_SCHEMA") }}'
+    schema: 'northstar'
     tables:
       - name: users
 
