@@ -35,8 +35,8 @@ gambit_unsub AS (
 ),
 sms_undeliverable AS (
     SELECT DISTINCT
-	    id,
-	    FIRST_VALUE(updated_at) OVER (PARTITION BY id ORDER BY updated_at
+	    northstar_id,
+	    FIRST_VALUE(updated_at) OVER (PARTITION BY northstar_id ORDER BY updated_at
 		ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS unsub_ts
     FROM "quasar_prod_warehouse"."public"."northstar_users_deduped"
     WHERE sms_status IN ('unknown', 'undeliverable', 'GDPR')
