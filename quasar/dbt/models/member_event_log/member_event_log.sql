@@ -1,6 +1,6 @@
 SELECT
     MD5(concat(a.northstar_id, a."timestamp", a.action_id, a.action_serial_id)) AS event_id,
-    a.northstar_id AS northstar_id,
+    a.northstar_id,
     a."timestamp" AS "timestamp",
     a."action" AS action_type,
     a.action_id AS action_id,
@@ -18,7 +18,7 @@ SELECT
     	AS first_action_month
 FROM ( 
 SELECT
-    DISTINCT s.northstar_id AS northstar_id,
+    DISTINCT s.northstar_id,
     s.created_at AS "timestamp",
     'signup' AS "action",
     '1' AS action_id, 
@@ -35,7 +35,7 @@ AND s."source" IS DISTINCT FROM 'rock-the-vote'
 AND s."source" IS DISTINCT FROM 'turbovote'
 UNION ALL
 SELECT
-    DISTINCT p.northstar_id AS northstar_id,
+    DISTINCT p.northstar_id,
     p.created_at AS "timestamp",
     'post' AS "action",
     '2' AS action_id,
@@ -49,7 +49,7 @@ FROM {{ ref('posts') }} p
 WHERE p.status IN ('accepted', 'confirmed', 'register-OVR', 'register-form', 'pending')
 UNION ALL
 SELECT DISTINCT 
-    u_access.northstar_id AS northstar_id,
+    u_access.northstar_id,
     u_access.last_accessed_at AS "timestamp",
     'site_access' AS "action",
     '3' AS action_id,
@@ -65,7 +65,7 @@ AND u_access.email IS DISTINCT FROM 'juy+runscopescheduledtests@dosomething.org'
 AND (u_access.email NOT ILIKE '%@example.org%' OR u_access.email IS NULL) 
 UNION ALL
 SELECT DISTINCT 
-    u_login.northstar_id AS northstar_id,
+    u_login.northstar_id,
     u_login.last_authenticated_at AS "timestamp",
     'site_login' AS "action",
     '4' AS action_id,
@@ -134,7 +134,7 @@ UNION ALL
     AND cio.customer_id IS NOT NULL
 UNION ALL 
 SELECT DISTINCT
-    b.northstar_id AS northstar_id,
+    b.northstar_id,
     b.click_time AS "timestamp",
     CONCAT('bertly_link_', b.interaction_type) AS "action",
     '10' AS action_id,

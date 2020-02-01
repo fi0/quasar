@@ -1,5 +1,5 @@
 SELECT
-	u.northstar_id AS northstar_id,
+	u.northstar_id,
 	u.created_at,
 	umax.max_last_auth AS last_logged_in,
 	umax.max_last_access AS last_accessed,
