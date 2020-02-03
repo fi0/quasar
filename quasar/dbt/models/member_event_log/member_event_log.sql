@@ -49,7 +49,7 @@ FROM {{ ref('posts') }} p
 WHERE p.status IN ('accepted', 'confirmed', 'register-OVR', 'register-form', 'pending')
 UNION ALL
 SELECT DISTINCT 
-    u_access.id AS northstar_id,
+    u_access.northstar_id,
     u_access.last_accessed_at AS "timestamp",
     'site_access' AS "action",
     '3' AS action_id,
@@ -65,7 +65,7 @@ AND u_access.email IS DISTINCT FROM 'juy+runscopescheduledtests@dosomething.org'
 AND (u_access.email NOT ILIKE '%@example.org%' OR u_access.email IS NULL) 
 UNION ALL
 SELECT DISTINCT 
-    u_login.id AS northstar_id,
+    u_login.northstar_id,
     u_login.last_authenticated_at AS "timestamp",
     'site_login' AS "action",
     '4' AS action_id,
@@ -81,7 +81,7 @@ AND u_login.email IS DISTINCT FROM 'juy+runscopescheduledtests@dosomething.org'
 AND (u_login.email NOT ILIKE '%@example.org%' OR u_login.email IS NULL) 
 UNION ALL 
 SELECT
-    DISTINCT u.id AS northstar_id,
+    DISTINCT u.northstar_id,
     u.created_at AS "timestamp",
     'account_creation' AS action, 
     '5' AS action_id,
