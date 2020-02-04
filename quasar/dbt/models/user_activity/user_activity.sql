@@ -147,7 +147,7 @@ ON u.northstar_id = email_opens.customer_id
 LEFT JOIN gambit_unsub
 ON u.northstar_id = gambit_unsub.user_id
 LEFT JOIN sms_undeliverable
-ON u.northstar_id = sms_undeliverable.id
+ON u.northstar_id = sms_undeliverable.northstar_id
 LEFT JOIN email_unsub
 ON u.northstar_id = email_unsub.customer_id
 LEFT JOIN time_to_actions
