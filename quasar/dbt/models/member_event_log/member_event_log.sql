@@ -49,14 +49,14 @@ FROM {{ ref('posts') }} p
 WHERE p.status IN ('accepted', 'confirmed', 'register-OVR', 'register-form', 'pending')
 UNION ALL
 SELECT DISTINCT 
-    u_access.northstar_id,
+    u_access.id AS northstar_id,
     u_access.last_accessed_at AS "timestamp",
     'site_access' AS "action",
     '3' AS action_id,
     NULL AS "source",
     '0' AS action_serial_id,
     'web' AS channel
-FROM {{ ref('northstar_users_deduped') }} u_access
+FROM {{ source('northstar', 'users') }} u_access
 WHERE u_access.last_accessed_at IS NOT NULL
 AND u_access."source" IS DISTINCT FROM 'runscope'
 AND u_access."source" IS DISTINCT FROM 'runscope-client'
@@ -65,14 +65,14 @@ AND u_access.email IS DISTINCT FROM 'juy+runscopescheduledtests@dosomething.org'
 AND (u_access.email NOT ILIKE '%@example.org%' OR u_access.email IS NULL) 
 UNION ALL
 SELECT DISTINCT 
-    u_login.northstar_id,
+    u_login.id AS northstar_id,
     u_login.last_authenticated_at AS "timestamp",
     'site_login' AS "action",
     '4' AS action_id,
     NULL AS "source",
     '0' AS action_serial_id,
     'web' AS channel
-FROM {{ ref('northstar_users_deduped') }} u_login
+FROM {{ source('northstar', 'users') }} u_login
 WHERE u_login.last_authenticated_at IS NOT NULL 
 AND u_login."source" IS DISTINCT FROM 'runscope'
 AND u_login."source" IS DISTINCT FROM 'runscope-client'
@@ -81,7 +81,7 @@ AND u_login.email IS DISTINCT FROM 'juy+runscopescheduledtests@dosomething.org'
 AND (u_login.email NOT ILIKE '%@example.org%' OR u_login.email IS NULL) 
 UNION ALL 
 SELECT
-    DISTINCT u.northstar_id,
+    DISTINCT u.id AS northstar_id,
     u.created_at AS "timestamp",
     'account_creation' AS action, 
     '5' AS action_id,
@@ -93,17 +93,17 @@ SELECT
     WHEN u."source" NOT LIKE '%niche%' AND u."source" NOT LIKE '%sms%' AND u."source" NOT LIKE '%phoenix%' AND u."source" IS NOT NULL THEN 'other' END) AS "channel"
 FROM
     (SELECT 
-            u_create.northstar_id,
+            u_create.id AS northstar_id,
             max(u_create."source") AS "source",
             min(u_create.created_at) AS created_at
-    FROM {{ ref('northstar_users_deduped') }} u_create
+    FROM {{ source('northstar', 'users') }} u_create
 WHERE u_create."source" IS DISTINCT FROM 'importer-client'
 AND u_create."source" IS DISTINCT FROM 'runscope'
 AND u_create."source" IS DISTINCT FROM 'runscope-client'
 AND u_create.email IS DISTINCT FROM 'runscope-scheduled-test@dosomething.org'
 AND u_create.email IS DISTINCT FROM 'juy+runscopescheduledtests@dosomething.org'
 AND (u_create.email NOT ILIKE '%@example.org%' OR u_create.email IS NULL) 
-    GROUP BY u_create.northstar_id) u
+    GROUP BY u_create.id) u
 UNION ALL 
 SELECT
     DISTINCT g.user_id AS northstar_id,

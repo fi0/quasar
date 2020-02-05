@@ -35,10 +35,10 @@ gambit_unsub AS (
 ),
 sms_undeliverable AS (
     SELECT DISTINCT
-	    northstar_id,
-	    FIRST_VALUE(updated_at) OVER (PARTITION BY northstar_id ORDER BY updated_at
+	    id,
+	    FIRST_VALUE(updated_at) OVER (PARTITION BY id ORDER BY updated_at
 		ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS unsub_ts
-    FROM {{ ref('northstar_users_deduped') }}
+    FROM {{ source('northstar', 'users') }}
     WHERE sms_status IN ('unknown', 'undeliverable', 'GDPR')
 ),
 email_unsub AS (
@@ -147,7 +147,7 @@ ON u.northstar_id = email_opens.customer_id
 LEFT JOIN gambit_unsub
 ON u.northstar_id = gambit_unsub.user_id
 LEFT JOIN sms_undeliverable
-ON u.northstar_id = sms_undeliverable.northstar_id
+ON u.northstar_id = sms_undeliverable.id
 LEFT JOIN email_unsub
 ON u.northstar_id = email_unsub.customer_id
 LEFT JOIN time_to_actions
