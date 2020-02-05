@@ -39,7 +39,7 @@ SELECT
 		THEN TRUE ELSE FALSE END AS subscribed_member,
 	umax.max_update AS last_updated_at,
 	u.school_id
-FROM "quasar"."northstar"."users" u
+FROM "quasar_prod_warehouse"."northstar"."users" u
 INNER JOIN
 	(SELECT
 		utemp.id,
@@ -47,9 +47,9 @@ INNER JOIN
 		max(utemp.last_accessed_at) AS max_last_access,
 		max(utemp.last_authenticated_at) AS max_last_auth,
 		max(utemp.last_messaged_at) AS max_last_message
-	FROM "quasar"."northstar"."users" utemp
+	FROM "quasar_prod_warehouse"."northstar"."users" utemp
 	GROUP BY utemp.id) umax ON umax.id = u.id AND umax.max_update = u.updated_at
-LEFT JOIN "quasar"."public"."cio_latest_status" email_status ON email_status.customer_id = u.id
+LEFT JOIN "quasar_prod_warehouse"."public"."cio_latest_status" email_status ON email_status.customer_id = u.id
 WHERE
 	(u."source" IS DISTINCT FROM 'runscope'
 	AND u."source" IS DISTINCT FROM 'runscope-client'
