@@ -1,5 +1,5 @@
 SELECT
-	u.id,
+	u.id AS northstar_id,
 	u.created_at,
 	umax.max_last_auth AS last_logged_in,
 	umax.max_last_access AS last_accessed,
@@ -16,8 +16,8 @@ SELECT
 	u.first_name,
 	u.last_name,
 	u.voter_registration_status,
-	u.addr_street_1 AS address_street_1,
-	u.addr_street_2 AS address_street_2,
+	u.addr_street1 AS address_street_1,
+	u.addr_street2 AS address_street_2,
 	u.addr_city AS city,
 	u.addr_state AS state,
 	u.addr_zip AS zipcode,

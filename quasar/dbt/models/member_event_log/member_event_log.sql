@@ -81,7 +81,7 @@ AND u_login.email IS DISTINCT FROM 'juy+runscopescheduledtests@dosomething.org'
 AND (u_login.email NOT ILIKE '%@example.org%' OR u_login.email IS NULL) 
 UNION ALL 
 SELECT
-    DISTINCT u.id AS northstar_id,
+    DISTINCT u.northstar_id ,
     u.created_at AS "timestamp",
     'account_creation' AS action, 
     '5' AS action_id,
