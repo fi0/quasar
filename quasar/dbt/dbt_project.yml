@@ -169,6 +169,14 @@ models:
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
            - "GRANT SELECT ON {{ this }} TO public"
+        member_event_log_fnmt:
+          alias: member_event_log_fnmt
+          materialized: table
+          post-hook:
+           - "CREATE UNIQUE INDEX IF NOT EXISTS {{ this }}_unique_idx ON {{ this }}(timestamp, northstar_id, event_id)"
+           - "CREATE INDEX IF NOT EXISTS {{ this }}_northstar_id_timestamp_idx ON {{ this }}(northstar_id, timestamp)"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
       users_table:
         cio_latest_status:
           alias: cio_latest_status
