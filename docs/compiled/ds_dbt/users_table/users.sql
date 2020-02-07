@@ -11,12 +11,11 @@ SELECT
 	u.mobile,
 	CASE WHEN
 		u.birthdate < '1900-01-01' OR 
-		u.birthdate > (date('now') - INTERVAL '10 years')
+		u.birthdate > (date('now') - INTERVAL '10 years') 
 		THEN NULL ELSE u.birthdate END AS birthdate,
 	u.first_name,
 	u.last_name,
 	u.voter_registration_status,
-	-- TODO: Change back to addr_street_x when using the deduped layer
 	u.addr_street1 AS address_street_1,
 	u.addr_street2 AS address_street_2,
 	u.addr_city AS city,
