@@ -148,8 +148,8 @@ models:
           alias: northstar_users_raw_fnmt
           materialized: table
           post-hook:
-           - "CREATE INDEX IF NOT EXISTS {{ this }}_northstar_id_updated_at_i ON {{ this }}(northstar_id, updated_at)"
-           - "CREATE INDEX IF NOT EXISTS {{ this }}_northstar_id_updated_at_dbt_scd_id_idx ON {{ this }}(northstar_id DESC, updated_at DESC, dbt_scd_id DESC)"
+           - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_northstar_id_updated_at_i ON {{ this }}(northstar_id, updated_at)"
+           - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_northstar_id_updated_at_dbt_scd_id_idx ON {{ this }}(northstar_id DESC, updated_at DESC, dbt_scd_id DESC)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
            - "GRANT SELECT ON {{ this }} TO public"
@@ -157,7 +157,7 @@ models:
           alias: northstar_users_deduped_fnmt
           materialized: table
           post-hook:
-           - "CREATE INDEX IF NOT EXISTS {{ this }}_northstar_id_updated_at_i ON {{ this }}(northstar_id, updated_at)"
+           - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_northstar_id_updated_at_i ON {{ this }}(northstar_id, updated_at)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
            - "GRANT SELECT ON {{ this }} TO public"
@@ -165,7 +165,7 @@ models:
           alias: users_fnmt
           materialized: table
           post-hook:
-           - "CREATE UNIQUE INDEX IF NOT EXISTS {{this}}_du_indices ON {{ this }}(northstar_id, created_at, email, mobile, source)"
+           - "CREATE UNIQUE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_du_indices ON {{ this }}(northstar_id, created_at, email, mobile, source)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
            - "GRANT SELECT ON {{ this }} TO public"
@@ -173,16 +173,16 @@ models:
           alias: member_event_log_fnmt
           materialized: table
           post-hook:
-           - "CREATE UNIQUE INDEX IF NOT EXISTS {{ this }}_unique_idx ON {{ this }}(timestamp, northstar_id, event_id)"
-           - "CREATE INDEX IF NOT EXISTS {{ this }}_northstar_id_timestamp_idx ON {{ this }}(northstar_id, timestamp)"
+           - "CREATE UNIQUE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_unique_idx ON {{ this }}(timestamp, northstar_id, event_id)"
+           - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_northstar_id_timestamp_idx ON {{ this }}(northstar_id, timestamp)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
         user_activity_fnmt:
           alias: user_activity_fnmt
           materialized: table
           post-hook:
-           - "CREATE UNIQUE INDEX IF NOT EXISTS {{ this }}_unique_i ON {{ this }}(created_at, northstar_id)"
-           - "CREATE INDEX IF NOT EXISTS {{ this }}_most_recent_all_actions_i ON {{ this }}(most_recent_all_actions)"
+           - "CREATE UNIQUE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_unique_i ON {{ this }}(created_at, northstar_id)"
+           - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_most_recent_all_actions_i ON {{ this }}(most_recent_all_actions)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
       users_table:
