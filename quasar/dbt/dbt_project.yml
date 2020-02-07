@@ -177,6 +177,14 @@ models:
            - "CREATE INDEX IF NOT EXISTS {{ this }}_northstar_id_timestamp_idx ON {{ this }}(northstar_id, timestamp)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
+        user_activity_fnmt:
+          alias: user_activity_fnmt
+          materialized: table
+          post-hook:
+           - "CREATE UNIQUE INDEX IF NOT EXISTS {{ this }}_unique_i ON {{ this }}(created_at, northstar_id)"
+           - "CREATE INDEX IF NOT EXISTS {{ this }}_most_recent_all_actions_i ON {{ this }}(most_recent_all_actions)"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
       users_table:
         cio_latest_status:
           alias: cio_latest_status
