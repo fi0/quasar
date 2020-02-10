@@ -275,4 +275,7 @@ models:
         tmc_users_out:
           alias: tmc_users_out
           materialized: table
-          target_schema: tmc_out
+          pre-hook:
+            - "DROP TABLE IF EXISTS tmc_out.tmc_users_out CASCADE"
+          post-hook:
+            - "ALTER TABLE {{ this }} SET SCHEMA tmc_out"
