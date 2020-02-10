@@ -35,7 +35,7 @@ gambit_unsub AS (
 ),
 sms_undeliverable AS (
     SELECT DISTINCT
-	    id,
+	    northstar_id,
 	    FIRST_VALUE(updated_at) OVER (PARTITION BY id ORDER BY updated_at
 		ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS unsub_ts
     FROM {{ ref('northstar_users_deduped_fnmt') }}
