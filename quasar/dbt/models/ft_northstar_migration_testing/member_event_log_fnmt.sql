@@ -12,7 +12,7 @@ SELECT
     	THEN 'New' 
     	ELSE 'Returning' END
     	AS "type",
-    MIN("timestamp") 
+    MIN("timestamp")
     	OVER
     	(PARTITION BY a.northstar_id, date_trunc('month', a."timestamp"))
     	AS first_action_month
@@ -55,7 +55,7 @@ FROM (
         p.status IN ('accepted', 'confirmed', 'register-OVR', 'register-form', 'pending')
     UNION ALL
     SELECT DISTINCT
-        u_access.northstar_id AS ,
+        u_access.northstar_id,
         u_access.last_accessed_at AS "timestamp",
         'site_access' AS "action",
         '3' AS action_id,
