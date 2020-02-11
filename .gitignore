@@ -11,3 +11,8 @@ quasar/config/dev_priv.py
 .venv*
 .vscode
 *.DS_Store
+docs/index.html
+docs/manifest.json
+docs/run_results.json
+docs/catalog.json
+docs/compiled

@@ -1,0 +1,64 @@
+name: DBT Docs
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: DBT Docs Generate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        # Temporarily using this branch, till merged into master, then
+        # the below two lines should be uncommented and merged to master.
+        # with:
+        #  ref: master
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.7'
+      - name: Install Pipenv
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pipenv
+      - name: Install dependencies with Pipenv
+        run: |
+          pipenv install 
+      - name: DBT Generate
+        working-directory: ./quasar/dbt
+        run: |
+          pipenv run dbt compile --profiles-dir ./credentials
+          pipenv run dbt docs generate --profiles-dir ./credentials
+        env:
+          PG_DOCS_HOST: ${{ secrets.PG_DOCS_HOST }}
+          PG_DOCS_USER: ${{ secrets.PG_DOCS_USER }}
+          PG_DOCS_PASSWORD: ${{ secrets.PG_DOCS_PASSWORD }}
+          PG_DOCS_DATABASE: ${{ secrets.PG_DOCS_DATABASE }}
+          NORTHSTAR_TARGET_DB: ${{ secrets.NORTHSTAR_TARGET_DB }}
+          NORTHSTAR_FT_SCHEMA: ${{ secrets.NORTHSTAR_FT_SCHEMA }}
+          FT_SNOWPLOW: ${{ secrets.FT_SNOWPLOW }}
+          FT_GAMBIT: ${{ secrets.FT_GAMBIT }}
+          FT_ROGUE: ${{ secrets.FT_ROGUE }}
+          BERTLY: ${{ secrets.BERTLY }}
+          CAMPAIGN_INFO_ASHES_SNAPSHOT: ${{ secrets.CAMPAIGN_INFO_ASHES_SNAPSHOT }}
+      - name: Try backup/restore of docs
+        run: |
+          mv ./docs ~/
+          rm -rf ./*
+          mv ~/docs/* ./
+      - name: Commit generated doc files
+        run: |
+          git add ./index.html
+          git add ./manifest.json
+          git add ./run_results.json
+          git add ./catalog.json
+          git add -f ./compiled
+          git config --local user.email "machines@dosomething.org"
+          git config --local user.name "GitHub Action"
+          git commit -am "Adding Doc Files"
+      - name: Push Changes to gh-pages repo for hosting
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: 'gh-pages'
+          force: true
