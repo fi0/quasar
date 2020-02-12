@@ -10,10 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        # Temporarily using this branch, till merged into master, then
-        # the below two lines should be uncommented and merged to master.
-        # with:
-        #  ref: master
       - uses: actions/setup-python@v1
         with:
           python-version: '3.7'
@@ -41,7 +37,7 @@ jobs:
           FT_ROGUE: ${{ secrets.FT_ROGUE }}
           BERTLY: ${{ secrets.BERTLY }}
           CAMPAIGN_INFO_ASHES_SNAPSHOT: ${{ secrets.CAMPAIGN_INFO_ASHES_SNAPSHOT }}
-      - name: Try backup/restore of docs
+      - name: Move docs files to root dir
         run: |
           mv ./docs ~/
           rm -rf ./*
@@ -52,10 +48,11 @@ jobs:
           git add ./manifest.json
           git add ./run_results.json
           git add ./catalog.json
+          git add ./graph.gpickle
           git add -f ./compiled
           git config --local user.email "machines@dosomething.org"
           git config --local user.name "GitHub Action"
-          git commit -am "Adding Doc Files"
+          git commit -am "Generating DBT Doc Files for Hosting"
       - name: Push Changes to gh-pages repo for hosting
         uses: ad-m/github-push-action@master
         with:

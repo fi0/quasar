@@ -15,4 +15,5 @@ docs/index.html
 docs/manifest.json
 docs/run_results.json
 docs/catalog.json
-docs/compiled
+docs/graph.gpickle
+docs/compiled/
