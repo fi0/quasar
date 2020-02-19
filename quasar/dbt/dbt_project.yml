@@ -279,3 +279,30 @@ models:
             - "DROP TABLE IF EXISTS tmc_out.tmc_users_out CASCADE"
           post-hook:
             - "ALTER TABLE {{ this }} SET SCHEMA tmc_out"
+      user_newsletter_signups:
+        user_created:
+          alias: user_created
+          materialized: table
+          post-hook:
+            - "GRANT SELECT ON {{ this }} to dsanalyst"
+            - "GRANT SELECT ON {{ this }} to looker"
+        user_newsletter_cal_multi:
+          alias: user_newsletter_cal_multi
+          materialized: table
+          post-hook:
+            - "CREATE INDEX {{ this }}(northstar_id)
+            - "GRANT SELECT ON {{ this }} to dsanalyst"
+            - "GRANT SELECT ON {{ this }} to looker"
+        user_newsletter_cal_status:
+          alias: user_newsletter_cal_status
+          materialized: table
+          post-hook:
+            - "CREATE INDEX {{ this }}(northstar_id)
+            - "GRANT SELECT ON {{ this }} to dsanalyst"
+            - "GRANT SELECT ON {{ this }} to looker"
+        user_newsletter_signups:
+          alias: user_newsletter_signups
+          materialized: table
+          post-hook:
+            - "GRANT SELECT ON {{ this }} to dsanalyst"
+            - "GRANT SELECT ON {{ this }} to looker"
