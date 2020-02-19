@@ -250,26 +250,26 @@ class ETLMonitoring:
 
         try:
             if latest_value > second_latest_value:
-                message = ''.join(("*Passed* - Latest Count = {} "
+                message = ''.join(("*Passed* :check: - Latest Count = {} "
                                    "Previous Value = {}, "
                                    "Count increased by = {}"
                                    "")).format(latest_value,
                                                second_latest_value, diff)
             elif latest_value == second_latest_value:
-                message = ''.join(("*Failed* - Count Unchanged, "
+                message = ''.join(("*Failed* :siren: - Count Unchanged, "
                                    "Latest Count = {} "
                                    "Previous Value = {}"
                                    "")).format(latest_value,
                                                second_latest_value)
             elif latest_value < second_latest_value:
-                message = ''.join(("*Failed* - Count Decreased, "
+                message = ''.join(("*Failed* :siren: - Count Decreased, "
                                    "Latest Count = {} "
                                    "Previous Value = {}, "
                                    "Count decreased by = {}"
                                    "")).format(latest_value,
                                                second_latest_value, diff)
             else:
-                message = '*Failed* - Unspecified Error'
+                message = '*Failed* :siren: - Unspecified Error'
         except:
             message = str(QuasarException(sys.exc_info()[0]))
         report = message + ": " + table + " " + desc
