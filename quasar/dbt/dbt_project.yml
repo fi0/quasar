@@ -290,14 +290,14 @@ models:
           alias: user_newsletter_cal_multi
           materialized: table
           post-hook:
-            - "CREATE INDEX {{ this }}(northstar_id)
+            - "CREATE INDEX {{ this }}(northstar_id)"
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
         user_newsletter_cal_status:
           alias: user_newsletter_cal_status
           materialized: table
           post-hook:
-            - "CREATE INDEX {{ this }}(northstar_id)
+            - "CREATE INDEX {{ this }}(northstar_id)"
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
         user_newsletter_signups:
