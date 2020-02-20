@@ -62,7 +62,7 @@ FROM (
         NULL AS "source",
         '0' AS action_serial_id,
         'web' AS channel
-    FROM {{ ref('northstar_users_deduped_fnmt') }} u_access
+    FROM {{ ref('northstar_users_deduped') }} u_access
     WHERE
         u_access.last_accessed_at IS NOT NULL
         AND u_access."source" IS DISTINCT FROM 'runscope'
@@ -79,7 +79,7 @@ FROM (
         NULL AS "source",
         '0' AS action_serial_id,
         'web' AS channel
-    FROM {{ ref('northstar_users_deduped_fnmt') }} u_login
+    FROM {{ ref('northstar_users_deduped') }} u_login
     WHERE
         u_login.last_authenticated_at IS NOT NULL
         AND u_login."source" IS DISTINCT FROM 'runscope'
@@ -106,7 +106,7 @@ FROM (
             u_create.northstar_id,
             max(u_create."source") AS "source",
             min(u_create.created_at) AS created_at
-        FROM {{ ref('northstar_users_deduped_fnmt') }} u_create
+        FROM {{ ref('northstar_users_deduped') }} u_create
         WHERE
             u_create."source" IS DISTINCT FROM 'importer-client'
             AND u_create."source" IS DISTINCT FROM 'runscope'

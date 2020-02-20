@@ -265,7 +265,7 @@ models:
     description: A table containing deduped aggregated user data.
 
     columns: *northstar_users_raw_columns
-  - name: user_activity_fnmt
+  - name: user_activity
     description: Table containing aggregated user activity data.
 
     columns:
