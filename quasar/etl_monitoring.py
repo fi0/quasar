@@ -234,11 +234,11 @@ class ETLMonitoring:
 
         if user_count == distinct_count:
             message = \
-                "*Passed* - Distinct users equals " \
+                "*Passed* :check: - Distinct users equals " \
                 "number of rows in public.users"
         else:
             message = \
-                "*Failed* - Distinct users does not equal " \
+                "*Failed* :siren: - Distinct users does not equal " \
                 "number of rows in public.users"
 
         return message
