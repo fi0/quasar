@@ -19,26 +19,8 @@ SELECT u.northstar_id,
 		ELSE nl.topic_unsubscribed_at END AS unsubscribed
 FROM {{ ref('user_newsletter_cal_multi') }} u
 LEFT JOIN public.user_newsletter_subscriptions nl ON (u.northstar_id = nl.northstar_id AND u.newsletter_topic = nl.newsletter_topic))
-SELECT u.northstar_id, 
-       u.created_at_month, 
-       u.last_mam, 
-       u.months_since_created, 
-       u.period_start, 
-       u.period_end,
-	   u.newsletter_topic,
-	CASE WHEN nl.topic_subscribed_at IS NULL 
-		   OR nl.topic_subscribed_at > u.period_end
-		   OR nl.topic_unsubscribed_at < u.period_start
-		   THEN NULL
-		ELSE nl.topic_subscribed_at END AS subscribed, 
-	CASE WHEN nl.topic_unsubscribed_at IS NULL 
-		   OR nl.topic_unsubscribed_at > u.period_end
-		   OR nl.topic_unsubscribed_at < u.period_start
-		   OR nl.topic_subscribed_at > u.period_end 
-		   THEN NULL 
-		ELSE nl.topic_unsubscribed_at END AS unsubscribed
-FROM {{ ref('user_newsletter_cal_multi') }} u
-LEFT JOIN public.user_newsletter_subscriptions nl ON (u.northstar_id = nl.northstar_id AND u.newsletter_topic = nl.newsletter_topic)
+SELECT *
+FROM user_newsletter_cal_status_temp
 -- The UNION ALL below originally started as an INSERT * FROM above query. Using UNION ALL and user_newsletter_cal_status_temp CTE to generate all records.
 UNION ALL
 SELECT n1.northstar_id,
