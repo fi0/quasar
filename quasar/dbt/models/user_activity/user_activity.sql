@@ -109,12 +109,11 @@ DATE_PART(
     'day', now() - greatest(mel.most_recent_action, email_opens.most_recent_email_open)
 ) as days_since_last_action,
 (r.first_rb - u.created_at) AS time_to_first_rb,
-COALESCE(gambit_unsub.unsub_ts, sms_undeliverable.unsub_ts) AS sms_unsubscribed_at,
+gambit_unsub.unsub_ts AS sms_unsubscribed_at,
 email_unsub.email_unsubscribed_at,
 CASE WHEN u.subscribed_member IS FALSE
     THEN greatest(
 	gambit_unsub.unsub_ts,
-	sms_undeliverable.unsub_ts,
 	email_unsub.email_unsubscribed_at) ELSE NULL
     END AS user_unsubscribed_at,
 CASE WHEN u."source" = 'importer-client' AND p.first_post = 'voter-reg'
