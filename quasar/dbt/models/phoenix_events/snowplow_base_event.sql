@@ -8,10 +8,13 @@ SELECT
     page_urlpath AS "path",
     page_urlquery AS query_parameters,
     se_category,
-    -- https://www.pivotaltracker.com/story/show/171161608
     CASE
       WHEN
-        (se_property = 'phoenix_clicked_voter_registration_action' AND se_action = 'undefined_clicked')
+        -- https://www.pivotaltracker.com/story/show/171161608
+        ((se_property = 'phoenix_clicked_voter_registration_action' AND se_action = 'undefined_clicked')
+        OR
+        --https://www.pivotaltracker.com/story/show/171392390
+        (se_property = 'phoenix_clicked_nav_button_search_form_toggle' and se_action = 'link_clicked'))
       THEN
         'button_clicked'
       ELSE
