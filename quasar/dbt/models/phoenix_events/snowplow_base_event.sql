@@ -1,4 +1,4 @@
-SELECT 
+SELECT
     event_id AS event_id,
     app_id AS event_source,
     collector_tstamp AS event_datetime,
@@ -8,7 +8,14 @@ SELECT
     page_urlpath AS "path",
     page_urlquery AS query_parameters,
     se_category,
-    se_action,
+    -- https://www.pivotaltracker.com/story/show/171161608
+    CASE
+      WHEN
+        (se_property = 'phoenix_clicked_voter_registration_action' AND se_action = 'undefined_clicked')
+      THEN
+        'button_clicked'
+      ELSE
+        se_action END AS se_action,
     se_label,
     domain_sessionid AS session_id,
     domain_sessionidx AS session_counter,
