@@ -13,7 +13,7 @@ SELECT
         -- https://www.pivotaltracker.com/story/show/171161608
         ((se_property = 'phoenix_clicked_voter_registration_action' AND se_action = 'undefined_clicked')
         OR
-        --https://www.pivotaltracker.com/story/show/171392390
+        -- https://www.pivotaltracker.com/story/show/171392080
         (se_property = 'phoenix_clicked_nav_button_search_form_toggle' and se_action = 'link_clicked'))
       THEN
         'button_clicked'
