@@ -15,3 +15,12 @@ Rogue | 1 Hour |
 Snowplow | 1 Hour |
 
 The refresh cadence is the same in Quasar Prod or QA environments.
+
+## Fivetran Connector Certificate Troubleshooting
+Occasionally during certificate rotations or setting up new connectors, we need to manually verify the certificate trust. Unfortunately, there are different certs to trust for different vendors. Here are the ones we know about so far:
+
+Amazon RDS:
+* Click the certificate that corresponds to the 2nd tier (non-root/sub) domain trust.
+
+MongoDB (LetsEncrypt based):
+* Click the certificate that corresponds to the 1st tier (root) domain trust.
