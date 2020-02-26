@@ -1,5 +1,5 @@
 SELECT
-	u.id AS northstar_id,
+	u.northstar_id,
 	u.created_at,
 	umax.max_last_auth AS last_logged_in,
 	umax.max_last_access AS last_accessed,
@@ -16,8 +16,8 @@ SELECT
 	u.first_name,
 	u.last_name,
 	u.voter_registration_status,
-	u.addr_street1 AS address_street_1,
-	u.addr_street2 AS address_street_2,
+	u.addr_street_1 AS address_street_1,
+	u.addr_street_2 AS address_street_2,
 	u.addr_city AS city,
 	u.addr_state AS state,
 	u.addr_zip AS zipcode,
@@ -39,17 +39,17 @@ SELECT
 		THEN TRUE ELSE FALSE END AS subscribed_member,
 	umax.max_update AS last_updated_at,
 	u.school_id
-FROM {{ source('northstar', 'users') }} u
+FROM {{ ref('northstar_users_deduped') }} u
 INNER JOIN
 	(SELECT
-		utemp.id,
+		utemp.northstar_id,
 		max(utemp.updated_at) AS max_update,
 		max(utemp.last_accessed_at) AS max_last_access,
 		max(utemp.last_authenticated_at) AS max_last_auth,
 		max(utemp.last_messaged_at) AS max_last_message
-	FROM {{ source('northstar', 'users') }} utemp
-	GROUP BY utemp.id) umax ON umax.id = u.id AND umax.max_update = u.updated_at
-LEFT JOIN {{ ref('cio_latest_status') }} email_status ON email_status.customer_id = u.id
+	FROM {{ ref('northstar_users_deduped') }} utemp
+	GROUP BY utemp.northstar_id) umax ON umax.northstar_id = u.northstar_id AND umax.max_update = u.updated_at
+LEFT JOIN {{ ref('cio_latest_status') }} email_status ON email_status.customer_id = u.northstar_id
 WHERE
 	(u."source" IS DISTINCT FROM 'runscope'
 	AND u."source" IS DISTINCT FROM 'runscope-client'
