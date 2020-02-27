@@ -29,7 +29,7 @@ SELECT
     CASE
       WHEN
         -- https://www.pivotaltracker.com/story/show/171388718
-        se_property = 'phoenix_failed_call_to_action_popover_submission'
+        se_property = 'phoenix_failed_call_to_action_popover_submission' AND se_label = 'call_to_action_popover_submission'
       THEN
         'call_to_action_popover'
       ELSE
