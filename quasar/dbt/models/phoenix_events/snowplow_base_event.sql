@@ -2,7 +2,14 @@ SELECT
     event_id AS event_id,
     app_id AS event_source,
     collector_tstamp AS event_datetime,
-    se_property AS event_name,
+    CASE
+      WHEN
+        -- https://www.pivotaltracker.com/story/show/171388718
+        se_property = 'phoenix_failed_call_to_action_popover_submission'
+      THEN
+        'phoenix_failed_call_to_action_popover'
+      ELSE
+        se_property END AS event_name,
     "event" AS event_type,
     page_urlhost AS host,
     page_urlpath AS "path",
@@ -19,7 +26,14 @@ SELECT
         'button_clicked'
       ELSE
         se_action END AS se_action,
-    se_label,
+    CASE
+      WHEN
+        -- https://www.pivotaltracker.com/story/show/171388718
+        se_property = 'phoenix_failed_call_to_action_popover_submission'
+      THEN
+        'call_to_action_popover'
+      ELSE
+        se_label END AS se_label,
     domain_sessionid AS session_id,
     domain_sessionidx AS session_counter,
     dvce_type AS browser_size,
