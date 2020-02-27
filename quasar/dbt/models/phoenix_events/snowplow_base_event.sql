@@ -21,9 +21,14 @@ SELECT
         ((se_property = 'phoenix_clicked_voter_registration_action' AND se_action = 'undefined_clicked')
         OR
         -- https://www.pivotaltracker.com/story/show/171392080
-        (se_property = 'phoenix_clicked_nav_button_search_form_toggle' and se_action = 'link_clicked'))
+        (se_property = 'phoenix_clicked_nav_button_search_form_toggle' AND se_action = 'link_clicked'))
       THEN
         'button_clicked'
+      WHEN
+        -- https://www.pivotaltracker.com/story/show/171388922
+        se_property ilike 'phoenix_dismissed_%' AND se_action = 'dismissable_element_dismissed'
+      THEN
+        'element_dismissed'
       ELSE
         se_action END AS se_action,
     CASE
