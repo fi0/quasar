@@ -2,7 +2,14 @@ SELECT
     event_id AS event_id,
     app_id AS event_source,
     collector_tstamp AS event_datetime,
-    se_property AS event_name,
+    CASE
+      WHEN
+        -- https://www.pivotaltracker.com/story/show/171388718
+        se_property = 'phoenix_failed_call_to_action_popover_submission'
+      THEN
+        'phoenix_failed_call_to_action_popover'
+      ELSE
+        se_property END AS event_name,
     "event" AS event_type,
     page_urlhost AS host,
     page_urlpath AS "path",
@@ -14,12 +21,24 @@ SELECT
         ((se_property = 'phoenix_clicked_voter_registration_action' AND se_action = 'undefined_clicked')
         OR
         -- https://www.pivotaltracker.com/story/show/171392080
-        (se_property = 'phoenix_clicked_nav_button_search_form_toggle' and se_action = 'link_clicked'))
+        (se_property = 'phoenix_clicked_nav_button_search_form_toggle' AND se_action = 'link_clicked'))
       THEN
         'button_clicked'
+      WHEN
+        -- https://www.pivotaltracker.com/story/show/171388922
+        se_property ilike 'phoenix_dismissed_%' AND se_action = 'dismissable_element_dismissed'
+      THEN
+        'element_dismissed'
       ELSE
         se_action END AS se_action,
-    se_label,
+    CASE
+      WHEN
+        -- https://www.pivotaltracker.com/story/show/171388718
+        se_property = 'phoenix_failed_call_to_action_popover_submission' AND se_label = 'call_to_action_popover_submission'
+      THEN
+        'call_to_action_popover'
+      ELSE
+        se_label END AS se_label,
     domain_sessionid AS session_id,
     domain_sessionidx AS session_counter,
     dvce_type AS browser_size,
