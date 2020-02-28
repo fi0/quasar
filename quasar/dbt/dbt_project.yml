@@ -254,6 +254,7 @@ models:
             - "DROP TABLE IF EXISTS tmc_out.tmc_users_out CASCADE"
           post-hook:
             - "ALTER TABLE {{ this }} SET SCHEMA tmc_out"
+            - "GRANT SELECT ON ALL TABLES IN SCHEMA tmc_out TO tmc"
       user_newsletter_signups:
         user_created:
           alias: user_created
