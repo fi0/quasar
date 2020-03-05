@@ -282,3 +282,11 @@ models:
           post-hook:
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
+      user_engagement_timeline:
+        user_engagement_timeline:
+          alias: user_engagement_timeline
+          materialized: table
+          post-hook:
+            - "GRANT SELECT ON {{ this }} to dsanalyst"
+            - "GRANT SELECT ON {{ this }} to looker"
+
