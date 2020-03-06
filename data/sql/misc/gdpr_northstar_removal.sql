@@ -1,4 +1,4 @@
-UPDATE :users
+UPDATE :users.northstar_users_snapshot
 	SET birthdate = date_trunc('year', birthdate)
 	WHERE _id IN (SELECT _id FROM :users.northstar_users_snapshot WHERE deleted_at IS NOT NULL);
 
@@ -6,7 +6,7 @@ UPDATE :legacy_users
 	SET birthdate = date_trunc('year', birthdate)
 	WHERE id IN (SELECT _id FROM :users.northstar_users_snapshot WHERE deleted_at IS NOT NULL);
 
-UPDATE :users
+UPDATE :users.northstar_users_snapshot
 	SET first_name = NULL,
 		last_name = NULL,
 		avatar = NULL,
