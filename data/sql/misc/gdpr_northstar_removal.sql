@@ -1,10 +1,10 @@
 UPDATE :users
 	SET birthdate = date_trunc('year', birthdate)
-	WHERE _id IN (SELECT _id FROM :users WHERE deleted_at IS NOT NULL);
+	WHERE _id IN (SELECT _id FROM :users.northstar_users_snapshot WHERE deleted_at IS NOT NULL);
 
 UPDATE :legacy_users
 	SET birthdate = date_trunc('year', birthdate)
-	WHERE id IN (SELECT _id FROM :users WHERE deleted_at IS NOT NULL);
+	WHERE id IN (SELECT _id FROM :users.northstar_users_snapshot WHERE deleted_at IS NOT NULL);
 
 UPDATE :users
 	SET first_name = NULL,
@@ -24,7 +24,7 @@ UPDATE :users
 		last_authenticated_at = NULL,
 		last_messaged_at = NULL,
 		email_subscription_status = NULL 
-	WHERE _id IN (SELECT _id FROM :users WHERE deleted_at IS NOT NULL);
+	WHERE _id IN (SELECT _id FROM :users.northstar_users_snapshot WHERE deleted_at IS NOT NULL);
 
 UPDATE :legacy_users
 	SET first_name = NULL,
@@ -47,4 +47,4 @@ UPDATE :legacy_users
 		last_authenticated_at = NULL,
 		last_messaged_at = NULL,
 		email_subscription_status = NULL 
-	WHERE id IN (SELECT _id FROM :users WHERE deleted_at IS NOT NULL);
+	WHERE id IN (SELECT _id FROM :users.northstar_users_snapshot WHERE deleted_at IS NOT NULL);
