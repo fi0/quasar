@@ -14,7 +14,14 @@ SELECT
     page_urlhost AS host,
     page_urlpath AS "path",
     page_urlquery AS query_parameters,
-    se_category,
+    CASE
+      WHEN
+        -- https://www.pivotaltracker.com/story/show/171388472
+        se_property similar to 'phoenix_clicked_nav_link_log_(in|out)'
+      THEN
+        'authentication'
+      ELSE
+        se_category END AS se_category,
     CASE
       WHEN
         -- https://www.pivotaltracker.com/story/show/171161608
