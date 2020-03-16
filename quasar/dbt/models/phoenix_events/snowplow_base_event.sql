@@ -17,7 +17,7 @@ SELECT
     CASE
       WHEN
         -- https://www.pivotaltracker.com/story/show/171388472
-        se_property similar to 'phoenix_clicked_nav_link_log_(in|out)'
+        se_property similar to 'phoenix_clicked_nav_link_log_(in|out)' AND se_category = 'navigation'
       THEN
         'authentication'
       ELSE
