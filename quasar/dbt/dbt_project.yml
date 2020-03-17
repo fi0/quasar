@@ -282,3 +282,4 @@ models:
           post-hook:
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
+
