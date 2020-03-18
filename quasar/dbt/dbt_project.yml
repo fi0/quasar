@@ -256,6 +256,7 @@ models:
             - "ALTER TABLE {{ this }} SET SCHEMA tmc_out"
             - "GRANT SELECT ON ALL TABLES IN SCHEMA tmc_out TO tmc"
             # Adds permissions for Looker and analyst access for processed TMC voter reg table.
+            - "ALTER TABLE tmc_in.tmc_users_matched OWNER TO quasar_prod_admin"
             - "GRANT USAGE ON SCHEMA tmc_in TO dsanalyst"
             - "GRANT USAGE ON SCHEMA tmc_in TO looker"
             - "GRANT SELECT ON ALL TABLES IN SCHEMA tmc_in TO looker"
