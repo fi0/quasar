@@ -55,7 +55,7 @@ class ETLMonitoring:
 
         self.etl_queries = {
             'raw_northstar':
-                'SELECT count(*) FROM northstar.users',
+                'SELECT count(*) FROM northstar_ft_userapi.northstar_users_snapshot',
             'raw_rogue_signups':
                 'SELECT count(*) FROM ft_dosomething_rogue.signups',
             'raw_rogue_posts':
