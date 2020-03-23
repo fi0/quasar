@@ -250,17 +250,26 @@ models:
         tmc_users_out:
           alias: tmc_users_out
           materialized: table
+          # This hook needed, since schema is moved in post-hook.
           pre-hook:
             - "DROP TABLE IF EXISTS tmc_out.tmc_users_out CASCADE"
           post-hook:
             - "ALTER TABLE {{ this }} SET SCHEMA tmc_out"
             - "GRANT SELECT ON ALL TABLES IN SCHEMA tmc_out TO tmc"
-            # Adds permissions for Looker and analyst access for processed TMC voter reg table.
+        # This table is a carbon copy of the source table "tmc_in.tmc_users_matched". We're creating
+        # a copy of the table in the public schema since the underlying table is regenerated daily by TMC and
+        # is essentially a "raw" layer table we don't want to source directly in our data analytics. This also gives
+        # us the flexibility to add future optimizations like subset of columns or indexes as needed.
+        tmc_users_matched:
+          materialized: table
+          pre-hook:
+            # Temporarily give perms to quasar admin user so table can be created in public schema.
             - "ALTER TABLE tmc_in.tmc_users_matched OWNER TO quasar_prod_admin"
-            - "GRANT USAGE ON SCHEMA tmc_in TO dsanalyst"
-            - "GRANT USAGE ON SCHEMA tmc_in TO looker"
-            - "GRANT SELECT ON ALL TABLES IN SCHEMA tmc_in TO looker"
-            - "GRANT SELECT ON ALL TABLES IN SCHEMA tmc_in TO dsanalyst"
+          post-hook:
+            - "GRANT SELECT ON {{ this }} TO dsanalyst"
+            - "GRANT SELECT ON {{ this }} TO looker"
+            # Revert permissions back to "tmc" user after processing is done.
+            - "ALTER TABLE tmc_in.tmc_users_matched OWNER TO tmc"
       user_newsletter_signups:
         user_created:
           alias: user_created
