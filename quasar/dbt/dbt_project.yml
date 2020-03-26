@@ -246,6 +246,22 @@ models:
             - "CREATE INDEX ON {{ this }}(northstar_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
+        ovrd_recipient_funnel:
+          alias: ovrd_recipient_funnel
+          materialized: table
+          post-hook:
+            - "CREATE UNIQUE INDEX IF NOT EXISTS ovrd_r_index ON {{ this }}(northstar_id)"
+            - "CREATE INDEX ON {{ this }}(northstar_id)"
+            - "GRANT SELECT ON {{ this }} TO dsanalyst"
+            - "GRANT SELECT ON {{ this }} TO looker"
+        ovrd_creator_funnel:
+          alias: ovrd_creator_funnel
+          materialized: table
+          post-hook:
+            - "CREATE UNIQUE INDEX IF NOT EXISTS ovrd_index ON {{ this }}(northstar_id, device_id)"
+            - "CREATE INDEX ON {{ this }}(northstar_id)"
+            - "GRANT SELECT ON {{ this }} TO dsanalyst"
+            - "GRANT SELECT ON {{ this }} TO looker"
       tmc_users:
         tmc_users_out:
           alias: tmc_users_out
