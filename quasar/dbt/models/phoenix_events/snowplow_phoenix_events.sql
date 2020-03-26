@@ -20,10 +20,10 @@ SELECT
     e.modal_type,
     e.search_query,
     e.context_source,
+    e.context_value,
     e.session_id,
     e.browser_size,
     e.northstar_id,
     e.device_id
 FROM {{ ref('snowplow_raw_events') }} e
 LEFT JOIN {{ ref('campaign_info') }} i ON i.campaign_id = e.campaign_id::bigint
-

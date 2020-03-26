@@ -8,5 +8,6 @@ SELECT
     payload::jsonb #>> '{modalType}' AS modal_type,
     payload::jsonb #>> '{searchQuery}' AS search_query,
     payload::jsonb #>> '{contextSource}' AS context_source,
+    payload::jsonb #>> '{value}' AS context_value,
     _fivetran_synced AS ft_timestamp
   FROM {{ env_var('FT_SNOWPLOW') }}.snowplow_event
