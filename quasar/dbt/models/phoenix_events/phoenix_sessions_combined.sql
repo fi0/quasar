@@ -12,7 +12,7 @@ SELECT
     p.landing_page,
     NULL as exit_page,
     NULL as days_since_last_session
-FROM public.puck_phoenix_sessions p
+FROM {{ source('web_events_historical', 'phoenix_sessions') }} p
 UNION ALL
 SELECT
     s.session_id,

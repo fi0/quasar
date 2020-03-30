@@ -24,7 +24,7 @@ SELECT
     p.northstar_id,
     p.device_id
 FROM
-    public.puck_phoenix_events p
+    {{ source('web_events_historical', 'phoenix_events') }} p
 UNION ALL
 SELECT
     s.event_id,
