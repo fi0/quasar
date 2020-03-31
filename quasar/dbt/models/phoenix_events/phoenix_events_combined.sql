@@ -18,12 +18,13 @@ SELECT
     p.modal_type,
     NULL AS search_query,
     NULL AS context_source,
+    NULL AS context_value,
     p.session_id,
     p.browser_size,
     p.northstar_id,
     p.device_id
 FROM
-    public.puck_phoenix_events p
+    {{ source('web_events_historical', 'phoenix_events') }} p
 UNION ALL
 SELECT
     s.event_id,
@@ -45,10 +46,10 @@ SELECT
     s.modal_type,
     s.search_query,
     s.context_source,
+    s.context_value,
     s.session_id,
     s.browser_size,
     s.northstar_id,
     s.device_id
 FROM
     {{ ref('snowplow_phoenix_events') }} s
-

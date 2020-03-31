@@ -7,7 +7,7 @@ requirements = convert_deps_to_pip(pfile['packages'], r=False)
 
 setup(
     name="quasar",
-    version="2020.2.21.0",
+    version="2020.3.31.0",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
@@ -18,7 +18,7 @@ setup(
             'cio_bounced_backfill = quasar.cio_bounced_backfill:main',
             'cio_sent_backfill = quasar.cio_sent_backfill:main',
             'etl_monitoring = quasar.etl_monitoring:run_monitoring',
-            'gdpr = quasar.gdpr_comply:gdpr_from_file',
+            'gdpr = quasar.gdpr_comply:main',
             'mel_create = quasar.mel:create',
             'mel_refresh = quasar.mel:refresh',
             'northstar_backfill = quasar.northstar_to_user_table:backfill',

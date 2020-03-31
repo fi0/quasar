@@ -143,48 +143,6 @@ models:
            - "CREATE INDEX IF NOT EXISTS reportbacks_i ON {{ this }}(post_created_at, campaign_id, post_class, reportback_volume)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
-      ft_northstar_migration_testing:
-        northstar_users_raw_fnmt:
-          alias: northstar_users_raw_fnmt
-          materialized: table
-          post-hook:
-           - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_northstar_id_updated_at_i ON {{ this }}(northstar_id, updated_at)"
-           - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_northstar_id_updated_at_dbt_scd_id_idx ON {{ this }}(northstar_id DESC, updated_at DESC, dbt_scd_id DESC)"
-           - "GRANT SELECT ON {{ this }} TO dsanalyst"
-           - "GRANT SELECT ON {{ this }} TO looker"
-           - "GRANT SELECT ON {{ this }} TO public"
-        northstar_users_deduped_fnmt:
-          alias: northstar_users_deduped_fnmt
-          materialized: table
-          post-hook:
-           - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_northstar_id_updated_at_i ON {{ this }}(northstar_id, updated_at)"
-           - "GRANT SELECT ON {{ this }} TO dsanalyst"
-           - "GRANT SELECT ON {{ this }} TO looker"
-           - "GRANT SELECT ON {{ this }} TO public"
-        users_fnmt:
-          alias: users_fnmt
-          materialized: table
-          post-hook:
-           - "CREATE UNIQUE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_du_indices ON {{ this }}(northstar_id, created_at, email, mobile, source)"
-           - "GRANT SELECT ON {{ this }} TO dsanalyst"
-           - "GRANT SELECT ON {{ this }} TO looker"
-           - "GRANT SELECT ON {{ this }} TO public"
-        member_event_log_fnmt:
-          alias: member_event_log_fnmt
-          materialized: table
-          post-hook:
-           - "CREATE UNIQUE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_unique_idx ON {{ this }}(timestamp, northstar_id, event_id)"
-           - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_northstar_id_timestamp_idx ON {{ this }}(northstar_id, timestamp)"
-           - "GRANT SELECT ON {{ this }} TO dsanalyst"
-           - "GRANT SELECT ON {{ this }} TO looker"
-        user_activity_fnmt:
-          alias: user_activity_fnmt
-          materialized: table
-          post-hook:
-           - "CREATE UNIQUE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_unique_i ON {{ this }}(created_at, northstar_id)"
-           - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_most_recent_all_actions_i ON {{ this }}(most_recent_all_actions)"
-           - "GRANT SELECT ON {{ this }} TO dsanalyst"
-           - "GRANT SELECT ON {{ this }} TO looker"
       users_table:
         cio_latest_status:
           alias: cio_latest_status
@@ -198,6 +156,23 @@ models:
           materialized: table
           post-hook:
            - "CREATE UNIQUE INDEX IF NOT EXISTS du_indices ON {{ this }}(northstar_id, created_at, email, mobile, source)"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
+           - "GRANT SELECT ON {{ this }} TO public"
+        northstar_users_raw:
+          alias: northstar_users_raw
+          materialized: table
+          post-hook:
+           - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_northstar_id_updated_at_i ON {{ this }}(northstar_id, updated_at)"
+           - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_northstar_id_updated_at_dbt_scd_id_idx ON {{ this }}(northstar_id DESC, updated_at DESC, dbt_scd_id DESC)"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
+           - "GRANT SELECT ON {{ this }} TO public"
+        northstar_users_deduped:
+          alias: northstar_users_deduped
+          materialized: table
+          post-hook:
+           - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_northstar_id_updated_at_i ON {{ this }}(northstar_id, updated_at)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
            - "GRANT SELECT ON {{ this }} TO public"
@@ -271,14 +246,46 @@ models:
             - "CREATE INDEX ON {{ this }}(northstar_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
+        ovrd_recipient_funnel:
+          alias: ovrd_recipient_funnel
+          materialized: table
+          post-hook:
+            - "CREATE UNIQUE INDEX IF NOT EXISTS ovrd_r_index ON {{ this }}(northstar_id)"
+            - "CREATE INDEX ON {{ this }}(northstar_id)"
+            - "GRANT SELECT ON {{ this }} TO dsanalyst"
+            - "GRANT SELECT ON {{ this }} TO looker"
+        ovrd_creator_funnel:
+          alias: ovrd_creator_funnel
+          materialized: table
+          post-hook:
+            - "CREATE UNIQUE INDEX IF NOT EXISTS ovrd_index ON {{ this }}(northstar_id, device_id)"
+            - "CREATE INDEX ON {{ this }}(northstar_id)"
+            - "GRANT SELECT ON {{ this }} TO dsanalyst"
+            - "GRANT SELECT ON {{ this }} TO looker"
       tmc_users:
         tmc_users_out:
           alias: tmc_users_out
           materialized: table
+          # This hook needed, since schema is moved in post-hook.
           pre-hook:
             - "DROP TABLE IF EXISTS tmc_out.tmc_users_out CASCADE"
           post-hook:
             - "ALTER TABLE {{ this }} SET SCHEMA tmc_out"
+            - "GRANT SELECT ON ALL TABLES IN SCHEMA tmc_out TO tmc"
+        # This table is a carbon copy of the source table "tmc_in.tmc_users_matched". We're creating
+        # a copy of the table in the public schema since the underlying table is regenerated daily by TMC and
+        # is essentially a "raw" layer table we don't want to source directly in our data analytics. This also gives
+        # us the flexibility to add future optimizations like subset of columns or indexes as needed.
+        tmc_users_matched:
+          materialized: table
+          pre-hook:
+            # Temporarily give perms to quasar admin user so table can be created in public schema.
+            - "ALTER TABLE tmc_in.tmc_users_matched OWNER TO quasar_prod_admin"
+          post-hook:
+            - "GRANT SELECT ON {{ this }} TO dsanalyst"
+            - "GRANT SELECT ON {{ this }} TO looker"
+            # Revert permissions back to "tmc" user after processing is done.
+            - "ALTER TABLE tmc_in.tmc_users_matched OWNER TO tmc"
       user_newsletter_signups:
         user_created:
           alias: user_created
@@ -306,3 +313,4 @@ models:
           post-hook:
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
+
