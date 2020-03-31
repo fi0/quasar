@@ -37,6 +37,8 @@ jobs:
           FT_ROGUE: ${{ secrets.FT_ROGUE }}
           BERTLY: ${{ secrets.BERTLY }}
           CAMPAIGN_INFO_ASHES_SNAPSHOT: ${{ secrets.CAMPAIGN_INFO_ASHES_SNAPSHOT }}
+          TMC_USERS_MATCHED_SOURCE: ${{ secrets.TMC_USERS_MATCHED_SOURCE }}
+          HISTORICAL_ANALYTICS_SCHEMA: ${{ secrets.HISTORICAL_ANALYTICS_SCHEMA }}
       - name: Move docs files to root dir
         run: |
           mv ./docs ~/
