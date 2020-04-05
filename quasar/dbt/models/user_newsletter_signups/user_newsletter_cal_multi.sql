@@ -22,15 +22,13 @@ nls AS (
 	SELECT DISTINCT newsletter_topic
 	FROM {{ ref('user_newsletter_subscriptions') }}
 )
-SELECT 
-	northstar_id, created_at_month, last_mam, 
-	cal_month, months_since_created,
-  CASE WHEN months_since_created <= 5 THEN cal_month - interval '1 month' 
-  	   ELSE cal_month - interval '5 month' 
-  	   END AS period_start,
-  cal_month - interval '1 millisecond' AS period_end,
- newsletter_topic
-FROM user_cal
-CROSS JOIN nls 
+	SELECT 
+		northstar_id, created_at_month, last_mam, 
+		months_since_created,
+	    cal_month as period_start,
+	    cal_month + INTERVAL '1 MONTH - 1 MILLISECOND' as period_end,
+	 newsletter_topic
+	FROM user_cal
+	CROSS JOIN nls 
 --We eliminate the 1st month because it contains noise from the high number of registration-signups activity  
-WHERE ( months_since_created BETWEEN 2 AND 5 OR mod(months_since_created::int,5) = 0)
+WHERE (months_since_created > 1)
