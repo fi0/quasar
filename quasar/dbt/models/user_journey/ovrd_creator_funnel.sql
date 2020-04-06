@@ -103,7 +103,7 @@ nsid_less AS (
 	LEFT JOIN {{ ref('rock_the_vote') }} rtv ON rtv.post_id=po.id AND rtv.status IS NOT NULL 
 	LEFT JOIN best_nsid ON best_nsid.device_id=pec.device_id 
 	WHERE 
-		pec.campaign_name = 'online-registration-drive'
+		pec."path" ILIKE '%online-registration-drive%'
 		AND pec.event_name IN (
 			'phoenix_clicked_copy_to_clipboard',
 			'phoenix_clicked_share_action_facebook',
