@@ -27,14 +27,6 @@ nsid_less AS (
 	SELECT 
 		pec.device_id,
 		min(pec.event_datetime) AS journey_begin_ts,
-		--Tracking source bucketing
-		max(
-			CASE 
-				WHEN reg.tracking_source ILIKE '%VoterRegQuiz_Affirmation%' THEN 'Quiz Affirmation'
-				WHEN reg.tracking_source ILIKE '%VoterRegQuiz_completed%' THEN 'Quiz Completed'
-				WHEN reg.tracking_source IS NULL THEN 'Null'
-				ELSE 'Other' END
-			) AS tracking_source,
 		--Create traffic source groupings
 		max(
 			CASE 
@@ -71,6 +63,17 @@ nsid_less AS (
 				WHEN rtv.post_id IS NOT NULL 
 				THEN 1 ELSE 0 END
 			) AS clicked_get_started,
+			
+		max(
+			CASE 
+				WHEN rtv.post_id IS NOT NULL AND reg.tracking_source ILIKE '%VoterRegQuiz_Affirmation%'
+				THEN 1 ELSE 0 END
+			) AS clicked_get_started_affirmation,
+		max(
+			CASE 
+				WHEN rtv.post_id IS NOT NULL AND reg.tracking_source ILIKE '%VoterRegQuiz_completed%'
+				THEN 1 ELSE 0 END
+			) AS clicked_get_started_quizcomplete,
 		max(
 			CASE 
 				WHEN reg.northstar_id IS NOT NULL 
