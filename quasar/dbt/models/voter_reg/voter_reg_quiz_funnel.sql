@@ -27,6 +27,14 @@ nsid_less AS (
 	SELECT 
 		pec.device_id,
 		min(pec.event_datetime) AS journey_begin_ts,
+		--Tracking source bucketing
+		max(
+			CASE 
+				WHEN reg.tracking_source ILIKE '%VoterRegQuiz_Affirmation%' THEN 'Quiz Affirmation'
+				WHEN reg.tracking_source ILIKE '%VoterRegQuiz_completed%' THEN 'Quiz Completed'
+				WHEN reg.tracking_source IS NULL THEN 'Null'
+				ELSE 'Other' END
+			) AS tracking_source,
 		--Create traffic source groupings
 		max(
 			CASE 
@@ -90,7 +98,8 @@ nsid_less AS (
 	--Get voter reg activity
 	LEFT JOIN 
 		(SELECT 
-			r.northstar_id
+			r.northstar_id,
+			rock.tracking_source
 		FROM {{ ref('reportbacks') }} r 
 		LEFT JOIN {{ ref('rock_the_vote') }} rock 
 			ON rock.post_id = r.post_id 
