@@ -33,11 +33,16 @@ gambit_unsub AS (
 	FROM {{ ref('gambit_messages_inbound') }}
     ) f
 ),
+-- If the member's sms_status is 'unknown', 'undeliverable' or 'GDPR'.
+-- The timestamp of when it was last updated in the user's app database is used
+-- as the timestamp this user was set as undeliverable.
+-- More details on the decision why we are using this logic as a "good enough" proxy
+-- to the real undeliverability timestamp can be found in https://www.pivotaltracker.com/story/show/171448501
 sms_undeliverable AS (
     SELECT DISTINCT
 	    northstar_id,
 	    FIRST_VALUE(updated_at) OVER (PARTITION BY northstar_id ORDER BY updated_at
-		ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS unsub_ts
+		ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS undeliverable_ts
     FROM {{ ref('northstar_users_deduped') }}
     WHERE sms_status IN ('unknown', 'undeliverable', 'GDPR')
 ),
@@ -109,12 +114,12 @@ DATE_PART(
     'day', now() - greatest(mel.most_recent_action, email_opens.most_recent_email_open)
 ) as days_since_last_action,
 (r.first_rb - u.created_at) AS time_to_first_rb,
-COALESCE(gambit_unsub.unsub_ts, sms_undeliverable.unsub_ts) AS sms_unsubscribed_at,
+gambit_unsub.unsub_ts AS sms_unsubscribed_at,
+sms_undeliverable.undeliverable_ts AS sms_undeliverable_at,
 email_unsub.email_unsubscribed_at,
 CASE WHEN u.subscribed_member IS FALSE
     THEN greatest(
 	gambit_unsub.unsub_ts,
-	sms_undeliverable.unsub_ts,
 	email_unsub.email_unsubscribed_at) ELSE NULL
     END AS user_unsubscribed_at,
 CASE WHEN u."source" = 'importer-client' AND p.first_post = 'voter-reg'
