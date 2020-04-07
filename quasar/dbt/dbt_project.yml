@@ -313,4 +313,12 @@ models:
           post-hook:
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
+      voter_reg:
+        voter_reg_quiz_funnel:
+          alias: voter_reg_quiz_funnel
+          materialized: table
+          post-hook:
+            - "CREATE INDEX ON {{ this }}(northstar_id, device_id, journey_begin_ts)"
+            - "GRANT SELECT ON {{ this }} to dsanalyst"
+            - "GRANT SELECT ON {{ this }} to looker"          
 
