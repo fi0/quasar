@@ -679,8 +679,64 @@ Source of signup, e.g. "sms" or "web"
 Date when user signed up for newsletter
 {% enddocs %}
 
+{% docs journey_begin_ts %}
 
+{% enddocs %}
 
+{% docs page_visit %}
 
+{% enddocs %}
+
+{% docs click_join_us %}
+
+{% enddocs %}
+
+{% docs authenticated %}
+
+{% enddocs %}
+
+{% docs click_start_registration %}
+
+{% enddocs %}
+
+{% docs clicked_get_started %}
+
+{% enddocs %}
+
+{% docs registered %}
+
+{% enddocs %}
+
+{% docs click_copy_link %}
+
+{% enddocs %}
+
+{% docs clicked_any_share %}
+
+{% enddocs %}
+
+{% docs clicked_share_fb %}
+
+{% enddocs %}
+
+{% docs clicked_share_email %}
+
+{% enddocs %}
+
+{% docs clicked_share_fb_msgr %}
+
+{% enddocs %}
+
+{% docs clicked_share_twitter %}
+
+{% enddocs %}
+
+{% docs clicked_link %}
+
+{% enddocs %}
+
+{% docs completed_registration %}
+
+{% enddocs %}
 
 
