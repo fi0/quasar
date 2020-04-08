@@ -38,7 +38,7 @@ models:
               - not_null
 
         - name: subscribed
-          description: '{{ doc("subscribed") }}'
+          description: '{{ doc("subscribed_member") }}'
           
         - name: unsubscribed
           description: '{{ doc("unsubscribed") }}'
