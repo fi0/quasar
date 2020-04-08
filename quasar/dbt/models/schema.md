@@ -739,4 +739,16 @@ Date when user signed up for newsletter
 
 {% enddocs %}
 
+{% docs traffic_source %}
+
+{% enddocs %}
+
+{% docs submitted_quiz %}
+
+{% enddocs %}
+
+{% docs clicked_submit_photo %}
+
+{% enddocs %}
+
 
