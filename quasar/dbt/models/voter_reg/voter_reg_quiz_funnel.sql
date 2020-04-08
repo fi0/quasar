@@ -62,12 +62,32 @@ nsid_less AS (
 			CASE 
 				WHEN rtv.post_id IS NOT NULL 
 				THEN 1 ELSE 0 END
-			) AS clicked_get_started,
+			) AS clicked_get_started,	
+		max(
+			CASE 
+				WHEN rtv.post_id IS NOT NULL AND rtv.tracking_source ILIKE '%VoterRegQuiz_Affirmation%'
+				THEN 1 ELSE 0 END
+			) AS clicked_get_started_affirmation,
+		max(
+			CASE 
+				WHEN rtv.post_id IS NOT NULL AND rtv.tracking_source ILIKE '%VoterRegQuiz_completed%'
+				THEN 1 ELSE 0 END
+			) AS clicked_get_started_quizcomplete,
 		max(
 			CASE 
 				WHEN reg.northstar_id IS NOT NULL 
 				THEN 1 ELSE 0 END
 			) AS registered,
+		max(
+			CASE 
+				WHEN reg.northstar_id IS NOT NULL AND reg.tracking_source ILIKE '%VoterRegQuiz_completed%'
+				THEN 1 ELSE 0 END
+			) AS registered_quizcomplete,
+		max(
+			CASE 
+				WHEN reg.northstar_id IS NOT NULL AND reg.tracking_source ILIKE '%VoterRegQuiz_Affirmation%'
+				THEN 1 ELSE 0 END
+			) AS registered_affirmation,
 		max(
 			CASE 
 				WHEN pec.event_name='phoenix_clicked_share_action_facebook' 
@@ -90,7 +110,8 @@ nsid_less AS (
 	--Get voter reg activity
 	LEFT JOIN 
 		(SELECT 
-			r.northstar_id
+			r.northstar_id,
+			rock.tracking_source
 		FROM {{ ref('reportbacks') }} r 
 		LEFT JOIN {{ ref('rock_the_vote') }} rock 
 			ON rock.post_id = r.post_id 
