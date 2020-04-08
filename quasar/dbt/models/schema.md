@@ -652,15 +652,19 @@ How many months since the user was created
 {% enddocs %}
 
 {% docs last_mam %}
-
+Date corresponding to the most recent member action
 {% enddocs %}
 
 {% docs period_start %}
+Date corresponding to the start of the period analyzing how newsletter subscription status contributes to campaign sign-up
 
+Context: Period start and end are simply the start and end of the month. In a previous iteration of the model, some periods were 5-months long which is why these fields are not called months.
 {% enddocs %}
 
 {% docs period_end %}
+Date corresponding to the end of the period analyzing how newsletter subscription status contributes to campaign sign-up
 
+Context: Period start and end are simply the start and end of the month. In a previous iteration of the model, some periods were 5-months long which is why these fields are not called months.
 {% enddocs %}
 
 {% docs nl_status %}
