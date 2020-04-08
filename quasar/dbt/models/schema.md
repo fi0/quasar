@@ -651,6 +651,32 @@ Whether we've paused sending sms messages to the user.
 How many months since the user was created
 {% enddocs %}
 
+{% docs last_mam %}
+
+{% enddocs %}
+
+{% docs period_start %}
+
+{% enddocs %}
+
+{% docs period_end %}
+
+{% enddocs %}
+
+{% docs nl_status %}
+Newsletter status, whether or not the user is subscribed to the newsletter
+{% enddocs %}
+
+{% docs signup_source %}
+Source of signup, e.g. "sms" or "web"
+{% enddocs %}
+
+{% docs signup_date %}
+Date when user signed up for newsletter
+{% enddocs %}
+
+
+
 
 
 
