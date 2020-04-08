@@ -41,7 +41,7 @@ models:
           description: '{{ doc("subscribed_member") }}'
           
         - name: unsubscribed
-          description: '{{ doc("unsubscribed") }}'
+          description: '{{ doc("subscribed_member") }}'
           
         - name: nl_status
           description: '{{ doc("nl_status") }}'
