@@ -647,6 +647,10 @@ Email subscription topics correspond to categories in CIO in which the user is i
 Whether we've paused sending sms messages to the user.
 {% enddocs %}
 
+{% docs months_since_created %}
+How many months since the user was created
+{% enddocs %}
+
 
 
 
