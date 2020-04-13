@@ -1,3 +1,6 @@
+
+-- Each session can be thought of a 0 - 3600 seconds (60 min) block of time
+-- It holds event metadata for the duration of the session
 WITH sessions AS (
 SELECT
     session_id,
@@ -11,28 +14,32 @@ SELECT
 FROM {{ ref('snowplow_phoenix_events') }}
 GROUP BY session_id
 ),
+-- Captures the first and last page viewed metadata per session
+-- IMPORTANT: The event id is the first event in the session.
 entry_exit_pages AS (
 SELECT DISTINCT
     session_id,
-    first_value("path") OVER (PARTITION BY session_id ORDER BY event_datetime 
+    first_value("path") OVER (PARTITION BY session_id ORDER BY event_datetime
 	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS landing_page,
     first_value(event_id) OVER (PARTITION BY session_id ORDER BY event_datetime 
 	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS event_id,
-    last_value("path") OVER (PARTITION BY session_id ORDER BY event_datetime 
+    last_value("path") OVER (PARTITION BY session_id ORDER BY event_datetime
 	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS exit_page
 FROM {{ ref('snowplow_phoenix_events') }}
 ),
+-- Captures referrer metadata per session
 session_referrer AS (
 SELECT DISTINCT
     session_id,
     first_value(referrer_host) OVER (PARTITION BY session_id ORDER BY event_datetime 
 	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS session_referrer_host,
-    first_value(page_utm_source) OVER (PARTITION BY session_id ORDER BY event_datetime 
+    first_value(page_utm_source) OVER (PARTITION BY session_id ORDER BY event_datetime
 	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS session_utm_source,
     first_value(page_utm_campaign) OVER (PARTITION BY session_id ORDER BY event_datetime 
 	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS session_utm_campaign 
 FROM {{ ref('snowplow_phoenix_events') }}
 ),
+-- Captures last recorded session metadata for this device
 time_between_sessions AS (
 SELECT DISTINCT
     device_id,
