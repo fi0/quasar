@@ -23,7 +23,7 @@ WITH best_nsid AS (
 	WHERE ranked.ord=1
 )
 ,
-referral_completions AS (
+referral_counts AS (
 	--Get referral counts
 	SELECT 
 		--Prefer referrer_user_id on post, extract value from tracking source for legacy posts
@@ -161,4 +161,4 @@ SELECT
 	best_nsid.northstar_id
 FROM nsid_less
 LEFT JOIN best_nsid ON nsid_less.device_id=best_nsid.device_id
-LEFT JOIN referral_completions ON referral_completions.referrer=best_nsid.northstar_id
+LEFT JOIN referral_counts ON referral_completions.referrer=best_nsid.northstar_id
