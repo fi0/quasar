@@ -23,6 +23,24 @@ WITH best_nsid AS (
 	WHERE ranked.ord=1
 )
 ,
+referral_completions AS (
+	--Get referral counts
+	SELECT 
+		--Prefer referrer_user_id on post, extract value from tracking source for legacy posts
+		COALESCE(p.referrer_user_id, split_part(substring(tracking_source from 'user\:(.+)\,'), ',', 1)) AS referrer,
+		count(*) AS referrals_start,
+		sum(CASE WHEN rtv.status='Complete' THEN 1 ELSE 0 END) AS referrals_completed
+	FROM {{ ref('posts') }} p 
+	INNER JOIN {{ ref('rock_the_vote') }} rtv ON p.id=rtv.post_id 
+	WHERE 
+		--Must be referral
+		rtv.tracking_source ILIKE '%referral=true%'
+		--Exclude nonsense or empty nsid values
+		AND COALESCE(p.referrer_user_id, split_part(substring(tracking_source from 'user\:(.+)\,'), ',', 1)) 
+			NOT IN ('{userId}','null', '')
+	GROUP BY COALESCE(p.referrer_user_id, split_part(substring(tracking_source from 'user\:(.+)\,'), ',', 1))
+	)
+,
 nsid_less AS (
 	SELECT 
 		pec.device_id,
@@ -143,3 +161,4 @@ SELECT
 	best_nsid.northstar_id
 FROM nsid_less
 LEFT JOIN best_nsid ON nsid_less.device_id=best_nsid.device_id
+LEFT JOIN referral_completions ON referral_completions.referrer=best_nsid.northstar_id
