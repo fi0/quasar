@@ -18,83 +18,35 @@ class CioQueue(QuasarQueue):
                          self.blink_exchange)
         self.db = Database()
 
-    # Save customer sub data and dates.
+    # Save customer sub/unsub data and dates.
     def _add_sub_event(self, data):
         record = {
-            'email_id': data['data']['email_id'],
             'customer_id': data['data']['customer_id'],
-            'email_address': data['data']['email_address'],
             'event_id': data['event_id'],
             'timestamp': data['timestamp'],
             'event_type': data['event_type']
         }
         query = ''.join(("INSERT INTO cio.customer_event_scratch "
-                         "(email_id, customer_id, email_address, "
-                         "event_id, timestamp, "
-                         "event_type) VALUES (:email_id,"
-                         ":customer_id,:email_address,:event_id,"
-                         "to_timestamp(:timestamp),:event_type)"))
+                         "(customer_id, event_id, timestamp, "
+                         "event_type) VALUES (:customer_id,"
+                         ":event_id,to_timestamp(:timestamp),:event_type)"))
         self.db.query_str(query, record)
-        return data['event_id']
-
-    # Save customer unsub data and dates.
-    def _add_unsub_event(self, data):
-        if pydash.get(data, 'template_id'):
-            record = {
-                'email_id': data['data']['email_id'],
-                'customer_id': data['data']['customer_id'],
-                'email_address': data['data']['email_address'],
-                'template_id': data['data']['template_id'],
-                'event_id': data['event_id'],
-                'timestamp': data['timestamp'],
-                'event_type': data['event_type']
-            }
-            query = ''.join(("INSERT INTO cio.customer_event_scratch "
-                             "(email_id, customer_id,"
-                             "email_address, template_id, event_id,"
-                             "timestamp, event_type) "
-                             "VALUES (:email_id,:customer_id,"
-                             ":email_address,:template_id,:event_id,"
-                             "to_timestamp(:timestamp),:event_type)"))
-            self.db.query_str(query, record)
-        else:
-            record = {
-                'email_id': data['data']['email_id'],
-                'customer_id': data['data']['customer_id'],
-                'email_address': data['data']['email_address'],
-                'event_id': data['event_id'],
-                'timestamp': data['timestamp'],
-                'event_type': data['event_type']
-            }
-            query = ''.join(("INSERT INTO cio.customer_event_scratch "
-                             "(email_id, customer_id,"
-                             "email_address, event_id, "
-                             "timestamp, event_type) "
-                             "VALUES (:email_id,:customer_id,"
-                             ":email_address,:event_id,"
-                             "to_timestamp(:timestamp),:event_type)"))
-            self.db.query_str(query, record)
         log(''.join(("Added customer event from "
                      "C.IO event id {}.")).format(data['event_id']))
 
     # Save email event data and dates, e.g. email_click.
     def _add_email_event(self, data):
         record = {
-            'email_id': data['data']['email_id'],
             'customer_id': data['data']['customer_id'],
             'email_address': data['data']['email_address'],
-            'template_id': data['data']['template_id'],
             'event_id': data['event_id'],
             'timestamp': data['timestamp'],
             'event_type': data['event_type']
         }
         query = ''.join(("INSERT INTO cio.email_event_scratch "
-                         "(email_id, customer_id, email_address, "
-                         "template_id, event_id, timestamp, "
-                         "event_type) VALUES "
-                         "(:email_id,:customer_id,:email_address,"
-                         ":template_id,:event_id,"
-                         "to_timestamp(:timestamp),:event_type)"))
+                         "(customer_id, email_address, event_id, timestamp, "
+                         "event_type) VALUES (:customer_id,:email_address,"
+                         ":event_id,to_timestamp(:timestamp),:event_type)"))
         self.db.query_str(query, record)
         log(''.join(("Added email event from "
                      "C.IO event id {}.")).format(data['event_id']))
@@ -102,21 +54,17 @@ class CioQueue(QuasarQueue):
     # Save email sent event.
     def _add_email_sent_event(self, data):
         record = {
-            'email_id': data['data']['email_id'],
             'customer_id': data['data']['customer_id'],
             'email_address': data['data']['email_address'],
-            'template_id': data['data']['template_id'],
             'subject': data['data']['subject'],
             'event_id': data['event_id'],
             'timestamp': data['timestamp']
         }
         query = ''.join(("INSERT INTO cio.email_sent_scratch "
-                         "(email_id, customer_id, email_address, "
-                         "template_id, subject, event_id, "
-                         "timestamp) VALUES "
-                         "(:email_id,:customer_id,:email_address,"
-                         ":template_id,:subject,:event_id,"
-                         "to_timestamp(:timestamp))"))
+                         "(customer_id, email_address, "
+                         "subject, event_id, timestamp) VALUES "
+                         "(:customer_id,:email_address,"
+                         ":subject,:event_id,to_timestamp(:timestamp))"))
         self.db.query_str(query, record)
         log(''.join(("Added email event from "
                      "C.IO event id {}.")).format(data['event_id']))
@@ -124,10 +72,8 @@ class CioQueue(QuasarQueue):
     # Save email event data and dates, e.g. email_click.
     def _add_email_click_event(self, data):
         record = {
-            'email_id': data['data']['email_id'],
             'customer_id': data['data']['customer_id'],
             'email_address': data['data']['email_address'],
-            'template_id': data['data']['template_id'],
             'subject': data['data']['subject'],
             'href': data['data']['href'],
             'link_id': data['data']['link_id'],
@@ -136,12 +82,10 @@ class CioQueue(QuasarQueue):
             'event_type': data['event_type']
         }
         query = ''.join(("INSERT INTO cio.email_event_scratch "
-                         "(email_id, customer_id, email_address, "
-                         "template_id, subject, href, link_id, "
-                         "event_id, timestamp, "
-                         "event_type) VALUES "
-                         "(:email_id,:customer_id,:email_address,"
-                         ":template_id,:subject,:href,:link_id,"
+                         "(customer_id, email_address, subject, href, "
+                         "link_id, event_id, timestamp, event_type) VALUES "
+                         "(:customer_id,:email_address,"
+                         ":subject,:href,:link_id,"
                          ":event_id,to_timestamp(:timestamp),"
                          ":event_type)"))
         self.db.query_str(query, record)
@@ -151,20 +95,16 @@ class CioQueue(QuasarQueue):
         # Save email bounced event.
     def _add_email_bounced_event(self, data):
         record = {
-            'email_id': data['data']['email_id'],
             'customer_id': data['data']['customer_id'],
             'email_address': data['data']['email_address'],
-            'template_id': data['data']['template_id'],
             'subject': data['data']['subject'],
             'event_id': data['event_id'],
             'timestamp': data['timestamp']
         }
         query = ''.join(("INSERT INTO cio.email_bounced_scratch "
-                         "(email_id, customer_id, email_address, "
-                         "template_id, subject, event_id, "
-                         "timestamp) VALUES "
-                         "(:email_id,:customer_id,:email_address,"
-                         ":template_id,:subject,:event_id,"
+                         "(customer_id, email_address, "
+                         "subject, event_id, timestamp) VALUES "
+                         "(:customer_id,:email_address,:subject,:event_id,"
                          "to_timestamp(:timestamp))"))
         self.db.query_str(query, record)
         log(''.join(("Added email bounced event from "
@@ -181,10 +121,9 @@ class CioQueue(QuasarQueue):
             'email_unsubscribed'
         }
         try:
-            if event_type == 'customer_subscribed':
+            if (event_type == 'customer_subscribed' or
+                    event_type == 'customer_unsubscribed'):
                 self._add_sub_event(data)
-            elif event_type == 'customer_unsubscribed':
-                self._add_unsub_event(data)
             elif event_type == 'email_clicked':
                 self._add_email_click_event(data)
             elif event_type == 'email_sent':
