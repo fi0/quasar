@@ -43,6 +43,7 @@ SELECT
 	pd.action_id,
 	pd.location,
 	pd.postal_code,
+	pd.referrer_user_id,
 	a.reportback AS is_reportback,
 	CASE 
 	    WHEN pd.details <> '' THEN (pd.details::json ->> 'number_of_participants')::INT
