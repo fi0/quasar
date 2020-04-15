@@ -161,4 +161,4 @@ SELECT
 	best_nsid.northstar_id
 FROM nsid_less
 LEFT JOIN best_nsid ON nsid_less.device_id=best_nsid.device_id
-LEFT JOIN referral_counts ON referral_completions.referrer=best_nsid.northstar_id
+LEFT JOIN referral_counts ON referral_counts.referrer=best_nsid.northstar_id
