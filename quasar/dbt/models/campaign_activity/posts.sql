@@ -50,7 +50,9 @@ SELECT
 	    ELSE NULL END AS num_participants,
 	a.civic_action,
 	a.scholarship_entry,
-	pd.school_id
+	pd.school_id,
+	split_part(substring(rtv.tracking_source from 'source\:(.+)'), ',', 1) AS vr_source,
+	split_part(substring(rtv.tracking_source from 'source_details\:(.+)'), ',', 1) AS vr_source_details
 FROM {{ env_var('FT_ROGUE') }}.posts pd
 INNER JOIN {{ ref('signups') }} s
 	ON pd.signup_id = s.id
