@@ -15,6 +15,8 @@ SELECT
     pd.scholarship_entry,
     pd.location,
     pd.postal_code,
+    pd.vr_source,
+    pd.vr_source_details,
     CASE
         WHEN (pd.post_class ilike '%vote%' AND pd.status = 'confirmed')
         THEN 'self-reported registrations'
