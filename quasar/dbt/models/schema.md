@@ -680,7 +680,7 @@ Date when user signed up for newsletter
 {% enddocs %}
 
 {% docs journey_begin_ts %}
-
+Earliest recorded page visit
 {% enddocs %}
 
 {% docs page_visit %}
@@ -688,7 +688,7 @@ Date when user signed up for newsletter
 {% enddocs %}
 
 {% docs click_join_us %}
-
+Phoenix Events Combined event_name = phoenix_clicked_signup
 {% enddocs %}
 
 {% docs authenticated %}
@@ -696,7 +696,7 @@ Date when user signed up for newsletter
 {% enddocs %}
 
 {% docs click_start_registration %}
-
+Phoenix Events Combined event_name = phoenix_clicked_voter_registration_action
 {% enddocs %}
 
 {% docs clicked_get_started %}
@@ -708,27 +708,27 @@ Date when user signed up for newsletter
 {% enddocs %}
 
 {% docs click_copy_link %}
-
+Phoenix Events Combined event_name = phoenix_clicked_copy_to_clipboard
 {% enddocs %}
 
 {% docs clicked_any_share %}
-
+Phoenix Events Combined event_name = 'phoenix_clicked_share_action_facebook','phoenix_clicked_share_email', 'phoenix_clicked_share_facebook_messenger','phoenix_clicked_share_twitter'
 {% enddocs %}
 
 {% docs clicked_share_fb %}
-
+Phoenix Events Combined event_name = phoenix_clicked_share_action_facebook
 {% enddocs %}
 
 {% docs clicked_share_email %}
-
+Phoenix Events Combined event_name = phoenix_clicked_share_email
 {% enddocs %}
 
 {% docs clicked_share_fb_msgr %}
-
+Phoenix Events Combined event_name = phoenix_clicked_share_facebook_messenger
 {% enddocs %}
 
 {% docs clicked_share_twitter %}
-
+Phoenix Events Combined event_name = phoenix_clicked_share_twitter
 {% enddocs %}
 
 {% docs clicked_link %}
