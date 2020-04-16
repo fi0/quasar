@@ -36,6 +36,12 @@ models:
         - name: journey_begin_ts
           description: '{{ doc("journey_begin_ts") }}'
 
+        - name: latest_get_started_ts
+          description: '{{ doc("latest_get_started_ts") }}'
+
+        - name: latest_registered_ts
+          description: '{{ doc("latest_registered_ts") }}'
+
         - name: page_visit
           description: '{{ doc("page_visit") }}'
 
@@ -71,6 +77,12 @@ models:
 
         - name: clicked_share_twitter
           description: '{{ doc("clicked_share_twitter") }}'
+
+        - name: referrals_start
+          description: '{{ doc("referrals_start") }}'
+
+        - name: referrals_completed
+          description: '{{ doc("referrals_completed") }}'
 
   - name: ovrd_recipient_funnel
     description: Needs a description

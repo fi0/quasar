@@ -759,4 +759,36 @@ How many people did this user refer that started the registration process
 How many people did this user refer that completed the registration process
 {% enddocs %}
 
+{% docs clicked_get_started_affirmation %}
+Began the RTV registration flow via the Quiz Affirmation
+{% enddocs %}
+
+{% docs clicked_get_started_quiz_complete %}
+Began the RTV registration flow via Quiz Completion
+{% enddocs %}
+
+{% docs registered_affirmation %}
+Completed the RTV registration flow via Affirmation
+{% enddocs %}
+
+{% docs registered_quizcomplete %}
+Completed the RTV registration flow via Quiz Completion
+{% enddocs %}
+
+{% docs register_affirmation_then_quiz %}
+Registered via Affirmation, then returned to take the quiz
+{% enddocs %}
+
+{% docs latest_get_started_ts %}
+The most recent time the user clicked Get Started on the RTV block
+{% enddocs %}
+
+{% docs latest_registered_ts %}
+The most recent time the user registered to vote
+{% enddocs %}
+
+{% docs submit_quiz_register_affirmation %}
+Submitted the quiz, and then registered to vote
+{% enddocs %}
+
 

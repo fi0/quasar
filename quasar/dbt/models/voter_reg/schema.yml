@@ -50,3 +50,11 @@ models:
         - name: clicked_submit_photo
           description: '{{ doc("clicked_submit_photo") }}'
 
+        - name: registered
+          description: '{{ doc("registered") }}'
+
+        - name: register_affirmation_then_quiz
+          description: '{{ doc("register_affirmation_then_quiz") }}'
+
+        - name: submit_quiz_register_affirmation
+          description: '{{ doc("submit_quiz_register_affirmation") }}'
