@@ -26,7 +26,18 @@ WITH best_nsid AS (
 nsid_less AS (
 	SELECT 
 		pec.device_id,
+		--Earliest page visit
 		min(pec.event_datetime) AS journey_begin_ts,
+		--Latest click to rock the vote page event
+		max(pec.event_datetime) 
+			FILTER(WHERE pec.event_name='phoenix_clicked_voter_registration_action') AS max_click_registration_ts,
+		--Latest quiz submission
+		max(pec.event_datetime) 
+			FILTER(WHERE pec.event_name='phoenix_submitted_quiz') AS max_submit_quiz_ts,
+		--Latest registration timestamp for northstar
+		max(reg.started_registration) AS latest_register_ts,
+		--Latest start RTV process for northstar
+		max(rtv.started_registration) AS latest_get_started_ts,
 		--Create traffic source groupings
 		max(
 			CASE 
@@ -111,7 +122,8 @@ nsid_less AS (
 	LEFT JOIN 
 		(SELECT 
 			r.northstar_id,
-			rock.tracking_source
+			rock.tracking_source,
+			rock.started_registration 
 		FROM {{ ref('reportbacks') }} r 
 		LEFT JOIN {{ ref('rock_the_vote') }} rock 
 			ON rock.post_id = r.post_id 
@@ -121,7 +133,6 @@ nsid_less AS (
 			ON reg.northstar_id = pec.northstar_id 
 	LEFT JOIN {{ ref('posts') }} po ON po.northstar_id=pec.northstar_id
 	LEFT JOIN {{ ref('rock_the_vote') }} rtv ON rtv.post_id=po.id AND rtv.status IS NOT NULL 
-	LEFT JOIN best_nsid ON best_nsid.device_id=pec.device_id 
 	WHERE 
 		--Filter to the URL we care about
 		pec."path" ILIKE '%ready-vote%'
@@ -148,7 +159,14 @@ nsid_less AS (
 	)	
 --Attaches northstar per first CTE to funnel table
 SELECT 
-	nsid_less.*,
-	best_nsid.northstar_id
-FROM nsid_less
-LEFT JOIN best_nsid ON nsid_less.device_id=best_nsid.device_id
+	t.*,
+	n.northstar_id,
+	--Additional requested funnel paths
+	CASE 
+		WHEN t.registered_affirmation=1 AND t.max_submit_quiz_ts > t.max_click_registration_ts 
+		THEN 1 ELSE 0 END AS register_affirmation_then_quiz,
+	CASE
+		WHEN t.submitted_quiz=1 AND t.registered_affirmation=1 AND t.max_submit_quiz_ts < t.max_click_registration_ts 
+		THEN 1 ELSE 0 END AS submit_quiz_register_affirmation
+FROM nsid_less t
+LEFT JOIN best_nsid n ON t.device_id=n.device_id
