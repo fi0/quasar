@@ -1,0 +1,60 @@
+version: 2
+
+models:
+  - name: voter_reg_quiz_funnel
+    description: Needs a description
+
+    columns:
+        - name: northstar_id
+          description: '{{ doc("northstar_id") }}'
+          tests:
+              - relationships:
+                  to: ref('users')
+                  field: id
+
+        - name: device_id
+          description: '{{ doc("device_id") }}'
+          tests:
+              - not_null
+
+        - name: journey_begin_ts
+          description: '{{ doc("journey_begin_ts") }}'
+
+        - name: page_visit
+          description: '{{ doc("page_visit") }}'
+
+        - name: click_join_us
+          description: '{{ doc("click_join_us") }}'
+
+        - name: authenticated
+          description: '{{ doc("authenticated") }}'
+
+        - name: click_start_registration
+          description: '{{ doc("click_start_registration") }}'
+
+        - name: clicked_get_started
+          description: '{{ doc("clicked_get_started") }}'
+
+        - name: registered
+          description: '{{ doc("registered") }}' 
+
+        - name: clicked_share_fb
+          description: '{{ doc("clicked_share_fb") }}'
+
+        - name: traffic_source
+          description: '{{ doc("traffic_source") }}'
+
+        - name: submitted_quiz
+          description: '{{ doc("submitted_quiz") }}'
+
+        - name: clicked_submit_photo
+          description: '{{ doc("clicked_submit_photo") }}'
+
+        - name: registered
+          description: '{{ doc("registered") }}'
+
+        - name: register_affirmation_then_quiz
+          description: '{{ doc("register_affirmation_then_quiz") }}'
+
+        - name: submit_quiz_register_affirmation
+          description: '{{ doc("submit_quiz_register_affirmation") }}'
