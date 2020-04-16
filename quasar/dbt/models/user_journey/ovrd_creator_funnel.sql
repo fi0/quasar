@@ -158,7 +158,9 @@ nsid_less AS (
 	)		
 SELECT 
 	nsid_less.*,
-	best_nsid.northstar_id
+	best_nsid.northstar_id,
+	referral_counts.referrals_start,
+	referral_counts.referrals_completed
 FROM nsid_less
 LEFT JOIN best_nsid ON nsid_less.device_id=best_nsid.device_id
 LEFT JOIN referral_counts ON referral_counts.referrer=best_nsid.northstar_id
