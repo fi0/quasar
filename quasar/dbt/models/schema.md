@@ -680,55 +680,55 @@ Date when user signed up for newsletter
 {% enddocs %}
 
 {% docs journey_begin_ts %}
-Earliest recorded page visit
+The first time the user landed on this URL
 {% enddocs %}
 
 {% docs page_visit %}
-
+Has the user visited the OVRD URL
 {% enddocs %}
 
 {% docs click_join_us %}
-Phoenix Events Combined event_name = phoenix_clicked_signup
+Did the user click the Join Us button to sign up for the campaign. Phoenix Events Combined event_name = phoenix_clicked_signup
 {% enddocs %}
 
 {% docs authenticated %}
-
+Did the user view the page while authenticated
 {% enddocs %}
 
 {% docs click_start_registration %}
-Phoenix Events Combined event_name = phoenix_clicked_voter_registration_action
+Did the user click the Start Registration button to go to Instapage. Phoenix Events Combined event_name = phoenix_clicked_voter_registration_action
 {% enddocs %}
 
 {% docs clicked_get_started %}
-
+Did the user start the registration process on Instapage.
 {% enddocs %}
 
 {% docs registered %}
-
+Has the user registered to vote?
 {% enddocs %}
 
 {% docs click_copy_link %}
-Phoenix Events Combined event_name = phoenix_clicked_copy_to_clipboard
+Did the user copy their unique link to share. Phoenix Events Combined event_name = phoenix_clicked_copy_to_clipboard
 {% enddocs %}
 
 {% docs clicked_any_share %}
-Phoenix Events Combined event_name = 'phoenix_clicked_share_action_facebook','phoenix_clicked_share_email', 'phoenix_clicked_share_facebook_messenger','phoenix_clicked_share_twitter'
+Did the user click any of the social share buttons. Phoenix Events Combined event_name = 'phoenix_clicked_share_action_facebook','phoenix_clicked_share_email', 'phoenix_clicked_share_facebook_messenger','phoenix_clicked_share_twitter'
 {% enddocs %}
 
 {% docs clicked_share_fb %}
-Phoenix Events Combined event_name = phoenix_clicked_share_action_facebook
+Did the user click the share via Facebook button? Phoenix Events Combined event_name = phoenix_clicked_share_action_facebook
 {% enddocs %}
 
 {% docs clicked_share_email %}
-Phoenix Events Combined event_name = phoenix_clicked_share_email
+Did the user click the share via email button? Phoenix Events Combined event_name = phoenix_clicked_share_email
 {% enddocs %}
 
 {% docs clicked_share_fb_msgr %}
-Phoenix Events Combined event_name = phoenix_clicked_share_facebook_messenger
+Did the user click the share via Facebook Messenger button? Phoenix Events Combined event_name = phoenix_clicked_share_facebook_messenger
 {% enddocs %}
 
 {% docs clicked_share_twitter %}
-Phoenix Events Combined event_name = phoenix_clicked_share_twitter
+Did the user click the share via Twitter button? Phoenix Events Combined event_name = phoenix_clicked_share_twitter
 {% enddocs %}
 
 {% docs clicked_link %}
@@ -736,19 +736,27 @@ Phoenix Events Combined event_name = phoenix_clicked_share_twitter
 {% enddocs %}
 
 {% docs completed_registration %}
-
+Did the user complete their registration?
 {% enddocs %}
 
 {% docs traffic_source %}
-
+Where did this user come from? Is it from one of our top partners or an internal product?
 {% enddocs %}
 
 {% docs submitted_quiz %}
-
+Did the user submit the quiz?
 {% enddocs %}
 
 {% docs clicked_submit_photo %}
+Did the user attempt to submit a photo post on the page?
+{% enddocs %}
 
+{% docs referrals_start %}
+How many people did this user refer that started the registration process
+{% enddocs %}
+
+{% docs referrals_completed %}
+How many people did this user refer that completed the registration process
 {% enddocs %}
 
 
