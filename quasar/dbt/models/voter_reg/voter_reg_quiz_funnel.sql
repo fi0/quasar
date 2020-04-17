@@ -179,10 +179,20 @@ SELECT
 		WHEN t.submitted_quiz=1 AND t.registered_affirmation=1 AND t.max_submit_quiz_ts < t.max_click_registration_ts 
 		THEN 1 ELSE 0 END AS submit_quiz_register_affirmation,
 	CASE 
-		WHEN t.submitted_quiz=1 AND t.max_submit_quiz_ts > t.latest_register_ts AND t.max_fb_share_ts > t.max_submit_quiz_ts
-		THEN 1 ELSE 0 END AS share_quiz_post_register,
+		WHEN t.submitted_quiz=1 AND t.registered_affirmation=1 AND 
+		t.max_submit_quiz_ts > t.latest_register_ts AND t.max_fb_share_ts > t.max_submit_quiz_ts
+		THEN 1 ELSE 0 END AS share_quiz_post_register_affirm,
 	CASE 
-		WHEN t.submitted_quiz=1 AND t.max_submit_quiz_ts > t.latest_register_ts AND t.max_submit_photo_ts > t.max_submit_quiz_ts
-		THEN 1 ELSE 0 END AS submit_photo_post_register
+		WHEN t.submitted_quiz=1 AND t.registered_affirmation=1 AND
+		t.max_submit_quiz_ts > t.latest_register_ts AND t.max_submit_photo_ts > t.max_submit_quiz_ts
+		THEN 1 ELSE 0 END AS submit_photo_post_register_affirm,
+	CASE 
+		WHEN t.submitted_quiz=1 AND t.registered_quizcomplete=1 AND
+		t.max_submit_quiz_ts > t.latest_register_ts AND t.max_fb_share_ts > t.max_submit_quiz_ts
+		THEN 1 ELSE 0 END AS share_quiz_post_register_qcomp,
+	CASE 
+		WHEN t.submitted_quiz=1 AND t.registered_quizcomplete=1 AND
+		t.max_submit_quiz_ts > t.latest_register_ts AND t.max_submit_photo_ts > t.max_submit_quiz_ts
+		THEN 1 ELSE 0 END AS submit_photo_post_register_qcomp
 FROM nsid_less t
 LEFT JOIN best_nsid n ON t.device_id=n.device_id
