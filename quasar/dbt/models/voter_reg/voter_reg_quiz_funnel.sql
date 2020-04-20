@@ -38,6 +38,16 @@ nsid_less AS (
 		max(reg.started_registration) AS latest_register_ts,
 		--Latest start RTV process for northstar
 		max(rtv.started_registration) AS latest_get_started_ts,
+		--Latest submit photo timestamp
+		max(pec.event_datetime)
+			FILTER(WHERE pec.event_name IN 
+				('phoenix_failed_post_request','phoenix_completed_post_request',
+				'phoenix_found_post_request','phoenix_submitted_photo_submission_action',
+				'phoenix_completed_photo_submission_action','phoenix_failed_photo_submission_action')
+				) AS max_submit_photo_ts,
+		--Latest FB share timestamp
+		max(pec.event_datetime)
+			FILTER(WHERE pec.event_name='phoenix_clicked_share_action_facebook') AS max_fb_share_ts,
 		--Create traffic source groupings
 		max(
 			CASE 
@@ -167,6 +177,22 @@ SELECT
 		THEN 1 ELSE 0 END AS register_affirmation_then_quiz,
 	CASE
 		WHEN t.submitted_quiz=1 AND t.registered_affirmation=1 AND t.max_submit_quiz_ts < t.max_click_registration_ts 
-		THEN 1 ELSE 0 END AS submit_quiz_register_affirmation
+		THEN 1 ELSE 0 END AS submit_quiz_register_affirmation,
+	CASE 
+		WHEN t.submitted_quiz=1 AND t.registered_affirmation=1 AND 
+		t.max_submit_quiz_ts > t.latest_register_ts AND t.max_fb_share_ts > t.max_submit_quiz_ts
+		THEN 1 ELSE 0 END AS share_quiz_post_register_affirm,
+	CASE 
+		WHEN t.submitted_quiz=1 AND t.registered_affirmation=1 AND
+		t.max_submit_quiz_ts > t.latest_register_ts AND t.max_submit_photo_ts > t.max_submit_quiz_ts
+		THEN 1 ELSE 0 END AS submit_photo_post_register_affirm,
+	CASE 
+		WHEN t.submitted_quiz=1 AND t.registered_quizcomplete=1 AND
+		t.max_submit_quiz_ts > t.latest_register_ts AND t.max_fb_share_ts > t.max_submit_quiz_ts
+		THEN 1 ELSE 0 END AS share_quiz_post_register_qcomp,
+	CASE 
+		WHEN t.submitted_quiz=1 AND t.registered_quizcomplete=1 AND
+		t.max_submit_quiz_ts > t.latest_register_ts AND t.max_submit_photo_ts > t.max_submit_quiz_ts
+		THEN 1 ELSE 0 END AS submit_photo_post_register_qcomp
 FROM nsid_less t
 LEFT JOIN best_nsid n ON t.device_id=n.device_id
