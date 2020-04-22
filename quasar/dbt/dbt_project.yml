@@ -143,6 +143,13 @@ models:
            - "CREATE INDEX IF NOT EXISTS reportbacks_i ON {{ this }}(post_created_at, campaign_id, post_class, reportback_volume)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
+        device_campaign:
+          alias: device_campaign
+          materialized: table
+          post-hook:
+            - "CREATE INDEX ON {{ this }}(device_id)"
+            - "GRANT SELECT ON {{ this }} TO dsanalyst"
+            - "GRANT SELECT ON {{ this }} TO looker"
       users_table:
         cio_latest_status:
           alias: cio_latest_status
@@ -237,7 +244,7 @@ models:
            - "CREATE INDEX IF NOT EXISTS email_subscription_topics_i ON {{ this }}(topic_subscribed_at, northstar_id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
-      user_journey:
+      user_journey: 
         device_northstar:
           alias: device_northstar
           materialized: table
