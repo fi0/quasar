@@ -53,6 +53,13 @@ nsid_less AS (
 		--Did they visit? Includes other event types to account for missing visits in puck
 		max(
 			CASE 
+				WHEN pec.page_utm_campaign ILIKE '%niche%' THEN 'niche'
+				WHEN pec.page_utm_campaign ILIKE '%fastweb%' THEN 'fastweb'
+				WHEN pec.referrer_host ILIKE '%dosomething%' THEN 'dosomething'
+				ELSE 'other' END
+			) AS traffic_source, 
+		max(
+			CASE 
 				WHEN pec.event_name IN 
 					('visit','view','phoenix_clicked_signup',
 					'phoenix_clicked_voter_registration_action') 
