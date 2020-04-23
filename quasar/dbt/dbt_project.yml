@@ -219,7 +219,7 @@ models:
           alias: member_event_log
           materialized: table
           post-hook:
-           - "CREATE UNIQUE INDEX ON {{ this }}(timestamp, northstar_id, event_id)"
+           - "CREATE INDEX ON {{ this }}(timestamp, northstar_id, event_id)"
            - "CREATE INDEX ON {{ this }}(northstar_id, timestamp)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
