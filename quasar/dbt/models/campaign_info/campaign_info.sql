@@ -1,57 +1,50 @@
-with
+WITH
 --Campaigns with Online/Offline Post Components
-campaign_online as (
-  select campaign_id, count(distinct online) as online_count, min(case when online=true then 'Online' else 'Offline' end) as min_online
-  from {{ ref('post_actions') }}
-  group by 1
-)
-,
-campaign_online_combo as (
-    select campaign_id, case when online_count>1 then 'Both' else min_online end as online_offline
-    from campaign_online
-)
-,
+campaign_online AS (
+  SELECT campaign_id, count(DISTINCT online) AS online_count, min(CASE WHEN online=true THEN 'Online' ELSE 'Offline' END) AS min_online
+  FROM {{ ref('post_actions') }}
+  GROUP BY 1
+),
+campaign_online_combo AS (
+    SELECT campaign_id, CASE WHEN online_count>1 THEN 'Both' ELSE min_online END AS online_offline
+    FROM campaign_online
+),
 --Campaigns and Action Types
-campaign_action as (
-  select campaign_id, action_type
-  from {{ ref('post_actions') }}
-  where action_type is not null and action_type<>''
-  group by 1, 2
-)
-,
+campaign_action AS (
+  SELECT campaign_id, action_type
+  FROM {{ ref('post_actions') }}
+  WHERE action_type IS NOT null AND action_type<>''
+  GROUP BY 1, 2
+),
 --Campaigns and Action Types Combined
-campaign_action_combo as (
-    select campaign_id, string_agg(action_type, ' , ' order by action_type) as action_types
-    from campaign_action
-    group by 1
-)
-,
+campaign_action_combo AS (
+    SELECT campaign_id, string_agg(action_type, ' , ' ORDER BY action_type) AS action_types
+    FROM campaign_action
+    GROUP BY 1
+),
 -- Campaigns and Scholarship
-campaign_scholarship as (
-  select campaign_id, count(case when scholarship_entry=true then 1 end) as scholarship
-  from {{ ref('post_actions') }}
-  group by 1
-)
-,
+campaign_scholarship AS (
+  SELECT campaign_id, count(CASE WHEN scholarship_entry=true THEN 1 END) AS scholarship
+  FROM {{ ref('post_actions') }}
+  GROUP BY 1
+),
 -- Campaigns and Scholarship Combined
-campaign_scholarship_combo as (
-    select campaign_id, (case when scholarship>0 then 'Scholarship' else 'Not Scholarship' end) as scholarship
-    from campaign_scholarship
-)
-,
+campaign_scholarship_combo AS (
+    SELECT campaign_id, (CASE WHEN scholarship>0 THEN 'Scholarship' ELSE 'Not Scholarship' END) AS scholarship
+    FROM campaign_scholarship
+),
 --Campaigns and Action Types
-campaign_post_type as (
-  select campaign_id, post_type
-  from {{ ref('post_actions') }}
-  where post_type is not null and post_type<>''
-  group by 1, 2
-)
-,
+campaign_post_type AS (
+  SELECT campaign_id, post_type
+  FROM {{ ref('post_actions') }}
+  WHERE post_type IS NOT null AND post_type<>''
+  GROUP BY 1, 2
+),
 --Campaigns and Action Types Combined
-campaign_post_type_combo as (
-    select campaign_id, string_agg(post_type, ' , ' order by post_type) as post_types
-    from campaign_post_type
-    group by 1
+campaign_post_type_combo AS (
+    SELECT campaign_id, string_agg(post_type, ' , ' ORDER BY post_type) AS post_types
+    FROM campaign_post_type
+    GROUP BY 1
 )
 SELECT 
 	c.id AS campaign_id,
@@ -64,15 +57,15 @@ SELECT
 	COALESCE(i.campaign_node_id, c.id) AS campaign_node_id,
 	i.campaign_node_id_title,
 	i.campaign_run_id_title,
-	case when i.campaign_action_type = '' then null else i.campaign_action_type end as campaign_action_type,
+	CASE WHEN i.campaign_action_type = '' THEN null ELSE i.campaign_action_type END AS campaign_action_type,
 	COALESCE(
-		case when c.cause = '' then null else c.cause end, 
-		case when i.campaign_cause_type = '' then null else i.campaign_cause_type end
+		CASE WHEN c.cause = '' THEN null ELSE c.cause END,
+		CASE WHEN i.campaign_cause_type = '' THEN null ELSE i.campaign_cause_type END
 	) AS campaign_cause_type,
 	i.campaign_noun,
 	i.campaign_verb,
 	i.campaign_cta,
-	case when a.action_types = '' then null else a.action_types end as action_types,
+	CASE WHEN a.action_types = '' THEN null ELSE a.action_types END AS action_types,
 	o.online_offline,
 	s.scholarship,
 	p.post_types
