@@ -21,7 +21,7 @@ campaign_action as (
 ,
 --Campaigns and Action Types Combined
 campaign_action_combo as (
-    select campaign_id, string_agg(action_type, ' / ' order by action_type) as action_types
+    select campaign_id, string_agg(action_type, ' , ' order by action_type) as action_types
     from campaign_action
     group by 1
 )
@@ -49,7 +49,7 @@ campaign_post_type as (
 ,
 --Campaigns and Action Types Combined
 campaign_post_type_combo as (
-    select campaign_id, string_agg(post_type, ' / ' order by post_type) as post_types
+    select campaign_id, string_agg(post_type, ' , ' order by post_type) as post_types
     from campaign_post_type
     group by 1
 )
