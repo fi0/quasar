@@ -6,7 +6,7 @@ WITH devices_all AS (
 ),
 --Devices purely Anonymous (Remove Devices ever associated with NSIDs)
 --If a DeviceID was both logged-in and logged-out, it will be removed from the anonymous DeviceID pool
-devices_an as (
+devices_an AS (
     SELECT device_id
     FROM devices_all
     WHERE northstar_id is NULL
