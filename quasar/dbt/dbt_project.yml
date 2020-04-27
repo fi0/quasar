@@ -185,6 +185,13 @@ models:
            - "CREATE INDEX IF NOT EXISTS most_recent_all_actions_i ON {{ this }}(most_recent_all_actions)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
+        user_rb_summary:
+          alias: user_rb_summary
+          materialized: table
+          post-hook:
+           - "CREATE UNIQUE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_unique_i ON {{ this }}(signup_id)"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
       campaign_info:
         campaign_info:
           alias: campaign_info
@@ -321,4 +328,3 @@ models:
             - "CREATE INDEX ON {{ this }}(northstar_id, device_id, journey_begin_ts)"
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"          
-
