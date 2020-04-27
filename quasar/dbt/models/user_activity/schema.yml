@@ -71,3 +71,27 @@ models:
         - name: voter_reg_acquisition
           description: '{{ doc("voter_reg_acquisition") }}'
 
+  - name: user_rb_summary
+    description: Table that aggregates traits of multiple Report-Backs per SignUp into a single row.
+
+    columns:
+        - name: signup_id
+          description: '{{ doc("signup_id") }}'
+
+        - name: num_rbs
+          description: '{{ doc("num_rbs") }}'
+
+        - name: first_rb
+          description: '{{ doc("first_rb") }}'
+
+        - name: post_sources
+          description: '{{ doc("post_sources") }}'
+
+        - name: post_types
+          description: '{{ doc("post_types") }}'
+
+        - name: action_types
+          description: '{{ doc("action_types") }}'
+
+        - name: online_offline
+          description: '{{ doc("online_offline") }}'

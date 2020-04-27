@@ -23,6 +23,14 @@ ID of the broadcast that generated the shortened URL
 Source of the URL (e.g. SMS, web), origin of the post (e.g. phoenix-web, phoenix-ashes, sms), or source where user was acquired. (e.g. sms, phoenix-next)
 {% enddocs %}
 
+{% docs post_sources %}
+Sources of the Posts (e.g. sms, web)
+{% enddocs %}
+
+{% docs post_types %}
+Types of Posts (e.g. photo, phone-call, share-social, text, voter-reg, email)
+{% enddocs %}
+
 {% docs interaction_type %}
 How the user interacted with the link (e.g. preview, click)
 {% enddocs %}
@@ -64,7 +72,7 @@ Text of the post (e.g. "Zoo animals and a super hero trying to help too!")
 {% enddocs %}
 
 {% docs signup_id %}
-Unique identifier for the signup 
+Unique identifier for the signup
 {% enddocs %}
 
 {% docs post_class %}
@@ -76,7 +84,7 @@ Whether the post has been accepted to be displayed to the public on the website
 {% enddocs %}
 
 {% docs action_id %}
-Internal identifier of the action 
+Internal identifier of the action
 {% enddocs %}
 
 {% docs location %}
@@ -159,6 +167,10 @@ Title of the campaign run
 Campaign action type (eg. Make Something, Share Something)
 {% enddocs %}
 
+{% docs action_types %}
+Types of actions of the Posts (e.g. attend-event, share-something, make-something, collect-something, contact-decisionmaker, donate-something, host-event, have-a-conversation, flag-content, sign-petition, submit-tip, other)
+{% enddocs %}
+
 {% docs campaign_cause_type %}
 Campaign cause type (eg. Mental Health, Education)
 {% enddocs %}
@@ -200,7 +212,7 @@ Channel for the user's action. Depends on the source of the action. (e.g. web, s
 {% enddocs %}
 
 {% docs first_action_month %}
-Month during which the user took their first action. 
+Month during which the user took their first action.
 {% enddocs %}
 
 {% docs event_id %}
@@ -377,6 +389,10 @@ Type of action the user took. (e.g. share-something, donate-something)
 
 {% docs online %}
 Whether the action is a online as opposed to IRL.
+{% enddocs %}
+
+{% docs online_offline %}
+Whether the action is online or offline (IRL).
 {% enddocs %}
 
 {% docs time_commitment %}
@@ -790,5 +806,3 @@ The most recent time the user registered to vote
 {% docs submit_quiz_register_affirmation %}
 Submitted the quiz, and then registered to vote
 {% enddocs %}
-
-
