@@ -136,6 +136,10 @@ class CioQueue(QuasarQueue):
                 pass
         except KeyError as e:
             logerr("C.IO message missing {}".format(e))
+            # Actually log missing data and exit so not dropping data.
+            logerr("Message data is:")
+            logerr(format(message_data))
+            sys.exit(1)
         except:
             logerr("Something went wrong with C.IO consumer!")
             sys.exit(1)
