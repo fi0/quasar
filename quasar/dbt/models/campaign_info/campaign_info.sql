@@ -1,13 +1,35 @@
 WITH
 --Campaigns with Online/Offline Post Components
 campaign_online AS (
-  SELECT campaign_id, count(DISTINCT online) AS online_count, min(CASE WHEN online=true THEN 'Online' ELSE 'Offline' END) AS min_online
-  FROM {{ ref('post_actions') }}
-  GROUP BY 1
+  SELECT
+    campaign_id,
+    -- Uses distinct count to check if
+    -- there is only online or only offline actions (Value would be 1)
+    -- there is a mix of online and offline (Value would be 2)
+    count(DISTINCT online) AS online_count,
+    -- If the campaign has only 1 action, min_online will hold "Online" or "Offline" accordingly.
+    -- If the campaign has any number of both types of actions min_online will always hold "Offline"
+    -- NOTE: Ignore in that case.
+    min(
+      CASE
+        WHEN online = TRUE THEN 'Online'
+        ELSE 'Offline'
+      END
+    ) AS min_online
+  FROM
+    { { ref('post_actions') } }
+  GROUP BY
+    1
 ),
 campaign_online_combo AS (
-    SELECT campaign_id, CASE WHEN online_count>1 THEN 'Both' ELSE min_online END AS online_offline
-    FROM campaign_online
+  SELECT
+    campaign_id,
+    CASE
+      WHEN online_count > 1 THEN 'Both'
+      ELSE min_online
+    END AS online_offline
+  FROM
+    campaign_online
 ),
 --Campaigns and Action Types
 campaign_action AS (
