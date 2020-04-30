@@ -232,9 +232,9 @@ SELECT
 FROM
     ns_signups ns1
     LEFT JOIN ns_signup_2 ns2 ON (ns1.northstar_id = ns2.northstar_id)
-    JOIN { { ref('campaign_info') } } c1 ON (ns1.campaign_id = c1.campaign_id :: text)
-    LEFT JOIN { { ref('campaign_info') } } c2 ON (ns2.campaign_id = c2.campaign_id :: text)
-    LEFT JOIN { { ref('user_rb_summary') } } r1 ON (ns1.signup_id = r1.signup_id)
-    LEFT JOIN { { ref('user_rb_summary') } } r2 ON (ns2.signup_id = r2.signup_id)
+    JOIN {{ ref('campaign_info') }} c1 ON (ns1.campaign_id = c1.campaign_id :: text)
+    LEFT JOIN {{ ref('campaign_info') }} c2 ON (ns2.campaign_id = c2.campaign_id :: text)
+    LEFT JOIN {{ ref('user_rb_summary') }} r1 ON (ns1.signup_id = r1.signup_id)
+    LEFT JOIN {{ ref('user_rb_summary') }} r2 ON (ns2.signup_id = r2.signup_id)
 WHERE
     ns1.nth_signup = 1
