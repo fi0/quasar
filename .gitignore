@@ -17,3 +17,4 @@ docs/run_results.json
 docs/catalog.json
 docs/graph.gpickle
 docs/compiled/
+.python-version
