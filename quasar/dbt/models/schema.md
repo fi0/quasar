@@ -23,12 +23,16 @@ ID of the broadcast that generated the shortened URL
 Source of the URL (e.g. SMS, web), origin of the post (e.g. phoenix-web, phoenix-ashes, sms), or source where user was acquired. (e.g. sms, phoenix-next)
 {% enddocs %}
 
-{% docs post_sources %}
-Sources of the Posts (e.g. sms, web)
+{% docs post_source_buckets %}
+Aggregated list of the grouping buckets for the origin of the posts (e.g. sms, web)
 {% enddocs %}
 
 {% docs post_types %}
-Types of Posts (e.g. photo, phone-call, share-social, text, voter-reg, email)
+Aggregated list of post types of the posts (e.g. photo, phone-call, share-social, text, voter-reg, email)
+{% enddocs %}
+
+{% docs campaign_post_types %}
+Aggregated list of post types of all the actions available for the campaign (e.g. photo, phone-call, share-social, text, voter-reg, email)
 {% enddocs %}
 
 {% docs interaction_type %}
@@ -56,7 +60,7 @@ Numerical quantity of items specified in the call to action (e.g. 10, 200)
 {% enddocs %}
 
 {% docs source_bucket %}
-Grouping bucket for origin of the post (e.g. web, sms) 
+Grouping bucket for the origin of the post (e.g. web, sms)
 {% enddocs %}
 
 {% docs created_at %}
@@ -167,12 +171,16 @@ Title of the campaign run
 Campaign action type (eg. Make Something, Share Something)
 {% enddocs %}
 
-{% docs action_types %}
-Types of actions of the Posts (e.g. attend-event, share-something, make-something, collect-something, contact-decisionmaker, donate-something, host-event, have-a-conversation, flag-content, sign-petition, submit-tip, other)
+{% docs post_action_types %}
+Aggregated list of Action Types of the Posts (e.g. attend-event, share-something, make-something, collect-something, contact-decisionmaker, donate-something, host-event, have-a-conversation, flag-content, sign-petition, submit-tip, other)
+{% enddocs %}
+
+{% docs campaign_action_types %}
+Aggregated list of Action Types of all the Actions available for the campaign (e.g. attend-event, share-something, make-something, collect-something, contact-decisionmaker, donate-something, host-event, have-a-conversation, flag-content, sign-petition, submit-tip, other)
 {% enddocs %}
 
 {% docs campaign_cause_type %}
-Campaign cause type (eg. Mental Health, Education)
+Campaign cause type (e.g. Mental Health, Education, Environment)
 {% enddocs %}
 
 {% docs campaign_noun %}
@@ -391,8 +399,8 @@ Type of action the user took. (e.g. share-something, donate-something)
 Whether the action is a online as opposed to IRL.
 {% enddocs %}
 
-{% docs online_offline %}
-Whether the action is online or offline (IRL).
+{% docs post_online_offline %}
+Aggregate. Whether the posts are online, offline (IRL), or both, e.g. ("Online", "Offline", "Online , Offline")
 {% enddocs %}
 
 {% docs time_commitment %}
@@ -691,6 +699,10 @@ Newsletter status, whether or not the user is subscribed to the newsletter
 Source of signup, e.g. "sms" or "web"
 {% enddocs %}
 
+{% docs signup_source_bucket %}
+Grouping bucket for origin of the signup, e.g. "sms", "web", "voter-reg" or "niche"
+{% enddocs %}
+
 {% docs signup_date %}
 Date when user signed up for newsletter
 {% enddocs %}
@@ -805,4 +817,8 @@ The most recent time the user registered to vote
 
 {% docs submit_quiz_register_affirmation %}
 Submitted the quiz, and then registered to vote
+{% enddocs %}
+
+{% docs comparison_patterns %}
+Pattern e.g. (Both are Unknown, One is Unknown, Same, Different)
 {% enddocs %}

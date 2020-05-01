@@ -85,13 +85,13 @@ models:
           description: '{{ doc("first_rb") }}'
 
         - name: post_sources
-          description: '{{ doc("post_sources") }}'
+          description: '{{ doc("post_source_buckets") }}'
 
         - name: post_types
           description: '{{ doc("post_types") }}'
 
         - name: action_types
-          description: '{{ doc("action_types") }}'
+          description: '{{ doc("post_action_types") }}'
 
         - name: online_offline
-          description: '{{ doc("online_offline") }}'
+          description: '{{ doc("post_online_offline") }}'

@@ -150,6 +150,13 @@ models:
             - "CREATE INDEX ON {{ this }}(device_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
+        first_and_second_signups:
+          alias: first_and_second_signups
+          materialized: table
+          post-hook:
+            - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_northstar_id_idx ON {{ this }}(northstar_id)"
+            - "GRANT SELECT ON {{ this }} TO dsanalyst"
+            - "GRANT SELECT ON {{ this }} TO looker"
       users_table:
         cio_latest_status:
           alias: cio_latest_status
