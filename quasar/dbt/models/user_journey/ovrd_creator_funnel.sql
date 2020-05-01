@@ -83,7 +83,7 @@ nsid_less AS (
 			) AS click_start_registration,
 		max(
 			CASE 
-				WHEN po.status='voter-reg' 
+				WHEN po."type"='voter-reg' 
 				THEN 1 ELSE 0 END
 			) AS clicked_get_started,
 		max(
