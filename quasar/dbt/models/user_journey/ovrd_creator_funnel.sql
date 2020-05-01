@@ -83,9 +83,29 @@ nsid_less AS (
 			) AS click_start_registration,
 		max(
 			CASE 
-				WHEN rtv.post_id IS NOT NULL 
+				WHEN po.status='voter-reg' 
 				THEN 1 ELSE 0 END
 			) AS clicked_get_started,
+		max(
+			CASE 
+				WHEN po.status IN (('step-2','step-3','step-4','ineligible','under-18','register-OVR','register-form'))
+				THEN 1 ELSE 0 END
+			) AS rtv_step_2,
+		max(
+			CASE 
+				WHEN po.status IN ('step-3','ineligible','under-18','register-form')
+				THEN 1 ELSE 0 END
+			) AS rtv_step_3,
+		max(
+			CASE 
+				WHEN po.status IN ('step-4','ineligible','under-18','register-OVR')
+				THEN 1 ELSE 0 END
+			) AS rtv_step_4,
+		max(
+			CASE 
+				WHEN po.status IN ('step-3','step-4','ineligible','under-18','register-OVR','register-form')
+				THEN 1 ELSE 0 END
+			) AS rtv_step_3_or_4,
 		max(
 			CASE 
 				WHEN reg.northstar_id IS NOT NULL 
