@@ -88,7 +88,7 @@ nsid_less AS (
 			) AS clicked_get_started,
 		max(
 			CASE 
-				WHEN po.status IN (('step-2','step-3','step-4','ineligible','under-18','register-OVR','register-form'))
+				WHEN po.status IN ('step-2','step-3','step-4','ineligible','under-18','register-OVR','register-form')
 				THEN 1 ELSE 0 END
 			) AS rtv_step_2,
 		max(

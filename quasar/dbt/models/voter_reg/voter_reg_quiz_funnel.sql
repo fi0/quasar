@@ -86,13 +86,13 @@ nsid_less AS (
 			) AS clicked_get_started,	
 		max(
 			CASE 
-				WHEN rtv.status IN (('Step 2','Step 3','Step 4','Rejected','Under 18','Complete'))
+				WHEN rtv.status IN ('Step 2','Step 3','Step 4','Rejected','Under 18','Complete')
 				AND rtv.tracking_source ILIKE '%VoterRegQuiz_Affirmation%'
 				THEN 1 ELSE 0 END
 			) AS rtv_step_2_affirmation,
 		max(
 			CASE 
-				WHEN rtv.status IN (('Step 2','Step 3','Step 4','Rejected','Under 18','Complete'))
+				WHEN rtv.status IN ('Step 2','Step 3','Step 4','Rejected','Under 18','Complete')
 				AND rtv.tracking_source ILIKE '%VoterRegQuiz_completed%'
 				THEN 1 ELSE 0 END
 			) AS rtv_step_2_quizcomplete,
