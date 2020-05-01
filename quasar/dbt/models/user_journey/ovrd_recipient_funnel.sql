@@ -41,7 +41,7 @@ WITH event_log AS (
 	SELECT DISTINCT 
 		p.northstar_id AS user_id,
 		rtv.started_registration AS event_ts, 
-		'started_registration' AS event_name
+		p.status AS event_name
 	FROM {{ ref('rock_the_vote') }} rtv 
 	LEFT JOIN {{ ref('posts') }} p ON p.id=rtv.post_id
 	WHERE 
@@ -71,8 +71,28 @@ SELECT
 	--If they have a started_registration event then they clicked get started
 	max(
 		CASE 
-			WHEN lg.event_name='started_registration' THEN 1 ELSE 0 END
+			WHEN lg.event_name IS NOT NULL THEN 1 ELSE 0 END
 		) AS clicked_get_started,
+		max(
+			CASE 
+				WHEN po.event_name IN (('step-2','step-3','step-4','ineligible','under-18','register-OVR','register-form'))
+				THEN 1 ELSE 0 END
+			) AS rtv_step_2,
+		max(
+			CASE 
+				WHEN po.event_name IN ('step-3','ineligible','under-18','register-form')
+				THEN 1 ELSE 0 END
+			) AS rtv_step_3,
+		max(
+			CASE 
+				WHEN po.event_name IN ('step-4','ineligible','under-18','register-OVR')
+				THEN 1 ELSE 0 END
+			) AS rtv_step_4,
+		max(
+			CASE 
+				WHEN po.event_name IN ('step-3','step-4','ineligible','under-18','register-OVR','register-form')
+				THEN 1 ELSE 0 END
+			) AS rtv_step_3_or_4,
 	--If they have a registration event then they registered
 	max(
 		CASE 
