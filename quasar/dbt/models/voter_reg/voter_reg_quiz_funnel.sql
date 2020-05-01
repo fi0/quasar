@@ -86,6 +86,54 @@ nsid_less AS (
 			) AS clicked_get_started,	
 		max(
 			CASE 
+				WHEN rtv.status IN (('Step 2','Step 3','Step 4','Rejected','Under 18','Complete'))
+				AND rtv.tracking_source ILIKE '%VoterRegQuiz_Affirmation%'
+				THEN 1 ELSE 0 END
+			) AS rtv_step_2_affirmation,
+		max(
+			CASE 
+				WHEN rtv.status IN (('Step 2','Step 3','Step 4','Rejected','Under 18','Complete'))
+				AND rtv.tracking_source ILIKE '%VoterRegQuiz_completed%'
+				THEN 1 ELSE 0 END
+			) AS rtv_step_2_quizcomplete,
+		max(
+			CASE 
+				WHEN rtv.status IN ('Step 3','Step 4','Rejected','Under 18','Complete')
+				AND rtv.tracking_source ILIKE '%VoterRegQuiz_Affirmation%'
+				THEN 1 ELSE 0 END
+			) AS rtv_step_3_affirmation,
+		max(
+			CASE 
+				WHEN rtv.status IN ('Step 3','Step 4','Rejected','Under 18','Complete')
+				AND rtv.tracking_source ILIKE '%VoterRegQuiz_completed%'
+				THEN 1 ELSE 0 END
+			) AS rtv_step_3_quizcomplete,
+		max(
+			CASE 
+				WHEN rtv.status IN ('Step 4','Rejected','Under 18','Complete')
+				AND rtv.tracking_source ILIKE '%VoterRegQuiz_Affirmation%'
+				THEN 1 ELSE 0 END
+			) AS rtv_step_4_affirmation,
+		max(
+			CASE 
+				WHEN rtv.status IN ('Step 4','Rejected','Under 18','Complete')
+				AND rtv.tracking_source ILIKE '%VoterRegQuiz_completed%'
+				THEN 1 ELSE 0 END
+			) AS rtv_step_4_quizcomplete,
+		max(
+			CASE 
+				WHEN po.status IN ('Step 3','Step 4','Rejected','Under 18','Complete')
+				AND rtv.tracking_source ILIKE '%VoterRegQuiz_Affirmation%'
+				THEN 1 ELSE 0 END
+			) AS rtv_step_3_or_4_affirmation,
+		max(
+			CASE 
+				WHEN po.status IN ('Step 3','Step 4','Rejected','Under 18','Complete')
+				AND rtv.tracking_source ILIKE '%VoterRegQuiz_completed%'
+				THEN 1 ELSE 0 END
+			) AS rtv_step_3_or_4_quizcomplete,
+		max(
+			CASE 
 				WHEN rtv.post_id IS NOT NULL AND rtv.tracking_source ILIKE '%VoterRegQuiz_Affirmation%'
 				THEN 1 ELSE 0 END
 			) AS clicked_get_started_affirmation,
