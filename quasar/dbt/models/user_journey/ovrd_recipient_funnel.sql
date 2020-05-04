@@ -41,7 +41,7 @@ WITH event_log AS (
 	SELECT DISTINCT 
 		p.northstar_id AS user_id,
 		rtv.started_registration AS event_ts, 
-		'started_registration' AS event_name
+		p.status AS event_name
 	FROM {{ ref('rock_the_vote') }} rtv 
 	LEFT JOIN {{ ref('posts') }} p ON p.id=rtv.post_id
 	WHERE 
@@ -68,11 +68,35 @@ SELECT
 	--Earliest RTV record for the user is when they began registering
 	min(lg.event_ts)
 		FILTER(WHERE lg.event_name<>'page_visit') AS started_register_ts,
-	--If they have a started_registration event then they clicked get started
+	--If they have a any event then they clicked get started
 	max(
 		CASE 
-			WHEN lg.event_name='started_registration' THEN 1 ELSE 0 END
+			WHEN lg.event_name IS NOT NULL THEN 1 ELSE 0 END
 		) AS clicked_get_started,
+	--If they have any of the following steps, they made it to step 2
+	max(
+		CASE 
+			WHEN lg.event_name IN ('step-2','step-3','step-4','ineligible','under-18','register-OVR','register-form')
+			THEN 1 ELSE 0 END
+		) AS rtv_step_2,
+	--If they have any of the following steps, they made it to step 3
+	max(
+		CASE 
+			WHEN lg.event_name IN ('step-3','ineligible','under-18','register-form')
+			THEN 1 ELSE 0 END
+		) AS rtv_step_3,
+	--If they have any of the following steps, they made it to step 4
+	max(
+		CASE 
+			WHEN lg.event_name IN ('step-4','ineligible','under-18','register-OVR')
+			THEN 1 ELSE 0 END
+		) AS rtv_step_4,
+	--If they have any of the following steps, they made it to step 3 or 4
+	max(
+		CASE 
+			WHEN lg.event_name IN ('step-3','step-4','ineligible','under-18','register-OVR','register-form')
+			THEN 1 ELSE 0 END
+		) AS rtv_step_3_or_4,
 	--If they have a registration event then they registered
 	max(
 		CASE 
