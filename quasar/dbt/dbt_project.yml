@@ -143,14 +143,6 @@ models:
            - "CREATE INDEX IF NOT EXISTS reportbacks_i ON {{ this }}(post_created_at, campaign_id, post_class, reportback_volume)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
-        device_campaign_session:
-          alias: device_campaign_session
-          schema: intermediate
-          materialized: table
-          post-hook:
-            - "CREATE INDEX ON {{ this }}(device_id)"
-            - "GRANT SELECT ON {{ this }} TO dsanalyst"
-            - "GRANT SELECT ON {{ this }} TO looker"
         device_campaign:
           alias: device_campaign
           materialized: table
