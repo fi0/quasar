@@ -3,6 +3,7 @@ import os
 import pydash
 import sys
 
+from .database import Database as DatabaseLegacy
 from .sa_database import Database
 from .queue import QuasarQueue
 from .utils import log, logerr
@@ -17,12 +18,13 @@ class CioQueue(QuasarQueue):
         super().__init__(self.amqp_uri, self.blink_queue,
                          self.blink_exchange)
         self.db = Database()
+        self.db_legacy = DatabaseLegacy()
 
     # Save entire c.io JSON blob to event_log table.
     def _log_event(self, data):
         record = {'event': json.dumps(data)}
         query = ''.join(("INSERT INTO cio.event_log (event) VALUES :event"))
-        self.db.query_str(query, record)
+        self.db_legacy.query_str(query, record)
         log(''.join(("Logged data from "
                      "C.IO event id {}.")).format(data['event_id']))
 
