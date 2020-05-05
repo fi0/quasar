@@ -270,7 +270,7 @@ models:
           alias: member_event_log
           materialized: table
           post-hook:
-           - "CREATE UNIQUE INDEX ON {{ this }}(timestamp, northstar_id, event_id)"
+           - "CREATE INDEX ON {{ this }}(timestamp, northstar_id, event_id)"
            - "CREATE INDEX ON {{ this }}(northstar_id, timestamp)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
@@ -301,8 +301,8 @@ models:
           alias: ovrd_recipient_funnel
           materialized: table
           post-hook:
-            - "CREATE UNIQUE INDEX IF NOT EXISTS ovrd_r_index ON {{ this }}(northstar_id)"
-            - "CREATE INDEX ON {{ this }}(northstar_id)"
+            - "CREATE UNIQUE INDEX IF NOT EXISTS ovrd_r_index ON {{ this }}(user_id)"
+            - "CREATE INDEX ON {{ this }}(user_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
         ovrd_creator_funnel:
