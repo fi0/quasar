@@ -1,6 +1,7 @@
 import os
 
-from sqlalchemy import create_engine, exc
+from sqlalchemy import bindparam, create_engine, exc
+from sqlalchemy.dialects.postgresql.json import JSONB
 from sqlalchemy.engine.url import URL
 from sqlalchemy.sql import text
 
@@ -30,6 +31,7 @@ class Database:
         try:
             engine = create_engine(URL(**pg_opts),
                                    connect_args={'sslmode': pg_ssl})
+            self.engine = engine
             self.conn = engine.connect()
         except exc.InterfaceError as e:
             log("Couldnt't establsh DB connection!")
@@ -49,3 +51,14 @@ class Database:
         # query = 'INSERT :bar into foo;', record = {bar: 'baz'}
         run_query = text(query)
         return self.conn.execute(run_query, record)
+
+    def query_json(self, query, record, col_name):
+        # Based on the post https://stackoverflow.com/a/46031085, this
+        # function forces a JSONB binding to insert JSON record types
+        # into a table using SQL Alchemy.
+        # This function is tightly coupled with the log_event function
+        # in the cio_queue.py code. Hacky solution to get
+        # https://www.pivotaltracker.com/story/show/172585118 resolved.
+        run_query = text(query)
+        return self.conn.execute(
+            run_query.bindparams(bindparam(col_name, type_=JSONB)), record)

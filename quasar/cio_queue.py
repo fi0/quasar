@@ -3,7 +3,6 @@ import os
 import pydash
 import sys
 
-from .database import Database as DatabaseLegacy
 from .sa_database import Database
 from .queue import QuasarQueue
 from .utils import log, logerr
@@ -18,13 +17,15 @@ class CioQueue(QuasarQueue):
         super().__init__(self.amqp_uri, self.blink_queue,
                          self.blink_exchange)
         self.db = Database()
-        self.db_legacy = DatabaseLegacy()
 
     # Save entire c.io JSON blob to event_log table.
     def _log_event(self, data):
+        # This function is tightly coupled with the query_json
+        # that is in the sa_database library. Hacky solution to get
+        # https://www.pivotaltracker.com/story/show/172585118 resolved.
         record = {'event': json.dumps(data)}
-        query = ''.join(("INSERT INTO cio.event_log (event) VALUES :event"))
-        self.db_legacy.query_str(query, record)
+        query = ("INSERT INTO cio.event_log (event) VALUES (:event)")
+        self.db.query_json(query, record, 'event')
         log(''.join(("Logged data from "
                      "C.IO event id {}.")).format(data['event_id']))
 
