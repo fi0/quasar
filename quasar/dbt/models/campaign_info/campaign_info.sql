@@ -17,7 +17,7 @@ campaign_online AS (
       END
     ) AS min_online
   FROM
-    { { ref('post_actions') } }
+    {{ ref('post_actions') }}
   GROUP BY
     1
 ),
