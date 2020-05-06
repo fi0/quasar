@@ -25,9 +25,9 @@ class Database:
 
     def __init__(self, options={}):
         pg_opts.update(options)
-        self.connect()
+        self._connect()
 
-    def connect(self):
+    def _connect(self):
         # Setup SQL Alchemy postgres connection.
         try:
             self.engine = create_engine(URL(**pg_opts),
@@ -64,23 +64,3 @@ class Database:
         self.conn.close()
         return self.conn
 
-    def query(self, query):
-        return self.conn.execute(query)
-
-    def query_str(self, query, record):
-        # Run query with string substitution using ':thisvar' SQL Alchemy
-        # standard based formatting. e.g.
-        # query = 'INSERT :bar into foo;', record = {bar: 'baz'}
-        run_query = text(query)
-        return self.conn.execute(run_query, record)
-
-    def query_json(self, query, record, col_name):
-        # Based on the post https://stackoverflow.com/a/46031085, this
-        # function forces a JSONB binding to insert JSON record types
-        # into a table using SQL Alchemy.
-        # This function is tightly coupled with the log_event function
-        # in the cio_queue.py code. Hacky solution to get
-        # https://www.pivotaltracker.com/story/show/172585118 resolved.
-        run_query = text(query)
-        return self.conn.execute(
-            run_query.bindparams(bindparam(col_name, type_=JSONB)), record)
