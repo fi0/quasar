@@ -34,7 +34,18 @@ class Database:
                             connect_args={'sslmode': pg_ssl})
             self.conn = engine.connect()
             self.meta = MetaData()
-            self.customer_event = Table('customer_event', self.meta,
+            # Define each Customer.io table with 1 table/private function.
+            self._create_customer_event_table()
+            self._create_email_event_table()
+            # Once all tables are defined, initialize them.
+            self.meta.create_all(engine)
+        except exc.InterfaceError as e:
+            log("Couldnt't establsh DB connection!")
+            log("Error is:")
+            logerr(e)
+
+    def _create_customer_event_table(self):
+            self.customer_event = Table('customer_event_scratch', self.meta,
                 Column('email_id', String),
                 Column('customer_id', String),
                 Column('email_address', String),
@@ -43,7 +54,9 @@ class Database:
                 Column('timestamp', DateTime(timezone=True)),
                 Column('event_type', String),
                 schema='cio')
-            self.email_event = Table('email_event', self.meta,
+
+    def _create_email_event_table(self):
+            self.email_event = Table('email_event_scratch', self.meta,
                 Column('email_id', String),
                 Column('customer_id', String),
                 Column('email_address', String),
@@ -55,10 +68,6 @@ class Database:
                 Column('timestamp', DateTime(timezone=True)),
                 Column('event_type', String),
                 schema='cio')
-        except exc.InterfaceError as e:
-            log("Couldnt't establsh DB connection!")
-            log("Error is:")
-            logerr(e)
 
     def disconnect(self):
         self.conn.close()
