@@ -37,6 +37,9 @@ class Database:
             # Define each Customer.io table with 1 table/private function.
             self._create_customer_event_table()
             self._create_email_event_table()
+            self._create_email_bounced_table()
+            self._create_email_sent_table()
+            self._create_event_log()
             # Once all tables are defined, initialize them.
             self.meta.create_all(engine)
         except exc.InterfaceError as e:
@@ -67,6 +70,31 @@ class Database:
                 Column('event_id', String),
                 Column('timestamp', DateTime(timezone=True)),
                 Column('event_type', String),
+                schema='cio')
+
+    def _create_email_bounced_table(self):
+            self.email_bounced = Table('email_bounced_scratch', self.meta,
+                Column('email_id', String),
+                Column('customer_id', String),
+                Column('email_address', String),
+                Column('template_id', Integer),
+                Column('event_id', String),
+                Column('timestamp', DateTime(timezone=True)),
+                schema='cio')
+
+    def _create_email_sent_table(self):
+            self.email_sent = Table('email_sent_scratch', self.meta,
+                Column('email_id', String),
+                Column('customer_id', String),
+                Column('email_address', String),
+                Column('template_id', Integer),
+                Column('event_id', String),
+                Column('timestamp', DateTime(timezone=True)),
+                schema='cio')
+
+    def _create_event_log_table(self):
+            self.event_log = Table('event_log', self.meta,
+                Column('event', JSONB),
                 schema='cio')
 
     def disconnect(self):
