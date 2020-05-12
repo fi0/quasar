@@ -32,16 +32,16 @@ class Database:
         try:
             self.engine = create_engine(URL(**pg_opts),
                             connect_args={'sslmode': pg_ssl})
-            self.conn = engine.connect()
+            self.conn = self.engine.connect()
             self.meta = MetaData()
             # Define each Customer.io table with 1 table/private function.
             self._create_customer_event_table()
             self._create_email_event_table()
             self._create_email_bounced_table()
             self._create_email_sent_table()
-            self._create_event_log()
+            self._create_event_log_table()
             # Once all tables are defined, initialize them.
-            self.meta.create_all(engine)
+            self.meta.create_all(self.engine)
         except exc.InterfaceError as e:
             log("Couldnt't establsh DB connection!")
             log("Error is:")
@@ -102,30 +102,34 @@ class Database:
             schema='cio')
         return self.event_log
 
-    def commit_event(data):
+    def commit_event(self, data, query=None):
         # Copy data to event_log table and commit to database.
-        self.event_log.insert().values(data)
-        self.conn.execute()
+        log_query = self.event_log.insert().values(data)
+        self.conn.execute(log_query)
+        if query is not None:
+            self.conn.execute(query)
+        else:
+            pass
 
-    def insert_customer(data):
+    def insert_customer(self, data):
         # Pass in dictionary to insert sub/unsub event.
-        self.customer_event.insert().values(data)
-        self.commit_event(data)
+        query = self.customer_event.insert().values(data)
+        self.commit_event(data, query)
 
-    def insert_email(data):
+    def insert_email(self, data):
         # Pass in dictionary to insert email open/click, etc. event.
-        self.email_event.insert().values(data)
-        self.commit_event(data)
+        query = self.email_event.insert().values(data)
+        self.commit_event(data, query)
 
-    def insert_email_bounced(data):
+    def insert_email_bounced(self, data):
         # Pass in dictionary to insert email bounce event.
-        self.email_bounced.insert().values(data)
-        self.commit_event(data)
+        query = self.email_bounced.insert().values(data)
+        self.commit_event(data, query)
 
-    def insert_email_sent(data):
+    def insert_email_sent(self, data):
         # Pass in dictionary to insert email sent event.
-        self.email_sent.insert().values(data)
-        self.commit_event(data)
+        query = self.email_sent.insert().values(data)
+        self.commit_event(data, query)
 
     def disconnect(self):
         self.conn.close()

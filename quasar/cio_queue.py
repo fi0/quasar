@@ -20,31 +20,32 @@ class CioQueue(QuasarQueue):
 
     # Save customer sub data and dates.
     def _add_customer_event(self, data):
-        self.db.insert_customer(json.dumps(data))
+        self.db.insert_customer(data)
         log(''.join(("Added customer event from "
                      "C.IO event id {}.")).format(data['event_id']))
 
     # Save email event data and dates, e.g. email_click.
     def _add_email_event(self, data):
-        self.db.insert_email(json.dumps(data))
+        self.db.insert_email(data)
         log(''.join(("Added email event from "
                      "C.IO event id {}.")).format(data['event_id']))
 
     # Save email sent event.
     def _add_email_sent_event(self, data):
-        self.db.insert_email_sent(json.dumps(data))
+        self.db.insert_email_sent(data)
         log(''.join(("Added email sent event from "
                      "C.IO event id {}.")).format(data['event_id']))
 
     # Save email bounced event.
     def _add_email_bounced_event(self, data):
-        self.db.insert_email_bounced(json.dumps(data))
+        self.db.insert_email_bounced(data)
         log(''.join(("Added email bounced event from "
                      "C.IO event id {}.")).format(data['event_id']))
 
     def process_message(self, message_data):
         data = message_data['data']
         event_type = pydash.get(data, 'event_type')
+        print(data)
         # Set for checking email event types.
         email_event = {
             'email_bounced',
