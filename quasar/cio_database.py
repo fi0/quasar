@@ -57,6 +57,7 @@ class Database:
             Column('timestamp', DateTime(timezone=True)),
             Column('event_type', String),
             schema='cio')
+        return self.customer_event
 
     def _create_email_event_table(self):
         self.email_event = Table('email_event_scratch', self.meta,
@@ -71,6 +72,7 @@ class Database:
             Column('timestamp', DateTime(timezone=True)),
             Column('event_type', String),
             schema='cio')
+        return self.email_event
 
     def _create_email_bounced_table(self):
         self.email_bounced = Table('email_bounced_scratch', self.meta,
@@ -81,6 +83,7 @@ class Database:
             Column('event_id', String),
             Column('timestamp', DateTime(timezone=True)),
             schema='cio')
+        return self.email_bounced
 
     def _create_email_sent_table(self):
         self.email_sent = Table('email_sent_scratch', self.meta,
@@ -91,13 +94,15 @@ class Database:
             Column('event_id', String),
             Column('timestamp', DateTime(timezone=True)),
             schema='cio')
+        return self.email_sent
 
     def _create_event_log_table(self):
         self.event_log = Table('event_log', self.meta,
             Column('event', JSONB),
             schema='cio')
+        return self.event_log
 
-    def _commit_event(data):
+    def commit_event(data):
         # Copy data to event_log table and commit to database.
         self.event_log.insert().values(data)
         self.conn.execute()
@@ -105,22 +110,22 @@ class Database:
     def insert_customer(data):
         # Pass in dictionary to insert sub/unsub event.
         self.customer_event.insert().values(data)
-        self._commit_event(data)
+        self.commit_event(data)
 
     def insert_email(data):
         # Pass in dictionary to insert email open/click, etc. event.
         self.email_event.insert().values(data)
-        self._commit_event(data)
+        self.commit_event(data)
 
     def insert_email_bounced(data):
         # Pass in dictionary to insert email bounce event.
         self.email_bounced.insert().values(data)
-        self._commit_event(data)
+        self.commit_event(data)
 
     def insert_email_sent(data):
         # Pass in dictionary to insert email sent event.
         self.email_sent.insert().values(data)
-        self._commit_event(data)
+        self.commit_event(data)
 
     def disconnect(self):
         self.conn.close()
