@@ -31,6 +31,7 @@ SQLAlchemy = "*"
 dbt-postgres = "==0.14.4"
 pipenv = "*"
 sh = "*"
+contentful = "*"
 
 [requires]
 python_version = "3.7"

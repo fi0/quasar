@@ -7,7 +7,7 @@ requirements = convert_deps_to_pip(pfile['packages'], r=False)
 
 setup(
     name="quasar",
-    version="2020.5.4.2",
+    version="2020.5.14.2",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
@@ -26,7 +26,8 @@ setup(
             'prod_to_qa = quasar.prod_to_qa:main',
             'rogue_ghost_killer = quasar.ghost_killer:main',
             'user_activity_create = quasar.user_activity:create',
-            'user_activity_refresh = quasar.user_activity:refresh'
+            'user_activity_refresh = quasar.user_activity:refresh',
+            'import_contentful = quasar.import_contentful_json:main'
         ],
     },
     author="",
