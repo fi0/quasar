@@ -31,7 +31,7 @@ def _save_campaign(campaign):
             'title': campaign.title,
         }
 
-        query = ''.join(("INSERT INTO public.contentful_metadata ( "
+        query = ''.join(("INSERT INTO public_intermediate.contentful_metadata ( "
                          "contentful_id,legacy_campaign_id,internal_title, title)"
                          "VALUES (:contentful_id,:legacy_campaign_id,:internal_title,"
                          ":title) "
