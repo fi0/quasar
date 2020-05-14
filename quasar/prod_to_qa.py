@@ -31,7 +31,7 @@ def main():
             '-U', prod_pg_opts['username'],
             '-d', prod_pg_opts['database'],
             '--schema', schema,
-            '-O', '--no-acl', '-v', '--clean', _piped=True),
+            '-O', '-v', '--clean', _piped=True),
             '-h', qa_pg_opts['host'],
             '-U', qa_pg_opts['username'],
             '-d', qa_pg_opts['database']
