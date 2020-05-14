@@ -21,6 +21,8 @@ def fetch_contentful_data():
     for entry in entries:
         _save_campaign(entry)
 
+    db.disconnect()
+
 
 def _save_campaign(campaign):
     try:
