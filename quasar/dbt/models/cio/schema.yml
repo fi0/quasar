@@ -62,7 +62,7 @@ models:
             tests:
               - not_null
   - name: email_event
-    description: Table containing all CIO email events
+    description: Table containing CIO email open, converted, bounced, and unsubscribed events
     columns:
         - name: email_id
           description: TBD

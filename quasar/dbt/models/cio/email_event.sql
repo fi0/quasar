@@ -17,4 +17,4 @@ SELECT
 	event #>>'{data, event_type}' as event_type
 FROM
     {{ source('cio', 'event_log') }} cel
-WHERE event->event_type = 'email_bounced'
+WHERE event->event_type IN ('email_bounced', 'email_converted', 'email_opened', 'email_unsubscribed')
