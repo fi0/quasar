@@ -40,3 +40,51 @@ models:
           description: TBD
         - name: timestamp
           description: TBD
+  - name: email_bounced
+    description: Table containing CIO email bounced events
+    columns:
+        - name: email_id
+          description: TBD
+            tests:
+              - not_null
+        - name: customer_id
+          description: TBD
+        - name: email_address
+          description: TBD
+        - name: template_id
+          description: TBD
+        - name: subject
+          description: TBD
+        - name: event_id
+          description: TBD
+        - name: timestamp
+          description: TBD
+            tests:
+              - not_null
+  - name: email_event
+    description: Table containing all CIO email events
+    columns:
+        - name: email_id
+          description: TBD
+            tests:
+              - not_null
+        - name: customer_id
+          description: TBD
+        - name: email_address
+          description: TBD
+        - name: template_id
+          description: TBD
+        - name: subject
+          description: TBD
+        - name: event_id
+          description: TBD
+        - name: timestamp
+          description: TBD
+            tests:
+              - not_null
+        - name: href
+          description: TBD
+        - name: link_id
+          description: TBD
+
+
