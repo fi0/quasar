@@ -1,0 +1,42 @@
+version: 2
+
+sources:
+  - name: cio
+    schema: '{{ env_var("CIO_WEBHOOK_EVENTS_SCHEMA") }}'
+    tables:
+      - name: event_log
+models:
+  - name: customer_event
+    description: Table containing Cio customer events, e.g. user_unsubscribe
+    columns:
+        - name: email_id
+          description: TBD
+        - name: customer_id
+          description: TBD
+        - name: email_address
+          description: TBD
+        - name: template_id
+          description: TBD
+        - name: event_id
+          description: TBD
+        - name: timestamp
+          description: TBD
+        - name: event_type
+          description: TBD
+  - name: email_sent
+    description: Table containing Cio email sent events
+    columns:
+        - name: email_id
+          description: TBD
+        - name: customer_id
+          description: TBD
+        - name: email_address
+          description: TBD
+        - name: template_id
+          description: TBD
+        - name: subject
+          description: TBD
+        - name: event_id
+          description: TBD
+        - name: timestamp
+          description: TBD
