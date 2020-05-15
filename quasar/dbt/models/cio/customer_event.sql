@@ -1,5 +1,4 @@
 SELECT
-SELECT
     COALESCE(
         event #>>'{data, email_id}',
         event #>>'{data, variables, email_id}'
