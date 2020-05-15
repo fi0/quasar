@@ -3,7 +3,7 @@ SELECT
     event #>>'{data, customer_id}' as customer_id,
     event #>>'{data, email_address}' as email_address,
     event ->> 'event_id' AS event_id,
-    TO_TIMESTAMP(cast(event ->> 'timestamp' AS INTEGER)) AS "timestamp",
+    TO_TIMESTAMP(CAST(event ->> 'timestamp' AS INTEGER)) AS "timestamp",
     event ->> 'event_type' AS event_type
 FROM
     { { source('cio', 'event_log') } } cel
