@@ -23,6 +23,12 @@ models:
           description: TBD
         - name: event_type
           description: TBD
+        - name: cio_campaign_id
+          description: TBD
+        - name: cio_campaign_name
+          description: TBD
+        - name: cio_campaign_type
+          description: TBD
   - name: email_sent
     description: Table containing Cio email sent events
     columns:
