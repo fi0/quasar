@@ -40,6 +40,7 @@ models:
           description: TBD
         - name: timestamp
           description: TBD
+
   - name: email_bounced
     description: Table containing CIO email bounced events
     columns:
@@ -61,6 +62,11 @@ models:
           description: TBD
             tests:
               - not_null
+        - name: cio_campaign_id
+          description: TBD
+        - name: cio_campaign_name
+          description: TBD
+
   - name: email_event
     description: Table containing CIO email open, converted, bounced, and unsubscribed events
     columns:
@@ -86,5 +92,10 @@ models:
           description: TBD
         - name: link_id
           description: TBD
-
+        - name: cio_campaign_id
+          description: TBD
+        - name: cio_campaign_name
+          description: TBD
+        - name: cio_campaign_type
+          description: TBD
 
