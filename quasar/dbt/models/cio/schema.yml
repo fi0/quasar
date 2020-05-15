@@ -11,6 +11,8 @@ models:
     columns:
         - name: email_id
           description: TBD
+            tests:
+              - not_null
         - name: customer_id
           description: TBD
         - name: email_address
@@ -19,8 +21,12 @@ models:
           description: TBD
         - name: event_id
           description: TBD
+            tests:
+              - not_null
         - name: timestamp
           description: TBD
+            tests:
+              - not_null
         - name: event_type
           description: TBD
         - name: cio_campaign_id
@@ -34,6 +40,8 @@ models:
     columns:
         - name: email_id
           description: TBD
+            tests:
+              - not_null
         - name: customer_id
           description: TBD
         - name: email_address
@@ -44,5 +52,9 @@ models:
           description: TBD
         - name: event_id
           description: TBD
+            tests:
+              - not_null
         - name: timestamp
           description: TBD
+            tests:
+              - not_null
