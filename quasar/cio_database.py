@@ -2,7 +2,7 @@ import os
 
 from sqlalchemy import (bindparam, create_engine, exc, MetaData,
     Table, Column, Integer, DateTime, String, Text)
-from sqlalchemy.dialects.postgresql.json import JSONB
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.engine.url import URL
 from sqlalchemy.sql import text
 
@@ -35,7 +35,10 @@ class Database:
             self.conn = self.engine.connect()
             self.meta = MetaData()
             # Define event_log table.
-            self._create_event_log_table()
+            self.event_log = Table('event_log', self.meta,
+                Column('event', JSONB),
+                Column('timestamp', DateTime(timezone=True)),
+                schema='cio')
             # Once all tables are defined, initialize them.
             self.meta.create_all(self.engine)
         except exc.InterfaceError as e:
@@ -43,16 +46,9 @@ class Database:
             log("Error is:")
             logerr(e)
 
-    def _create_event_log_table(self):
-        self.event_log = Table('event_log', self.meta,
-            Column('event', JSONB),
-            Column('timestamp', DateTime(timezone=True)),
-            schema='cio')
-        return self.event_log
-
-    def insert_event(self, data, timestamp):
+    def insert_event(self, data, time):
         # Insert event JSON and timestamp values.
-        query = self.event_log.insert().values(event=data, timestamp=timestamp)
+        query = self.event_log.insert().values(event=data, timestamp=time)
         self.conn.execute(query)
 
     def disconnect(self):

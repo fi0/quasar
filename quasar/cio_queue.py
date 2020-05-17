@@ -5,7 +5,7 @@ import sys
 
 from .cio_database import Database
 from .queue import QuasarQueue
-from .utils import log, logerr
+from .utils import log, logerr, unixtime_to_isotime
 
 
 class CioQueue(QuasarQueue):
@@ -22,9 +22,12 @@ class CioQueue(QuasarQueue):
         # Extract data subfield.
         data = message_data['data']
         # Get timestamp entry.
-        timestamp = data['timestamp']
+        timestamp = unixtime_to_isotime(data['timestamp'])
+        # Get top-level event_id for logging purposes, but no PII revealed.
+        event_id = data['event_id']
         try:
             self.db.insert_event(data, timestamp)
+            log("Processed message with event_id: {}".format(event_id))
         except:
             logerr("Something went wrong with C.IO consumer!")
             self.db.disconnect()
