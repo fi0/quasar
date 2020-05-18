@@ -60,7 +60,7 @@ email_unsub AS (
 	    LAST_VALUE(event_type) OVER (
 		PARTITION BY customer_id ORDER BY "timestamp", event_type
 		RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS last_status
-	    FROM cio.customer_event
+	    FROM {{ ref('customer_event_new') }}
     ) f
 ),
 time_to_actions AS (
@@ -144,7 +144,7 @@ LEFT JOIN (
 ON u.northstar_id = mel.northstar_id
 LEFT JOIN (
     SELECT customer_id, max("timestamp") AS most_recent_email_open
-    FROM cio.email_event
+    FROM {{ ref('cio_email_event_new') }}
     WHERE event_type = 'email_opened'
     GROUP BY customer_id
 ) email_opens
