@@ -5,6 +5,10 @@ sources:
     schema: '{{ env_var("CIO_WEBHOOK_EVENTS_SCHEMA") }}'
     tables:
       - name: event_log
+    tables:
+      - name: email_bounced
+    tables:
+      - name: email_event
 models:
   - name: customer_event
     description: Table containing Cio customer events, e.g. user_unsubscribe

@@ -13,4 +13,7 @@ SELECT
     event #>>'{data, variables, campaign, name}' as cio_campaign_name
 FROM
     {{ source('cio', 'event_log') }} cel
-WHERE event->'event_type' = 'email_bounced'
+WHERE event #>>'{data, event_type}' = 'email_bounced'
+UNION ALL
+SELECT *
+FROM {{ source('cio', 'email_bounced') }}
