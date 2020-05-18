@@ -56,7 +56,7 @@ models:
           alias: snowplow_phoenix_events
           materialized: table
           post-hook:
-            - "CREATE UNIQUE INDEX IF NOT EXISTS spe_unique ON {{ this }}(event_datetime, event_name, event_id)"
+            - "CREATE UNIQUE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_event_datetime_event_name_event_id_u___{{ run_started_at.timestamp()|int }} ON {{ this }}(event_datetime, event_name, event_id)"
             - "CREATE INDEX IF NOT EXISTS spe_session_id ON {{ this }} (session_id)"
             - "GRANT SELECT ON {{ this }} TO looker"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
