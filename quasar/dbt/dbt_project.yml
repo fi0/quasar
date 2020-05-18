@@ -388,14 +388,14 @@ models:
             - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_email_id_customer_id_timestamp ON {{ this }}(email_id, customer_id, timestamp)"
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
-        email_bounced_new:
+        email_bounced:
           alias: cio_email_bounced_new
           materialized: table
           post-hook:
             - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_email_id_customer_id_timestamp ON {{ this }}(email_id, customer_id, "timestamp")"
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
-        email_event_new:
+        email_event:
           alias: cio_email_event_new
           materialized: table
           post-hook:
