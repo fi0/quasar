@@ -5,8 +5,10 @@ sources:
     schema: '{{ env_var("CIO_WEBHOOK_EVENTS_SCHEMA") }}'
     tables:
       - name: event_log
+      - name: customer_event_old
+      - name: email_sent_old
 models:
-  - name: customer_event
+  - name: customer_event_new
     description: Table containing Cio customer events, e.g. user_unsubscribe
     columns:
         - name: email_id
@@ -35,7 +37,7 @@ models:
           description: TBD
         - name: cio_campaign_type
           description: TBD
-  - name: email_sent
+  - name: email_sent_new
     description: Table containing Cio email sent events
     columns:
         - name: email_id

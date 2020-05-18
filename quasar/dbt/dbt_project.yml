@@ -373,14 +373,14 @@ models:
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
       cio:
-        customer_event:
+        customer_event_new:
           alias: cio_customer_event
           materialized: table
           post-hook:
             - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_event_id ON {{ this }}(event_id)"
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
-        email_sent:
+        email_sent_new:
           alias: cio_email_sent_event
           materialized: table
           post-hook:
