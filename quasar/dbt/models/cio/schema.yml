@@ -5,14 +5,18 @@ sources:
     schema: '{{ env_var("CIO_WEBHOOK_EVENTS_SCHEMA") }}'
     tables:
       - name: event_log
+      - name: customer_event_old
+      - name: email_sent_old
       - name: email_bounced_old
       - name: email_event_old
 models:
-  - name: customer_event
+  - name: cio_customer_event
     description: Table containing Cio customer events, e.g. user_unsubscribe
     columns:
         - name: email_id
           description: TBD
+            tests:
+              - not_null
         - name: customer_id
           description: TBD
         - name: email_address
@@ -21,15 +25,27 @@ models:
           description: TBD
         - name: event_id
           description: TBD
+            tests:
+              - not_null
         - name: timestamp
           description: TBD
+            tests:
+              - not_null
         - name: event_type
           description: TBD
-  - name: email_sent
+        - name: cio_campaign_id
+          description: TBD
+        - name: cio_campaign_name
+          description: TBD
+        - name: cio_campaign_type
+          description: TBD
+  - name: cio_email_sent_event
     description: Table containing Cio email sent events
     columns:
         - name: email_id
           description: TBD
+            tests:
+              - not_null
         - name: customer_id
           description: TBD
         - name: email_address
@@ -40,10 +56,11 @@ models:
           description: TBD
         - name: event_id
           description: TBD
+            tests:
+              - not_null
         - name: timestamp
           description: TBD
-
-  - name: email_bounced_event
+  - name: cio_email_bounced_event
     description: Table containing CIO email bounced events
     columns:
         - name: email_id
@@ -64,8 +81,7 @@ models:
           description: TBD
         - name: cio_campaign_name
           description: TBD
-
-  - name: email_event
+  - name: cio_email_event
     description: Table containing CIO email open, converted, bounced, and unsubscribed events
     columns:
         - name: email_id
