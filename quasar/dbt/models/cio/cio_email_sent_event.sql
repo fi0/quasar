@@ -36,4 +36,4 @@ FROM
     {{ source('cio', 'email_sent_old') }} ceso -- Date we re-started saving raw C.io events to the event_log table
 WHERE
     -- Date we re-started saving raw C.io events to the event_log table
-    timestamp < '2020-04-01'
+    "timestamp" < '2020-04-01'
