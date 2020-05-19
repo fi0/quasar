@@ -164,8 +164,9 @@ FROM (
         cio.event_id AS action_serial_id, 
         'email' AS "channel"
     FROM
+        -- TODO: Use ref()
         cio.email_event cio
-    WHERE 
+    WHERE
     	--Filter to clicks within emails event log
         cio.event_type = 'email_clicked'
         AND cio.customer_id IS NOT NULL

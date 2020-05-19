@@ -371,5 +371,18 @@ models:
           post-hook:
             - "CREATE INDEX ON {{ this }}(northstar_id, device_id, journey_begin_ts)"
             - "GRANT SELECT ON {{ this }} to dsanalyst"
-            - "GRANT SELECT ON {{ this }} to looker"          
-
+            - "GRANT SELECT ON {{ this }} to looker"
+      cio:
+        cio_customer_event:
+          materialized: table
+          post-hook:
+            - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_event_id ON {{ this }}(event_id)"
+            - "GRANT SELECT ON {{ this }} to dsanalyst"
+            - "GRANT SELECT ON {{ this }} to looker"
+        cio_email_sent_event:
+          materialized: table
+          post-hook:
+            - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_event_id ON {{ this }}(event_id)"
+            - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_email_id_customer_id_timestamp ON {{ this }}(email_id, customer_id, timestamp)"
+            - "GRANT SELECT ON {{ this }} to dsanalyst"
+            - "GRANT SELECT ON {{ this }} to looker"

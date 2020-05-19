@@ -60,7 +60,7 @@ email_unsub AS (
 	    LAST_VALUE(event_type) OVER (
 		PARTITION BY customer_id ORDER BY "timestamp", event_type
 		RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS last_status
-	    FROM cio.customer_event
+	    FROM {{ ref('cio_customer_event') }}
     ) f
 ),
 time_to_actions AS (
