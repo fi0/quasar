@@ -36,66 +36,65 @@ models:
   - name: cio_email_sent_event
     description: Table containing Cio email sent events
     columns:
-        - name: email_id
-          description: TBD
-        - name: customer_id
-          description: TBD
-        - name: email_address
-          description: TBD
-        - name: template_id
-          description: TBD
-        - name: subject
-          description: TBD
-        - name: event_id
-          description: TBD
-        - name: timestamp
-          description: TBD
+      - name: email_id
+        description: TBD
+      - name: customer_id
+        description: TBD
+      - name: email_address
+        description: TBD
+      - name: template_id
+        description: TBD
+      - name: subject
+        description: TBD
+      - name: event_id
+        description: TBD
+      - name: timestamp
+        description: TBD
   - name: cio_email_bounced_event
     description: Table containing CIO email bounced events
     columns:
-        - name: email_id
-          description: TBD
-        - name: customer_id
-          description: TBD
-        - name: email_address
-          description: TBD
-        - name: template_id
-          description: TBD
-        - name: subject
-          description: TBD
-        - name: event_id
-          description: TBD
-        - name: timestamp
-          description: TBD
-        - name: cio_campaign_id
-          description: TBD
-        - name: cio_campaign_name
-          description: TBD
+      - name: email_id
+        description: TBD
+      - name: customer_id
+        description: TBD
+      - name: email_address
+        description: TBD
+      - name: template_id
+        description: TBD
+      - name: subject
+        description: TBD
+      - name: event_id
+        description: TBD
+      - name: timestamp
+        description: TBD
+      - name: cio_campaign_id
+        description: TBD
+      - name: cio_campaign_name
+        description: TBD
   - name: cio_email_event
     description: Table containing CIO email open, converted, bounced, and unsubscribed events
     columns:
-        - name: email_id
-          description: TBD
-        - name: customer_id
-          description: TBD
-        - name: email_address
-          description: TBD
-        - name: template_id
-          description: TBD
-        - name: subject
-          description: TBD
-        - name: event_id
-          description: TBD
-        - name: timestamp
-          description: TBD
-        - name: href
-          description: TBD
-        - name: link_id
-          description: TBD
-        - name: cio_campaign_id
-          description: TBD
-        - name: cio_campaign_name
-          description: TBD
-        - name: cio_campaign_type
-          description: TBD
-
+      - name: email_id
+        description: TBD
+      - name: customer_id
+        description: TBD
+      - name: email_address
+        description: TBD
+      - name: template_id
+        description: TBD
+      - name: subject
+        description: TBD
+      - name: event_id
+        description: TBD
+      - name: timestamp
+        description: TBD
+      - name: href
+        description: TBD
+      - name: link_id
+        description: TBD
+      - name: cio_campaign_id
+        description: TBD
+      - name: cio_campaign_name
+        description: TBD
+      - name: cio_campaign_type
+        description: TBD
