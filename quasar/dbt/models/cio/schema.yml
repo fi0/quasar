@@ -45,7 +45,7 @@ models:
         - name: timestamp
           description: TBD
 
-  - name: email_bounced
+  - name: email_bounced_event
     description: Table containing CIO email bounced events
     columns:
         - name: email_id
