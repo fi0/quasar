@@ -13,39 +13,31 @@ models:
   - name: cio_customer_event
     description: Table containing Cio customer events, e.g. user_unsubscribe
     columns:
-        - name: email_id
-          description: TBD
-            tests:
-              - not_null
-        - name: customer_id
-          description: TBD
-        - name: email_address
-          description: TBD
-        - name: template_id
-          description: TBD
-        - name: event_id
-          description: TBD
-            tests:
-              - not_null
-        - name: timestamp
-          description: TBD
-            tests:
-              - not_null
-        - name: event_type
-          description: TBD
-        - name: cio_campaign_id
-          description: TBD
-        - name: cio_campaign_name
-          description: TBD
-        - name: cio_campaign_type
-          description: TBD
+      - name: email_id
+        description: TBD
+      - name: customer_id
+        description: TBD
+      - name: email_address
+        description: TBD
+      - name: template_id
+        description: TBD
+      - name: event_id
+        description: TBD
+      - name: timestamp
+        description: TBD
+      - name: event_type
+        description: TBD
+      - name: cio_campaign_id
+        description: TBD
+      - name: cio_campaign_name
+        description: TBD
+      - name: cio_campaign_type
+        description: TBD
   - name: cio_email_sent_event
     description: Table containing Cio email sent events
     columns:
         - name: email_id
           description: TBD
-            tests:
-              - not_null
         - name: customer_id
           description: TBD
         - name: email_address
@@ -56,8 +48,6 @@ models:
           description: TBD
         - name: event_id
           description: TBD
-            tests:
-              - not_null
         - name: timestamp
           description: TBD
   - name: cio_email_bounced_event
