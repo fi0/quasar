@@ -5,10 +5,8 @@ sources:
     schema: '{{ env_var("CIO_WEBHOOK_EVENTS_SCHEMA") }}'
     tables:
       - name: event_log
-    tables:
-      - name: email_bounced
-    tables:
-      - name: email_event
+      - name: email_bounced_old
+      - name: email_event_old
 models:
   - name: customer_event
     description: Table containing Cio customer events, e.g. user_unsubscribe
@@ -50,8 +48,6 @@ models:
     columns:
         - name: email_id
           description: TBD
-            tests:
-              - not_null
         - name: customer_id
           description: TBD
         - name: email_address
@@ -64,8 +60,6 @@ models:
           description: TBD
         - name: timestamp
           description: TBD
-            tests:
-              - not_null
         - name: cio_campaign_id
           description: TBD
         - name: cio_campaign_name
@@ -76,8 +70,6 @@ models:
     columns:
         - name: email_id
           description: TBD
-            tests:
-              - not_null
         - name: customer_id
           description: TBD
         - name: email_address
@@ -90,8 +82,6 @@ models:
           description: TBD
         - name: timestamp
           description: TBD
-            tests:
-              - not_null
         - name: href
           description: TBD
         - name: link_id
