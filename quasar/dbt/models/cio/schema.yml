@@ -8,7 +8,7 @@ sources:
       - name: customer_event_old
       - name: email_sent_old
 models:
-  - name: customer_event
+  - name: cio_customer_event
     description: Table containing Cio customer events, e.g. user_unsubscribe
     columns:
         - name: email_id
@@ -37,7 +37,7 @@ models:
           description: TBD
         - name: cio_campaign_type
           description: TBD
-  - name: email_sent
+  - name: cio_email_sent_event
     description: Table containing Cio email sent events
     columns:
         - name: email_id
