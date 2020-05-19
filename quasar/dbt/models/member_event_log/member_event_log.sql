@@ -164,8 +164,7 @@ FROM (
         cio.event_id AS action_serial_id, 
         'email' AS "channel"
     FROM
-        -- TODO: Use ref()
-        cio.email_event cio
+        {{ ref('cio_email_event') }} cio
     WHERE
     	--Filter to clicks within emails event log
         cio.event_type = 'email_clicked'
