@@ -1,4 +1,4 @@
-SELECT
+SELECT DISTINCT ON (e.EVENT_ID)
     e.event_id,
     e.event_datetime,
     CASE WHEN e.event_name IS NULL
