@@ -19,7 +19,7 @@ SELECT
 	event #>>'{data, variables, campaign, type}' as cio_campaign_type
 FROM
     {{ source('cio', 'event_log') }} cel
-WHERE event #>>'{data, event_type}' IN ('email_bounced', 'email_converted', 'email_opened', 'email_unsubscribed')
+WHERE event #>>'{data, event_type}' IN ('email_bounced', 'email_converted', 'email_opened', 'email_unsubscribed', 'email_clicked')
 UNION
 SELECT
     email_id,
