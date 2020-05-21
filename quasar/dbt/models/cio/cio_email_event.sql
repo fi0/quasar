@@ -19,7 +19,7 @@ SELECT
 	event #>>'{data, variables, campaign, type}' as cio_campaign_type
 FROM
     {{ source('cio', 'event_log') }} cel
-WHERE event #>>'{data, event_type}' IN ('email_bounced', 'email_converted', 'email_opened', 'email_unsubscribed', 'email_clicked')
+WHERE event ->> 'event_type' IN ('email_bounced', 'email_converted', 'email_opened', 'email_unsubscribed', 'email_clicked')
 UNION
 SELECT
     email_id,
@@ -38,4 +38,4 @@ SELECT
 FROM {{ source('cio', 'email_event_old') }}
 WHERE
     -- Date we re-started saving raw C.io events to the event_log table
-    timestamp < '2020-04-01'
+    "timestamp" < '2020-04-01'
