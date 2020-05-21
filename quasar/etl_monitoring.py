@@ -61,9 +61,9 @@ class ETLMonitoring:
             'raw_rogue_posts':
                 'SELECT count(*) FROM ft_dosomething_rogue.posts',
             'raw_cio_emails':
-                'SELECT count(*) FROM cio.email_event',
+                'SELECT count(*) FROM public.cio_email_event',
             'raw_cio_customers':
-                'SELECT count(*) FROM cio.customer_event',
+                'SELECT count(*) FROM public.cio_customer_event',
             'raw_bertly_clicks':
                 'SELECT count(*) FROM bertly.clicks',
             'raw_gambit_messages':
