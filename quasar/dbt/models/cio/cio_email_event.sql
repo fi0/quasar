@@ -12,7 +12,7 @@ SELECT
 	event #>>'{data, href}' as href,
 	event #>>'{data, link_id}' as link_id,
 	event ->> 'event_id' AS event_id,
-	event #>>'{data, event_type}' as event_type,
+	event ->> 'event_type' as event_type,
 	TO_TIMESTAMP(CAST(event ->> 'timestamp' AS INTEGER)) AS "timestamp",
 	event #>>'{data, variables, campaign, id}' as cio_campaign_id,
 	event #>>'{data, variables, campaign, name}' as cio_campaign_name,
