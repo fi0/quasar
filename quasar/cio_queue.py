@@ -29,6 +29,6 @@ class CioQueue(QuasarQueue):
             self.db.insert_event(data, timestamp, event_id)
             log("Processed message with event_id: {}".format(event_id))
         except:
-            logerr("Something went wrong with C.IO consumer!")
+            logerr("Something went wrong with C.IO consumer!{}".format(sys.exc_info()))
             self.db.disconnect()
             sys.exit(1)

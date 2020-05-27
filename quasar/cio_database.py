@@ -34,16 +34,17 @@ class Database:
             self.conn = self.engine.connect()
             self.meta = MetaData()
             # Define event_log table.
-            self.event_log = Table('event_log', self.meta,
-                                   Column('event', JSONB),
-                                   Column('timestamp',
-                                          DateTime(timezone=True)),
-                                   Column('event_id', String),
-                                   schema='cio'),
+            self.event_log = Table('event_log',
+                                    self.meta,
+                                    Column('event', JSONB),
+                                    Column('timestamp',
+                                        DateTime(timezone=True)),
+                                    Column('event_id', String),
+                                    schema='cio')
             # Initialize tables.
             self.meta.create_all(self.engine)
         except exc.InterfaceError as e:
-            log("Couldnt't establsh DB connection!")
+            log("couldn't establish DB connection!")
             log("Error is:")
             logerr(e)
 
