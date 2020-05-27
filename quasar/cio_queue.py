@@ -26,7 +26,7 @@ class CioQueue(QuasarQueue):
         # Get top-level event_id for logging purposes, but no PII revealed.
         event_id = data['event_id']
         try:
-            self.db.insert_event(data, timestamp)
+            self.db.insert_event(data, timestamp, event_id)
             log("Processed message with event_id: {}".format(event_id))
         except:
             logerr("Something went wrong with C.IO consumer!")
