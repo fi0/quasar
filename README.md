@@ -2,12 +2,19 @@
 
 ## DoSomething.Org Data Platform
 
-### Extended Description 
+### Extended Description
 
 * All Infrastructure Tools and Code
 * All ETL Code and Scripts
 * Data Warehousing Code
 * A Bright Light and Hope towards illuminating the dark corners of social injustice with the power of Data
+
+## Scripts
+We keep utility scripts that automate misc tasks. We have created them to answer specific questions at that time.
+
+Script Name | Functionality
+-------- | -------------
+`jenkins-job-logs-search.sh` | [Searches through a range of job runs for a given job name for a pattern](quasar/misc/jenkins-job-logs-search.sh).
 
 ## Getting Started
 These instructions will get you a copy of the project up and running on your local macOS machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
