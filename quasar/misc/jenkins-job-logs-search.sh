@@ -2,6 +2,9 @@
 
 # Usage
 #
+# Edit `username`, `password`, `host`, and `jobName` to fit your needs.
+#
+# Example:
 # ./jenkins-job-logs-search.sh 44026 44027 "event1\|event2"
 #
 # 1st argument: First job run to start the search at.
