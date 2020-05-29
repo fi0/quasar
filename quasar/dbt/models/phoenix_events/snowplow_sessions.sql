@@ -70,3 +70,8 @@ LEFT JOIN session_referrer r
 ON r.session_id = s.session_id
 LEFT JOIN time_between_sessions t
 ON t.session_id = s.session_id
+
+{% if is_incremental() %}
+-- this filter will only be applied on an incremental run
+WHERE s.landing_datetime >= {{ var('run_interval') }}
+{% endif %}

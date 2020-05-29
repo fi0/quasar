@@ -30,3 +30,8 @@ SELECT
     s.days_since_last_session
 FROM {{ ref('snowplow_sessions') }} s
 
+{% if is_incremental() %}
+-- this filter will only be applied on an incremental run
+WHERE p.landing_datetime >= {{ var('run_interval') }}
+{% endif %}
+

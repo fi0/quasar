@@ -53,3 +53,8 @@ SELECT
     s.device_id
 FROM
     {{ ref('snowplow_phoenix_events') }} s
+
+{% if is_incremental() %}
+-- this filter will only be applied on an incremental run
+WHERE s.event_datetime >= {{ var('run_interval') }}
+{% endif %}
