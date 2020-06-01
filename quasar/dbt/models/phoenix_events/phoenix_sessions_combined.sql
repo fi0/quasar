@@ -13,6 +13,10 @@ SELECT
     NULL as exit_page,
     NULL as days_since_last_session
 FROM {{ source('web_events_historical', 'phoenix_sessions') }} p
+{% if is_incremental() %}
+-- this filter will only be applied on an incremental run
+WHERE p.landing_datetime >= {{ var('run_interval') }}
+{% endif %}
 UNION ALL
 SELECT
     s.session_id,
@@ -29,9 +33,8 @@ SELECT
     s.exit_page,
     s.days_since_last_session
 FROM {{ ref('snowplow_sessions') }} s
-
 {% if is_incremental() %}
 -- this filter will only be applied on an incremental run
-WHERE p.landing_datetime >= {{ var('run_interval') }}
+WHERE s.landing_datetime >= {{ var('run_interval') }}
 {% endif %}
 

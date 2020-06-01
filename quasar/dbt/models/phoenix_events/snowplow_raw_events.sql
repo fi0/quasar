@@ -32,6 +32,6 @@ SELECT
   ON b.event_id = p.event_id
 
 {% if is_incremental() %}
--- this filter will only be applied on an incremental run
-WHERE b.event_datetime >= {{ var('run_interval') }}
+  -- this filter will only be applied on an incremental run
+  WHERE b.event_datetime >= {{ var('run_interval') }}
 {% endif %}

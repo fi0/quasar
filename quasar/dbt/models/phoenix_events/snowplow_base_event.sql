@@ -63,5 +63,5 @@ WHERE event_id NOT IN
 
 {% if is_incremental() %}
 -- this filter will only be applied on an incremental run
-AND collector_tstamp.event_datetime >= {{ var('run_interval') }}
+AND collector_tstamp >= {{ var('run_interval') }}
 {% endif %}

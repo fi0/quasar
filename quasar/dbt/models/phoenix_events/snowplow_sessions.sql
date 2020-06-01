@@ -12,6 +12,10 @@ SELECT
     ) AS session_duration_seconds,
     count(DISTINCT CASE WHEN event_name = 'view' THEN "path" END) AS num_pages_viewed
 FROM {{ ref('snowplow_phoenix_events') }}
+{% if is_incremental() %}
+-- this filter will only be applied on an incremental run
+WHERE event_datetime >= {{ var('run_interval') }}
+{% endif %}
 GROUP BY session_id
 ),
 -- Captures the first and last page viewed metadata per session
@@ -26,6 +30,10 @@ SELECT DISTINCT
     last_value("path") OVER (PARTITION BY session_id ORDER BY event_datetime
 	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS exit_page
 FROM {{ ref('snowplow_phoenix_events') }}
+{% if is_incremental() %}
+-- this filter will only be applied on an incremental run
+WHERE event_datetime >= {{ var('run_interval') }}
+{% endif %}
 ),
 -- Captures referrer metadata per session
 session_referrer AS (
@@ -38,6 +46,10 @@ SELECT DISTINCT
     first_value(page_utm_campaign) OVER (PARTITION BY session_id ORDER BY event_datetime 
 	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS session_utm_campaign 
 FROM {{ ref('snowplow_phoenix_events') }}
+{% if is_incremental() %}
+-- this filter will only be applied on an incremental run
+WHERE event_datetime >= {{ var('run_interval') }}
+{% endif %}
 ),
 -- Captures last recorded session metadata for this device
 time_between_sessions AS (
@@ -48,6 +60,10 @@ SELECT DISTINCT
 	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
     ) AS prev_session_endtime
 FROM sessions
+{% if is_incremental() %}
+-- this filter will only be applied on an incremental run
+WHERE event_datetime >= {{ var('run_interval') }}
+{% endif %}
 )
 SELECT
 s.session_id,

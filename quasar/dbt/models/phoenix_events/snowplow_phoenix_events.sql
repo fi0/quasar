@@ -30,5 +30,5 @@ LEFT JOIN {{ ref('campaign_info') }} i ON i.campaign_id = e.campaign_id::bigint
 
 {% if is_incremental() %}
 -- this filter will only be applied on an incremental run
-WHERE e.event_datetime >= {{ var('run_interval') }}
+WHERE event_datetime >= {{ var('run_interval') }}
 {% endif %}
