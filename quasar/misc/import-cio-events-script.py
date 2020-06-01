@@ -3,7 +3,8 @@
 # - Use SQL Alchemy as its ORM
 # - Stream and bulk import 1000 events at a time.
 # - import into a holding table with name pattern: event_log_import_YYYYMMDD
-# - Import of the events into the actual production table is expected to be handled manually (SQL) by a data engineer.
+# - Import of the events into the actual production table is expected to
+#   be handled manually (SQL) by a data engineer.
 
 
 # import necessary libraries
