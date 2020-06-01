@@ -1,5 +1,6 @@
 # About this script, it will:
-# - It is non-destructive. It doesn't delete and it doesn't import into a production table.
+# - It is non-destructive. It doesn't delete and it doesn't import
+#   into a production table.
 # - Use SQL Alchemy as its ORM
 # - Stream and bulk import 1000 events at a time.
 # - import into a holding table with name pattern: event_log_import_YYYYMMDD
