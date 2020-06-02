@@ -15,6 +15,7 @@ We keep utility scripts that automate misc tasks. We have created them to answer
 Script Name | Functionality
 -------- | -------------
 `jenkins-job-logs-search.sh` | [Searches through a range of job runs for a given job name for a pattern](quasar/misc/jenkins-job-logs-search.sh).
+`import-cio-events-script.py` | [Imports Cio events from a file](quasar/misc/import-cio-events-script.py).
 
 ## Getting Started
 These instructions will get you a copy of the project up and running on your local macOS machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
