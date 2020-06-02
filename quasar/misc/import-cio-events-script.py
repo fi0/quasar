@@ -83,7 +83,7 @@ def get_username_hash():
 def get_import_table_name():
     # We are hashing and using the script executor's username as part
     # of the table name to prevent a collition with a parallel import
-    return 'import_table_' + get_username_hash() + '_' + get_today_string()
+    return 'import_table_' + str(get_username_hash()) + '_' + get_today_string()
 
 
 def get_file_path(given_path):
@@ -170,7 +170,8 @@ validate_file_path(filePath)
 
 try:
     db = create_engine(URL(**pg_opts),
-        connect_args={'sslmode': pg_ssl})
+        connect_args={'sslmode': pg_ssl},
+        pool_pre_ping=True)
     # Connect to DB
     conn = db.connect()
 except:
