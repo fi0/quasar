@@ -6,7 +6,7 @@ About this script:
     directly into a production table.
     - Uses SQL Alchemy as its ORM
     - Bulk imports events. The batch size is configurable. Defaults to 1000.
-    - Imports into an import table with name pattern: event_log_import_YYYYMMDD
+    - Imports into an import table with name pattern: import_table_[HASH]_[YYYYMMDD]
     - Import of the events into the actual production table is expected to
     be handled manually (SQL) by a data engineer.
 
