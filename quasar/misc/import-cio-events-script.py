@@ -16,19 +16,22 @@ Usage:
 """
 
 # import necessary libraries
-import os
+
+import getpass
 import json
-import time
 import math
+import os
 import sys
-from halo import Halo
-from datetime import datetime
+import time
 from colorama import init, Fore, Back
+from datetime import datetime
+from halo import Halo
 from sqlalchemy import (create_engine, event, MetaData,
                         Table, Column, DateTime, String)
 from sqlalchemy.engine import Engine
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.engine.url import URL
+from zlib import adler32
 
 # setup
 
@@ -38,7 +41,7 @@ spinner = Halo(spinner="circle")
 batch_size = 1000
 path_error_msg = "{}{}Please provide a valid path to the events file!!".format(
     Back.WHITE, Fore.RED)
-today_string = datetime.today().strftime('%Y%m%d')
+
 
 pg_ssl = os.getenv('PG_SSL')
 pg_opts = {
@@ -53,6 +56,7 @@ pg_opts = {
 
 # Validate user input
 
+
 try:
     input_file = sys.argv[1]
 except IndexError:
@@ -61,9 +65,25 @@ except IndexError:
 try:
     batch_size = int(sys.argv[2])
 except:
+    # If batch_size parsing fails, just use the default
     pass
 
+
 # Define util methods
+
+
+def get_today_string():
+    return datetime.today().strftime('%Y%m%d')
+
+
+def get_username_hash():
+    return adler32(bytes(getpass.getuser().encode('utf-8')))
+
+
+def get_import_table_name():
+    # We are hashing and using the script executor's username as part
+    # of the table name to prevent a collition with a parallel import
+    return 'import_table_' + get_username_hash() + '_' + get_today_string()
 
 
 def get_file_path(given_path):
@@ -161,13 +181,14 @@ meta = MetaData()
 
 # create import table
 import_table = Table(
-    'import_table_' + today_string,
+    get_import_table_name(),
     meta,
     Column('event', JSONB),
     Column('timestamp',
            DateTime(timezone=True)),
     Column('event_id', String),
     schema='cio')
+
 
 """
 
