@@ -65,13 +65,17 @@ except:
 
 # Define util methods
 
+
 def get_file_path(given_path):
     cwd = os.path.abspath(os.path.dirname(__file__))
     return os.path.abspath(os.path.join(cwd, given_path))
 
+
 def get_num_events(filePath):
-    stream = os.popen("wc -l {} | pcregrep -oih '\w\d*(?=\s)'".format(filePath))
+    stream = os.popen("wc -l {} | pcregrep -oih '\w\d*(?=\s)'".format(
+        filePath))
     return stream.read().rstrip()
+
 
 def validate_file_path(filePath):
     if not os.path.exists(filePath):
@@ -109,9 +113,9 @@ def on_table_created(target, conn, **kw):
     buffer = []
     total_batches = math.ceil(int(num_events) / batch_size)
     current_batch = 1
-    with open(filePath) as events:
-        for event in events:
-            json_event = json.loads(event)['data']
+    with open(filePath) as cio_events:
+        for cio_event in cio_events:
+            json_event = json.loads(cio_event)['data']
             buffer.append({
                 "event": json_event,
                 "event_id": json_event['event_id'],
