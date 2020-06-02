@@ -119,7 +119,8 @@ def on_table_created(target, conn, **kw):
             buffer.append({
                 "event": json_event,
                 "event_id": json_event['event_id'],
-                "timestamp": datetime.fromtimestamp(json_event['timestamp']).isoformat()
+                "timestamp": datetime.fromtimestamp(
+                    json_event['timestamp']).isoformat()
             })
             # Insert events after we have reached the batch size
             if len(buffer) % batch_size == 0:
@@ -141,12 +142,15 @@ def on_table_created(target, conn, **kw):
         Fore.GREEN, total_time))
     conn.close()
 
+
 filePath = get_file_path(input_file)
+
+
 validate_file_path(filePath)
 
 try:
     db = create_engine(URL(**pg_opts),
-                        connect_args={'sslmode': pg_ssl})
+        connect_args={'sslmode': pg_ssl})
     # Connect to DB
     conn = db.connect()
 except:
