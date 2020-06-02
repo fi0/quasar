@@ -11,15 +11,20 @@ About this script:
     be handled manually (SQL) by a data engineer.
 
 Usage:
-     $ pipenv run python import-cio-events-script.py ~/Desktop/test-payloads.txt 500
+     $ pipenv run python import-cio-events-script.py \
+        ~/Desktop/test-payloads.txt 500
 """
 
 # import necessary libraries
-import os, json, time, math, getopt, sys
+import os
+import json
+import time
+import math
+import sys
 from halo import Halo
 from datetime import datetime
-from colorama import init, Fore, Back, Style
-from sqlalchemy import (create_engine, exc, event, MetaData,
+from colorama import init, Fore, Back
+from sqlalchemy import (create_engine, event, MetaData,
                         Table, Column, DateTime, String)
 from sqlalchemy.engine import Engine
 from sqlalchemy.dialects.postgresql import JSONB
@@ -31,7 +36,8 @@ init(autoreset=True)
 spinner = Halo(spinner="circle")
 
 batch_size = 1000
-path_error_msg = "{}{}Please provide a valid path to the events file!!".format(Back.WHITE, Fore.RED)
+path_error_msg = "{}{}Please provide a valid path to the events file!!".format(
+    Back.WHITE, Fore.RED)
 today_string = datetime.today().strftime('%Y%m%d')
 
 pg_ssl = os.getenv('PG_SSL')
@@ -93,9 +99,11 @@ This ensures that we insert the events AFTER the table is available.
 @event.listens_for(Table, "after_create")
 def on_table_created(target, conn, **kw):
     spinner.start()
-    spinner.info("{}{} is ready to start importing".format(Fore.LIGHTBLACK_EX, target))
+    spinner.info("{}{} is ready to start importing".format(
+        Fore.LIGHTBLACK_EX, target))
     num_events = get_num_events(filePath)
-    spinner.info("{}Started import of {} events in file {}{}".format(Fore.LIGHTBLACK_EX, num_events, Fore.CYAN, filePath))
+    spinner.info("{}Started import of {} events in file {}{}".format(
+        Fore.LIGHTBLACK_EX, num_events, Fore.CYAN, filePath))
 
     # Holds the events that will be inserted in the current batch
     buffer = []
@@ -111,19 +119,22 @@ def on_table_created(target, conn, **kw):
             })
             # Insert events after we have reached the batch size
             if len(buffer) % batch_size == 0:
-                spinner.start("{}Processing batch number {} of {}".format(Fore.LIGHTBLACK_EX, current_batch, total_batches))
+                spinner.start("{}Processing batch number {} of {}".format(
+                    Fore.LIGHTBLACK_EX, current_batch, total_batches))
                 db.execute(import_table.insert(), buffer)
                 # reset the buffer
                 buffer = []
                 current_batch += 1
     # Imports the remainder events in the buffer
     if len(buffer) > 0:
-        spinner.start("{}Processing batch number {} of {}".format(Fore.LIGHTBLACK_EX, current_batch, total_batches))
+        spinner.start("{}Processing batch number {} of {}".format(
+            Fore.LIGHTBLACK_EX, current_batch, total_batches))
         db.execute(import_table.insert(), buffer)
 
     # Calculates total query execution time
     total_time = math.ceil(time.time() - conn.info['query_start_time'].pop(0))
-    spinner.succeed("{}Finished. Total Time: {} sec".format(Fore.GREEN, total_time))
+    spinner.succeed("{}Finished. Total Time: {} sec".format(
+        Fore.GREEN, total_time))
     conn.close()
 
 filePath = get_file_path(input_file)
@@ -135,7 +146,8 @@ try:
     # Connect to DB
     conn = db.connect()
 except:
-    spinner.fail("Error establishing connection. Error: {}".format(sys.exc_info()))
+    spinner.fail("Error establishing connection. Error: {}".format(
+        sys.exc_info()))
 
 meta = MetaData()
 
