@@ -82,6 +82,8 @@ def get_autovacuum_statement(toggle):
 
 def clean_exit(conn):
     conn.execute(get_autovacuum_statement(True))
+    # TODO: Wait for autovacuum to finish running
+    time.sleep(5)
     conn.close()
 
 
