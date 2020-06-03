@@ -33,5 +33,5 @@ SELECT
 
 {% if is_incremental() %}
   -- this filter will only be applied on an incremental run
-  WHERE b.event_datetime >= {{ var('run_interval') }}
+  WHERE b.event_datetime >= (select max(sre.event_datetime) from {{this}} sre)
 {% endif %}

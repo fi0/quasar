@@ -34,8 +34,6 @@ models:
   ds_dbt:
       # Applies to all files under models/phoenix_events/
       phoenix_events:
-        vars:
-            run_interval: "to_timestamp({{ run_started_at.timestamp()|int }}) - INTERVAL {{env_var('SNOWPLOW_INTERVAL')}}"
         snowplow_base_event:
           alias: snowplow_base_event
           materialized: incremental
@@ -58,7 +56,7 @@ models:
           alias: snowplow_phoenix_events
           materialized: incremental
           post-hook:
-            - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_spe_{{ run_started_at.timestamp()|int }} ON {{ this }}(event_datetime, event_name, event_id)"
+            - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_spe ON {{ this }}(event_datetime, event_name, event_id)"
             - "CREATE INDEX IF NOT EXISTS spe_session_id ON {{ this }} (session_id)"
             - "GRANT SELECT ON {{ this }} TO looker"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
@@ -72,7 +70,7 @@ models:
           alias: phoenix_events_combined
           materialized: incremental
           post-hook:
-            - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_pec_{{ run_started_at.timestamp()|int }} ON {{ this }}(event_datetime, event_name, event_id)"
+            - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_pec ON {{ this }}(event_datetime, event_name, event_id)"
             - "CREATE INDEX IF NOT EXISTS pec_session_id ON {{ this }} (session_id)"
             - "GRANT SELECT ON {{ this }} TO looker"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"

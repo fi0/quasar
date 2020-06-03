@@ -15,7 +15,7 @@ SELECT
 FROM {{ source('web_events_historical', 'phoenix_sessions') }} p
 {% if is_incremental() %}
 -- this filter will only be applied on an incremental run
-WHERE p.landing_datetime >= {{ var('run_interval') }}
+WHERE p.landing_datetime >= (select max(psc.landing_datetime) from {{this}} psc)
 {% endif %}
 UNION ALL
 SELECT
@@ -35,6 +35,6 @@ SELECT
 FROM {{ ref('snowplow_sessions') }} s
 {% if is_incremental() %}
 -- this filter will only be applied on an incremental run
-WHERE s.landing_datetime >= {{ var('run_interval') }}
+WHERE s.landing_datetime >= (select max(psc.landing_datetime) from {{this}} psc)
 {% endif %}
 

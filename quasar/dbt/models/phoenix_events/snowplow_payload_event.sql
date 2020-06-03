@@ -14,5 +14,5 @@ FROM {{ env_var('FT_SNOWPLOW') }}.snowplow_event
 
 {% if is_incremental() %}
 -- this filter will only be applied on an incremental run
-WHERE _fivetran_synced >= {{ var('run_interval') }}
+WHERE _fivetran_synced >= (select max(spe.ft_timestamp) from {{this}} spe)
 {% endif %}

@@ -14,14 +14,14 @@ SELECT
 FROM {{ ref('snowplow_phoenix_events') }}
 {% if is_incremental() %}
 -- this filter will only be applied on an incremental run
-WHERE event_datetime >= {{ var('run_interval') }}
+WHERE event_datetime >= (select max(ss.landing_datetime) from {{this}} ss)
 {% endif %}
 GROUP BY session_id
 ),
 -- Captures the first and last page viewed metadata per session
 -- IMPORTANT: The event id is the first event in the session.
 entry_exit_pages AS (
-SELECT DISTINCT
+SELECT
     session_id,
     first_value("path") OVER (PARTITION BY session_id ORDER BY event_datetime
 	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS landing_page,
@@ -32,12 +32,12 @@ SELECT DISTINCT
 FROM {{ ref('snowplow_phoenix_events') }}
 {% if is_incremental() %}
 -- this filter will only be applied on an incremental run
-WHERE event_datetime >= {{ var('run_interval') }}
+WHERE event_datetime >= (select max(ss.landing_datetime) from {{this}} ss)
 {% endif %}
 ),
 -- Captures referrer metadata per session
 session_referrer AS (
-SELECT DISTINCT
+SELECT
     session_id,
     first_value(referrer_host) OVER (PARTITION BY session_id ORDER BY event_datetime 
 	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS session_referrer_host,
@@ -48,12 +48,12 @@ SELECT DISTINCT
 FROM {{ ref('snowplow_phoenix_events') }}
 {% if is_incremental() %}
 -- this filter will only be applied on an incremental run
-WHERE event_datetime >= {{ var('run_interval') }}
+WHERE event_datetime >= (select max(ss.landing_datetime) from {{this}} ss)
 {% endif %}
 ),
 -- Captures last recorded session metadata for this device
 time_between_sessions AS (
-SELECT DISTINCT
+SELECT
     device_id,
     session_id,
     LAG(ending_datetime) OVER (PARTITION BY device_id ORDER BY landing_datetime
@@ -62,10 +62,10 @@ SELECT DISTINCT
 FROM sessions
 {% if is_incremental() %}
 -- this filter will only be applied on an incremental run
-WHERE event_datetime >= {{ var('run_interval') }}
+WHERE landing_datetime >= (select max(ss.landing_datetime) from {{this}} ss)
 {% endif %}
 )
-SELECT
+SELECT DISTINCT
 s.session_id,
 p.event_id,
 s.device_id,
@@ -89,5 +89,5 @@ ON t.session_id = s.session_id
 
 {% if is_incremental() %}
 -- this filter will only be applied on an incremental run
-WHERE s.landing_datetime >= {{ var('run_interval') }}
+WHERE landing_datetime >= (select max(ss.landing_datetime) from {{this}} ss)
 {% endif %}
