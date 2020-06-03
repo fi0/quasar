@@ -27,3 +27,8 @@ SELECT DISTINCT ON (e.EVENT_ID)
     e.device_id
 FROM {{ ref('snowplow_raw_events') }} e
 LEFT JOIN {{ ref('campaign_info') }} i ON i.campaign_id = e.campaign_id::bigint
+
+{% if is_incremental() %}
+-- this filter will only be applied on an incremental run
+WHERE event_datetime >= (select max(spe.event_datetime) from {{this}} spe)
+{% endif %}

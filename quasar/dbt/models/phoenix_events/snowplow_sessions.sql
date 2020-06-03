@@ -12,12 +12,16 @@ SELECT
     ) AS session_duration_seconds,
     count(DISTINCT CASE WHEN event_name = 'view' THEN "path" END) AS num_pages_viewed
 FROM {{ ref('snowplow_phoenix_events') }}
+{% if is_incremental() %}
+-- this filter will only be applied on an incremental run
+WHERE event_datetime >= (select max(ss.landing_datetime) from {{this}} ss)
+{% endif %}
 GROUP BY session_id
 ),
 -- Captures the first and last page viewed metadata per session
 -- IMPORTANT: The event id is the first event in the session.
 entry_exit_pages AS (
-SELECT DISTINCT
+SELECT
     session_id,
     first_value("path") OVER (PARTITION BY session_id ORDER BY event_datetime
 	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS landing_page,
@@ -26,10 +30,14 @@ SELECT DISTINCT
     last_value("path") OVER (PARTITION BY session_id ORDER BY event_datetime
 	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS exit_page
 FROM {{ ref('snowplow_phoenix_events') }}
+{% if is_incremental() %}
+-- this filter will only be applied on an incremental run
+WHERE event_datetime >= (select max(ss.landing_datetime) from {{this}} ss)
+{% endif %}
 ),
 -- Captures referrer metadata per session
 session_referrer AS (
-SELECT DISTINCT
+SELECT
     session_id,
     first_value(referrer_host) OVER (PARTITION BY session_id ORDER BY event_datetime 
 	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS session_referrer_host,
@@ -38,18 +46,26 @@ SELECT DISTINCT
     first_value(page_utm_campaign) OVER (PARTITION BY session_id ORDER BY event_datetime 
 	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS session_utm_campaign 
 FROM {{ ref('snowplow_phoenix_events') }}
+{% if is_incremental() %}
+-- this filter will only be applied on an incremental run
+WHERE event_datetime >= (select max(ss.landing_datetime) from {{this}} ss)
+{% endif %}
 ),
 -- Captures last recorded session metadata for this device
 time_between_sessions AS (
-SELECT DISTINCT
+SELECT
     device_id,
     session_id,
     LAG(ending_datetime) OVER (PARTITION BY device_id ORDER BY landing_datetime
 	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
     ) AS prev_session_endtime
 FROM sessions
+{% if is_incremental() %}
+-- this filter will only be applied on an incremental run
+WHERE landing_datetime >= (select max(ss.landing_datetime) from {{this}} ss)
+{% endif %}
 )
-SELECT
+SELECT DISTINCT
 s.session_id,
 p.event_id,
 s.device_id,
@@ -70,3 +86,8 @@ LEFT JOIN session_referrer r
 ON r.session_id = s.session_id
 LEFT JOIN time_between_sessions t
 ON t.session_id = s.session_id
+
+{% if is_incremental() %}
+-- this filter will only be applied on an incremental run
+WHERE landing_datetime >= (select max(ss.landing_datetime) from {{this}} ss)
+{% endif %}

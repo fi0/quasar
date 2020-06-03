@@ -1,4 +1,4 @@
-SELECT
+SELECT DISTINCT ON(p.event_datetime, p.event_name, p.event_id)
     p.event_id,
     p.event_datetime,
     p.event_name,
@@ -25,8 +25,12 @@ SELECT
     p.device_id
 FROM
     {{ source('web_events_historical', 'phoenix_events') }} p
+{% if is_incremental() %}
+-- this filter will only be applied on an incremental run
+    WHERE p.event_datetime >= (SELECT max(pec.event_datetime) FROM {{this}} pec)
+{% endif %}
 UNION ALL
-SELECT
+SELECT DISTINCT ON(s.event_datetime, s.event_name, s.event_id)
     s.event_id,
     s.event_datetime,
     s.event_name,
@@ -53,3 +57,7 @@ SELECT
     s.device_id
 FROM
     {{ ref('snowplow_phoenix_events') }} s
+{% if is_incremental() %}
+-- this filter will only be applied on an incremental run
+WHERE s.event_datetime >= (select max(pec.event_datetime) from {{this}} pec)
+{% endif %}

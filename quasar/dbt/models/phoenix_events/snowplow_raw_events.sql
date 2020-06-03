@@ -30,3 +30,8 @@ SELECT
   FROM {{ ref('snowplow_base_event') }} b
   LEFT JOIN {{ ref('snowplow_payload_event') }} p 
   ON b.event_id = p.event_id
+
+{% if is_incremental() %}
+  -- this filter will only be applied on an incremental run
+  WHERE b.event_datetime >= (select max(sre.event_datetime) from {{this}} sre)
+{% endif %}
