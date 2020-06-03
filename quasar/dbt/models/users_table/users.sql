@@ -39,7 +39,8 @@ SELECT
 		email_status.event_type = 'customer_subscribed' 
 		THEN TRUE ELSE FALSE END AS subscribed_member,
 	umax.max_update AS last_updated_at,
-	u.school_id
+	u.school_id,
+	(select STRING_AGG(cause[1], ',') from regexp_matches((u.causes)::TEXT, '([a-zA-Z][^\s,{}"]*)', 'g') AS cause) AS causes
 FROM {{ ref('northstar_users_deduped') }} u
 INNER JOIN
 	(SELECT
