@@ -22,11 +22,12 @@ import json
 import math
 import os
 import sys
+import signal
 import time
 from colorama import init, Fore, Back
 from datetime import datetime
 from halo import Halo
-from sqlalchemy import (create_engine, event, MetaData,
+from sqlalchemy import (create_engine, DDL, event, MetaData,
                         Table, Column, DateTime, String)
 from sqlalchemy.engine import Engine
 from sqlalchemy.dialects.postgresql import JSONB
@@ -39,6 +40,7 @@ init(autoreset=True)
 spinner = Halo(spinner="circle")
 
 batch_size = 1000
+schema = "cio"
 path_error_msg = "{}{}Please provide a valid path to the events file!!".format(
     Back.WHITE, Fore.RED)
 
@@ -68,8 +70,26 @@ except:
     # If batch_size parsing fails, just use the default
     pass
 
-
 # Define util methods
+
+
+def get_autovacuum_statement(toggle):
+    table_name = get_import_table_name()
+    command = 'true' if toggle else 'false'
+    raw_statement = "ALTER TABLE {}.{} SET (autovacuum_enabled = {});".format(schema, table_name, command)
+    return DDL(raw_statement)
+
+
+def clean_exit(conn):
+    conn.execute(get_autovacuum_statement(True))
+    conn.close()
+
+
+def get_application_name():
+    return "{}_{}_{}".format(
+        os.path.basename(__file__),
+        get_username_hash(),
+        get_today_string())
 
 
 def get_today_string():
@@ -82,7 +102,7 @@ def get_username_hash():
 
 def get_import_table_name():
     # We are hashing and using the script executor's username as part
-    # of the table name to prevent a collition with a parallel import
+    # of the table name to prevent a collision with a parallel import
     return 'import_table_' + str(get_username_hash()) + '_' + get_today_string()
 
 
@@ -102,7 +122,21 @@ def validate_file_path(filePath):
         spinner.fail(path_error_msg)
         exit(1)
 
+
 # Define event handlers
+
+
+@event.listens_for(Engine, "handle_error")
+def handle_error(exception_context):
+    print('Handle Error: ', exception_context)
+
+
+def signint_handler(sig, frame):
+    spinner.warn("Script canceled by user input (Ctrl+C)")
+    # TODO: Cleanly exit
+    exit(0)
+
+
 """
 
 It will record the Unix timestamp right before executing a query.
@@ -114,6 +148,7 @@ def before_cursor_execute(conn, cursor, statement,
                           parameters, context, executemany):
     conn.info.setdefault('query_start_time', []).append(time.time())
 
+
 """
 
 The first step of the script is to create the table that we will import
@@ -123,6 +158,11 @@ This ensures that we insert the events AFTER the table is available.
 @event.listens_for(Table, "after_create")
 def on_table_created(target, conn, **kw):
     spinner.start()
+
+
+    conn.execute(get_autovacuum_statement(False))
+
+
     spinner.info("{}{} is ready to start importing".format(
         Fore.LIGHTBLACK_EX, target))
     num_events = get_num_events(filePath)
@@ -160,7 +200,10 @@ def on_table_created(target, conn, **kw):
     total_time = math.ceil(time.time() - conn.info['query_start_time'].pop(0))
     spinner.succeed("{}Finished. Total Time: {} sec".format(
         Fore.GREEN, total_time))
-    conn.close()
+    clean_exit(conn)
+
+
+signal.signal(signal.SIGINT, signint_handler)
 
 
 filePath = get_file_path(input_file)
@@ -168,10 +211,18 @@ filePath = get_file_path(input_file)
 
 validate_file_path(filePath)
 
+
 try:
-    db = create_engine(URL(**pg_opts),
-        connect_args={'sslmode': pg_ssl},
-        pool_pre_ping=True)
+    db = create_engine(
+        URL(**pg_opts),
+        connect_args={
+            'sslmode': pg_ssl,
+            'application_name': get_application_name()
+            },
+        pool_recycle=600
+        # Uncomment for debug logs
+        # ,echo=True
+    )
     # Connect to DB
     conn = db.connect()
 except:
@@ -188,8 +239,7 @@ import_table = Table(
     Column('timestamp',
            DateTime(timezone=True)),
     Column('event_id', String),
-    schema='cio')
-
+    schema=schema)
 
 """
 
