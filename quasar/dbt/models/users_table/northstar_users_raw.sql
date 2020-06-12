@@ -43,7 +43,8 @@ SELECT
 	nus.dbt_valid_to,
 	nus.google_id,
 	nus.causes::jsonb,
-	nus.school_id
+	nus.school_id,
+	nus.referrer_user_id
 FROM {{ env_var('NORTHSTAR_FT_SCHEMA') }}.northstar_users_snapshot nus
 UNION ALL
 SELECT
@@ -91,5 +92,6 @@ SELECT
 	NULL AS dbt_valid_to,
 	NULL AS google_id,
 	NULL AS causes,
-	nu.school_id
+	nu.school_id,
+	NULL AS referrer_user_id
 FROM {{ source('northstar', 'users') }} nu
