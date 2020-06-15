@@ -2,7 +2,6 @@ import os
 import sys
 import time
 
-from .database import Database
 from .sa_database import Database as sadb
 from sqlalchemy import create_engine
 from .utils import log, Duration
@@ -56,15 +55,5 @@ def run_sql_file_raw(file):
             log("Running query:")
             log(query)
             db.query(query)
-    db.disconnect()
-    duration.duration()
-
-
-def refresh_materialized_view(view):
-    db = Database()
-    duration = Duration()
-
-    log("Refreshing Materialized View: {}".format(view))
-    db.query("REFRESH MATERIALIZED VIEW " + view)
     db.disconnect()
     duration.duration()

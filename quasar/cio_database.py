@@ -44,7 +44,7 @@ class Database:
             # Initialize tables.
             self.meta.create_all(self.engine)
         except exc.InterfaceError as e:
-            log("couldn't establish DB connection!")
+            log("Couldn't establish DB connection!")
             log("Error is:")
             logerr(e)
 
