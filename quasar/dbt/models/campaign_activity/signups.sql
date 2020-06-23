@@ -18,13 +18,13 @@ SELECT
 		ELSE NULL END AS utm_medium,
 	CASE 
 		WHEN source_details ILIKE '%\}'
-		THEN (CAST(source_details as json) ->> 'utm_source') 
+		THEN (CAST(source_details as json) ->> 'utm_source')
 		ELSE NULL END AS utm_source,
 	CASE 
 		WHEN source_details ILIKE '%\}'
-		THEN (CAST(source_details as json) ->> 'utm_campaign') 
+		THEN (CAST(source_details as json) ->> 'utm_campaign')
 		ELSE NULL END AS utm_campaign
-FROM {{ env_var('FT_ROGUE') }}.signups sd
+FROM {{ source('rogue', 'signups') }} sd
 WHERE sd._fivetran_deleted = 'false'
 AND sd.deleted_at IS NULL
 AND sd."source" IS DISTINCT FROM 'rogue-oauth'

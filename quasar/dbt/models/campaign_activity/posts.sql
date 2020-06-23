@@ -56,7 +56,7 @@ SELECT
 		ELSE split_part(substring(rtv.tracking_source from 'source\:(.+)'), ',', 1) 
 		END AS vr_source,
 	split_part(substring(rtv.tracking_source from 'source_details\:(.+)'), ',', 1) AS vr_source_details
-FROM {{ env_var('FT_ROGUE') }}.posts pd
+FROM {{ source('rogue', 'posts') }} pd
 INNER JOIN {{ ref('signups') }} s
 	ON pd.signup_id = s.id
 LEFT JOIN {{ ref('turbovote') }} tv
@@ -71,7 +71,7 @@ LEFT JOIN
 		FROM {{ ref('rock_the_vote') }} r
 	) rtv
 	ON rtv.post_id::bigint = pd.id::bigint
-LEFT JOIN {{ env_var('FT_ROGUE') }}.actions a
+LEFT JOIN {{ source('rogue', 'actions') }} a
 	ON pd.action_id = a.id
 WHERE pd.deleted_at IS NULL
 AND pd."text" IS DISTINCT FROM 'test runscope upload'
