@@ -17,7 +17,7 @@ WITH device_campaign_session_ref AS
                 campaign_id,
                 event_name,
                 event_datetime
-         FROM public.phoenix_events_combined
+         FROM {{ ref('phoenix_events_combined') }}
          WHERE campaign_id IS NOT NULL ),
       device_campaign_dates AS
         (SELECT device_id,
@@ -34,11 +34,11 @@ WITH device_campaign_session_ref AS
                                      d.min_view_datetime,
                                      d.min_intent_datetime
       FROM device_campaign_dates d
-      JOIN public.phoenix_events_combined e ON (d.device_id=e.device_id
+      JOIN {{ ref('phoenix_events_combined') }} e ON (d.device_id=e.device_id
                                                 AND d.campaign_id=e.campaign_id
                                                 AND d.min_view_datetime=e.event_datetime)) dc --Join w session table to get referring sources
 
-   JOIN public.phoenix_sessions_combined s ON (dc.session_id=s.session_id))
+   JOIN {{ ref('phoenix_sessions_combined') }} s ON (dc.session_id=s.session_id))
 SELECT device_id,
        campaign_id,
        session_id,
@@ -48,4 +48,3 @@ SELECT device_id,
        session_utm_campaign,
        min_intent_datetime
 FROM device_campaign_session_ref
-
