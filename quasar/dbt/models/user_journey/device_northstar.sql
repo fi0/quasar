@@ -18,7 +18,7 @@ devices_an AS (
 -- All ND IDs assocaited with DS (to exclude them next)
 ds AS (
     SELECT northstar_id
-    FROM public.users
+    FROM {{ ref('users') }}
     WHERE lower(email) LIKE '%@dosomething.org'
     GROUP BY northstar_id
 ),
