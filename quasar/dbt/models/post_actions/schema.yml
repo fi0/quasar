@@ -1,5 +1,11 @@
 version: 2
 
+sources:
+  - name: rogue
+    schema: '{{ env_var("FT_ROGUE") }}'
+    tables:
+      - name: actions
+
 models:
   - name: post_actions
     description: Table that tracks actions like reportbacks, civic actions and scholarship entries.
@@ -67,4 +73,3 @@ models:
 
         - name: time_commitment
           description: '{{ doc("time_commitment") }}'
-
