@@ -6,6 +6,12 @@ sources:
     tables:
       - name: phoenix_events
       - name: phoenix_sessions
+  - name: snowplow
+    schema: '{{ env_var("FT_SNOWPLOW") }}'
+    tables:
+      - name: event
+      - name: snowplow_event
+      - name: ua_parser_context
 
 models:
   - name: snowplow_base_event
