@@ -1,5 +1,11 @@
 version: 2
 
+sources:
+  - name: tmc
+    schema: '{{ env_var("TMC_USERS_MATCHED_SCHEMA") }}'
+    tables:
+      - name: tmc_users_matched
+
 models:
   - name: tmc_users_out
     description: A table containing latest user data for ingestion by The Movement Cooperative.

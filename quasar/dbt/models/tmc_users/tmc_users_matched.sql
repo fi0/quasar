@@ -1,2 +1,4 @@
-SELECT *
-FROM {{ env_var('TMC_USERS_MATCHED_SOURCE') }}
+SELECT
+    *
+FROM
+    {{ source('tmc', 'tmc_users_matched') }}
