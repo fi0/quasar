@@ -27,7 +27,7 @@ FROM (
 			_id AS id,
 			to_timestamp(audit #>> '{email_subscription_topics,updated_at,date}', 'YYYY-MM-DD HH24:MI:SS') AS topic_unsubscribed_at,
 			NULL AS newsletter_topic
-		FROM {{ env_var("NORTHSTAR_FT_SCHEMA") }}.northstar_users_snapshot
+		FROM {{ source('northstar', 'northstar_users_snapshot') }}
 		WHERE email_subscription_topics IS NULL AND audit #>> '{email_subscription_topics,updated_at,date}' IS NOT NULL
 	) u ON u.id = s.northstar_id
     LEFT JOIN (
@@ -35,6 +35,6 @@ FROM (
 			northstar_id,
 			email_unsubscribed_at AS newsletters_unsubscribed_at,
 			NULL AS newsletter_topic
-		FROM public.user_activity
+		FROM {{ ref('user_activity') }}
 	) ua ON ua.northstar_id = s.northstar_id
 ) f
