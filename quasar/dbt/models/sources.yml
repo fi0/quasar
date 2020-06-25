@@ -23,7 +23,7 @@ sources:
       - name: campaign_info_ashes_snapshot
 
   - name: public_intermediate
-    schema: public_intermediates
+    schema: public_intermediate
     tables:
       - name: contentful_metadata
 
