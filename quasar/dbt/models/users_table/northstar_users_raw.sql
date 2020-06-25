@@ -45,7 +45,7 @@ SELECT
 	nus.causes::jsonb,
 	nus.school_id,
 	nus.referrer_user_id
-FROM {{ env_var('NORTHSTAR_FT_SCHEMA') }}.northstar_users_snapshot nus
+FROM {{ source('northstar', 'northstar_users_snapshot') }} nus
 UNION ALL
 SELECT
 	nu.id,
@@ -94,4 +94,4 @@ SELECT
 	NULL AS causes,
 	nu.school_id,
 	NULL AS referrer_user_id
-FROM {{ source('northstar', 'users') }} nu
+FROM {{ source('northstar_historical', 'users') }} nu

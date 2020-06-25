@@ -15,6 +15,6 @@
         )
     }}
     
-    select * from {{ env_var('FT_ROGUE') }}.posts
+    select * from {{ source('rogue', 'posts') }}
     
 {% endsnapshot %}

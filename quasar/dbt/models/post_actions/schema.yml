@@ -67,4 +67,3 @@ models:
 
         - name: time_commitment
           description: '{{ doc("time_commitment") }}'
-

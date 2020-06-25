@@ -11,5 +11,5 @@ SELECT id AS post_id,
 	details::jsonb->>'voting-method-preference' AS voter_registration_preference,
 	details::jsonb->>'email subscribed' AS email_subscribed,
 	details::jsonb->>'sms subscribed' AS sms_subscribed
-FROM {{ env_var('FT_ROGUE') }}.posts
+FROM {{ source('rogue', 'posts') }}
 WHERE source = 'turbovote'

@@ -2,7 +2,7 @@ WITH user_mam AS
   (SELECT northstar_id,
           min(date(TIMESTAMP)) AS first_mam,
           max(date(TIMESTAMP)) AS last_mam
-   FROM public.member_event_log
+   FROM {{ ref('member_event_log') }}
    WHERE action_type<>'account_creation'
      AND TIMESTAMP >='2008-01-01'
    GROUP BY 1)

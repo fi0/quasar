@@ -1,11 +1,5 @@
 version: 2
 
-sources:
-  - name: northstar
-    schema: '{{ env_var("HISTORICAL_ANALYTICS_SCHEMA") }}'
-    tables:
-      - name: users
-
 models:
 
   - name: cio_latest_status
@@ -264,4 +258,3 @@ models:
     description: A table containing deduped aggregated user data.
 
     columns: *northstar_users_raw_columns
-

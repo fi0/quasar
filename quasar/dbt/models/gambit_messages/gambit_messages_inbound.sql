@@ -29,10 +29,10 @@ SELECT
     FROM
       {{ ref('messages_flattened') }} g
     LEFT JOIN
-      {{ env_var('FT_GAMBIT') }}.conversations c
+      {{ source('gambit', 'conversations') }} c
     ON g.conversation_id = c._id
     LEFT JOIN
-      public.users u
+      {{ ref('users') }} u
       ON substring(c.platform_user_id, 3, 10) = u.mobile
       AND u.mobile IS NOT NULL
       AND u.mobile <> ''

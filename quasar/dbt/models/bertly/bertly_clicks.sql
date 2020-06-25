@@ -24,4 +24,4 @@ SELECT
         WHEN c.user_agent ILIKE '%facebot twitterbot%'
                 OR c.user_agent ILIKE '%X11; Ubuntu; Linux i686%' THEN 'preview'
         ELSE 'click' END AS interaction_type
-FROM {{ env_var('BERTLY') }}.clicks c
+FROM {{ source('bertly', 'clicks') }} c

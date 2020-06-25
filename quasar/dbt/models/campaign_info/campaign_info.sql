@@ -94,8 +94,8 @@ SELECT
 	o.online_offline,
 	s.scholarship,
 	p.post_types
-FROM {{ env_var('FT_ROGUE') }}.campaigns c
-LEFT JOIN {{ env_var('CAMPAIGN_INFO_ASHES_SNAPSHOT') }} i ON i.campaign_run_id = c.campaign_run_id
+FROM {{ source('rogue', 'campaigns') }} c
+LEFT JOIN {{ source('campaign_info_historical', 'campaign_info_ashes_snapshot') }} i ON i.campaign_run_id = c.campaign_run_id
 LEFT JOIN campaign_action_combo a on c.id = a.campaign_id
 LEFT JOIN campaign_online_combo o on c.id = o.campaign_id
 LEFT JOIN campaign_scholarship_combo s on c.id = s.campaign_id

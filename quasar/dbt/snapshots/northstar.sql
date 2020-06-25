@@ -15,6 +15,6 @@
         )
     }}
     
-    select * from {{ env_var('NORTHSTAR_FT_SCHEMA') }}.users
+    select * from {{ source('northstar', 'users') }}
     
 {% endsnapshot %}

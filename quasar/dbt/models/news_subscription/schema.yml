@@ -31,4 +31,3 @@ models:
 
         - name: topic_unsubscribed_at
           description: Timestamp when user unsubscribed from the newsletter topic
-

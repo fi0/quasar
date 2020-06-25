@@ -18,7 +18,7 @@ SELECT u.northstar_id,
 		   THEN NULL 
 		ELSE nl.topic_unsubscribed_at END AS unsubscribed
 FROM {{ ref('user_newsletter_cal_multi') }} u
-LEFT JOIN public.user_newsletter_subscriptions nl ON (u.northstar_id = nl.northstar_id AND u.newsletter_topic = nl.newsletter_topic))
+LEFT JOIN {{ ref('user_newsletter_subscriptions') }} nl ON (u.northstar_id = nl.northstar_id AND u.newsletter_topic = nl.newsletter_topic))
 SELECT *
 FROM user_newsletter_cal_status_temp
 -- The UNION ALL below originally started as an INSERT * FROM above query. Using UNION ALL and user_newsletter_cal_status_temp CTE to generate all records.

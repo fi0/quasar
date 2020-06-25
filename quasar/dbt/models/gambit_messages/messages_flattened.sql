@@ -18,4 +18,4 @@ SELECT
     text AS text,
     topic AS topic,
     user_id AS user_id
-  FROM {{ env_var('FT_GAMBIT') }}.messages
+  FROM {{ source('gambit', 'messages') }}
