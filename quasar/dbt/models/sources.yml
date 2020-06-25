@@ -20,10 +20,10 @@ sources:
     # once we move this table to the right schema
     schema: public
     tables:
-      - name: '{{ env_var("CAMPAIGN_INFO_ASHES_SNAPSHOT") }}'
+      - name: campaign_info_ashes_snapshot
 
   - name: public_intermediate
-    schema: public_intermediate
+    schema: public_intermediates
     tables:
       - name: contentful_metadata
 
