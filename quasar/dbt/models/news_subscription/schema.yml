@@ -1,11 +1,5 @@
 version: 2
 
-sources:
-  - name: northstar
-    schema: '{{ env_var("NORTHSTAR_FT_SCHEMA") }}'
-    tables:
-      - name: northstar_users_snapshot
-
 models:
   - name: email_subscription_topics_raw
     description: Table containing data for all member events. 

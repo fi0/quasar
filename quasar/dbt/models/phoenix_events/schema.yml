@@ -1,18 +1,5 @@
 version: 2
 
-sources:
-  - name: web_events_historical
-    schema: '{{ env_var("HISTORICAL_ANALYTICS_SCHEMA") }}'
-    tables:
-      - name: phoenix_events
-      - name: phoenix_sessions
-  - name: snowplow
-    schema: '{{ env_var("FT_SNOWPLOW") }}'
-    tables:
-      - name: event
-      - name: snowplow_event
-      - name: ua_parser_context
-
 models:
   - name: snowplow_base_event
     description: Table that extracts and cleans up relevant columns from raw DS web clickstream data.

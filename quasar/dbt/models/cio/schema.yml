@@ -1,14 +1,5 @@
 version: 2
 
-sources:
-  - name: cio
-    schema: '{{ env_var("CIO_WEBHOOK_EVENTS_SCHEMA") }}'
-    tables:
-      - name: event_log
-      - name: customer_event_old
-      - name: email_sent_old
-      - name: email_bounced_old
-      - name: email_event_old
 models:
   - name: cio_customer_event
     description: Table containing Cio customer events, e.g. user_unsubscribe

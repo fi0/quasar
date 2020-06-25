@@ -1,13 +1,5 @@
 version: 2
 
-sources:
-  - name: rogue
-    schema: '{{ env_var("FT_ROGUE") }}'
-    tables:
-      - name: actions
-      - name: posts
-      - name: signups
-
 models:
   - name: posts
     description: A table containing information about posts

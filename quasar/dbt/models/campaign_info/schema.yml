@@ -1,21 +1,5 @@
 version: 2
 
-sources:
-  - name: public_intermediate
-    schema: public_intermediate
-    tables:
-      - name: contentful_metadata
-  - name: rogue
-    schema: '{{ env_var("FT_ROGUE") }}'
-    tables:
-      - name: campaigns
-  - name: campaign_info_historical
-    # TODO: switch to '{{ env_var("HISTORICAL_ANALYTICS_SCHEMA") }}'
-    # once we move this table to the right schema
-    schema: public
-    tables:
-      - name: '{{ env_var("CAMPAIGN_INFO_ASHES_SNAPSHOT") }}'
-
 models:
   - name: campaign_info
     description: A table containing information about campaigns

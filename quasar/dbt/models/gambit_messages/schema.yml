@@ -1,12 +1,5 @@
 version: 2
 
-sources:
-  - name: gambit
-    schema: '{{ env_var("FT_GAMBIT") }}'
-    tables:
-      - name: conversations
-      - name: messages
-
 models:
   - name: messages_flattened
     description: Messages which nested values have been flattened for easier querying.

@@ -1,15 +1,5 @@
 version: 2
 
-sources:
-  - name: northstar_historical
-    schema: '{{ env_var("HISTORICAL_ANALYTICS_SCHEMA") }}'
-    tables:
-      - name: users
-  - name: northstar
-    schema: '{{ env_var("NORTHSTAR_FT_SCHEMA") }}'
-    tables:
-      - name: northstar_users_snapshot
-
 models:
 
   - name: cio_latest_status

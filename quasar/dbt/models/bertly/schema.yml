@@ -1,11 +1,5 @@
 version: 2
 
-sources:
-  - name: bertly
-    schema: '{{ env_var("BERTLY") }}'
-    tables:
-      - name: clicks
-
 models:
   - name: bertly_clicks
     description: Table containing data from Bertly, our serverless link shortener.
