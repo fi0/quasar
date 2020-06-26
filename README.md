@@ -151,6 +151,10 @@ cd /home/quasar/workspace/"Deploy Branch"/quasar/dbt (for QA) or cd /home/quasar
 pipenv run dbt ARGS
 ```
 
+## Troubleshooting
+
+[TROUBLESHOOTING.md](/docs/troubleshooting.md)
+
 ## Deployment
 
 [DEPLOYMENT.md](/docs/deployment.md)
