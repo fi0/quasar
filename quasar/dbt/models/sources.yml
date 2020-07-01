@@ -31,10 +31,14 @@ sources:
     schema: '{{ env_var("CIO_WEBHOOK_EVENTS_SCHEMA") }}'
     tables:
       - name: event_log
-      - name: customer_event_old
-      - name: email_sent_old
-      - name: email_bounced_old
-      - name: email_event_old
+
+  - name: cio_historical
+    schema: '{{ env_var("HISTORICAL_ANALYTICS_SCHEMA") }}'
+    tables:
+      - name: customer_event
+      - name: email_sent
+      - name: email_bounced
+      - name: email_event
 
   - name: gambit
     schema: '{{ env_var("FT_GAMBIT") }}'
