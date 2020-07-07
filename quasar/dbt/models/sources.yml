@@ -35,10 +35,10 @@ sources:
   - name: cio_historical
     schema: '{{ env_var("HISTORICAL_ANALYTICS_SCHEMA") }}'
     tables:
-      - name: customer_event
-      - name: email_sent
-      - name: email_bounced
-      - name: email_event
+      - name: cio_customer_event
+      - name: cio_email_sent
+      - name: cio_email_bounced
+      - name: cio_email_event
 
   - name: gambit
     schema: '{{ env_var("FT_GAMBIT") }}'

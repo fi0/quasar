@@ -35,7 +35,7 @@ SELECT
     NULL AS cio_campaign_id,
     NULL AS cio_campaign_name,
     NULL AS cio_campaign_type
-FROM {{ source('cio_historical', 'email_event') }}
+FROM {{ source('cio_historical', 'cio_email_event') }}
 WHERE
     -- Date we re-started saving raw C.io events to the event_log table
     "timestamp" < '2020-04-01'
