@@ -117,6 +117,15 @@ models:
         - name: campaign_id
           description: Internal campaign id from contentful
 
+        - name: page_id
+          description: Unique identifier for the page
+
+        - name: block_id
+          description: Unique identifier for a content block on the page
+
+        - name: group_id
+          description: Unique identifier for groups (right now it's being used for Online voter registration groups, but in the future it could be used for other types of group related efforts (e.g. volunteer hours)
+
         - name: modal_type
           description: '{{ doc("modal_type") }}'
 
