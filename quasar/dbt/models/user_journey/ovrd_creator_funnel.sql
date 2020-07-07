@@ -149,11 +149,11 @@ nsid_less AS (
 		(SELECT 
 			r.northstar_id,
 			rock.started_registration 
-		FROM {{ ref('reportbacks') }} r 
-		LEFT JOIN {{ ref('rock_the_vote') }} rock 
+		FROM {{ ref('reportbacks') }} r
+		LEFT JOIN {{ ref('rock_the_vote') }} rock
 			ON rock.post_id = r.post_id 
 		WHERE 
-			r.post_bucket = 'voter_registrations'
+			r.post_bucket = 'voter_registrations' AND r.vr_source_details LIKE '%OnlineRegistrationDrive%'
 			--Only registrations with these tracking sources represent completing the funnel
 			AND (rock.tracking_source ILIKE '%LYVCaffirmation%'
 				OR rock.tracking_source ILIKE '%OnlineRegistrationDrive_affirmation%')

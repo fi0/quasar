@@ -54,8 +54,8 @@ WITH event_log AS (
 		'registered' AS event_name
 	FROM {{ ref('reportbacks') }} rb
 	INNER JOIN {{ ref('rock_the_vote') }} rtv ON rb.post_id=rtv.post_id
-	WHERE 
-		rb.post_bucket = 'voter_registrations'
+	WHERE
+		rb.post_bucket = 'voter_registrations' AND rb.vr_source_details LIKE '%onlinedrivereferral%'
 		AND rtv.tracking_source ILIKE '%referral=true%'
 	)
 --Collapse the event log to a user level table with flags and timestamps

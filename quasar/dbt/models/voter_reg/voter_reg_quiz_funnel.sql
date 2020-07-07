@@ -182,13 +182,14 @@ nsid_less AS (
 			r.northstar_id,
 			rock.tracking_source,
 			rock.started_registration 
-		FROM {{ ref('reportbacks') }} r 
-		LEFT JOIN {{ ref('rock_the_vote') }} rock 
+		FROM {{ ref('reportbacks') }} r
+		LEFT JOIN {{ ref('rock_the_vote') }} rock
 			ON rock.post_id = r.post_id 
-		WHERE 
+		WHERE
 			r.post_bucket = 'voter_registrations'
-			) reg 
-			ON reg.northstar_id = pec.northstar_id 
+			AND r.vr_source_details LIKE '%VoterRegQuiz%'
+			) reg
+			ON reg.northstar_id = pec.northstar_id
 	LEFT JOIN {{ ref('posts') }} po ON po.northstar_id=pec.northstar_id
 	LEFT JOIN {{ ref('rock_the_vote') }} rtv ON rtv.post_id=po.id AND rtv.status IS NOT NULL 
 	WHERE 
