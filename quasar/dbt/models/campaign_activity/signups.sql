@@ -6,6 +6,7 @@ SELECT
     sd.why_participated AS why_participated,
     sd."source" AS "source",
     sd.details,
+    sd.referrer_user_id,
 	CASE WHEN sd."source" = 'niche' THEN 'niche'
 	     WHEN sd."source" ilike '%sms%' THEN 'sms'
 	     WHEN sd."source" in ('rock-the-vote', 'turbovote') THEN 'voter-reg'
