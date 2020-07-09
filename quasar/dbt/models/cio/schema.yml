@@ -2,90 +2,82 @@ version: 2
 
 models:
   - name: cio_customer_event
-    description: Table containing Cio customer events, e.g. user_unsubscribe
+    description: Table containing Cio customer events, e.g. user_unsubscribe.
     columns:
-      - name: email_id
-        description: TBD
-      - name: customer_id
-        description: TBD
-      - name: email_address
-        description: TBD
-      - name: template_id
-        description: TBD
-      - name: event_id
-        description: TBD
-      - name: timestamp
-        description: TBD
+      - name: &email_id
+        description: Unique message id (each individual message sent from Customer.io has a different "email_id"); can also be found in the unsubscribe link URL
+      - name: &customer_id
+        description: user id (can be retrieved from the person profile). Only present if the person is still active (not included if the person has been deleted).
+      - name: &email_address
+        description: "To" email address
+      - name: &template_id
+        description: |
+          internal attribute, each email inside a campaign can have multiple template ids depending on the changes made over time. You can view it in the UI by filtering for a specific email under Email Log. For example: https://fly.customer.io/env/51831/email_logs?campaign=139744&template=343216
+      - name: &event_id
+        description: internal attribute; id associated with the email_type action
+      - name: &timestamp
+        description: date and time when the event took place in unix (seconds since epoch) format
       - name: event_type
+        description: type of event ("email_drafted", "email_sent", etc.)
+      - name: &cio_campaign_id
+        description: refer to the transactional, segment-triggered or newsletter campaign that generated the email
+      - name: &cio_campaign_name
+        description: refer to the transactional, segment-triggered or newsletter campaign that generated the email
+      - name: &cio_campaign_type
         description: TBD
-      - name: cio_campaign_id
-        description: TBD
-      - name: cio_campaign_name
-        description: TBD
-      - name: cio_campaign_type
-        description: TBD
+      - name: &cio_message_id
+        description: campaign email id; can be found in the campaign URL after emails/ (e.g. https://fly.customer.io/env/51831/v2/composer/emails/225039)
+      - name: &cio_message_name
+        description: the name of the campaign email
   - name: cio_email_sent_event
     description: Table containing Cio email sent events
     columns:
-      - name: email_id
-        description: TBD
-      - name: customer_id
-        description: TBD
-      - name: email_address
-        description: TBD
-      - name: template_id
-        description: TBD
-      - name: subject
-        description: TBD
-      - name: event_id
-        description: TBD
-      - name: timestamp
-        description: TBD
+      - name: *email_id
+      - name: *customer_id
+      - name: *email_address
+      - name: *template_id
+      - name: &subject
+        description: email subject
+      - name: *event_id
+      - name: *timestamp
+      - name: *cio_campaign_id
+        description: If applicable, the ID of the Event-triggered, Segment-triggered, or Date-triggered Campaign that generated the message.
+      - name: *cio_campaign_name
+      - name: *cio_campaign_type
+      - name: *cio_message_id
+      - name: *cio_message_name
   - name: cio_email_bounced_event
     description: Table containing CIO email bounced events
     columns:
-      - name: email_id
-        description: TBD
-      - name: customer_id
-        description: TBD
-      - name: email_address
-        description: TBD
-      - name: template_id
-        description: TBD
-      - name: subject
-        description: TBD
-      - name: event_id
-        description: TBD
-      - name: timestamp
-        description: TBD
-      - name: cio_campaign_id
-        description: TBD
-      - name: cio_campaign_name
-        description: TBD
+      - name: *email_id
+      - name: *customer_id
+      - name: *email_address
+      - name: *template_id
+      - name: *subject
+        description: email subject
+      - name: *event_id
+      - name: *timestamp
+      - name: *cio_campaign_id
+      - name: *cio_campaign_name
+      - name: *cio_campaign_type
+      - name: *cio_message_id
+      - name: *cio_message_name
   - name: cio_email_event
     description: Table containing CIO email open, converted, bounced, and unsubscribed events
     columns:
-      - name: email_id
-        description: TBD
-      - name: customer_id
-        description: TBD
-      - name: email_address
-        description: TBD
-      - name: template_id
-        description: TBD
-      - name: subject
-        description: TBD
-      - name: event_id
-        description: TBD
-      - name: timestamp
-        description: TBD
+      - name: *email_id
+      - name: *customer_id
+      - name: *email_address
+      - name: *template_id
+      - name: *subject
       - name: href
-        description: TBD
+        description: Only on "clicked" events, the fully rendered URL of the link that was clicked.
       - name: link_id
-        description: TBD
-      - name: cio_campaign_id
-        description: TBD
-      - name: cio_campaign_name
-        description: TBD
-      - name: cio_campaign_type
-        description: TBD
+        description: Only on "clicked" events, the ID of the tracked link that was clicked.
+      - name: *event_id
+      - name: *timestamp
+      - name: *cio_campaign_id
+      - name: *cio_campaign_name
+      - name: *cio_campaign_type
+      - name: *cio_message_id
+      - name: *cio_message_name
