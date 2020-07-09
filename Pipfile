@@ -33,6 +33,7 @@ sh = "*"
 contentful = "*"
 python-dateutil = "*"
 dbt-postgres = "~=0.16"
+jsonpickle = "*"
 
 [requires]
 python_version = "3.7"

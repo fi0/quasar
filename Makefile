@@ -3,7 +3,7 @@ TEST_PATH=./
 .PHONY: clean
 
 build:
-	pip3 install --upgrade .
+	set -o pipefail; pip3 install --upgrade . | { grep -v "already satisfied" || :; }
 
 clean:
 	find . -name '*.pyc' -exec rm --force {} +

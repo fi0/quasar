@@ -249,6 +249,12 @@ models:
           post-hook:
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
+        contentful_metadata:
+          materialized: table
+          schema: intermediate
+          post-hook:
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
       bertly:
         bertly_clicks:
           alias: bertly_clicks
