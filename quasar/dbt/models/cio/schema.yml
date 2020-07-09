@@ -41,7 +41,6 @@ models:
       - name: *event_id
       - name: *timestamp
       - name: *cio_campaign_id
-        description: If applicable, the ID of the Event-triggered, Segment-triggered, or Date-triggered Campaign that generated the message.
       - name: *cio_campaign_name
       - name: *cio_campaign_type
       - name: *cio_message_id
@@ -54,7 +53,6 @@ models:
       - name: *email_address
       - name: *template_id
       - name: *subject
-        description: email subject
       - name: *event_id
       - name: *timestamp
       - name: *cio_campaign_id
