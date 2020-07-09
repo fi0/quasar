@@ -25,7 +25,7 @@ sources:
   - name: public_intermediate
     schema: public_intermediate
     tables:
-      - name: contentful_metadata
+      - name: contentful_metadata_raw
 
   - name: cio
     schema: '{{ env_var("CIO_WEBHOOK_EVENTS_SCHEMA") }}'
