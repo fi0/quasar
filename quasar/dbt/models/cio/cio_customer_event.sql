@@ -9,13 +9,15 @@ SELECT
         event #>>'{data, template_id}' AS INTEGER
     ) AS template_id,
     event ->> 'event_id' AS event_id,
-    TO_TIMESTAMP(CAST(
-        event ->> 'timestamp' AS INTEGER
-    )) AS "timestamp",
+    TO_TIMESTAMP(
+        CAST(event ->> 'timestamp' AS INTEGER)
+    ) AS "timestamp",
     event ->> 'event_type' AS event_type,
     event #>>'{data, variables, campaign, id}' AS cio_campaign_id,
     event #>>'{data, variables, campaign, name}' AS cio_campaign_name,
-    event #>>'{data, variables, campaign, type}' AS cio_campaign_type
+    event #>>'{data, variables, campaign, type}' AS cio_campaign_type,
+    event #>>'{data, message_id}' as cio_message_id,
+    event #>>'{data, message_name}' as cio_message_name
 FROM
     {{ source('cio', 'event_log') }} cel
 WHERE
@@ -31,7 +33,9 @@ SELECT
     event_type,
     NULL AS cio_campaign_id,
     NULL AS cio_campaign_name,
-    NULL AS cio_campaign_type
+    NULL AS cio_campaign_type,
+    NULL AS cio_message_id,
+    NULL AS cio_message_name
 FROM
     {{ source('cio_historical', 'cio_customer_event') }} cceo
 WHERE
