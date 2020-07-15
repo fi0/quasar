@@ -378,6 +378,18 @@ models:
             - "CREATE INDEX ON {{ this }}(northstar_id, device_id, journey_begin_ts)"
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
+        groups:
+          alias: groups
+          materialized: table
+          post-hook:
+            - "GRANT SELECT ON {{ this }} to dsanalyst"
+            - "GRANT SELECT ON {{ this }} to looker"
+        group_types:
+          alias: group_types
+          materialized: table
+          post-hook:
+            - "GRANT SELECT ON {{ this }} to dsanalyst"
+            - "GRANT SELECT ON {{ this }} to looker"
       cio:
         cio_customer_event:
           materialized: table

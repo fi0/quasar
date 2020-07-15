@@ -58,3 +58,56 @@ models:
 
         - name: submit_quiz_register_affirmation
           description: '{{ doc("submit_quiz_register_affirmation") }}'
+
+  - name: group
+    description: Needs a description
+
+    columns:
+        - name: id
+          description: '{{ doc("northstar_id") }}'
+
+        - name: group_type_id
+          description: '{{ doc("group_type_id") }}'
+
+        - name: name
+          description: '{{ doc("group_name") }}'
+
+        - name: goal
+          description: '{{ doc("goal") }}'
+
+        - name: created_at
+          description: '{{ doc("created_at") }}'
+
+        - name: updated_at
+          description: '{{ doc("updated_at") }}'
+
+        - name: city
+          description: '{{ doc("city") }}'
+
+        - name: external_id
+          description: '{{ doc("external_id") }}'
+
+        - name: state
+          description: '{{ doc("state") }}'
+
+        - name: school_id
+          description: '{{ doc("school_id") }}'
+
+  - name: group_types
+    description: Needs a description
+
+    columns:
+        - name: id
+          description: '{{ doc("northstar_id") }}'
+
+        - name: name
+          description: '{{ doc("group_name") }}'
+
+        - name: created_at
+          description: '{{ doc("created_at") }}'
+
+        - name: updated_at
+          description: '{{ doc("updated_at") }}'
+
+        - name: filter_by_state
+          description: '{{ doc("filter_by_state") }}'

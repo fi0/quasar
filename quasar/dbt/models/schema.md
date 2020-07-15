@@ -822,3 +822,23 @@ Submitted the quiz, and then registered to vote
 {% docs comparison_patterns %}
 Pattern e.g. (Both are Unknown, One is Unknown, Same, Different)
 {% enddocs %}
+
+{% docs group_type_id %}
+Group type id is....
+{% enddocs %}
+
+{% docs external_id %}
+External id is....
+{% enddocs %}
+
+{% docs filter_by_state %}
+Filter by state is....
+{% enddocs %}
+
+{% docs goal %}
+The goal of the group
+{% enddocs %}
+
+{% docs group_name %}
+The name of the group
+{% enddocs %}

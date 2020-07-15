@@ -14,6 +14,8 @@ sources:
       - name: posts
       - name: signups
       - name: campaigns
+      - name: groups
+      - name: group_types
 
   - name: campaign_info_historical
     # TODO: switch to '{{ env_var("HISTORICAL_ANALYTICS_SCHEMA") }}'

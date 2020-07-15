@@ -77,6 +77,7 @@ SELECT
 	c.end_date AS campaign_run_end_date,
 	c.created_at AS campaign_created_date,
 	COALESCE(i.campaign_node_id, c.id) AS campaign_node_id,
+  c.group_type_id,
   cm.contentful_id as contentful_id,
   cm.internal_title as contentful_internal_title,
   cm.title as contentful_title,
