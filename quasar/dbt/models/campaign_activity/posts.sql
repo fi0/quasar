@@ -51,6 +51,7 @@ SELECT
 	a.civic_action,
 	a.scholarship_entry,
 	pd.school_id,
+	pd.group_id,
 	CASE 
 		WHEN rtv.tracking_source='ads' THEN 'ads'
 		ELSE split_part(substring(rtv.tracking_source from 'source\:(.+)'), ',', 1) 

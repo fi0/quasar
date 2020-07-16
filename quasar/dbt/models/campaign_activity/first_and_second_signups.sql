@@ -20,6 +20,7 @@ WITH ns_signups AS (
         campaign_id,
         source_bucket,
         created_at,
+        group_id,
         rank() over(
             PARTITION by northstar_id
             ORDER BY
