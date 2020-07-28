@@ -13,8 +13,8 @@ profile: 'default'
 # The `source-paths` config, for example, states that source models can be found
 # in the "models/" directory. You probably won't need to change these!
 source-paths: ["models"]
-analysis-paths: ["analysis"] 
-test-paths: ["tests"]
+analysis-paths: ["analysis"]
+test-paths: ["data_tests"]
 data-paths: ["data"]
 macro-paths: ["macros"]
 
