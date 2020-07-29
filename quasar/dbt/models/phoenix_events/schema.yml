@@ -94,45 +94,43 @@ models:
 
   - name: snowplow_payload_event
     description: Table containing extra data from events in snowplow_base_event table
-
     columns:
-        - name: event_id
-          description: '{{ doc("event_id") }}'
-          tests:
-              - unique
-              - not_null
-
-        - name: utm_source
-          description: '{{ doc("utm_source") }}'
-
-        - name: utm_medium
-          description: '{{ doc("utm_medium") }}'
-
-        - name: utm_campaign
-          description: '{{ doc("utm_campaign") }}'
-
-        - name: url
-          description: '{{ doc("url") }}'
-
-        - name: campaign_id
-          description: Internal campaign id from contentful
-
-        - name: page_id
-          description: Unique identifier for the page
-
         - name: block_id
-          description: Unique identifier for a content block on the page
-
+          description: References specific content blocks from contentful CMS, PMs decide whether its important to send that info with specific click events.
+        - name: campaign_id
+          description: Internal campaign id from contentful. It will only be associated with specific events.
+        - name: context_source
+          description: TBD
+        - name: context_value
+          description: TBD
+        - name: event_id
+          description: '[Required] {{ doc("event_id") }}'
+          tests:
+            - unique:
+                severity: warn
+            - not_null:
+                severity: warn
+        - name: ft_timestamp
+          description: '[Required] {{ doc("event_datetime") }}'
+          tests:
+            - not_null:
+                severity: warn
         - name: group_id
-          description: Unique identifier for groups (right now it's being used for Online voter registration groups, but in the future it could be used for other types of group related efforts (e.g. volunteer hours)
-
+          description: Unique identifier for groups. Group id is tied to work for volunteer credits and online voter drives (members can participate as part of a group)... product managers can choose to send web events with the group_id where its relevant. (right now it's being used for Online voter registration groups, but in the future it could be used for other types of group related efforts, e.g. volunteer hours).
         - name: modal_type
           description: '{{ doc("modal_type") }}'
-
-        - name: ft_timestamp
-          description: '{{ doc("event_datetime") }}'
-          tests:
-              - not_null
+        - name: page_id
+          description: Unique identifier for the page. Technically optional, but would be good practice to send with all events (TODO).
+        - name: search_query
+          description: Term associated with any search events
+        - name: url
+          description: '[Required] {{ doc("url") }}'
+        - name: utm_campaign
+          description: '{{ doc("utm_campaign") }}'
+        - name: utm_medium
+          description: '{{ doc("utm_medium") }}'
+        - name: utm_source
+          description: '{{ doc("utm_source") }}'
 
   - name: snowplow_raw_events
     description: Table combining snowplow_base_event and snowplow_paylod_event into rich raw data source for all clickstream info
