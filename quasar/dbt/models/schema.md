@@ -268,19 +268,19 @@ The object of the action (eg. first_name, register, voter_reg_status) - Custom s
 {% enddocs %}
 
 {% docs session_id %}
-Unique identifier of the user's session
+Unique identifier of the user's session. This is how we associate all events in a visit.
 {% enddocs %}
 
 {% docs session_counter %}
-How many sessions a user has started
+How many sessions a user has started. This is how we associate new vs. returning visits.
 {% enddocs %}
 
 {% docs browser_size %}
-Which type of browser a user is using (eg. Mobile, Desktop)
+Which type of browser a user is using (eg. Mobile, Desktop). This is default metadata sent from browser, it won't always be present.
 {% enddocs %}
 
 {% docs northstar_id %}
-The Northstar ID of the user who generated the event
+The Northstar ID of the user who generated the event.
 {% enddocs %}
 
 {% docs device_id %}
@@ -288,15 +288,15 @@ ID of the device used
 {% enddocs %}
 
 {% docs referrer_host %}
-URL host of the referring site (eg. google.com)
+URL host of the referring site (eg. google.com). Only present if session is referred from some external site link (ex. Facebook, Google, Bing).
 {% enddocs %}
 
 {% docs referrer_path %}
-URL path from referring site (eg. /10-stats-on-teen-drug-and-alcohol-use/)
+URL path from referring site (eg. /10-stats-on-teen-drug-and-alcohol-use/). Only present if session is referred from some external site link (ex. Facebook, Google, Bing).
 {% enddocs %}
 
 {% docs referrer_source %}
-Referrer source name (eg. Google, Facebook)
+Referrer source name (eg. Google, Facebook). Only present if session is referred from some external site link (ex. Facebook, Google, Bing).
 {% enddocs %}
 
 {% docs utm_source %}
