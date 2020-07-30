@@ -42,6 +42,11 @@ models:
                 severity: warn
         - name: northstar_id
           description: '{{ doc("northstar_id") }} Unauthenticated visits will not have northstar id'
+          tests:
+          - relationships_distinct:
+              to: ref('users')
+              field: northstar_id
+              severity: warn
         - name: path
           description: '[Required] {{ doc("path") }}'
           tests:
