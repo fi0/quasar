@@ -2,95 +2,80 @@ version: 2
 
 models:
   - name: snowplow_base_event
-    description: Table that extracts and cleans up relevant columns from raw DS web clickstream data.
-
+    description: Table that extracts and cleans up relevant columns from raw DS web click stream data.
     columns:
-        - name: event_id
-          description: '{{ doc("event_id") }}'
-          tests:
-              - unique
-              - not_null
-
-        - name: event_source
-          description: '{{ doc("event_source") }}'
-          tests:
-              - unique
-              - not_null
-
-        - name: event_datetime
-          description: '{{ doc("event_datetime") }}'
-          tests:
-              - not_null
-
-        - name: event_name
-          description: '{{ doc("event_name") }}'
-
-        - name: event_type
-          description: '{{ doc("event_type") }}'
-          tests:
-              - not_null
-
-        - name: host
-          description: '{{ doc("host") }}'
-          tests:
-              - not_null
-    
-        - name: path
-          description: '{{ doc("path") }}'
-          tests:
-              - not_null
-
-        - name: query_parameters
-          description: '{{ doc("query_parameters") }}'
-
-        - name: se_category
-          description: '{{ doc("se_category") }}'
-    
-        - name: se_action
-          description: '{{ doc("se_action") }}'
-
-        - name: se_label
-          description: '{{ doc("se_label") }}'
-
-        - name: session_id
-          description: '{{ doc("session_id") }}'
-          tests:
-              - not_null
-    
-        - name: session_counter
-          description: '{{ doc("session_counter") }}'
-          tests:
-              - not_null
-
         - name: browser_size
           description: '{{ doc("browser_size") }}'
-          tests:
-              - not_null
-
-        - name: northstar_id
-          description: '{{ doc("northstar_id") }}'
-          tests:
-              - relationships:
-                  to: ref('users')
-                  field: id
-
         - name: device_id
-          description: '{{ doc("device_id") }}'
+          description: '[Required] {{ doc("device_id") }}'
           tests:
-              - not_null
-    
+            - not_null:
+                severity: warn
+        - name: event_datetime
+          description: '[Required] {{ doc("event_datetime") }}'
+          tests:
+            - not_null:
+                severity: warn
+        - name: event_id
+          description: '[Required] {{ doc("event_id") }}'
+          tests:
+            - unique:
+                severity: warn
+            - not_null:
+                severity: warn
+        - name: event_name
+          description: '{{ doc("event_name") }}'
+        - name: event_source
+          description: '[Required] {{ doc("event_source") }}'
+          tests:
+            - not_null:
+                severity: warn
+        - name: event_type
+          description: '[Required] {{ doc("event_type") }}'
+          tests:
+            - not_null:
+                severity: warn
+        - name: host
+          description: '[Required] {{ doc("host") }}'
+          tests:
+            - not_null:
+                severity: warn
+        - name: northstar_id
+          description: '{{ doc("northstar_id") }} Unauthenticated visits will not have northstar id'
+          tests:
+          - relationships_distinct:
+              to: ref('users')
+              field: northstar_id
+              severity: warn
+        - name: path
+          description: '[Required] {{ doc("path") }}'
+          tests:
+            - not_null:
+                severity: warn
+        - name: query_parameters
+          description: '{{ doc("query_parameters") }}'
         - name: referrer_host
           description: '{{ doc("referrer_host") }}'
-          tests:
-              - not_null
-
         - name: referrer_path
           description: '{{ doc("referrer_path") }}'
-          tests:
-              - not_null
-
         - name: referrer_source
           description: '{{ doc("referrer_source") }}'
+        - name: se_action
+          description: '{{ doc("se_action") }}'
+        - name: se_category
+          description: '{{ doc("se_category") }}'
+        - name: se_label
+          description: '{{ doc("se_label") }}'
+        - name: session_counter
+          description: '[Required] {{ doc("session_counter") }}'
+          tests:
+            - not_null:
+                severity: warn
+        - name: session_id
+          description: '[Required] {{ doc("session_id") }}'
+          tests:
+            - not_null:
+                severity: warn
 
   - name: snowplow_payload_event
     description: Table containing extra data from events in snowplow_base_event table
@@ -133,7 +118,7 @@ models:
           description: '{{ doc("utm_source") }}'
 
   - name: snowplow_raw_events
-    description: Table combining snowplow_base_event and snowplow_paylod_event into rich raw data source for all clickstream info
+    description: Table combining snowplow_base_event and snowplow_payload_event into rich raw data source for all clickstream info
 
     columns:
         - name: event_id

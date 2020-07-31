@@ -1,15 +1,25 @@
 # Quasar
+The DoSomething.org Data Platform.
 
-## DoSomething.Org Data Platform
+# Our Data Stack
+We use Git to manage the lifecycle of our platform's source code. Any modification has to be merged only after the creation of a respective Pull Request and accepted Peer Review.
 
-### Extended Description
+We are a small but mighty team. We leverage third party services as much as possible. We use frameworks and custom solutions where it counts.
 
-* All Infrastructure Tools and Code
-* All ETL Code and Scripts
-* Data Warehousing Code
-* A Bright Light and Hope towards illuminating the dark corners of social injustice with the power of Data
+| Stage | Tools|
+|---|---|
+|Extraction| Snowplow, Fivetran, and Custom (Python)|
+|Loading| Snowplow, Fivetran, and Custom (Python)|
+|Orchestration | Jenkins|
+|Storage| AWS S3 and PostgreSQL|
+|Transformations| DBT and Looker (Deprecated) |
+|BI & Analysis| Looker, Jupyter Notebooks|
 
-## Scripts
+# Our dependency graph
+
+[View here](https://dosomething.github.io/quasar/#!/overview?g_v=1)
+
+# Scripts
 We keep utility scripts that automate misc tasks. We have created them to answer specific questions at that time.
 
 Script Name | Functionality
@@ -17,51 +27,20 @@ Script Name | Functionality
 `jenkins-job-logs-search.sh` | [Searches through a range of job runs for a given job name for a pattern](quasar/misc/jenkins-job-logs-search.sh).
 `import-cio-events-script.py` | [Imports Cio events from a file](quasar/misc/import-cio-events-script.py).
 
-## Getting Started
-These instructions will get you a copy of the project up and running on your local macOS machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+# Getting Started
+These instructions will get you a copy of the project up and running on your local macOS machine for development and testing purposes.
 
-### Prerequisites
+## Prerequisites
 
-These instructions use [pipenv](https://docs.pipenv.org/en/latest/) to manage dependencies and virtual environments.
+`Python >= 3.7`
 
-Setup Homebrew and Python 3 via:
-```
-http://docs.python-guide.org/en/latest/starting/install3/osx/
-```
+If you do not currently have a way to install multiple version of Python in your dev environment. We recommend installing `pyenv`. Here are some friendly [instructions](https://opensource.com/article/20/4/pyenv) on how to set it up.
 
-Install Pipenv via:
-```
-brew install pipenv
-```
+We love deterministic builds. We use `pipenv` for automatic virtualenv management. You will use it to install dependencies and new packages. Here are the instructions on [how to install](https://github.com/pypa/pipenv#installation).
 
-### Installing
 
-Install Python requirements:
 
-```
-cd $QUASAR_PROJECT_DIR
-pipenv install
-```
-
-### Development
-
-#### Environment
-
-To test changes, Pipenv provides a default virtual environment. Access it using:
-```
-pipenv shell
-```
-
-You can then test commands after running `make build`.
-
-To exit the virtual environment, simple type:
-```
-exit
-```
-
-*Note*: Your environment variables aren't pulled into the virtual environment by default, so you may have to `source` any env files.
-
-#### PostgreSQL (Docker) - [Troubleshooting](/docs/postgresql-docker-troubleshooting.md)
+### PostgreSQL (Docker) - [Troubleshooting](/docs/postgresql-docker-troubleshooting.md)
 
 We use Docker to pull a PostgreSQL image based on version/image tag.
 (Instructions here modified from [here](https://hackernoon.com/dont-install-postgres-docker-pull-postgres-bee20e200198).)
@@ -79,10 +58,11 @@ We use Docker to pull a PostgreSQL image based on version/image tag.
 * Run `qp` to run bring up Postgres Docker image.
 * You can kill the Docker image with `qpk`.
 
-#### DBT Profile
+### DBT Profile
 You need to setup a DBT profile file (defaut location is `~/.dbt/profile.yml`).
 
 An example profile is provided [here](https://github.com/DoSomething/quasar/blob/master/docs/example-dbt-profile.yml), which has the doc block needed for `dbt docs generate`.
+
 
 ## Usage
 
@@ -174,6 +154,9 @@ pipenv run dbt ARGS
 We use the [CalVer](https://calver.org/#youtube-dl) versioning release similar to what the youtube-dl project uses.
 
 Format is: `YYYY.MM.MM.MINORVERSION`, e.g. `2019.01.01.00` for the first release in 2019.
+
+## Credit
+Some parts of our documentation have been inspired by Gitlab's Data Team documentation handbook. Available [here](https://about.gitlab.com/handbook/business-ops/data-team/)
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
