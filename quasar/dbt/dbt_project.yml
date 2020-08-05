@@ -38,47 +38,47 @@ models:
           alias: snowplow_base_event
           materialized: incremental
           post-hook:
-           - "CREATE INDEX IF NOT EXISTS event_index ON {{ this }}(event_id)"
+           - "CREATE INDEX {{ get_index_name(this, 'event_id') }} (event_id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
         snowplow_payload_event:
           alias: snowplow_payload_event
           materialized: incremental
           post-hook:
-           - "CREATE INDEX IF NOT EXISTS payload_event_id ON {{ this }}(event_id)"
+           - "CREATE INDEX {{ get_index_name(this, 'event_id') }} (event_id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
         snowplow_raw_events:
           alias: snowplow_raw_events
           materialized: incremental
           post-hook:
-            - "CREATE INDEX IF NOT EXISTS raw_event_id ON {{ this }}(event_id)"
+            - "CREATE INDEX {{ get_index_name(this, 'event_id') }} (event_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
         snowplow_phoenix_events:
           alias: snowplow_phoenix_events
           materialized: incremental
           post-hook:
-            - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_spe ON {{ this }}(event_datetime, event_name, event_id)"
-            - "CREATE INDEX IF NOT EXISTS spe_session_id ON {{ this }} (session_id)"
+            - "CREATE INDEX {{ get_index_name(this, 'event_datetime_event_name_event_id') }} (event_datetime, event_name, event_id)"
+            - "CREATE INDEX {{ get_index_name(this, 'session_id') }} (session_id)"
             - "GRANT SELECT ON {{ this }} TO looker"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
         snowplow_sessions:
           materialized: incremental
           post-hook:
-            - "CREATE INDEX IF NOT EXISTS sps_landing ON {{ this }}(landing_datetime, landing_page)"
+            - "CREATE INDEX {{ get_index_name(this, 'landing_datetime_landing_page') }} (landing_datetime, landing_page)"
             - "GRANT SELECT ON {{ this }} TO looker"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
         phoenix_events_combined:
           alias: phoenix_events_combined
           materialized: incremental
           post-hook:
-            - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_pec ON {{ this }}(event_datetime, event_name, event_id)"
-            - "CREATE INDEX IF NOT EXISTS pec_session_id ON {{ this }} (session_id)"
+            - "CREATE INDEX {{ get_index_name(this, 'event_datetime_event_name_event_id') }} (event_datetime, event_name, event_id)"
+            - "CREATE INDEX {{ get_index_name(this, 'session_id') }} (session_id)"
             - "GRANT SELECT ON {{ this }} TO looker"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
         phoenix_sessions_combined:
           alias: phoenix_sessions_combined
           materialized: incremental
           post-hook:
-            - "CREATE INDEX IF NOT EXISTS psc_landing ON {{ this }}(landing_datetime, landing_page)"
+            - "CREATE INDEX {{ get_index_name(this, 'landing_datetime_landing_page') }} (landing_datetime, landing_page)"
             - "GRANT SELECT ON {{ this }} TO looker"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
       gambit_messages:
@@ -86,23 +86,23 @@ models:
           alias: messages_flattened
           materialized: table
           post-hook:
-            - "CREATE INDEX IF NOT EXISTS messages_user_id ON {{ this }}(user_id)"
-            - "CREATE INDEX IF NOT EXISTS platform_message_id ON {{ this }}(platform_message_id)"
+            - "CREATE INDEX {{ get_index_name(this, 'user_id') }} (user_id)"
+            - "CREATE INDEX {{ get_index_name(this, 'platform_message_id') }} (platform_message_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
         gambit_messages_inbound:
           alias: gambit_messages_inbound
           materialized: table
           post-hook:
-            - "CREATE INDEX IF NOT EXISTS messages_in_index ON {{ this }}(message_id, created_at, user_id, conversation_id)"
+            - "CREATE INDEX {{ get_index_name(this, 'message_id_created_at_user_id_conversation_id') }} (message_id, created_at, user_id, conversation_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"        
         gambit_messages_outbound:
           alias: gambit_messages_outbound
           materialized: table
           post-hook:
-            - "CREATE INDEX IF NOT EXISTS messages_out_index ON {{ this }}(message_id, created_at, user_id, conversation_id)"
-            - "CREATE INDEX IF NOT EXISTS deliverability ON {{ this }}(created_at, carrier_failure_code)"
+            - "CREATE INDEX {{ get_index_name(this, 'message_id_created_at_user_id_conversation_id') }} (message_id, created_at, user_id, conversation_id)"
+            - "CREATE INDEX {{ get_index_name(this, 'created_at_carrier_failure_code') }} (created_at, carrier_failure_code)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker" 
       campaign_activity:
@@ -110,51 +110,51 @@ models:
           alias: signups
           materialized: table
           post-hook:
-           - "CREATE UNIQUE INDEX IF NOT EXISTS signups_unique ON {{ this }}(created_at, id)"
+           - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_created_at_id') }} (created_at, id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
         turbovote:
           alias: turbovote
           materialized: table
           post-hook:
-           - "CREATE UNIQUE INDEX IF NOT EXISTS turbovote_unique ON {{ this }}(post_id, created_at, updated_at)"
+           - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_post_id_created_at_updated_at') }} (post_id, created_at, updated_at)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
         rock_the_vote:
           alias: rock_the_vote
           materialized: table
           post-hook:
-           - "CREATE UNIQUE INDEX IF NOT EXISTS rtv_unique ON {{ this }}(post_id, started_registration)"
+           - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_post_id_started_registration') }} (post_id, started_registration)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
         posts:
           alias: posts
           materialized: table
           post-hook:
-           - "CREATE UNIQUE INDEX IF NOT EXISTS posts_unique ON {{ this }}(created_at, campaign_id, id)"
-           - "CREATE INDEX IF NOT EXISTS posts_i ON {{ this }}(is_reportback, is_accepted, signup_id, id, post_class)"
+           - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_created_at_campaign_id_id') }} (created_at, campaign_id, id)"
+           - "CREATE INDEX {{ get_index_name(this, 'is_reportback_is_accepted_signup_id_id_post_class') }} (is_reportback, is_accepted, signup_id, id, post_class)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
         reportbacks:
           alias: reportbacks
           materialized: table
           post-hook:
-           - "CREATE UNIQUE INDEX IF NOT EXISTS reportbacks_unique ON {{ this }}(post_id)"
-           - "CREATE INDEX IF NOT EXISTS reportbacks_i ON {{ this }}(post_created_at, campaign_id, post_class, reportback_volume)"
+           - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_post_id') }} (post_id)"
+           - "CREATE INDEX {{ get_index_name(this, 'post_created_at_campaign_id_post_class_reportback_volume') }} (post_created_at, campaign_id, post_class, reportback_volume)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
         device_campaign:
           alias: device_campaign
           materialized: table
           post-hook:
-            - "CREATE INDEX ON {{ this }}(device_id)"
+            - "CREATE INDEX {{ get_index_name(this, 'device_id') }} (device_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
         first_and_second_signups:
           alias: first_and_second_signups
           materialized: table
           post-hook:
-            - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_northstar_id_idx ON {{ this }}(northstar_id)"
+            - "CREATE INDEX {{ get_index_name(this, 'northstar_id') }} (northstar_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
       users_table:
@@ -162,14 +162,14 @@ models:
           alias: cio_latest_status
           materialized: table
           post-hook:
-           - "CREATE INDEX IF NOT EXISTS cio_indices ON {{ this }}(customer_id)"
+           - "CREATE INDEX {{ get_index_name(this, 'customer_id') }} (customer_id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
         users:
           alias: users
           materialized: table
           post-hook:
-           - "CREATE UNIQUE INDEX IF NOT EXISTS du_indices ON {{ this }}(northstar_id, created_at, email, mobile, source)"
+           - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_northstar_id_created_at_email_mobile_source') }} (northstar_id, created_at, email, mobile, source)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
            - "GRANT SELECT ON {{ this }} TO public"
@@ -177,8 +177,8 @@ models:
           alias: northstar_users_raw
           materialized: table
           post-hook:
-           - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_northstar_id_updated_at_i ON {{ this }}(northstar_id, updated_at)"
-           - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_northstar_id_updated_at_dbt_scd_id_idx ON {{ this }}(northstar_id DESC, updated_at DESC, dbt_scd_id DESC)"
+           - "CREATE INDEX {{ get_index_name(this, 'northstar_id_updated_at') }} (northstar_id, updated_at)"
+           - "CREATE INDEX {{ get_index_name(this, 'northstar_id_desc_updated_at_desc_dbt_scd_id_desc') }} (northstar_id DESC, updated_at DESC, dbt_scd_id DESC)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
            - "GRANT SELECT ON {{ this }} TO public"
@@ -186,7 +186,7 @@ models:
           alias: northstar_users_deduped
           materialized: table
           post-hook:
-           - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_northstar_id_updated_at_i ON {{ this }}(northstar_id, updated_at)"
+           - "CREATE INDEX {{ get_index_name(this, 'northstar_id_updated_at') }} (northstar_id, updated_at)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
            - "GRANT SELECT ON {{ this }} TO public"
@@ -195,22 +195,22 @@ models:
           alias: user_activity
           materialized: table
           post-hook:
-           - "CREATE UNIQUE INDEX IF NOT EXISTS user_activity_unique_i ON {{ this }}(created_at, northstar_id)"
-           - "CREATE INDEX IF NOT EXISTS most_recent_all_actions_i ON {{ this }}(most_recent_all_actions)"
+           - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_created_at_northstar_id') }} (created_at, northstar_id)"
+           - "CREATE INDEX {{ get_index_name(this, 'most_recent_all_actions') }} (most_recent_all_actions)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
         user_rb_summary:
           alias: user_rb_summary
           materialized: table
           post-hook:
-           - "CREATE UNIQUE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_unique_i ON {{ this }}(signup_id)"
+           - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_signup_id') }} (signup_id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
         user_engagement_actions:
           alias: user_engagement_actions
           materialized: table
           post-hook:
-           - "CREATE INDEX IF NOT EXISTS user_engagement_actions_i ON {{ this }}(northstar_id)"
+           - "CREATE INDEX {{ get_index_name(this, 'northstar_id') }} (northstar_id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
         user_engagement_timeline:
@@ -225,7 +225,7 @@ models:
             schema: intermediate
             materialized: table
             post-hook:
-             - "CREATE UNIQUE INDEX IF NOT EXISTS campaign_activity_user_created_i ON {{ this }}(created_at, northstar_id)"
+             - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_created_at_northstar_id') }} (created_at, northstar_id)"
              - "GRANT SELECT ON {{ this }} TO dsanalyst"
              - "GRANT SELECT ON {{ this }} TO looker"
           user_actions:
@@ -233,7 +233,7 @@ models:
             schema: intermediate
             materialized: table
             post-hook:
-             - "CREATE INDEX IF NOT EXISTS user_actions_i ON {{ this }}(northstar_id)"
+             - "CREATE INDEX {{ get_index_name(this, 'northstar_id') }} (northstar_id)"
              - "GRANT SELECT ON {{ this }} TO dsanalyst"
              - "GRANT SELECT ON {{ this }} TO looker"
       campaign_info:
@@ -241,7 +241,7 @@ models:
           alias: campaign_info
           materialized: table
           post-hook:
-           - "CREATE UNIQUE INDEX IF NOT EXISTS campaign_info_i ON {{ this }} (campaign_run_id, campaign_id)"
+           - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_campaign_run_id_campaign_id') }} (campaign_run_id, campaign_id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
         campaign_info_international:
@@ -260,7 +260,7 @@ models:
           alias: bertly_clicks
           materialized: table
           post-hook:
-            - "CREATE UNIQUE INDEX IF NOT EXISTS clicks_unique ON {{ this }}(click_id)"
+            - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_click_id') }} (click_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
       post_actions:
@@ -268,7 +268,7 @@ models:
           alias: post_actions
           materialized: table
           post-hook:
-            - "CREATE UNIQUE INDEX IF NOT EXISTS post_actions_unique ON {{ this }}(created_at, id)"
+            - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_created_at_id') }} (created_at, id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
       member_event_log:
@@ -276,8 +276,8 @@ models:
           alias: member_event_log
           materialized: table
           post-hook:
-           - "CREATE INDEX ON {{ this }}(timestamp, northstar_id, event_id)"
-           - "CREATE INDEX ON {{ this }}(northstar_id, timestamp)"
+           - "CREATE INDEX {{ get_index_name(this, 'timestamp_northstar_id_event_id') }} (timestamp, northstar_id, event_id)"
+           - "CREATE INDEX {{ get_index_name(this, 'northstar_id_timestamp') }} (northstar_id, timestamp)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
       news_subscription:
@@ -291,7 +291,7 @@ models:
           alias: user_newsletter_subscriptions
           materialized: table
           post-hook:
-           - "CREATE INDEX IF NOT EXISTS email_subscription_topics_i ON {{ this }}(topic_subscribed_at, northstar_id)"
+           - "CREATE INDEX {{ get_index_name(this, 'topic_subscribed_at_northstar_id') }} (topic_subscribed_at, northstar_id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
       user_journey: 
@@ -299,24 +299,24 @@ models:
           alias: device_northstar
           materialized: table
           post-hook:
-            - "CREATE INDEX ON {{ this }}(device_id)"
-            - "CREATE INDEX ON {{ this }}(northstar_id)"
+            - "CREATE INDEX {{ get_index_name(this, 'device_id') }} (device_id)"
+            - "CREATE INDEX {{ get_index_name(this, 'northstar_id') }} (northstar_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
         ovrd_recipient_funnel:
           alias: ovrd_recipient_funnel
           materialized: table
           post-hook:
-            - "CREATE UNIQUE INDEX IF NOT EXISTS ovrd_r_index ON {{ this }}(user_id)"
-            - "CREATE INDEX ON {{ this }}(user_id)"
+            - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_user_id') }} (user_id)"
+            - "CREATE INDEX {{ get_index_name(this, 'user_id') }}(user_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
         ovrd_creator_funnel:
           alias: ovrd_creator_funnel
           materialized: table
           post-hook:
-            - "CREATE UNIQUE INDEX IF NOT EXISTS ovrd_index ON {{ this }}(northstar_id, device_id)"
-            - "CREATE INDEX ON {{ this }}(northstar_id)"
+            - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_northstar_id_device_id') }} (northstar_id, device_id)"
+            - "CREATE INDEX {{ get_index_name(this, 'northstar_id') }} (northstar_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
       tmc_users:
@@ -354,14 +354,14 @@ models:
           alias: user_newsletter_cal_multi
           materialized: table
           post-hook:
-            - "CREATE INDEX ON {{ this }}(northstar_id)"
+            - "CREATE INDEX {{ get_index_name(this, 'northstar_id') }} (northstar_id)"
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
         user_newsletter_cal_status:
           alias: user_newsletter_cal_status
           materialized: table
           post-hook:
-            - "CREATE INDEX ON {{ this }}(northstar_id)"
+            - "CREATE INDEX {{ get_index_name(this, 'northstar_id') }} (northstar_id)"
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
         user_newsletter_signups:
@@ -375,7 +375,7 @@ models:
           alias: voter_reg_quiz_funnel
           materialized: table
           post-hook:
-            - "CREATE INDEX ON {{ this }}(northstar_id, device_id, journey_begin_ts)"
+            - "CREATE INDEX {{ get_index_name(this, 'northstar_id_device_id_journey_begin_ts') }} (northstar_id, device_id, journey_begin_ts)"
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
         groups:
@@ -394,30 +394,30 @@ models:
         cio_customer_event:
           materialized: table
           post-hook:
-            - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_event_id ON {{ this }}(event_id)"
-            - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_timestamp_nulls_first_idx ON {{ this }}(timestamp nulls first)"
-            - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_timestamp_nulls_first_event_type_idx ON {{ this }}(timestamp nulls first, event_type)"
+            - "CREATE INDEX {{ get_index_name(this, 'event_id') }} (event_id)"
+            - "CREATE INDEX {{ get_index_name(this, 'timestamp_nulls_first') }} (timestamp nulls first)"
+            - "CREATE INDEX {{ get_index_name(this, 'timestamp_nulls_first_event_type') }} (timestamp nulls first, event_type)"
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
         cio_email_sent_event:
           materialized: table
           post-hook:
-            - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_event_id ON {{ this }}(event_id)"
-            - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_timestamp_nulls_first_idx ON {{ this }}(timestamp nulls first)"
+            - "CREATE INDEX {{ get_index_name(this, 'event_id') }} (event_id)"
+            - "CREATE INDEX {{ get_index_name(this, 'timestamp_nulls_first') }} (timestamp nulls first)"
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
         cio_email_bounced_event:
           materialized: table
           post-hook:
-            - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_event_id ON {{ this }}(event_id)"
-            - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_timestamp_nulls_first_idx ON {{ this }}(timestamp nulls first)"
+            - "CREATE INDEX {{ get_index_name(this, 'event_id') }} (event_id)"
+            - "CREATE INDEX {{ get_index_name(this, 'timestamp_nulls_first') }} (timestamp nulls first)"
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
         cio_email_event:
           materialized: table
           post-hook:
-            - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_event_id ON {{ this }}(event_id)"
-            - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_timestamp_nulls_first_idx ON {{ this }}(timestamp nulls first)"
-            - "CREATE INDEX IF NOT EXISTS {{ this.schema ~ '_' ~ this.table }}_timestamp_nulls_first_event_type_idx ON {{ this }}(timestamp nulls first, event_type)"
+            - "CREATE INDEX {{ get_index_name(this, 'event_id') }} (event_id)"
+            - "CREATE INDEX {{ get_index_name(this, 'timestamp_nulls_first') }} (timestamp nulls first)"
+            - "CREATE INDEX {{ get_index_name(this, 'timestamp_nulls_first_event_type') }} (timestamp nulls first, event_type)"
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
