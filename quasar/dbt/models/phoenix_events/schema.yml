@@ -123,38 +123,24 @@ models:
     columns:
         - name: event_id
           description: '{{ doc("event_id") }}'
-          tests:
-              - unique
-              - not_null
 
         - name: event_source
           description: '{{ doc("event_source") }}'
-          tests:
-              - unique
-              - not_null
 
         - name: event_datetime
           description: '{{ doc("event_datetime") }}'
-          tests:
-              - not_null
 
         - name: event_name
           description: '{{ doc("event_name") }}'
 
         - name: event_type
           description: '{{ doc("event_type") }}'
-          tests:
-              - not_null
 
         - name: host
           description: '{{ doc("host") }}'
-          tests:
-              - not_null
-    
+
         - name: path
           description: '{{ doc("path") }}'
-          tests:
-              - not_null
 
         - name: query_parameters
           description: '{{ doc("query_parameters") }}'
@@ -170,40 +156,24 @@ models:
 
         - name: session_id
           description: '{{ doc("session_id") }}'
-          tests:
-              - not_null
-    
+
         - name: session_counter
           description: '{{ doc("session_counter") }}'
-          tests:
-              - not_null
 
         - name: browser_size
           description: '{{ doc("browser_size") }}'
-          tests:
-              - not_null
 
         - name: northstar_id
           description: '{{ doc("northstar_id") }}'
-          tests:
-              - relationships:
-                  to: ref('users')
-                  field: id
 
         - name: device_id
           description: '{{ doc("device_id") }}'
-          tests:
-              - not_null
-    
+
         - name: referrer_host
           description: '{{ doc("referrer_host") }}'
-          tests:
-              - not_null
 
         - name: referrer_path
           description: '{{ doc("referrer_path") }}'
-          tests:
-              - not_null
 
         - name: referrer_source
           description: '{{ doc("referrer_source") }}'
@@ -232,33 +202,21 @@ models:
     columns:
         - name: event_id
           description: '{{ doc("event_id") }}'
-          tests:
-              - unique
-              - not_null
 
         - name: event_datetime
           description: '{{ doc("event_datetime") }}'
-          tests:
-              - not_null
 
         - name: event_name
           description: '{{ doc("event_name") }}'
 
         - name: event_source
           description: '{{ doc("event_source") }}'
-          tests:
-              - unique
-              - not_null
 
         - name: path
           description: "URL path"
-          tests:
-              - not_null
 
         - name: host
           description: "URL domain"
-          tests:
-              - not_null
 
         - name: query_parameters
           description: '{{ doc("query_parameters") }}'
@@ -277,13 +235,9 @@ models:
 
         - name: referrer_host
           description: '{{ doc("referrer_host") }}'
-          tests:
-              - not_null
 
         - name: referrer_path
           description: '{{ doc("referrer_path") }}'
-          tests:
-              - not_null
 
         - name: referrer_source
           description: '{{ doc("referrer_source") }}'
@@ -299,25 +253,15 @@ models:
 
         - name: session_id
           description: '{{ doc("session_id") }}'
-          tests:
-              - not_null
 
         - name: browser_size
           description: '{{ doc("browser_size") }}'
-          tests:
-              - not_null
 
         - name: northstar_id
           description: '{{ doc("northstar_id") }}'
-          tests:
-              - relationships:
-                  to: ref('users')
-                  field: id
 
         - name: device_id
           description: '{{ doc("device_id") }}'
-          tests:
-              - not_null
 
   - name: snowplow_sessions
     description: Table containing user session data derived from snowplow_phoenix_events
@@ -325,50 +269,30 @@ models:
     columns:
         - name: session_id
           description: '{{ doc("session_id") }}'
-          tests:
-              - unique
-              - not_null
 
         - name: event_id
           description: '{{ doc("event_id") }}'
-          tests:
-              - unique
-              - not_null
 
         - name: device_id
           description: '{{ doc("device_id") }}'
-          tests:
-              - not_null
 
         - name: landing_datetime
           description: '{{ doc("landing_datetime") }}'
-          tests:
-              - not_null
 
         - name: ending_datetime
           description: '{{ doc("ending_datetime") }}'
-          tests:
-              - not_null
 
         - name: session_duration_seconds
           description: '{{ doc("session_duration_seconds") }}'
-          tests:
-              - not_null
 
         - name: num_pages_views
           description: '{{ doc("num_pages_views") }}'
-          tests:
-              - not_null
 
         - name: landing_page
           description: '{{ doc("landing_page") }}'
-          tests:
-              - not_null
 
         - name: exit_page
           description: '{{ doc("exit_page") }}'
-          tests:
-              - not_null
 
         - name: days_since_last_session
           description: '{{ doc("days_since_last_session") }}'
@@ -379,34 +303,22 @@ models:
     columns:
         - name: event_id
           description: '{{ doc("event_id") }}'
-          tests:
-              - unique
-              - not_null
 
         - name: event_datetime
           description: '{{ doc("event_datetime") }}'
-          tests:
-              - not_null
 
         - name: event_name
           description: '{{ doc("event_name") }}'
 
         - name: event_source
           description: '{{ doc("event_source") }}'
-          tests:
-              - unique
-              - not_null
 
         - name: path
           description: '{{ doc("path") }}'
-          tests:
-              - not_null
 
         - name: host
           description: '{{ doc("host") }}'
-          tests:
-              - not_null
-    
+
         - name: query_parameters
           description: '{{ doc("query_parameters") }}'
 
@@ -429,8 +341,6 @@ models:
 
         - name: referrer_path
           description: '{{ doc("referrer_path") }}'
-          tests:
-              - not_null
 
         - name: referrer_source
           description: '{{ doc("referrer_source") }}'
@@ -446,25 +356,15 @@ models:
 
         - name: session_id
           description: '{{ doc("session_id") }}'
-          tests:
-              - not_null
 
         - name: browser_size
           description: '{{ doc("browser_size") }}'
-          tests:
-              - not_null
 
         - name: northstar_id
           description: '{{ doc("northstar_id") }}'
-          tests:
-              - relationships:
-                  to: ref('users')
-                  field: id
 
         - name: device_id
           description: '{{ doc("device_id") }}'
-          tests:
-              - not_null
 
   - name: phoenix_sessions_combined
     description: Table combining Snowplow based web session data with legacy Puck data based on 7/12/2019 cutover date
@@ -472,50 +372,30 @@ models:
     columns:
         - name: session_id
           description: '{{ doc("session_id") }}'
-          tests:
-              - unique
-              - not_null
 
         - name: event_id
           description: '{{ doc("event_id") }}'
-          tests:
-              - unique
-              - not_null
 
         - name: device_id
           description: '{{ doc("device_id") }}'
-          tests:
-              - not_null
 
         - name: landing_datetime
           description: '{{ doc("landing_datetime") }}'
-          tests:
-              - not_null
 
         - name: ending_datetime
           description: '{{ doc("ending_datetime") }}'
-          tests:
-              - not_null
 
         - name: session_duration_seconds
           description: '{{ doc("session_duration_seconds") }}'
-          tests:
-              - not_null
 
         - name: num_pages_views
           description: '{{ doc("num_pages_views") }}'
-          tests:
-              - not_null
 
         - name: landing_page
           description: '{{ doc("landing_page") }}'
-          tests:
-              - not_null
 
         - name: exit_page
           description: '{{ doc("exit_page") }}'
-          tests:
-              - not_null
 
         - name: days_since_last_session
           description: '{{ doc("days_since_last_session") }}'
