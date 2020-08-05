@@ -65,7 +65,7 @@ class ETLMonitoring:
             'raw_cio_customers':
                 'SELECT count(*) FROM public.cio_customer_event',
             'raw_bertly_clicks':
-                'SELECT count(*) FROM bertly.clicks',
+                'SELECT count(*) FROM ft_bertly.clicks',
             'raw_gambit_messages':
                 """SELECT count(*) FROM ft_gambit_conversations_api.messages""",
             'raw_gambit_conversations':
