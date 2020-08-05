@@ -303,22 +303,6 @@ models:
             - "CREATE INDEX {{ get_index_name(this, 'northstar_id') }} (northstar_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
-        ovrd_recipient_funnel:
-          alias: ovrd_recipient_funnel
-          materialized: table
-          post-hook:
-            - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_user_id') }} (user_id)"
-            - "CREATE INDEX {{ get_index_name(this, 'user_id') }}(user_id)"
-            - "GRANT SELECT ON {{ this }} TO dsanalyst"
-            - "GRANT SELECT ON {{ this }} TO looker"
-        ovrd_creator_funnel:
-          alias: ovrd_creator_funnel
-          materialized: table
-          post-hook:
-            - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_northstar_id_device_id') }} (northstar_id, device_id)"
-            - "CREATE INDEX {{ get_index_name(this, 'northstar_id') }} (northstar_id)"
-            - "GRANT SELECT ON {{ this }} TO dsanalyst"
-            - "GRANT SELECT ON {{ this }} TO looker"
       tmc_users:
         tmc_users_out:
           alias: tmc_users_out
@@ -371,13 +355,29 @@ models:
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
       voter_reg:
-        voter_reg_quiz_funnel:
-          alias: voter_reg_quiz_funnel
+        ovrd_quiz_funnel:
+          alias: ovrd_quiz_funnel
           materialized: table
           post-hook:
             - "CREATE INDEX {{ get_index_name(this, 'northstar_id_device_id_journey_begin_ts') }} (northstar_id, device_id, journey_begin_ts)"
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
+        ovrd_recipient_funnel:
+          alias: ovrd_recipient_funnel
+          materialized: table
+          post-hook:
+            - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_user_id') }} (user_id)"
+            - "CREATE INDEX {{ get_index_name(this, 'user_id') }}(user_id)"
+            - "GRANT SELECT ON {{ this }} TO dsanalyst"
+            - "GRANT SELECT ON {{ this }} TO looker"
+        ovrd_creator_funnel:
+          alias: ovrd_creator_funnel
+          materialized: table
+          post-hook:
+            - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_northstar_id_device_id') }} (northstar_id, device_id)"
+            - "CREATE INDEX {{ get_index_name(this, 'northstar_id') }} (northstar_id)"
+            - "GRANT SELECT ON {{ this }} TO dsanalyst"
+            - "GRANT SELECT ON {{ this }} TO looker"
         groups:
           alias: groups
           materialized: table

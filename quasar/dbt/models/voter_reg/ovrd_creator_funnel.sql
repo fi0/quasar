@@ -120,7 +120,7 @@ nsid_less AS (
 			CASE 
 				WHEN pec.event_name IN 
 					('phoenix_clicked_share_action_facebook','phoenix_clicked_share_email',
-					'phoenix_clicked_share_facebook_messenger','phoenix_clicked_share_twitter')
+					'phoenix_clicked_share_facebook_messenger','phoenix_clicked_share_twitter', 'phoenix_clicked_share_snapchat')
 				THEN 1 ELSE 0 END
 			) AS clicked_any_share,
 		max(
@@ -142,7 +142,12 @@ nsid_less AS (
 			CASE 
 				WHEN pec.event_name='phoenix_clicked_share_twitter' 
 				THEN 1 ELSE 0 END
-			) AS clicked_share_twitter
+			) AS clicked_share_twitter,
+        max(
+			CASE 
+				WHEN pec.event_name='phoenix_clicked_share_snapchat' 
+				THEN 1 ELSE 0 END
+			) AS clicked_share_snapchat
 	FROM {{ ref('phoenix_events_combined') }} pec 
 	--Join reportbacks to determine if they registered via the source we care about
 	LEFT JOIN 
