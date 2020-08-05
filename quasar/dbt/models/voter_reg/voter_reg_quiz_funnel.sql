@@ -24,51 +24,46 @@ WITH funnel_base AS (
   WHERE pec."path" ILIKE '%ready-vote%'
   AND pec.event_datetime >='2020-01-01'
   GROUP BY pec.device_id, pec.northstar_id, pec.session_id 
-)
-,
+),
 northstars AS (
-  --AuTHENticated Users
+  --Authenticated Users
   SELECT device_id, northstar_id, session_id
   FROM funnel_base
   WHERE northstar_id IS NOT NULL
   GROUP BY 1,2,3
-)
-, 
+), 
 devices AS (
-  --Anonymous Users (removes CASEs of sessions that started anonymous AND got autheticated afterwards)
+  --Anonymous Users (removes cases of sessions that started anonymous AND got autheticated afterwards)
   SELECT b.device_id, b.session_id
   FROM funnel_base b 
   LEFT JOIN northstars n ON (b.session_id=n.session_id AND b.device_id=n.device_id)
   WHERE n.session_id is null
   GROUP BY 1,2
-)
-, 
+), 
 session_base AS (
 
-  --AuTHENticated Sessions
+  --Authenticated Sessions
   --Joining with users table to eliminate internal (dosomething.org) northstar_ids
   SELECT f.device_id, f.northstar_id, f.session_id
   FROM funnel_base f
   JOIN northstars n ON (f.session_id=n.session_id)
   JOIN public.users u ON (f.northstar_id=u.northstar_id)
 
-  union all 
+  UNION ALL 
   
   --Anonymous Sessions
   SELECT f.device_id, null, f.session_id
   FROM funnel_base f
   JOIN devices d ON (f.session_id=d.session_id)
-)
-,
+),
 reg_started AS (
   SELECT p.northstar_id, p.id AS post_id, rtv.started_registration, rtv.tracking_source, rtv.status
   FROM public.posts p
   LEFT JOIN public.rock_the_vote rtv ON (p.id=rtv.post_id AND rtv.status IS NOT NULL)
     WHERE p.vr_source='web'
-    AND (p.vr_source_details LIKE '%VoterRegQuiz%'
+    AND p.vr_source_details LIKE '%VoterRegQuiz%'
     AND p.created_at >= '2020-01-01'
-)
-,
+),
 reg_completed AS (
   --Registration events coming FROM web-based quiz
   SELECT 
@@ -83,15 +78,14 @@ reg_completed AS (
     AND r.vr_source='web'
     AND r.vr_source_details LIKE '%VoterRegQuiz%'
     AND r.post_created_at >= '2020-01-01'
-)
-,
-funnel_lANDing AS (
+),
+funnel_landing AS (
   --The top of the funnel does not require authentication
   --Pulling date AND creating yes/no flags for the initial 2 steps 
   SELECT 
     pec.device_id,
     pec.session_id,
-    min(psc.lANDing_datetime) AS session_lANDing_datetime, 
+    min(psc.lANDing_datetime) AS session_landing_datetime, 
     max(psc.ending_datetime) AS session_ending_datetime, 
     --Earliest page visit
     min(pec.event_datetime) AS journey_begin_ts,
@@ -122,8 +116,7 @@ funnel_lANDing AS (
   WHERE pec."path" ILIKE '%ready-vote%' 
   AND pec.event_datetime >='2020-01-01'
   GROUP BY pec.device_id, pec.session_id  
-)
-,
+),
 funnel_auth AS (
   --The next steps of the funnel do require auTHENtication
   --Pulling date AND creating yes/no flags for the following steps
@@ -336,4 +329,3 @@ CASE
 FROM session_base s 
 LEFT JOIN funnel_lANDing fl ON (s.session_id=fl.session_id AND s.device_id=fl.device_id)
 LEFT JOIN funnel_auth fa ON (s.session_id=fa.session_id AND s.northstar_id=fa.northstar_id)
-  
