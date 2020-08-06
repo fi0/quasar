@@ -31,6 +31,7 @@ SELECT pd.northstar_id,
        pd.postal_code,
        pd.vr_source,
        pd.vr_source_details,
+       pd.group_id,
        CASE
            WHEN (pd.post_class ILIKE '%vote%'
                  AND pd.status = 'confirmed') THEN 'self-reported registrations'
