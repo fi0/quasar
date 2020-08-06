@@ -355,8 +355,8 @@ models:
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
       voter_reg:
-        ovrd_quiz_funnel:
-          alias: ovrd_quiz_funnel
+        voter_reg_quiz_funnel:
+          alias: voter_reg_quiz_funnel
           materialized: table
           post-hook:
             - "CREATE INDEX {{ get_index_name(this, 'northstar_id_device_id_journey_begin_ts') }} (northstar_id, device_id, journey_begin_ts)"
