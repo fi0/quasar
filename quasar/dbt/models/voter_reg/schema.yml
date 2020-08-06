@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: ovrd_quiz_funnel
+  - name: voter_reg_quiz_funnel
     description: Needs a description
 
     columns:
