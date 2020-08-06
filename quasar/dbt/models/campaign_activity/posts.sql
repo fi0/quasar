@@ -1,61 +1,76 @@
 SELECT
-	pd.northstar_id as northstar_id,
-	pd.id AS id,
-	pd."type" AS "type",
-	a."name" AS "action",
-	pd.status AS status,
-	pd.quantity AS quantity,
+	a.name AS "action",
+	pd.action_id,
 	pd.campaign_id,
-	CASE
-		WHEN pd.id IS NULL THEN NULL
-		WHEN a."name" = 'voter-reg OTG'
-		THEN pd.quantity
-		ELSE 1 END AS reportback_volume,
-	pd."source" AS "source",
-	CASE
-		WHEN pd."source" IS NULL THEN NULL
-		WHEN pd."source" ilike '%sms%' THEN 'sms'
-		ELSE 'web' END AS source_bucket,
 	CASE
 		WHEN pd."type" = 'phone-call' AND pd.details <> ''
 		THEN (pd.details::json ->> 'call_timestamp')::timestamptz
 		ELSE COALESCE(rtv.created_at, tv.created_at, pd.created_at)
-		END AS created_at,
-	pd.url AS url,
-	pd.text,
-	CASE
-		WHEN s."source" = 'importer-client'
-		AND pd."type" = 'share-social'
-		AND pd.created_at < s.created_at
-		THEN -1
-		ELSE pd.signup_id END AS signup_id,
-	CASE
-		WHEN pd.id IS NULL
-		THEN NULL
-		ELSE CONCAT(pd."type", ' - ', a."name") END AS post_class,
+	END AS created_at,
+	pd.group_id,
+	pd.id AS id,
 	CASE WHEN pd.status IN ('accepted', 'pending')
 		AND a."name" NOT ILIKE '%vote%'
 		THEN 1
 		WHEN pd.status IN ('accepted', 'confirmed', 'register-OVR', 'register-form')
 		AND a."name" ILIKE '%vote%'
 		THEN 1
-		ELSE NULL END AS is_accepted,
-	pd.action_id,
-	pd.location,
-	pd.postal_code,
-	pd.referrer_user_id,
+		ELSE NULL
+	END AS is_accepted,
+	a.anonymous AS is_anonymous,
+	a.civic_action AS is_civic_action,
+	a.online AS is_online,
+	a.quiz AS is_quiz,
 	a.reportback AS is_reportback,
-	CASE 
-	    WHEN pd.details <> '' THEN (pd.details::json ->> 'number_of_participants')::INT
-	    ELSE NULL END AS num_participants,
-	a.civic_action,
-	a.scholarship_entry,
+	a.scholarship_entry AS is_scholarship_entry,
+	a.time_commitment AS is_time_commitment,
+	a.volunteer_credit AS is_volunteer_credit,
+	pd.location,
+	pd.northstar_id AS northstar_id,
+	a.noun,
+	CASE
+	    WHEN pd.details <> ''
+		THEN (pd.details::json ->> 'number_of_participants')::INT
+	    ELSE NULL
+	END AS num_participants,
+	pd.postal_code,
+	CASE
+		WHEN pd.id IS NULL
+		THEN NULL
+		ELSE CONCAT(pd."type", ' - ', a."name")
+	END AS post_class,
+	pd.quantity AS quantity,
+	pd.referrer_user_id,
+	CASE
+		WHEN pd.id IS NULL THEN NULL
+		WHEN a."name" = 'voter-reg OTG'
+		THEN pd.quantity
+		ELSE 1
+	END AS reportback_volume,
 	pd.school_id,
-	pd.group_id,
-	CASE 
-		WHEN rtv.tracking_source='ads' THEN 'ads'
+	CASE
+		WHEN pd."source" IS NULL THEN NULL
+		WHEN pd."source" ilike '%sms%' THEN 'sms'
+		ELSE 'web'
+	END AS source_bucket,
+	CASE
+		WHEN s."source" = 'importer-client'
+		AND pd."type" = 'share-social'
+		AND pd.created_at < s.created_at
+		THEN -1
+		ELSE pd.signup_id
+	END AS signup_id,
+	pd."source" AS "source",
+	pd.status AS "status",
+	pd.text,
+	pd."type" AS "type",
+	pd.url AS url,
+	a.verb,
+	CASE
+		WHEN rtv.tracking_source='ads'
+		THEN 'ads'
 		ELSE split_part(substring(rtv.tracking_source from 'source\:(.+)'), ',', 1) 
-		END AS vr_source,
+	END AS vr_source,
 	split_part(substring(rtv.tracking_source from 'source_details\:(.+)'), ',', 1) AS vr_source_details
 FROM {{ source('rogue', 'posts') }} pd
 INNER JOIN {{ ref('signups') }} s
