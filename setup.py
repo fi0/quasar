@@ -7,7 +7,7 @@ requirements = convert_deps_to_pip(pfile['packages'], r=False)
 
 setup(
     name="quasar",
-    version="2020.7.9.0",
+    version="2020.8.6.0",
     packages=find_packages(),
     install_requires=requirements,
     entry_points={
@@ -17,7 +17,7 @@ setup(
             'etl_monitoring = quasar.etl_monitoring:run_monitoring',
             'gdpr = quasar.gdpr_comply:main',
             'prod_to_qa = quasar.prod_to_qa:main',
-            'import_contentful = quasar.import_contentful_json:main'
+            'contentful_metadata = quasar.contentful_metadata:main'
         ],
     },
     author="",

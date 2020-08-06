@@ -9,13 +9,14 @@ db = Database()
 
 def fetch_contentful_data():
     client = contentful.Client(
-        os.environ.get('CONTENTFUL_SPACE_ID'),
-        os.environ.get('CONTENTFUL_ACCESS_TOKEN')
+        space_id=os.environ.get('CONTENTFUL_SPACE_ID'),
+        access_token=os.environ.get('CONTENTFUL_ACCESS_TOKEN'),
+        timeout_s=int(os.environ.get('CONTENTFUL_TIMEOUT'))
     )
     entries = client.entries({
         'content_type': 'campaign',
         'select': 'sys.id,fields',
-        'limit': 1000  # API Limit: 1000 max
+        'limit': os.environ.get('CONTENTFUL_API_LIMIT')  # API Limit: 1000 max
     })
 
     for entry in entries:
@@ -42,6 +43,8 @@ def _save_campaign(campaign):
         pprint('{contentful_id} ran into a type error: {error}'.format(contentful_id=campaign.id, error=te))
     except (AttributeError) as e:
         pprint('{contentful_id} missing an attribute: {error}'.format(contentful_id=campaign.id, error=e))
+    except (ReadTimeout) as to:
+        pprint('{contentful_id} ran into a type error: {error}'.format(contentful_id=campaign.id, error=to))
 
 
 def main():
