@@ -3,6 +3,7 @@ import contentful
 from pprint import pprint
 from .sa_database import Database
 import jsonpickle
+from urllib3.exceptions import ReadTimeoutError
 
 db = Database()
 
@@ -43,8 +44,8 @@ def _save_campaign(campaign):
         pprint('{contentful_id} ran into a type error: {error}'.format(contentful_id=campaign.id, error=te))
     except (AttributeError) as e:
         pprint('{contentful_id} missing an attribute: {error}'.format(contentful_id=campaign.id, error=e))
-    except (ReadTimeout) as to:
-        pprint('{contentful_id} ran into a type error: {error}'.format(contentful_id=campaign.id, error=to))
+    except (ReadTimeoutError) as timeout:
+        pprint('The API threw a timeout error: {error}'.format(error=timeout))
 
 
 def main():
