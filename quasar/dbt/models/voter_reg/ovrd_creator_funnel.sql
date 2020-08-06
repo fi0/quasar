@@ -171,6 +171,7 @@ nsid_less AS (
 		pec."path" ILIKE '%online-registration-drive%'
 	--Filter to events of interest
 		AND pec.event_name IN (
+			'phoenix_clicked_share_snapchat',
 			'phoenix_clicked_copy_to_clipboard',
 			'phoenix_clicked_share_action_facebook',
 			'phoenix_clicked_share_email',
