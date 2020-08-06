@@ -7,7 +7,7 @@
 
     {{
         config(
-          target_database=env_var("NORTHSTAR_TARGET_DB"),
+          target_database=env_var("PG_DATABASE"),
           target_schema=env_var("NORTHSTAR_FT_SCHEMA"),
           unique_key='_id',
           strategy='timestamp',
