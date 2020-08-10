@@ -30,7 +30,7 @@ jobs:
           PG_DOCS_USER: ${{ secrets.PG_DOCS_USER }}
           PG_DOCS_PASSWORD: ${{ secrets.PG_DOCS_PASSWORD }}
           PG_DOCS_DATABASE: ${{ secrets.PG_DOCS_DATABASE }}
-          PG_DATABASE: ${{ secrets.PG_DOCS_DATABASE }}
+          PG_DATABASE: ${{ secrets.PG_DATABASE }}
           NORTHSTAR_TARGET_DB: ${{ secrets.NORTHSTAR_TARGET_DB }}
           NORTHSTAR_FT_SCHEMA: ${{ secrets.NORTHSTAR_FT_SCHEMA }}
           FT_SNOWPLOW: ${{ secrets.FT_SNOWPLOW }}
