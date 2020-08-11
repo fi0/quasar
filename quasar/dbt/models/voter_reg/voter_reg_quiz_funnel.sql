@@ -21,7 +21,7 @@ WITH funnel_base AS (
   FROM {{ ref('phoenix_events_combined') }} pec
   JOIN {{ ref('phoenix_sessions_combined') }} psc ON (pec.session_id=psc.session_id)
   --URL of the VR quiz funnel
-  WHERE pec."path" ILIKE '%ready-vote%'
+  WHERE (pec."path" ILIKE '%ready-vote' or pec."path" ILIKE '%ready-vote/%')
   AND pec.event_datetime >='2020-01-01'
   GROUP BY pec.device_id, pec.northstar_id, pec.session_id 
 ),
@@ -262,7 +262,7 @@ funnel_auth AS (
 
   WHERE 
   --URL of the VR quiz funnel
-  pec."path" ILIKE '%ready-vote%' 
+  (pec."path" ILIKE '%ready-vote' or pec."path" ILIKE '%ready-vote/%')
   AND pec.northstar_id IS NOT NULL
   AND pec.event_datetime >='2020-01-01'
   GROUP BY pec.session_id, pec.northstar_id, rc.post_id
