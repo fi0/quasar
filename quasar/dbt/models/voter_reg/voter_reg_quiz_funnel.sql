@@ -57,7 +57,7 @@ session_base AS (
   JOIN devices d ON (f.session_id=d.session_id)
 ),
 reg_started AS (
-  SELECT p.northstar_id, p.id AS post_id, rtv.started_registration, rtv.tracking_source, rtv.status
+  SELECT p.northstar_id, p.id as post_id, rtv.started_registration_utc as started_registration, rtv.tracking_source, rtv.status
   FROM public.posts p
   LEFT JOIN public.rock_the_vote rtv ON (p.id=rtv.post_id AND rtv.status IS NOT NULL)
     WHERE p.vr_source='web'
@@ -71,7 +71,7 @@ reg_completed AS (
     r.post_id,
     rtv.tracking_source,
     --r.post_created_at appears to be the UTC conversion of rock.started_registration
-    coalesce(rtv.started_registration,(r.post_created_at - interval '5 hour')) AS started_registration
+    rtv.started_registration_utc as started_registration
   FROM public.reportbacks r
   LEFT JOIN public.rock_the_vote rtv ON r.post_id=rtv.post_id
     WHERE r.post_bucket = 'voter_registrations'
