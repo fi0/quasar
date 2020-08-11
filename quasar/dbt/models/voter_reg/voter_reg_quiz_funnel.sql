@@ -18,8 +18,8 @@ WITH funnel_base AS (
     pec.device_id,
     pec.northstar_id,
     pec.session_id
-  FROM public.phoenix_events_combined pec
-  JOIN public.phoenix_sessions_combined psc ON (pec.session_id=psc.session_id)
+  FROM {{ ref('phoenix_events_combined') }} pec
+  JOIN {{ ref('phoenix_sessions_combined') }} psc ON (pec.session_id=psc.session_id)
   --URL of the VR quiz funnel
   WHERE pec."path" ILIKE '%ready-vote%'
   AND pec.event_datetime >='2020-01-01'
@@ -47,7 +47,7 @@ session_base AS (
   SELECT f.device_id, f.northstar_id, f.session_id
   FROM funnel_base f
   JOIN northstars n ON (f.session_id=n.session_id)
-  JOIN public.users u ON (f.northstar_id=u.northstar_id)
+  JOIN {{ ref('users') }} u ON (f.northstar_id=u.northstar_id)
 
   UNION ALL 
   
@@ -58,8 +58,8 @@ session_base AS (
 ),
 reg_started AS (
   SELECT p.northstar_id, p.id as post_id, rtv.started_registration_utc as started_registration, rtv.tracking_source, rtv.status
-  FROM public.posts p
-  LEFT JOIN public.rock_the_vote rtv ON (p.id=rtv.post_id AND rtv.status IS NOT NULL)
+  FROM {{ ref('posts') }} p
+  LEFT JOIN {{ ref('rock_the_vote') }} rtv ON (p.id=rtv.post_id AND rtv.status IS NOT NULL)
     WHERE p.vr_source='web'
     AND p.vr_source_details LIKE '%VoterRegQuiz%'
     AND p.created_at >= '2020-01-01'
@@ -72,8 +72,8 @@ reg_completed AS (
     rtv.tracking_source,
     --r.post_created_at appears to be the UTC conversion of rock.started_registration
     rtv.started_registration_utc as started_registration
-  FROM public.reportbacks r
-  LEFT JOIN public.rock_the_vote rtv ON r.post_id=rtv.post_id
+  FROM {{ ref('reportbacks') }} r
+  LEFT JOIN {{ ref('rock_the_vote') }} rtv ON r.post_id=rtv.post_id
     WHERE r.post_bucket = 'voter_registrations'
     AND r.vr_source='web'
     AND r.vr_source_details LIKE '%VoterRegQuiz%'
@@ -85,7 +85,7 @@ funnel_landing AS (
   SELECT 
     pec.device_id,
     pec.session_id,
-    min(psc.lANDing_datetime) AS session_landing_datetime, 
+    min(psc.landing_datetime) AS session_landing_datetime,
     max(psc.ending_datetime) AS session_ending_datetime, 
     --Earliest page visit
     min(pec.event_datetime) AS journey_begin_ts,
@@ -110,8 +110,8 @@ funnel_landing AS (
         WHEN pec.event_name='phoenix_clicked_signup' 
         THEN 1 ELSE 0 end
       ) AS click_join_us
-  FROM public.phoenix_events_combined pec
-  JOIN public.phoenix_sessions_combined psc ON (pec.session_id =psc.session_id)
+  FROM {{ ref('phoenix_events_combined') }} pec
+  JOIN {{ ref('phoenix_sessions_combined') }} psc ON (pec.session_id =psc.session_id)
   --URL of the VR quiz funnel
   WHERE pec."path" ILIKE '%ready-vote%' 
   AND pec.event_datetime >='2020-01-01'
@@ -150,7 +150,7 @@ funnel_auth AS (
       CASE 
         WHEN pec.northstar_id IS NOT NULL 
         THEN 1 ELSE 0 end
-      ) AS auTHENticated,
+      ) AS authenticated,
     max(
       CASE 
         WHEN pec.event_name='phoenix_clicked_voter_registration_action' 
@@ -165,7 +165,7 @@ funnel_auth AS (
       CASE 
         WHEN rs.status IN ('Step 2','Step 3','Step 4','Rejected','Under 18','Complete')
         AND rs.tracking_source ILIKE '%VoterRegQuiz_Affirmation%'
-        THEN 1 ELSE 0 end
+        THEN 1 ELSE 0 END
       ) AS rtv_step_2_affirmation,
     max(
       CASE 
@@ -254,11 +254,11 @@ funnel_auth AS (
         'phoenix_completed_photo_submission_action','phoenix_failed_photo_submission_action')
         THEN 1 ELSE 0 end
       ) AS clicked_submit_photo
-  FROM public.phoenix_events_combined pec
-  JOIN public.phoenix_sessions_combined psc ON (pec.session_id =psc.session_id)
+  FROM {{ ref('phoenix_events_combined') }} pec
+  JOIN {{ ref('phoenix_sessions_combined') }} psc ON (pec.session_id =psc.session_id)
   --Join northstar/session with voter reg activity FROM posts AND reportbacks
-  LEFT JOIN reg_started rs ON (rs.northstar_id = pec.northstar_id AND rs.started_registration between psc.lANDing_datetime AND (psc.ending_datetime + interval '15 minute'))
-  LEFT JOIN reg_completed rc ON (rc.northstar_id = pec.northstar_id AND rc.started_registration between psc.lANDing_datetime AND (psc.ending_datetime + interval '15 minute'))
+  LEFT JOIN reg_started rs ON (rs.northstar_id = pec.northstar_id AND rs.started_registration between psc.landing_datetime AND (psc.ending_datetime + interval '15 minute'))
+  LEFT JOIN reg_completed rc ON (rc.northstar_id = pec.northstar_id AND rc.started_registration between psc.landing_datetime AND (psc.ending_datetime + interval '15 minute'))
 
   WHERE 
   --URL of the VR quiz funnel
@@ -270,7 +270,7 @@ funnel_auth AS (
 --We SELECT unique rows because some sessions are used by different northstar_id and this creates a multiplier effect WHEN joining funnel_landing and funnel_auth
 SELECT DISTINCT
     s.device_id, s.northstar_id, s.session_id, 
-    fl.session_lANDing_datetime, 
+    fl.session_landing_datetime, 
     fl.session_ending_datetime,
     fl.journey_begin_ts AS journey_begin_ts,
     fa.journey_begin_ts AS journey_begin_ts_northstar,
@@ -284,7 +284,7 @@ SELECT DISTINCT
     fl.traffic_source,
     fl.page_visit,
     fl.click_join_us,
-    fa.auTHENticated,
+    fa.authenticated,
     fa.click_start_registration,
     fa.clicked_get_started,
     fa.rtv_step_2_affirmation,
@@ -327,5 +327,5 @@ CASE
   max_submit_quiz_ts > latest_register_ts AND max_submit_photo_ts > max_submit_quiz_ts
   THEN 1 ELSE 0 END AS submit_photo_post_register_qcomp
 FROM session_base s 
-LEFT JOIN funnel_lANDing fl ON (s.session_id=fl.session_id AND s.device_id=fl.device_id)
+LEFT JOIN funnel_landing fl ON (s.session_id=fl.session_id AND s.device_id=fl.device_id)
 LEFT JOIN funnel_auth fa ON (s.session_id=fa.session_id AND s.northstar_id=fa.northstar_id)
