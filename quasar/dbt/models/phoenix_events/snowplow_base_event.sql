@@ -54,14 +54,25 @@ SELECT
     refr_urlhost AS referrer_host,
     refr_urlpath AS referrer_path,
     refr_source AS referrer_source
-FROM {{ source('snowplow', 'event') }}
-WHERE event_id NOT IN
-(SELECT event_id
- FROM {{ source('snowplow', 'ua_parser_context') }} u
- WHERE u.useragent_family SIMILAR TO
- '%(bot|crawl|slurp|spider|archiv|spinn|sniff|seo|audit|survey|pingdom|worm|capture|(browser|screen)shots|analyz|index|thumb|check|facebook|YandexBot|Twitterbot|a_archiver|facebookexternalhit|Bingbot|Googlebot|Baiduspider|360(Spider|User-agent)|Ghost)%')
+FROM
+  {{ source('snowplow', 'event') }}
+WHERE
+  event_id NOT IN
+(
+  SELECT
+    event_id
+  FROM
+    {{ source('snowplow', 'ua_parser_context') }} u
+  WHERE
+    u.useragent_family SIMILAR TO '%(bot|crawl|slurp|spider|archiv|spinn|sniff|seo|audit|survey|pingdom|worm|capture|(browser|screen)shots|analyz|index|thumb|check|facebook|YandexBot|Twitterbot|a_archiver|facebookexternalhit|Bingbot|Googlebot|Baiduspider|360(Spider|User-agent)|Ghost)%'
+)
 
 {% if is_incremental() %}
--- this filter will only be applied on an incremental run
-AND collector_tstamp >= (select max(sp_event.event_datetime) from {{this}} sp_event)
+  -- this filter will only be applied on an incremental run
+  AND collector_tstamp >= (
+    SELECT
+      max(sp_event.event_datetime)
+    FROM
+      {{ this }} sp_event
+  )
 {% endif %}
