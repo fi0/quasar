@@ -43,10 +43,10 @@ models:
         - name: northstar_id
           description: '{{ doc("northstar_id") }} Unauthenticated visits will not have northstar id'
           tests:
-          - relationships_distinct:
-              to: ref('users')
-              field: northstar_id
-              severity: warn
+            - relationships_distinct:
+                to: ref('users')
+                field: northstar_id
+                severity: warn
         - name: path
           description: '[Required] {{ doc("path") }}'
           tests:
@@ -83,7 +83,7 @@ models:
         - name: block_id
           description: References specific content blocks from contentful CMS, PMs decide whether its important to send that info with specific click events.
         - name: campaign_id
-          description: Internal campaign id from contentful. It will only be associated with specific events.
+          description: '{{ doc("internal_campaign_id") }}'
         - name: context_source
           description: TBD
         - name: context_value
@@ -188,84 +188,92 @@ models:
           description: '{{ doc("utm_campaign") }}'
 
         - name: clicked_link_url
-          description: '{{ doc("url") }}'
+          description: '{{ doc("click_event_url") }}'
 
         - name: campaign_id
-          description: Internal campaign id from contentful
+          description: '{{ doc("internal_campaign_id") }}'
 
         - name: modal_type
           description: '{{ doc("modal_type") }}'
 
   - name: snowplow_phoenix_events
     description: Table transforming snowplow_raw_event into rich derived data table for all clickstream info
-
     columns:
-        - name: event_id
-          description: '{{ doc("event_id") }}'
-
+        - name: block_id
+          description: References specific content blocks from contentful CMS, PMs decide whether its important to send that info with specific click events.
+        - name: browser_size
+          description: '{{ doc("browser_size") }}'
+        - name: campaign_id
+          description: '{{ doc("internal_campaign_id") }}'
+        - name: campaign_name
+          description: '{{ doc("campaign_name") }}'
+        - name: clicked_link_url
+          description: '[Required conditionally]{{ doc("click_event_url") }}'
+          tests:
+            - not_null_where:
+                condition: "event_name ILIKE '%clicked%'"
+                severity: warn
+        - name: context_source
+          description: ''
+        - name: context_value
+          description: ''
+        - name: device_id
+          description: '[Required] {{ doc("device_id") }}'
+          tests:
+            - not_null:
+                severity: warn
         - name: event_datetime
-          description: '{{ doc("event_datetime") }}'
-
+          description: '[Required] {{ doc("event_datetime") }}'
+          tests:
+            - not_null:
+                severity: warn
+        - name: event_id
+          description: '[Required] {{ doc("event_id") }}'
+          tests:
+            - unique:
+                severity: warn
+            - not_null:
+                severity: warn
         - name: event_name
           description: '{{ doc("event_name") }}'
-
         - name: event_source
-          description: '{{ doc("event_source") }}'
-
-        - name: path
-          description: "URL path"
-
+          description: '[Required] {{ doc("event_source") }}'
+          tests:
+            - not_null:
+                severity: warn
+        - name: group_id
+          description: ''
         - name: host
           description: "URL domain"
-
-        - name: query_parameters
-          description: '{{ doc("query_parameters") }}'
-
-        - name: clicked_link_url
-          description: '{{ doc("url") }}'
-
-        - name: page_utm_source
-          description: '{{ doc("utm_source") }}'
-
-        - name: page_utm_medium
-          description: '{{ doc("utm_medium") }}'
-
-        - name: page_utm_campaign
-          description: '{{ doc("utm_campaign") }}'
-
-        - name: referrer_host
-          description: '{{ doc("referrer_host") }}'
-
-        - name: referrer_path
-          description: '{{ doc("referrer_path") }}'
-
-        - name: referrer_source
-          description: '{{ doc("referrer_source") }}'
-
-        - name: campaign_id
-          description: Internal campaign id from contentful
-
-        - name: campaign_name
-          description: "Name of campaign"
-
         - name: modal_type
           description: '{{ doc("modal_type") }}'
-
+        - name: northstar_id
+          description: '{{ doc("northstar_id") }}'
+        - name: page_id
+          description: ''
+        - name: page_utm_campaign
+          description: '{{ doc("utm_campaign") }}'
+        - name: page_utm_medium
+          description: '{{ doc("utm_medium") }}'
+        - name: page_utm_source
+          description: '{{ doc("utm_source") }}'
+        - name: path
+          description: "URL path"
+        - name: query_parameters
+          description: '{{ doc("query_parameters") }}'
+        - name: referrer_host
+          description: '{{ doc("referrer_host") }}'
+        - name: referrer_path
+          description: '{{ doc("referrer_path") }}'
+        - name: referrer_source
+          description: '{{ doc("referrer_source") }}'
+        - name: search_query
+          description: ''
         - name: session_id
           description: '{{ doc("session_id") }}'
 
-        - name: browser_size
-          description: '{{ doc("browser_size") }}'
-
-        - name: northstar_id
-          description: '{{ doc("northstar_id") }}'
-
-        - name: device_id
-          description: '{{ doc("device_id") }}'
-
   - name: snowplow_sessions
     description: Table containing user session data derived from snowplow_phoenix_events
-
     columns:
         - name: session_id
           description: '{{ doc("session_id") }}'
@@ -299,7 +307,6 @@ models:
 
   - name: phoenix_events_combined
     description: Table combining Snowplow based web event data with legacy Puck data based on 7/12/2019 cutover date
-
     columns:
         - name: event_id
           description: '{{ doc("event_id") }}'
@@ -323,7 +330,7 @@ models:
           description: '{{ doc("query_parameters") }}'
 
         - name: clicked_link_url
-          description: '{{ doc("url") }}'
+          description: '{{ doc("click_event_url") }}'
 
         - name: page_utm_source
           description: '{{ doc("utm_source") }}'
@@ -346,10 +353,10 @@ models:
           description: '{{ doc("referrer_source") }}'
 
         - name: campaign_id
-          description: Internal campaign id from contentful
+          description: '{{ doc("internal_campaign_id") }}'
 
         - name: campaign_name
-          description: "Name of campaign"
+          description: '{{ doc("campaign_name") }}'
 
         - name: modal_type
           description: '{{ doc("modal_type") }}'
@@ -368,7 +375,6 @@ models:
 
   - name: phoenix_sessions_combined
     description: Table combining Snowplow based web session data with legacy Puck data based on 7/12/2019 cutover date
-
     columns:
         - name: session_id
           description: '{{ doc("session_id") }}'
