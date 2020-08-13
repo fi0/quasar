@@ -1,11 +1,13 @@
 SELECT
-    nspt.*
+    nspt.event_id,
+    nspt._fivetran_synced,
+    nspt.payload
 FROM
     {{ source('snowplow_20200813', 'snowplow_event') }} nspt
 UNION
 SELECT
-    ospt.*
+    ospt.event_id,
+    ospt._fivetran_synced,
+    ospt.payload
 FROM
     {{ source('snowplow', 'snowplow_event') }} ospt
-WHERE
-    ospt.collector_tstamp > '2020-07-28'
