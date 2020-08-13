@@ -35,19 +35,19 @@ models:
       # Applies to all files under models/phoenix_events/
       phoenix_events:
         ft_snowplow_events_20200813:
-          alias: ft_snowplow_events
+          alias: ft_snowplow_events_20200813
           materialized: view
           post-hook:
             - "GRANT SELECT ON {{ this }} TO looker"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
         ft_snowplow_payloads_20200813:
-          alias: ft_snowplow_payloads
+          alias: ft_snowplow_payloads_20200813
           materialized: view
           post-hook:
             - "GRANT SELECT ON {{ this }} TO looker"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
         ft_snowplow_ua_parser_context_20200813:
-          alias: ft_snowplow_ua_parser_context
+          alias: ft_snowplow_ua_parser_context_20200813
           materialized: view
           post-hook:
             - "GRANT SELECT ON {{ this }} TO looker"
