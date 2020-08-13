@@ -13,7 +13,7 @@ SELECT
     payload::jsonb #>> '{contextSource}' AS context_source,
     payload::jsonb #>> '{value}' AS context_value,
     _fivetran_synced AS ft_timestamp
-FROM {{ source('snowplow', 'snowplow_event') }}
+FROM {{ source('ft_snowplow_payloads') }}
 
 {% if is_incremental() %}
 -- this filter will only be applied on an incremental run

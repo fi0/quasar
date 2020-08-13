@@ -55,14 +55,14 @@ SELECT
     refr_urlpath AS referrer_path,
     refr_source AS referrer_source
 FROM
-  {{ source('snowplow', 'event') }}
+  {{ ref('ft_snowplow_events') }}
 WHERE
   event_id NOT IN
 (
   SELECT
     event_id
   FROM
-    {{ source('snowplow', 'ua_parser_context') }} u
+    {{ ref('ft_snowplow_ua_parser_context') }} u
   WHERE
     u.useragent_family SIMILAR TO '%(bot|crawl|slurp|spider|archiv|spinn|sniff|seo|audit|survey|pingdom|worm|capture|(browser|screen)shots|analyz|index|thumb|check|facebook|YandexBot|Twitterbot|a_archiver|facebookexternalhit|Bingbot|Googlebot|Baiduspider|360(Spider|User-agent)|Ghost)%'
 )
