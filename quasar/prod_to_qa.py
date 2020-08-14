@@ -21,11 +21,9 @@ prod_pg_opts = {
 
 
 def main():
-    schemas = ["analyst_sandbox", "bertly", "cio", "dosomething",
-               "ft_dosomething_rogue", "ft_gambit_conversations_api",
-               "ft_snowplow", "northstar_ft_userapi", "public"]
+    schemas = os.getenv('DUMP_SCHEMAS')
 
-    for schema in schemas:
+    for schema in schemas.split(" "):
         psql(pg_dump(
             '-h', prod_pg_opts['host'],
             '-U', prod_pg_opts['username'],
