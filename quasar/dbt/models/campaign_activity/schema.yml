@@ -41,7 +41,7 @@ models:
           description: '{{ doc("created_at") }}'
 
         - name: url
-          description: '{{ doc("url") }}'
+          description: '{{ doc("posts_url") }}'
 
         - name: text
           description: '{{ doc("text") }}'
