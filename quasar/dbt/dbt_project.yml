@@ -398,7 +398,6 @@ models:
           alias: ovrd_creator_funnel
           materialized: table
           post-hook:
-            - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_northstar_id_device_id') }} (northstar_id, device_id)"
             - "CREATE INDEX {{ get_index_name(this, 'northstar_id') }} (northstar_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
@@ -406,7 +405,6 @@ models:
           alias: ovrd_group_creator_funnel
           materialized: table
           post-hook:
-            - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_northstar_id_device_id') }} (northstar_id, device_id)"
             - "CREATE INDEX {{ get_index_name(this, 'northstar_id') }} (northstar_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
