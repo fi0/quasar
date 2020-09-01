@@ -32,7 +32,7 @@ models:
           description: '{{ doc("clicked_get_started") }}'
 
         - name: registered
-          description: '{{ doc("registered") }}' 
+          description: '{{ doc("registered") }}'
 
         - name: clicked_share_fb
           description: '{{ doc("clicked_share_fb") }}'
@@ -92,7 +92,70 @@ models:
           description: '{{ doc("clicked_get_started") }}'
 
         - name: registered
-          description: '{{ doc("registered") }}' 
+          description: '{{ doc("registered") }}'
+
+        - name: click_copy_link
+          description: '{{ doc("click_copy_link") }}'
+
+        - name: clicked_any_share
+          description: '{{ doc("clicked_any_share") }}'
+
+        - name: clicked_share_fb
+          description: '{{ doc("clicked_share_fb") }}'
+
+        - name: clicked_share_email
+          description: '{{ doc("clicked_share_email") }}'
+
+        - name: clicked_share_fb_msgr
+          description: '{{ doc("clicked_share_fb_msgr") }}'
+
+        - name: clicked_share_twitter
+          description: '{{ doc("clicked_share_twitter") }}'
+
+        - name: referrals_start
+          description: '{{ doc("referrals_start") }}'
+
+        - name: referrals_completed
+          description: '{{ doc("referrals_completed") }}'
+  
+  - name: ovrd_group_creator_funnel
+    description: Needs a description
+
+    columns:
+        - name: northstar_id
+          description: '{{ doc("northstar_id") }}'
+
+        - name: device_id
+          description: '{{ doc("device_id") }}'
+          tests:
+              - not_null
+
+        - name: journey_begin_ts
+          description: '{{ doc("journey_begin_ts") }}'
+
+        - name: latest_get_started_ts
+          description: '{{ doc("latest_get_started_ts") }}'
+
+        - name: latest_registered_ts
+          description: '{{ doc("latest_registered_ts") }}'
+
+        - name: page_visit
+          description: '{{ doc("page_visit") }}'
+
+        - name: click_join_us
+          description: '{{ doc("click_join_us") }}'
+
+        - name: authenticated
+          description: '{{ doc("authenticated") }}'
+
+        - name: click_start_registration
+          description: '{{ doc("click_start_registration") }}'
+
+        - name: clicked_get_started
+          description: '{{ doc("clicked_get_started") }}'
+
+        - name: registered
+          description: '{{ doc("registered") }}'
 
         - name: click_copy_link
           description: '{{ doc("click_copy_link") }}'
@@ -136,6 +199,26 @@ models:
 
         - name: completed_registration
           description: '{{ doc("completed_registration") }}'
+
+  - name: ovrd_group_recipient_funnel
+    description: Needs a description
+
+    columns:
+        - name: northstar_id
+          description: '{{ doc("northstar_id") }}'
+
+        - name: journey_begin_ts
+          description: '{{ doc("journey_begin_ts") }}'
+
+        - name: clicked_link
+          description: '{{ doc("clicked_link") }}'
+
+        - name: clicked_get_started
+          description: '{{ doc("clicked_get_started") }}'
+
+        - name: completed_registration
+          description: '{{ doc("completed_registration") }}'
+
 
   - name: group
     description: Needs a description
