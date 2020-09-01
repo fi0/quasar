@@ -33,7 +33,7 @@ northstars AS (
     funnel_base
   WHERE
     northstar_id IS NOT NULL
-    AND group_id IS NOT NULL GROUP BY1,
+    AND group_id IS NOT NULL GROUP BY 1,
     2,
     3,
     4
@@ -53,7 +53,7 @@ devices AS (
     )
   WHERE
     n.session_id IS NULL
-    AND b.group_id IS NOT NULL GROUP BY1,
+    AND b.group_id IS NOT NULL GROUP BY 1,
     2,
     3
 ),

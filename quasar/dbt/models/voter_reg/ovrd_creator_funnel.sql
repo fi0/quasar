@@ -104,7 +104,7 @@ creations AS (
     id AS signup_id,
     created_at
   FROM
-    {{ ref('signups') }}
+    {{ ref('signups') }} s
   WHERE
     campaign_id = '9054'
     AND source_bucket = 'web'
