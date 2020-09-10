@@ -1,5 +1,6 @@
 SELECT
     event_id,
+    payload::jsonb #>> '{name}' AS event_name,
     payload::jsonb #>> '{utmSource}' AS utm_source,
     payload::jsonb #>> '{utmMedium}' AS utm_medium,
     payload::jsonb #>> '{utmCampaign}' AS utm_campaign,
