@@ -95,6 +95,8 @@ models:
                 severity: warn
             - not_null:
                 severity: warn
+        - name: event_name
+          description: '{{ doc("event_name") }}'
         - name: ft_timestamp
           description: '[Required] {{ doc("event_datetime") }}'
           tests:
