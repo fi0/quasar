@@ -4,7 +4,8 @@ SELECT
         (regexp_split_to_array(
             (regexp_split_to_array(
                 c.target_url, 'user')
-            )[2], E'[=:]+')
+            -- %3A is the URI Encoded triplet that represents the character ":"
+            )[2], E'[=:]+|%3A')
         )[2],
         E'[^a-zA-Z0-9]')
     )[1] AS northstar_id,
