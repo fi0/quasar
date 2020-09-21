@@ -64,6 +64,8 @@ WHERE
   FROM
     {{ source('snowplow', 'ua_parser_context') }} u
   WHERE
+    -- Created partial B-tree index ua_parser_ctx_uagent_fam
+    -- NOTE recreate index if the regex here changes
     u.useragent_family SIMILAR TO '%(bot|crawl|slurp|spider|archiv|spinn|sniff|seo|audit|survey|pingdom|worm|capture|(browser|screen)shots|analyz|index|thumb|check|facebook|YandexBot|Twitterbot|a_archiver|facebookexternalhit|Bingbot|Googlebot|Baiduspider|360(Spider|User-agent)|Ghost)%'
 )
 
