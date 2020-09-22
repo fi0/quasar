@@ -34,7 +34,6 @@ jobs:
           NORTHSTAR_TARGET_DB: ${{ secrets.NORTHSTAR_TARGET_DB }}
           NORTHSTAR_FT_SCHEMA: ${{ secrets.NORTHSTAR_FT_SCHEMA }}
           FT_SNOWPLOW: ${{ secrets.FT_SNOWPLOW }}
-          FT_SNOWPLOW_20200813: ${{ secrets.FT_SNOWPLOW_20200813 }}
           FT_GAMBIT: ${{ secrets.FT_GAMBIT }}
           FT_ROGUE: ${{ secrets.FT_ROGUE }}
           BERTLY: ${{ secrets.BERTLY }}
