@@ -34,42 +34,27 @@ models:
   ds_dbt:
       # Applies to all files under models/phoenix_events/
       phoenix_events:
-        ft_snowplow_events_20200813:
-          alias: ft_snowplow_events_20200813
-          materialized: view
-          post-hook:
-            - "GRANT SELECT ON {{ this }} TO looker"
-            - "GRANT SELECT ON {{ this }} TO dsanalyst"
-        ft_snowplow_payloads_20200813:
-          alias: ft_snowplow_payloads_20200813
-          materialized: view
-          post-hook:
-            - "GRANT SELECT ON {{ this }} TO looker"
-            - "GRANT SELECT ON {{ this }} TO dsanalyst"
-        ft_snowplow_ua_parser_context_20200813:
-          alias: ft_snowplow_ua_parser_context_20200813
-          materialized: view
-          post-hook:
-            - "GRANT SELECT ON {{ this }} TO looker"
-            - "GRANT SELECT ON {{ this }} TO dsanalyst"
         snowplow_base_event:
           alias: snowplow_base_event
           materialized: incremental
           post-hook:
            - "CREATE INDEX {{ get_index_name(this, 'event_id') }} (event_id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
+          tags: "phoenix_events"
         snowplow_payload_event:
           alias: snowplow_payload_event
           materialized: incremental
           post-hook:
            - "CREATE INDEX {{ get_index_name(this, 'event_id') }} (event_id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
+          tags: "phoenix_events"
         snowplow_raw_events:
           alias: snowplow_raw_events
           materialized: incremental
           post-hook:
             - "CREATE INDEX {{ get_index_name(this, 'event_id') }} (event_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
+          tags: "phoenix_events"
         snowplow_phoenix_events:
           alias: snowplow_phoenix_events
           materialized: incremental
@@ -78,12 +63,14 @@ models:
             - "CREATE INDEX {{ get_index_name(this, 'session_id') }} (session_id)"
             - "GRANT SELECT ON {{ this }} TO looker"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
+          tags: "phoenix_events"
         snowplow_sessions:
           materialized: incremental
           post-hook:
             - "CREATE INDEX {{ get_index_name(this, 'landing_datetime_landing_page') }} (landing_datetime, landing_page)"
             - "GRANT SELECT ON {{ this }} TO looker"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
+          tags: "phoenix_events"
         phoenix_events_combined:
           alias: phoenix_events_combined
           materialized: incremental
@@ -92,6 +79,7 @@ models:
             - "CREATE INDEX {{ get_index_name(this, 'session_id') }} (session_id)"
             - "GRANT SELECT ON {{ this }} TO looker"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
+          tags: "phoenix_events"
         phoenix_sessions_combined:
           alias: phoenix_sessions_combined
           materialized: incremental
@@ -99,6 +87,7 @@ models:
             - "CREATE INDEX {{ get_index_name(this, 'landing_datetime_landing_page') }} (landing_datetime, landing_page)"
             - "GRANT SELECT ON {{ this }} TO looker"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
+          tags: "phoenix_events"
       gambit_messages:
         messages_flattened:
           alias: messages_flattened
@@ -108,6 +97,7 @@ models:
             - "CREATE INDEX {{ get_index_name(this, 'platform_message_id') }} (platform_message_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "gambit_messages"
         gambit_messages_inbound:
           alias: gambit_messages_inbound
           materialized: table
@@ -115,6 +105,7 @@ models:
             - "CREATE INDEX {{ get_index_name(this, 'message_id_created_at_user_id_conversation_id') }} (message_id, created_at, user_id, conversation_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "gambit_messages"
         gambit_messages_outbound:
           alias: gambit_messages_outbound
           materialized: table
@@ -123,6 +114,7 @@ models:
             - "CREATE INDEX {{ get_index_name(this, 'created_at_carrier_failure_code') }} (created_at, carrier_failure_code)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "gambit_messages"
       campaign_activity:
         signups:
           alias: signups
@@ -131,6 +123,7 @@ models:
            - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_created_at_id') }} (created_at, id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "campaign_activity"
         turbovote:
           alias: turbovote
           materialized: table
@@ -138,6 +131,7 @@ models:
            - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_post_id_created_at_updated_at') }} (post_id, created_at, updated_at)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "campaign_activity"
         rock_the_vote:
           alias: rock_the_vote
           materialized: table
@@ -145,6 +139,7 @@ models:
            - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_post_id_started_registration') }} (post_id, started_registration)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "campaign_activity"
         posts:
           alias: posts
           materialized: table
@@ -153,6 +148,7 @@ models:
            - "CREATE INDEX {{ get_index_name(this, 'is_reportback_is_accepted_signup_id_id_post_class') }} (is_reportback, is_accepted, signup_id, id, post_class)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "campaign_activity"
         reportbacks:
           alias: reportbacks
           materialized: table
@@ -161,6 +157,7 @@ models:
            - "CREATE INDEX {{ get_index_name(this, 'post_created_at_campaign_id_post_class_reportback_volume') }} (post_created_at, campaign_id, post_class, reportback_volume)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "campaign_activity"
         device_campaign:
           alias: device_campaign
           materialized: table
@@ -168,6 +165,7 @@ models:
             - "CREATE INDEX {{ get_index_name(this, 'device_id') }} (device_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "campaign_activity"
         first_and_second_signups:
           alias: first_and_second_signups
           materialized: table
@@ -175,6 +173,7 @@ models:
             - "CREATE INDEX {{ get_index_name(this, 'northstar_id') }} (northstar_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "campaign_activity"
       users_table:
         cio_latest_status:
           alias: cio_latest_status
@@ -183,6 +182,7 @@ models:
            - "CREATE INDEX {{ get_index_name(this, 'customer_id') }} (customer_id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "users_table"
         users:
           alias: users
           materialized: table
@@ -191,6 +191,7 @@ models:
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
            - "GRANT SELECT ON {{ this }} TO public"
+          tags: "users_table"
         northstar_users_raw:
           alias: northstar_users_raw
           materialized: table
@@ -200,6 +201,7 @@ models:
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
            - "GRANT SELECT ON {{ this }} TO public"
+          tags: "users_table"
         northstar_users_deduped:
           alias: northstar_users_deduped
           materialized: table
@@ -208,6 +210,7 @@ models:
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
            - "GRANT SELECT ON {{ this }} TO public"
+          tags: "users_table"
       user_activity:
         user_activity:
           alias: user_activity
@@ -217,6 +220,7 @@ models:
            - "CREATE INDEX {{ get_index_name(this, 'most_recent_all_actions') }} (most_recent_all_actions)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "user_activity"
         user_rb_summary:
           alias: user_rb_summary
           materialized: table
@@ -224,6 +228,7 @@ models:
            - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_signup_id') }} (signup_id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "user_activity"
         user_engagement_actions:
           alias: user_engagement_actions
           materialized: table
@@ -231,12 +236,14 @@ models:
            - "CREATE INDEX {{ get_index_name(this, 'northstar_id') }} (northstar_id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "user_activity"
         user_engagement_timeline:
           alias: user_engagement_timeline
           materialized: table
           post-hook:
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "user_activity"
         intermediate:
           campaign_activity_user_created:
             alias: campaign_activity_user_created
@@ -246,6 +253,7 @@ models:
              - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_created_at_northstar_id') }} (created_at, northstar_id)"
              - "GRANT SELECT ON {{ this }} TO dsanalyst"
              - "GRANT SELECT ON {{ this }} TO looker"
+            tags: "user_activity"
           user_actions:
             alias: user_actions
             schema: intermediate
@@ -254,6 +262,7 @@ models:
              - "CREATE INDEX {{ get_index_name(this, 'northstar_id') }} (northstar_id)"
              - "GRANT SELECT ON {{ this }} TO dsanalyst"
              - "GRANT SELECT ON {{ this }} TO looker"
+            tags: "user_activity"
       campaign_info:
         campaign_info:
           alias: campaign_info
@@ -262,17 +271,20 @@ models:
            - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_campaign_run_id_campaign_id') }} (campaign_run_id, campaign_id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "campaign_info"
         campaign_info_international:
           materialized: table
           post-hook:
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "campaign_info"
         contentful_metadata:
           materialized: table
           schema: intermediate
           post-hook:
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "campaign_info"
       bertly:
         bertly_clicks:
           alias: bertly_clicks
@@ -281,6 +293,7 @@ models:
             - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_click_id') }} (click_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "bertly"
       post_actions:
         post_actions:
           alias: post_actions
@@ -289,6 +302,7 @@ models:
             - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_created_at_id') }} (created_at, id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "post_actions"
       member_event_log:
         member_event_log:
           alias: member_event_log
@@ -298,6 +312,7 @@ models:
            - "CREATE INDEX {{ get_index_name(this, 'northstar_id_timestamp') }} (northstar_id, timestamp)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "member_event_log"
       news_subscription:
         email_subscription_topics_raw:
           alias: email_subscription_topics_raw
@@ -305,6 +320,7 @@ models:
           post-hook:
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "news_subscription"
         user_newsletter_subscriptions:
           alias: user_newsletter_subscriptions
           materialized: table
@@ -312,6 +328,7 @@ models:
            - "CREATE INDEX {{ get_index_name(this, 'topic_subscribed_at_northstar_id') }} (topic_subscribed_at, northstar_id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "news_subscription"
       user_journey:
         device_northstar:
           alias: device_northstar
@@ -321,6 +338,7 @@ models:
             - "CREATE INDEX {{ get_index_name(this, 'northstar_id') }} (northstar_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "user_journey"
       tmc_users:
         tmc_users_out:
           alias: tmc_users_out
@@ -331,6 +349,7 @@ models:
           post-hook:
             - "ALTER TABLE {{ this }} SET SCHEMA tmc_out"
             - "GRANT SELECT ON ALL TABLES IN SCHEMA tmc_out TO tmc"
+          tags: "tmc_users"
         # This table is a carbon copy of the source table "tmc_in.tmc_users_matched". We're creating
         # a copy of the table in the public schema since the underlying table is regenerated daily by TMC and
         # is essentially a "raw" layer table we don't want to source directly in our data analytics. This also gives
@@ -345,6 +364,7 @@ models:
             - "GRANT SELECT ON {{ this }} TO looker"
             # Revert permissions back to "tmc" user after processing is done.
             - "ALTER TABLE tmc_in.tmc_users_matched OWNER TO tmc"
+          tags: "tmc_users"
       user_newsletter_signups:
         user_created:
           alias: user_created
@@ -352,6 +372,7 @@ models:
           post-hook:
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
+          tags: "user_newsletter_signups"
         user_newsletter_cal_multi:
           alias: user_newsletter_cal_multi
           materialized: table
@@ -359,6 +380,7 @@ models:
             - "CREATE INDEX {{ get_index_name(this, 'northstar_id') }} (northstar_id)"
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
+          tags: "user_newsletter_signups"
         user_newsletter_cal_status:
           alias: user_newsletter_cal_status
           materialized: table
@@ -366,12 +388,14 @@ models:
             - "CREATE INDEX {{ get_index_name(this, 'northstar_id') }} (northstar_id)"
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
+          tags: "user_newsletter_signups"
         user_newsletter_signups:
           alias: user_newsletter_signups
           materialized: table
           post-hook:
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
+          tags: "user_newsletter_signups"
       voter_reg:
         voter_reg_quiz_funnel:
           alias: voter_reg_quiz_funnel
@@ -380,6 +404,7 @@ models:
             - "CREATE INDEX {{ get_index_name(this, 'northstar_id_device_id_journey_begin_ts') }} (northstar_id, device_id, journey_begin_ts)"
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
+          tags: "voter_reg"
         ovrd_recipient_funnel:
           alias: ovrd_recipient_funnel
           materialized: table
@@ -387,6 +412,7 @@ models:
             - "CREATE INDEX {{ get_index_name(this, 'northstar_id') }}(northstar_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "voter_reg"
         ovrd_group_recipient_funnel:
           alias: ovrd_group_recipient_funnel
           materialized: table
@@ -394,6 +420,7 @@ models:
             - "CREATE INDEX {{ get_index_name(this, 'northstar_id') }}(northstar_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "voter_reg"
         ovrd_creator_funnel:
           alias: ovrd_creator_funnel
           materialized: table
@@ -401,6 +428,7 @@ models:
             - "CREATE INDEX {{ get_index_name(this, 'northstar_id') }} (northstar_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "voter_reg"
         ovrd_group_creator_funnel:
           alias: ovrd_group_creator_funnel
           materialized: table
@@ -408,18 +436,21 @@ models:
             - "CREATE INDEX {{ get_index_name(this, 'northstar_id') }} (northstar_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
             - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "voter_reg"
         groups:
           alias: groups
           materialized: table
           post-hook:
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
+          tags: "voter_reg"
         group_types:
           alias: group_types
           materialized: table
           post-hook:
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
+          tags: "voter_reg"
       cio:
         cio_customer_event:
           materialized: table
@@ -429,6 +460,7 @@ models:
             - "CREATE INDEX {{ get_index_name(this, 'timestamp_nulls_first_event_type') }} (timestamp nulls first, event_type)"
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
+          tags: "cio"
         cio_email_sent_event:
           materialized: table
           post-hook:
@@ -436,6 +468,7 @@ models:
             - "CREATE INDEX {{ get_index_name(this, 'timestamp_nulls_first') }} (timestamp nulls first)"
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
+          tags: "cio"
         cio_email_bounced_event:
           materialized: table
           post-hook:
@@ -443,6 +476,7 @@ models:
             - "CREATE INDEX {{ get_index_name(this, 'timestamp_nulls_first') }} (timestamp nulls first)"
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
+          tags: "cio"
         cio_email_event:
           materialized: table
           post-hook:
@@ -451,3 +485,4 @@ models:
             - "CREATE INDEX {{ get_index_name(this, 'timestamp_nulls_first_event_type') }} (timestamp nulls first, event_type)"
             - "GRANT SELECT ON {{ this }} to dsanalyst"
             - "GRANT SELECT ON {{ this }} to looker"
+          tags: "cio"

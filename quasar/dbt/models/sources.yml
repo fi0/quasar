@@ -72,13 +72,6 @@ sources:
       - name: snowplow_event
       - name: ua_parser_context
 
-  - name: snowplow_20200813
-    schema: '{{ env_var("FT_SNOWPLOW_20200813") }}'
-    tables:
-      - name: event
-      - name: snowplow_event
-      - name: ua_parser_context
-
   - name: tmc
     schema: '{{ env_var("TMC_USERS_MATCHED_SCHEMA") }}'
     tables:

@@ -71,11 +71,11 @@ class ETLMonitoring:
             'raw_gambit_conversations':
                 """SELECT count(*) FROM ft_gambit_conversations_api.conversations""",
             'raw_snowplow_struct_event':
-                'SELECT count(*) FROM ft_snowplow_20200813.snowplow_event',
+                'SELECT count(*) FROM ft_snowplow.snowplow_event',
             'raw_snowplow_event':
-                'SELECT count(*) FROM ft_snowplow_20200813.event',
+                'SELECT count(*) FROM ft_snowplow.event',
             'raw_snowplow_ua_parser_context':
-                'SELECT count(*) FROM ft_snowplow_20200813.ua_parser_context',
+                'SELECT count(*) FROM ft_snowplow.ua_parser_context',
             'flattened_gambit_messages':
                 """SELECT count(*)
                     FROM public.messages_flattened""",
