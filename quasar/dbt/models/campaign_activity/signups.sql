@@ -38,9 +38,5 @@ FROM
 WHERE
 	sd._fivetran_deleted = 'false'
 	AND sd.deleted_at IS NULL
-	AND sd."source" IS DISTINCT
-FROM
-	'rogue-oauth'
-	-- We're using full text search to find all non test signups
-	-- This column is using a GIN index (manually created on Prod) to speed up the query
-	AND to_tsvector('english', sd.why_participated) @@ to_tsquery('!inspector & !test & !ghost')
+	AND sd."source" IS DISTINCT FROM 'rogue-oauth'
+	and sd.why_participated IS DISTINCT FROM 'Testing from Ghost Inspector!'
