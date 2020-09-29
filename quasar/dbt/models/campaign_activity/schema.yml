@@ -8,6 +8,8 @@ models:
         description: City name where the club is located at
       - name: created_at
         description: '{{ doc("created_at") }}'
+      - name: id
+        description: Club id
       - name: leader_id
         description: Northstar ID of the member leading the club
       - name: location
@@ -21,131 +23,113 @@ models:
   - name: posts
     description: A table containing information about posts
     columns:
-        - name: northstar_id
-          description: '{{ doc("northstar_id") }}'
-        - name: id
-          description: '{{ doc("id") }}'
-        - name: type
-          description: '{{ doc("type") }}'
-
-        - name: action
-          description: '{{ doc("action") }}'
-
-        - name: status
-          description: '{{ doc("status") }}'
-
-        - name: quantity
-          description: '{{ doc("quantity") }}'
-
-        - name: campaign_id
-          description: '{{ doc("campaign_id") }}'
-
-        - name: reportback_volume
-          description: '{{ doc("reportback_volume") }}'
-
-        - name: source
-          description: '{{ doc("source") }}'
-
-        - name: source_bucket
-          description: '{{ doc("source_bucket") }}'
-
-        - name: created_at
-          description: '{{ doc("created_at") }}'
-
-        - name: url
-          description: '{{ doc("posts_url") }}'
-
-        - name: text
-          description: '{{ doc("text") }}'
-
-        - name: signup_id
-          description: '{{ doc("signup_id") }}'
-
-        - name: post_class
-          description: '{{ doc("post_class") }}'
-
-        - name: is_accepted
-          description: '{{ doc("is_accepted") }}'
-
-        - name: action_id
-          description: '{{ doc("action_id") }}'
-
-        - name: location
-          description: '{{ doc("location") }}'
-
-        - name: postal_code
-          description: '{{ doc("postal_code") }}'
-
-        - name: is_reportback
-          description: '{{ doc("is_reportback") }}'
-
-        - name: civic_action
-          description: '{{ doc("civic_action") }}'
-
-        - name: scholarship_entry
-          description: '{{ doc("scholarship_entry") }}'
-
-        - name: school_id
-          description: '{{ doc("school_id") }}'
-
+      - name: action
+        description: '{{ doc("action") }}'
+      - name: action_id
+        description: '{{ doc("action_id") }}'
+      - name: campaign_id
+        description: '{{ doc("campaign_id") }}'
+      - name: civic_action
+        description: '{{ doc("civic_action") }}'
+      - name: club_id
+        description: Club id
+      - name: created_at
+        description: '{{ doc("created_at") }}'
+      - name: id
+        description: '{{ doc("id") }}'
+      - name: is_accepted
+        description: '{{ doc("is_accepted") }}'
+      - name: is_reportback
+        description: '{{ doc("is_reportback") }}'
+      - name: location
+        description: '{{ doc("location") }}'
+      - name: northstar_id
+        description: '{{ doc("northstar_id") }}'
+      - name: post_class
+        description: '{{ doc("post_class") }}'
+      - name: postal_code
+        description: '{{ doc("postal_code") }}'
+      - name: quantity
+        description: '{{ doc("quantity") }}'
+      - name: reportback_volume
+        description: '{{ doc("reportback_volume") }}'
+      - name: school_id
+        description: '{{ doc("school_id") }}'
+      - name: scholarship_entry
+        description: '{{ doc("scholarship_entry") }}'
+      - name: signup_id
+        description: '{{ doc("signup_id") }}'
+      - name: source
+        description: '{{ doc("source") }}'
+      - name: source_bucket
+        description: '{{ doc("source_bucket") }}'
+      - name: status
+        description: '{{ doc("status") }}'
+      - name: text
+        description: '{{ doc("text") }}'
+      - name: type
+        description: '{{ doc("type") }}'
+      - name: url
+        description: '{{ doc("posts_url") }}'
   - name: reportbacks
     description: A table containing information about reportbacks
-
     columns:
-        - name: northstar_id
-          description: '{{ doc("northstar_id") }}'
+      - name: northstar_id
+        description: '{{ doc("northstar_id") }}'
 
-        - name: post_id
-          description: '{{ doc("id") }}'
+      - name: post_id
+        description: '{{ doc("id") }}'
 
-        - name: signup_id
-          description: '{{ doc("signup_id") }}'
+      - name: signup_id
+        description: '{{ doc("signup_id") }}'
 
-        - name: campaign_id
-          description: '{{ doc("campaign_id") }}'
+      - name: campaign_id
+        description: '{{ doc("campaign_id") }}'
 
-        - name: post_action
-          description: '{{ doc("action") }}'
+      - name: club_id
+        description: Club id
 
-        - name: post_type
-          description: '{{ doc("type") }}'
+      - name: post_action
+        description: '{{ doc("action") }}'
 
-        - name: post_status
-          description: '{{ doc("status") }}'
+      - name: post_type
+        description: '{{ doc("type") }}'
 
-        - name: post_class
-          description: '{{ doc("post_class") }}'
+      - name: post_status
+        description: '{{ doc("status") }}'
 
-        - name: post_created_at
-          description: '{{ doc("created_at") }}'
+      - name: post_class
+        description: '{{ doc("post_class") }}'
 
-        - name: post_source
-          description: '{{ doc("source") }}'
+      - name: post_created_at
+        description: '{{ doc("created_at") }}'
 
-        - name: post_source_bucket
-          description: '{{ doc("source_bucket") }}'
+      - name: post_source
+        description: '{{ doc("source") }}'
 
-        - name: reportback_volume
-          description: '{{ doc("reportback_volume") }}'        
+      - name: post_source_bucket
+        description: '{{ doc("source_bucket") }}'
 
-        - name: civic_action
-          description: '{{ doc("civic_action") }}'
+      - name: reportback_volume
+        description: '{{ doc("reportback_volume") }}'
 
-        - name: scholarship_entry
-          description: '{{ doc("scholarship_entry") }}'
+      - name: civic_action
+        description: '{{ doc("civic_action") }}'
 
-        - name: location
-          description: '{{ doc("location") }}'
+      - name: scholarship_entry
+        description: '{{ doc("scholarship_entry") }}'
 
-        - name: postal_code
-          description: '{{ doc("postal_code") }}'
+      - name: location
+        description: '{{ doc("location") }}'
 
-        - name: post_bucket
-          description: Grouping to which a post belongs (e.g. photo_rbs, phone_calls, social)
+      - name: postal_code
+        description: '{{ doc("postal_code") }}'
+
+      - name: post_bucket
+        description: Grouping to which a post belongs (e.g. photo_rbs, phone_calls, social)
 
   - name: rock_the_vote
     description: A table containing ingested Rock the Vote data
-
     columns:
         - name: post_id
           description: '{{ doc("id") }}'
@@ -172,46 +156,47 @@ models:
     description: A table containing information about signups
 
     columns:
-        - name: northstar_id
-          description: '{{ doc("northstar_id") }}'
-          tests:
-              - not_null
+      - name: northstar_id
+        description: '{{ doc("northstar_id") }}'
 
-        - name: id
-          description: '{{ doc("id") }}'
+      - name: id
+        description: '{{ doc("id") }}'
 
-        - name: campaign_id
-          description: '{{ doc("campaign_id") }}'
+      - name: campaign_id
+        description: '{{ doc("campaign_id") }}'
 
-        - name: campaign_run_id
-          description: Defined in web events docs. Fix this.
+      - name: campaign_run_id
+        description: Defined in web events docs. Fix this.
 
-        - name: why_participated
-          description: '{{ doc("why_participated") }}'
+      - name: club_id
+        description: Club id
 
-        - name: source
-          description: '{{ doc("source") }}'
+      - name: why_participated
+        description: '{{ doc("why_participated") }}'
 
-        - name: details
-          description: '{{ doc("details") }}'
+      - name: source
+        description: '{{ doc("source") }}'
 
-        - name: source_bucket
-          description: '{{ doc("source_bucket") }}'
+      - name: details
+        description: '{{ doc("details") }}'
 
-        - name: created_at
-          description: '{{ doc("created_at") }}'
+      - name: source_bucket
+        description: '{{ doc("source_bucket") }}'
 
-        - name: source_details
-          description: '{{ doc("source_details") }}'
+      - name: created_at
+        description: '{{ doc("created_at") }}'
 
-        - name: utm_medium
-          description: '{{ doc("utm_medium") }}'
+      - name: source_details
+        description: '{{ doc("source_details") }}'
 
-        - name: utm_source
-          description: '{{ doc("utm_source") }}'
+      - name: utm_medium
+        description: '{{ doc("utm_medium") }}'
 
-        - name: utm_campaign
-          description: '{{ doc("utm_campaign") }}'
+      - name: utm_source
+        description: '{{ doc("utm_source") }}'
+
+      - name: utm_campaign
+        description: '{{ doc("utm_campaign") }}'
 
   - name: turbovote
     description: A table containing information about Turbovote registrations
