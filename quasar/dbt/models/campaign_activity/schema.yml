@@ -1,18 +1,30 @@
 version: 2
 
 models:
+  - name: clubs
+    description: Contains the DS club names, location, and leaders
+    columns:
+      - name: city
+        description: City name where the club is located at
+      - name: created_at
+        description: '{{ doc("created_at") }}'
+      - name: leader_id
+        description: Northstar ID of the member leading the club
+      - name: location
+        description: ISO-3166-2:US subdivision standard code for the club's location, e.g. New York (US-NY)
+      - name: name
+        description: The club's name
+      - name: school_id
+        description: '{{ doc("school_id") }}'
+      - name: updated_at
+        description: '{{ doc("updated_at") }}'
   - name: posts
     description: A table containing information about posts
-
     columns:
         - name: northstar_id
           description: '{{ doc("northstar_id") }}'
-          tests:
-              - not_null
-
         - name: id
           description: '{{ doc("id") }}'
-
         - name: type
           description: '{{ doc("type") }}'
 
@@ -82,8 +94,6 @@ models:
     columns:
         - name: northstar_id
           description: '{{ doc("northstar_id") }}'
-          tests:
-              - not_null
 
         - name: post_id
           description: '{{ doc("id") }}'
