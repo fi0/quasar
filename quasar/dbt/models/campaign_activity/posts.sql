@@ -2,6 +2,7 @@ SELECT
 	a.name AS "action",
 	pd.action_id,
 	pd.campaign_id,
+	pd.club_id,
 	CASE
 		WHEN pd."type" = 'phone-call' AND pd.details <> ''
 		THEN (pd.details::json ->> 'call_timestamp')::timestamptz
