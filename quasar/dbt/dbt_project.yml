@@ -116,29 +116,28 @@ models:
             - "GRANT SELECT ON {{ this }} TO looker"
           tags: "gambit_messages"
       campaign_activity:
-        signups:
-          alias: signups
+        clubs:
+          alias: clubs
           materialized: table
           post-hook:
-           - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_created_at_id') }} (created_at, id)"
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
           tags: "campaign_activity"
-        turbovote:
-          alias: turbovote
+        device_campaign:
+          alias: device_campaign
           materialized: table
           post-hook:
-           - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_post_id_created_at_updated_at') }} (post_id, created_at, updated_at)"
-           - "GRANT SELECT ON {{ this }} TO dsanalyst"
-           - "GRANT SELECT ON {{ this }} TO looker"
+            - "CREATE INDEX {{ get_index_name(this, 'device_id') }} (device_id)"
+            - "GRANT SELECT ON {{ this }} TO dsanalyst"
+            - "GRANT SELECT ON {{ this }} TO looker"
           tags: "campaign_activity"
-        rock_the_vote:
-          alias: rock_the_vote
+        first_and_second_signups:
+          alias: first_and_second_signups
           materialized: table
           post-hook:
-           - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_post_id_started_registration') }} (post_id, started_registration)"
-           - "GRANT SELECT ON {{ this }} TO dsanalyst"
-           - "GRANT SELECT ON {{ this }} TO looker"
+            - "CREATE INDEX {{ get_index_name(this, 'northstar_id') }} (northstar_id)"
+            - "GRANT SELECT ON {{ this }} TO dsanalyst"
+            - "GRANT SELECT ON {{ this }} TO looker"
           tags: "campaign_activity"
         posts:
           alias: posts
@@ -158,21 +157,29 @@ models:
            - "GRANT SELECT ON {{ this }} TO dsanalyst"
            - "GRANT SELECT ON {{ this }} TO looker"
           tags: "campaign_activity"
-        device_campaign:
-          alias: device_campaign
+        rock_the_vote:
+          alias: rock_the_vote
           materialized: table
           post-hook:
-            - "CREATE INDEX {{ get_index_name(this, 'device_id') }} (device_id)"
-            - "GRANT SELECT ON {{ this }} TO dsanalyst"
-            - "GRANT SELECT ON {{ this }} TO looker"
+           - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_post_id_started_registration') }} (post_id, started_registration)"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
           tags: "campaign_activity"
-        first_and_second_signups:
-          alias: first_and_second_signups
+        signups:
+          alias: signups
           materialized: table
           post-hook:
-            - "CREATE INDEX {{ get_index_name(this, 'northstar_id') }} (northstar_id)"
-            - "GRANT SELECT ON {{ this }} TO dsanalyst"
-            - "GRANT SELECT ON {{ this }} TO looker"
+           - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_created_at_id') }} (created_at, id)"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
+          tags: "campaign_activity"
+        turbovote:
+          alias: turbovote
+          materialized: table
+          post-hook:
+           - "CREATE UNIQUE INDEX {{ get_index_name(this, 'unique_post_id_created_at_updated_at') }} (post_id, created_at, updated_at)"
+           - "GRANT SELECT ON {{ this }} TO dsanalyst"
+           - "GRANT SELECT ON {{ this }} TO looker"
           tags: "campaign_activity"
       users_table:
         cio_latest_status:

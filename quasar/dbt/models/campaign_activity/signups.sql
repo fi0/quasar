@@ -3,6 +3,7 @@ SELECT
 	sd.id AS id,
 	sd.campaign_id AS campaign_id,
 	sd.campaign_run_id AS campaign_run_id,
+	sd.club_id,
 	sd.why_participated AS why_participated,
 	sd."source" AS "source",
 	sd.details,

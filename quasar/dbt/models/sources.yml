@@ -11,11 +11,12 @@ sources:
     schema: '{{ env_var("FT_ROGUE") }}'
     tables:
       - name: actions
-      - name: posts
-      - name: signups
       - name: campaigns
+      - name: clubs
       - name: groups
       - name: group_types
+      - name: posts
+      - name: signups
 
   - name: campaign_info_historical
     # TODO: switch to '{{ env_var("HISTORICAL_ANALYTICS_SCHEMA") }}'

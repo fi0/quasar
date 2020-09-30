@@ -1,6 +1,7 @@
 SELECT
 	u.northstar_id,
 	u.created_at,
+	u.club_id,
 	umax.max_last_auth AS last_logged_in,
 	umax.max_last_access AS last_accessed,
 	umax.max_last_message AS last_messaged_at,

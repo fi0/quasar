@@ -25,6 +25,9 @@ models:
         - name: created_at
           description: '{{ doc("created_at") }}'
 
+        - name: club_id
+          description: Club id
+
         - name: last_logged_in
           description: '{{ doc("last_logged_in") }}'
 
@@ -124,6 +127,9 @@ models:
 
         - name: country
           description: '{{ doc("country") }}'
+
+        - name: club_id
+          description: Club id
 
         - name: birthdate
           description: '{{ doc("birthdate") }}'
