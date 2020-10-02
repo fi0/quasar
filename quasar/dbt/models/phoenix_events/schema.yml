@@ -126,111 +126,111 @@ models:
   - name: snowplow_raw_events
     description: Table combining snowplow_base_event and snowplow_payload_event into rich raw data source for all clickstream info
     columns:
-        - name: block_id
-          description: '{{ doc("block_id") }}'
-        - name: browser_size
-          description: '{{ doc("browser_size") }}'
-        - name: campaign_id
-          description: '{{ doc("internal_campaign_id") }}'
-        - name: clicked_link_url
-          description: '{{ doc("click_event_url") }}'
-        - name: context_source
-          description: '{{ doc("context_source") }}'
-        - name: context_value
-          description: '{{ doc("context_value") }}'
-        - name: device_id
-          description: '[Required] {{ doc("device_id") }}'
-          tests:
-            - not_null:
-                severity: warn
-        - name: event_datetime
-          description: '{{ doc("event_datetime") }}'
-        - name: event_datetime
-          description: '[Required] {{ doc("event_datetime") }}'
-          tests:
-            - not_null:
-                severity: warn
-        - name: event_id
-          description: '[Required] {{ doc("event_id") }}'
-          tests:
-            - unique:
-                severity: warn
-            - not_null:
-                severity: warn
-        - name: event_name
-          description: '{{ doc("event_name") }}'
-        - name: event_source
-          description: '[Required] {{ doc("event_source") }}'
-          tests:
-            - not_null:
-                severity: warn
-        - name: event_type
-          description: '[Required] {{ doc("event_type") }}'
-          tests:
-            - not_null:
-                severity: warn
-        - name: group_id
-          description: '{{ doc("group_id") }}'
-        - name: host
-          description: '[Required] {{ doc("host") }}'
-          tests:
-            - not_null:
-                severity: warn
-        - name: modal_type
-          description: '[Required conditionally] {{ doc("modal_type") }}'
-          tests:
-            - not_null_where:
-                condition: "event_name similar to '%(opened_modal|closed_modal)%'"
-                severity: warn
-        - name: northstar_id
-          description: '{{ doc("northstar_id") }}'
-        - name: page_id
-          description: '{{ doc("page_id") }}'
-        - name: path
-          description: '[Required] {{ doc("path") }}'
-          tests:
-            - not_null:
-                severity: warn
-        - name: query_parameters
-          description: '{{ doc("query_parameters") }}'
-        - name: referrer_host
-          description: '{{ doc("referrer_host") }}'
-        - name: referrer_path
-          description: '{{ doc("referrer_path") }}'
-        - name: referrer_source
-          description: '{{ doc("referrer_source") }}'
-        - name: se_action
-          description: '[Required conditionally] {{ doc("se_action") }}'
-          tests:
-            - not_null_where:
-                condition: "event_type = 'se'"
-                severity: warn
-        - name: se_category
-          description: '[Required conditionally] {{ doc("se_category") }}'
-          tests:
-            - not_null_where:
-                condition: "event_type = 'se'"
-                severity: warn
-        - name: se_label
-          description: '{{ doc("se_label") }}'
-        - name: search_query
-          description: '{{ doc("search_query") }}'
-        - name: session_counter
-          description: '[Required] {{ doc("session_counter") }}'
-          tests:
-            - not_null:
-                severity: warn
-        - name: session_id
-          description: '[Required] {{ doc("session_id") }}'
-          tests:
-            - not_null:
-                severity: warn
-        - name: utm_campaign
-          description: '{{ doc("utm_campaign") }}'
-        - name: utm_medium
-          description: '{{ doc("utm_medium") }}'
-        - name: utm_source
-          description: '{{ doc("utm_source") }}'
+      - name: block_id
+        description: '{{ doc("block_id") }}'
+      - name: browser_size
+        description: '{{ doc("browser_size") }}'
+      - name: campaign_id
+        description: '{{ doc("internal_campaign_id") }}'
+      - name: clicked_link_url
+        description: '{{ doc("click_event_url") }}'
+      - name: context_source
+        description: '{{ doc("context_source") }}'
+      - name: context_value
+        description: '{{ doc("context_value") }}'
+      - name: device_id
+        description: '[Required] {{ doc("device_id") }}'
+        tests:
+          - not_null:
+              severity: warn
+      - name: event_datetime
+        description: '{{ doc("event_datetime") }}'
+      - name: event_datetime
+        description: '[Required] {{ doc("event_datetime") }}'
+        tests:
+          - not_null:
+              severity: warn
+      - name: event_id
+        description: '[Required] {{ doc("event_id") }}'
+        tests:
+          - unique:
+              severity: warn
+          - not_null:
+              severity: warn
+      - name: event_name
+        description: '{{ doc("event_name") }}'
+      - name: event_source
+        description: '[Required] {{ doc("event_source") }}'
+        tests:
+          - not_null:
+              severity: warn
+      - name: event_type
+        description: '[Required] {{ doc("event_type") }}'
+        tests:
+          - not_null:
+              severity: warn
+      - name: group_id
+        description: '{{ doc("group_id") }}'
+      - name: host
+        description: '[Required] {{ doc("host") }}'
+        tests:
+          - not_null:
+              severity: warn
+      - name: modal_type
+        description: '[Required conditionally] {{ doc("modal_type") }}'
+        tests:
+          - not_null_where:
+              condition: "event_name similar to '%(opened_modal|closed_modal)%'"
+              severity: warn
+      - name: northstar_id
+        description: '{{ doc("northstar_id") }}'
+      - name: page_id
+        description: '{{ doc("page_id") }}'
+      - name: path
+        description: '[Required] {{ doc("path") }}'
+        tests:
+          - not_null:
+              severity: warn
+      - name: query_parameters
+        description: '{{ doc("query_parameters") }}'
+      - name: referrer_host
+        description: '{{ doc("referrer_host") }}'
+      - name: referrer_path
+        description: '{{ doc("referrer_path") }}'
+      - name: referrer_source
+        description: '{{ doc("referrer_source") }}'
+      - name: se_action
+        description: '[Required conditionally] {{ doc("se_action") }}'
+        tests:
+          - not_null_where:
+              condition: "event_type = 'se'"
+              severity: warn
+      - name: se_category
+        description: '[Required conditionally] {{ doc("se_category") }}'
+        tests:
+          - not_null_where:
+              condition: "event_type = 'se'"
+              severity: warn
+      - name: se_label
+        description: '{{ doc("se_label") }}'
+      - name: search_query
+        description: '{{ doc("search_query") }}'
+      - name: session_counter
+        description: '[Required] {{ doc("session_counter") }}'
+        tests:
+          - not_null:
+              severity: warn
+      - name: session_id
+        description: '[Required] {{ doc("session_id") }}'
+        tests:
+          - not_null:
+              severity: warn
+      - name: utm_campaign
+        description: '{{ doc("utm_campaign") }}'
+      - name: utm_medium
+        description: '{{ doc("utm_medium") }}'
+      - name: utm_source
+        description: '{{ doc("utm_source") }}'
 
   - name: snowplow_phoenix_events
     description: Table transforming snowplow_raw_event into rich derived data table for all clickstream info
@@ -251,38 +251,20 @@ models:
           description: '{{ doc("context_value") }}'
         - name: device_id
           description: '[Required] {{ doc("device_id") }}'
-          tests:
-            - not_null:
-                severity: warn
         - name: event_datetime
           description: '[Required] {{ doc("event_datetime") }}'
-          tests:
-            - not_null:
-                severity: warn
         - name: event_id
           description: '[Required] {{ doc("event_id") }}'
-          tests:
-            - unique:
-                severity: warn
-            - not_null:
-                severity: warn
         - name: event_name
           description: '{{ doc("event_name") }}'
         - name: event_source
           description: '[Required] {{ doc("event_source") }}'
-          tests:
-            - not_null:
-                severity: warn
         - name: group_id
           description: '{{ doc("group_id") }}'
         - name: host
           description: "URL domain"
         - name: modal_type
           description: '[Required conditionally] {{ doc("modal_type") }}'
-          tests:
-            - not_null_where:
-                condition: "event_name similar to '%(opened_modal|closed_modal)%'"
-                severity: warn
         - name: northstar_id
           description: '{{ doc("northstar_id") }}'
         - name: page_id
@@ -295,9 +277,6 @@ models:
           description: '{{ doc("utm_source") }}'
         - name: path
           description: '[Required] {{ doc("path") }}'
-          tests:
-            - not_null:
-                severity: warn
         - name: query_parameters
           description: '{{ doc("query_parameters") }}'
         - name: referrer_host
