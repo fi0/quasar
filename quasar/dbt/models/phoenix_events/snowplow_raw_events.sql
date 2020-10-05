@@ -1,3 +1,4 @@
+-- Combines attributes from the ft_snowplow.event and ft_snowplow.snowplow_event schemas
 SELECT
 	b.event_id,
 	b.event_source,
