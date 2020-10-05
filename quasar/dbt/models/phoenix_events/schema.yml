@@ -294,25 +294,57 @@ models:
     description: Table containing user session data derived from snowplow_phoenix_events
     columns:
         - name: days_since_last_session
-          description: '{{ doc("days_since_last_session") }}'
+          description: '[Required] {{ doc("days_since_last_session") }}'
+          tests:
+            - not_null:
+                severity: warn
         - name: device_id
-          description: '{{ doc("device_id") }}'
+          description: '[Required] {{ doc("device_id") }}'
+          tests:
+            - unique:
+                severity: warn
+            - not_null:
+                severity: warn
         - name: ending_datetime
-          description: '{{ doc("ending_datetime") }}'
+          description: '[Required] {{ doc("ending_datetime") }}'
+          tests:
+            - not_null:
+                severity: warn
         - name: event_id
-          description: '{{ doc("event_id") }}'
+          description: '[Required] First event id of the session. {{ doc("event_id") }}'
+          tests:
+            - not_null:
+                severity: warn
         - name: exit_page
-          description: '{{ doc("exit_page") }}'
+          description: '[Required] {{ doc("exit_page") }}'
+          tests:
+            - not_null:
+                severity: warn
         - name: landing_datetime
-          description: '{{ doc("landing_datetime") }}'
+          description: '[Required] {{ doc("landing_datetime") }}'
+          tests:
+            - not_null:
+                severity: warn
         - name: landing_page
-          description: '{{ doc("landing_page") }}'
-        - name: num_pages_views
-          description: '{{ doc("num_pages_views") }}'
+          description: '[Required] {{ doc("landing_page") }}'
+          tests:
+            - not_null:
+                severity: warn
+        - name: num_pages_viewed
+          description: '[Required] {{ doc("num_pages_viewed") }}'
+          tests:
+            - not_null:
+                severity: warn
         - name: session_duration_seconds
-          description: '{{ doc("session_duration_seconds") }}'
+          description: '[Required] {{ doc("session_duration_seconds") }}'
+          tests: # also add custom range test, sessions shouldn't last more than 1 hour
+            - not_null:
+                severity: warn
         - name: session_id
-          description: '{{ doc("session_id") }}'
+          description: '[Required] {{ doc("session_id") }}'
+          tests:
+            - not_null:
+                severity: warn
         - name: session_referrer_host
           description: '{{ doc("referrer_host") }} For this session.'
         - name: session_utm_campaign
@@ -415,8 +447,8 @@ models:
         - name: session_duration_seconds
           description: '{{ doc("session_duration_seconds") }}'
 
-        - name: num_pages_views
-          description: '{{ doc("num_pages_views") }}'
+        - name: num_pages_viewed
+          description: '{{ doc("num_pages_viewed") }}'
 
         - name: landing_page
           description: '{{ doc("landing_page") }}'

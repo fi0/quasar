@@ -78,7 +78,8 @@ s.session_duration_seconds,
 s.num_pages_viewed,
 p.landing_page,
 p.exit_page,
-date_part('day', s.landing_datetime - t.prev_session_endtime) AS days_since_last_session
+-- default to 0 days if there was no previous session
+COALESCE(date_part('day', s.landing_datetime - t.prev_session_endtime),0) AS days_since_last_session
 FROM sessions s
 LEFT JOIN entry_exit_pages p
 ON p.session_id = s.session_id
