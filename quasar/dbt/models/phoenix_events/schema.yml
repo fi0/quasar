@@ -310,7 +310,7 @@ models:
           tests:
             - not_null:
                 severity: warn
-        - name: event_id
+        - name: first_event_id
           description: '[Required] First event id of the session. {{ doc("event_id") }}'
           tests:
             - not_null:
