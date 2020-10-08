@@ -337,8 +337,10 @@ models:
                 severity: warn
         - name: session_duration_seconds
           description: '[Required] {{ doc("session_duration_seconds") }}'
-          tests: # also add custom range test, sessions shouldn't last more than 1 hour
-            - not_null:
+          tests:
+            - is_between:
+                bottom_number: 0
+                top_number: 3600 # seconds
                 severity: warn
         - name: session_id
           description: '[Required] {{ doc("session_id") }}'
