@@ -47,7 +47,7 @@ SELECT
 			AND pd.status = 'confirmed'
 		) THEN 'self-reported registrations'
 		WHEN (
-			pd.post_class ILIKE '%vote%'
+			pd.post_class ILIKE 'voter-reg - %'
 			AND pd.status <> 'confirmed'
 		) THEN 'voter_registrations'
 		WHEN pd."type" ILIKE '%photo%'
