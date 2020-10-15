@@ -55,15 +55,6 @@ models:
             - "CREATE INDEX {{ get_index_name(this, 'event_id') }} (event_id)"
             - "GRANT SELECT ON {{ this }} TO dsanalyst"
           tags: "phoenix_events"
-        snowplow_phoenix_events:
-          alias: snowplow_phoenix_events
-          materialized: incremental
-          post-hook:
-            - "CREATE INDEX {{ get_index_name(this, 'event_datetime_event_name_event_id') }} (event_datetime, event_name, event_id)"
-            - "CREATE INDEX {{ get_index_name(this, 'session_id') }} (session_id)"
-            - "GRANT SELECT ON {{ this }} TO looker"
-            - "GRANT SELECT ON {{ this }} TO dsanalyst"
-          tags: "phoenix_events"
         snowplow_sessions:
           materialized: incremental
           post-hook:

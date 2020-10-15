@@ -11,7 +11,7 @@ SELECT
 	'seconds', max(event_datetime) - min(event_datetime)
     ) AS session_duration_seconds,
     count(DISTINCT CASE WHEN event_name = 'view' THEN "path" END) AS num_pages_viewed
-FROM {{ ref('snowplow_phoenix_events') }}
+FROM {{ ref('snowplow_raw_events') }}
 {% if is_incremental() %}
 -- this filter will only be applied on an incremental run
 WHERE event_datetime >= (select max(ss.landing_datetime) from {{this}} ss)
@@ -29,7 +29,7 @@ SELECT
 	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS event_id,
     last_value("path") OVER (PARTITION BY session_id ORDER BY event_datetime
 	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS exit_page
-FROM {{ ref('snowplow_phoenix_events') }}
+FROM {{ ref('snowplow_raw_events') }}
 {% if is_incremental() %}
 -- this filter will only be applied on an incremental run
 WHERE event_datetime >= (select max(ss.landing_datetime) from {{this}} ss)
@@ -41,11 +41,11 @@ SELECT
     session_id,
     first_value(referrer_host) OVER (PARTITION BY session_id ORDER BY event_datetime 
 	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS session_referrer_host,
-    first_value(page_utm_source) OVER (PARTITION BY session_id ORDER BY event_datetime
+    first_value(utm_source) OVER (PARTITION BY session_id ORDER BY event_datetime
 	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS session_utm_source,
-    first_value(page_utm_campaign) OVER (PARTITION BY session_id ORDER BY event_datetime 
+    first_value(utm_campaign) OVER (PARTITION BY session_id ORDER BY event_datetime
 	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS session_utm_campaign 
-FROM {{ ref('snowplow_phoenix_events') }}
+FROM {{ ref('snowplow_raw_events') }}
 {% if is_incremental() %}
 -- this filter will only be applied on an incremental run
 WHERE event_datetime >= (select max(ss.landing_datetime) from {{this}} ss)
