@@ -99,8 +99,6 @@ class ETLMonitoring:
                 'SELECT count(*) FROM public.snowplow_payload_event',
             'derived_snowplow_raw_events':
                 'SELECT count(*) FROM public.snowplow_raw_events',
-            'derived_snowplow_phoenix_events':
-                'SELECT count(*) FROM public.snowplow_phoenix_events',
             'derived_snowplow_sessions':
                 'SELECT count(*) FROM public.snowplow_sessions',
             'derived_phoenix_events_combined':

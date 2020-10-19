@@ -42,9 +42,9 @@ SELECT DISTINCT ON(s.event_datetime, s.event_name, s.event_id)
     s."host",
     s.query_parameters,
     s.clicked_link_url,
-    s.page_utm_source,
-    s.page_utm_medium,
-    s.page_utm_campaign,
+    s.utm_source as page_utm_source,
+    s.utm_medium as page_utm_medium,
+    s.utm_campaign as page_utm_campaign,
     s.referrer_host,
     s.referrer_path,
     s.referrer_source,
@@ -62,7 +62,7 @@ SELECT DISTINCT ON(s.event_datetime, s.event_name, s.event_id)
     s.northstar_id,
     s.device_id
 FROM
-    {{ ref('snowplow_phoenix_events') }} s
+    {{ ref('snowplow_raw_events') }} s
 {% if is_incremental() %}
 -- this filter will only be applied on an incremental run
 WHERE s.event_datetime >= (select max(pec.event_datetime) from {{this}} pec)
