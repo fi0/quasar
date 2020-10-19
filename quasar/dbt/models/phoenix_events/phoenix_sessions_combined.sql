@@ -20,7 +20,7 @@ WHERE p.landing_datetime >= (select max(psc.landing_datetime) from {{this}} psc)
 UNION ALL
 SELECT
     s.session_id,
-    s.event_id,
+    s.first_event_id,
     s.device_id,
     s.landing_datetime,
     s.ending_datetime,
@@ -37,4 +37,3 @@ FROM {{ ref('snowplow_sessions') }} s
 -- this filter will only be applied on an incremental run
 WHERE s.landing_datetime >= (select max(psc.landing_datetime) from {{this}} psc)
 {% endif %}
-

@@ -293,36 +293,66 @@ models:
   - name: snowplow_sessions
     description: Table containing user session data derived from snowplow_phoenix_events
     columns:
-        - name: session_id
-          description: '{{ doc("session_id") }}'
-
-        - name: event_id
-          description: '{{ doc("event_id") }}'
-
-        - name: device_id
-          description: '{{ doc("device_id") }}'
-
-        - name: landing_datetime
-          description: '{{ doc("landing_datetime") }}'
-
-        - name: ending_datetime
-          description: '{{ doc("ending_datetime") }}'
-
-        - name: session_duration_seconds
-          description: '{{ doc("session_duration_seconds") }}'
-
-        - name: num_pages_views
-          description: '{{ doc("num_pages_views") }}'
-
-        - name: landing_page
-          description: '{{ doc("landing_page") }}'
-
-        - name: exit_page
-          description: '{{ doc("exit_page") }}'
-
         - name: days_since_last_session
-          description: '{{ doc("days_since_last_session") }}'
-
+          description: '[Required] {{ doc("days_since_last_session") }}'
+          tests:
+            - not_null:
+                severity: warn
+        - name: device_id
+          description: '[Required] {{ doc("device_id") }}'
+          tests:
+            - unique:
+                severity: warn
+            - not_null:
+                severity: warn
+        - name: ending_datetime
+          description: '[Required] {{ doc("ending_datetime") }}'
+          tests:
+            - not_null:
+                severity: warn
+        - name: first_event_id
+          description: '[Required] First event id of the session. {{ doc("event_id") }}'
+          tests:
+            - not_null:
+                severity: warn
+        - name: exit_page
+          description: '[Required] {{ doc("exit_page") }}'
+          tests:
+            - not_null:
+                severity: warn
+        - name: landing_datetime
+          description: '[Required] {{ doc("landing_datetime") }}'
+          tests:
+            - not_null:
+                severity: warn
+        - name: landing_page
+          description: '[Required] {{ doc("landing_page") }}'
+          tests:
+            - not_null:
+                severity: warn
+        - name: num_pages_viewed
+          description: '[Required] {{ doc("num_pages_viewed") }}'
+          tests:
+            - not_null:
+                severity: warn
+        - name: session_duration_seconds
+          description: '[Required] {{ doc("session_duration_seconds") }}'
+          tests:
+            - is_between:
+                bottom_number: 0
+                top_number: 3600 # seconds
+                severity: warn
+        - name: session_id
+          description: '[Required] {{ doc("session_id") }}'
+          tests:
+            - not_null:
+                severity: warn
+        - name: session_referrer_host
+          description: '{{ doc("referrer_host") }} For this session.'
+        - name: session_utm_campaign
+          description: '{{ doc("utm_campaign") }} For this session.'
+        - name: session_utm_source
+          description: '{{ doc("utm_source") }} For this session.'
   - name: phoenix_events_combined
     description: Table combining Snowplow based web event data with legacy Puck data based on 7/12/2019 cutover date
     columns:
@@ -419,8 +449,8 @@ models:
         - name: session_duration_seconds
           description: '{{ doc("session_duration_seconds") }}'
 
-        - name: num_pages_views
-          description: '{{ doc("num_pages_views") }}'
+        - name: num_pages_viewed
+          description: '{{ doc("num_pages_viewed") }}'
 
         - name: landing_page
           description: '{{ doc("landing_page") }}'

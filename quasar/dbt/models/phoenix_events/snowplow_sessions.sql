@@ -25,8 +25,8 @@ SELECT
     session_id,
     first_value("path") OVER (PARTITION BY session_id ORDER BY event_datetime
 	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS landing_page,
-    first_value(event_id) OVER (PARTITION BY session_id ORDER BY event_datetime 
-	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS event_id,
+    first_value(event_id) OVER (PARTITION BY session_id ORDER BY event_datetime
+	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS first_event_id,
     last_value("path") OVER (PARTITION BY session_id ORDER BY event_datetime
 	ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS exit_page
 FROM {{ ref('snowplow_phoenix_events') }}
@@ -67,7 +67,7 @@ WHERE landing_datetime >= (select max(ss.landing_datetime) from {{this}} ss)
 )
 SELECT DISTINCT
 s.session_id,
-p.event_id,
+p.first_event_id,
 s.device_id,
 s.landing_datetime,
 s.ending_datetime,
@@ -78,7 +78,8 @@ s.session_duration_seconds,
 s.num_pages_viewed,
 p.landing_page,
 p.exit_page,
-date_part('day', s.landing_datetime - t.prev_session_endtime) AS days_since_last_session
+-- default to 0 days if there was no previous session
+COALESCE(date_part('day', s.landing_datetime - t.prev_session_endtime),0) AS days_since_last_session
 FROM sessions s
 LEFT JOIN entry_exit_pages p
 ON p.session_id = s.session_id

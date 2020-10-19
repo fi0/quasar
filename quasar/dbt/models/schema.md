@@ -316,7 +316,7 @@ ID of the device used
 {% enddocs %}
 
 {% docs referrer_host %}
-URL host of the referring site (eg. google.com). Only present if session is referred from some external site link (ex. Facebook, Google, Bing).
+URL host of the referring site (eg. google.com). Only present if session is referred from some external site link (ex. Facebook, Google, Bing). This would be NULL for anyone directly typing dosomething.org into a browser
 {% enddocs %}
 
 {% docs referrer_path %}
@@ -352,19 +352,19 @@ Certain pages have modals and therefore certain event actions will have it (e.g.
 {% enddocs %}
 
 {% docs landing_datetime %}
-When the session started in UTC (eg. 2018-01-01 12:00:00)
+Timestamp of when the session started, in UTC (eg. 2018-01-01 12:00:00)
 {% enddocs %}
 
 {% docs ending_datetime %}
-When the session ended in UTC (eg. 2018-01-01 12:00:00)
+Timestamp of when the session ended, in UTC (eg. 2018-01-01 12:00:00)
 {% enddocs %}
 
 {% docs session_duration_seconds %}
-Session duration in seconds
+Session duration in seconds.
 {% enddocs %}
 
-{% docs num_pages_views %}
-Number of pages viewed in session
+{% docs num_pages_viewed %}
+Number of view events in this session.
 {% enddocs %}
 
 {% docs landing_page %}
@@ -372,7 +372,7 @@ First page the user viewed in the session (eg. /us/facts/11-facts-about-bp-oil-s
 {% enddocs %}
 
 {% docs exit_page %}
-"Which page the user ended or exited their session from (eg. /us/campaigns/green-your-getaway)"
+Which page the user ended or exited their session from (eg. /us/campaigns/green-your-getaway)
 {% enddocs %}
 
 {% docs days_since_last_session %}
