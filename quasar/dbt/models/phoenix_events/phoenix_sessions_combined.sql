@@ -1,6 +1,6 @@
 SELECT 
     p.session_id,
-    p.event_id,
+    p.event_id as first_event_id,
     p.device_id,
     p.landing_datetime,
     p.end_datetime as ending_datetime,
