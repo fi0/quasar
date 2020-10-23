@@ -38,9 +38,8 @@ FROM
             -- It adds 3 fields:
             -- 1. min_view_datetime: The first time this device_id was active in this campaign_id
             -- 2. min_intent_datetime: The first time this device_id attempted to sign up to the campaign_id
-            -- 3. min_view_session_id: The first session_id that matches the action in min_view_datetime.
-            --    This is the session_id we attribute the first action (event) on this campaign_id
-            --    by this device_id.
+            -- 3. min_view_session_id: The first session_id that captured the first activity of this
+            --    device_id in this campaign_id.
             SELECT
               device_id,
               campaign_id,
