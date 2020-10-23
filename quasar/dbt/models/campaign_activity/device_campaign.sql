@@ -14,6 +14,7 @@ FROM
       dcj.campaign_id,
       dcj.min_view_session_id,
       dcj.min_view_datetime,
+      -- Let's add marketing enriching data here. Necessary for dashboards in Looker.
       CASE
         WHEN s.session_referrer_host = '' THEN NULL
         ELSE s.session_referrer_host
@@ -23,7 +24,8 @@ FROM
       dcj.min_intent_datetime
     FROM
       (
-        --was the device_campaign_session table
+        -- select the new window aggregated properties and group them so we get rid of duplicates
+        -- TODO: would a DISTINCT work for this instead?
         SELECT
           device_id,
           campaign_id,
@@ -32,6 +34,13 @@ FROM
           min_view_session_id
         FROM
           (
+            -- This query gets all the events that contain a campaign id (campaign_id is not null).
+            -- It adds 3 fields:
+            -- 1. min_view_datetime: The first time this device_id was active in this campaign_id
+            -- 2. min_intent_datetime: The first time this device_id attempted to sign up to the campaign_id
+            -- 3. min_view_session_id: The first session_id that matches the action in min_view_datetime.
+            --    This is the session_id we attribute the first action (event) on this campaign_id
+            --    by this device_id.
             SELECT
               device_id,
               campaign_id,
@@ -44,6 +53,8 @@ FROM
               ) over (
                 PARTITION by device_id || '-' || campaign_id
               ) AS min_intent_datetime,
+              -- If there are more than 1 events with the same campaign_id, device_id, and event_datetim, we
+              -- take the first (min) session_id ordered in asc order based on event_datetime.
               min(session_id) over (
                 PARTITION by device_id || '-' || campaign_id
                 ORDER BY
