@@ -44,10 +44,11 @@ FROM
               ) over (
                 PARTITION by device_id || '-' || campaign_id
               ) AS min_intent_datetime,
-              first_value(session_id) over (
+              min(session_id) over (
                 PARTITION by device_id || '-' || campaign_id
                 ORDER BY
-                  event_datetime RANGE BETWEEN UNBOUNDED PRECEDING
+                  event_datetime
+                  RANGE BETWEEN UNBOUNDED PRECEDING
                   AND UNBOUNDED FOLLOWING
               ) AS min_view_session_id,
               event_name,
