@@ -32,7 +32,7 @@ pipenv = "*"
 sh = "*"
 contentful = "*"
 python-dateutil = "*"
-dbt-postgres = "==0.16.1"
+dbt-postgres = "==0.18.1"
 jsonpickle = "*"
 
 [requires]
