@@ -1,23 +1,3 @@
-SELECT 
-    p.session_id,
-    p.event_id as first_event_id,
-    p.device_id,
-    p.landing_datetime,
-    p.end_datetime as ending_datetime,
-    p.referrer_host as session_referrer_host,
-    p.utm_source as session_utm_source,
-    p.utm_campaign as session_utm_campaign,
-    EXTRACT(EPOCH FROM (end_datetime - landing_datetime)) AS session_duration_seconds,
-    NULL as num_pages_viewed,
-    p.landing_page,
-    NULL as exit_page,
-    NULL as days_since_last_session
-FROM {{ source('web_events_historical', 'phoenix_sessions') }} p
-{% if is_incremental() %}
--- this filter will only be applied on an incremental run
-WHERE p.landing_datetime >= (select max(psc.landing_datetime) from {{this}} psc)
-{% endif %}
-UNION ALL
 SELECT
     s.session_id,
     s.first_event_id,
