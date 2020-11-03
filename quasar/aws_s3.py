@@ -2,6 +2,7 @@ import boto3
 import os
 import collections
 
+
 s3 = boto3.client('s3')
 rds = boto3.client('rds')
 
@@ -51,14 +52,13 @@ def check_backup_status():
 def start_export_task():
     rds_snapshots = list_snapshots()
     s3_backups = list_backups()
+    task_status = check_backup_status()
     # Check which of these snapshots is not saved in the s3 bucket
     # Export RDS snapshots to S3.
-    to_backup = list(set(rds_snapshots) - set(s3_backups))
-
-    task_status = check_backup_status()
+    to_backup = list(set(rds_snapshots) - set(s3_backups) - set(task_status.keys()))
 
     backup_slots = 5 - task_status['running']  # StartExportTask only allows for 5 concurrent backups
-    if backup_slots > 5:
+    if backup_slots <= 5:
         try:
             i = 0
             if i <= backup_slots:
@@ -68,8 +68,6 @@ def start_export_task():
                                           S3BucketName=os.environ.get('EXPORT_S3_BUCKET_NAME'),
                                           IamRoleArn=os.environ.get('EXPORT_ROLE_ARN'),
                                           KmsKeyId=os.environ.get('EXPORT_KMS_ID'))
-                        i += 1
-
-        except (ExportTaskLimitReachedFault) as export_limit:
-            print('Wait for backups to complete before before attempting. \
-                {error}'.format(error=export_limit))
+                    i += 1
+        except Exception as e:
+            print(e)
