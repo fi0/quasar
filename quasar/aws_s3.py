@@ -5,9 +5,9 @@ import collections
 s3 = boto3.client('s3')
 rds = boto3.client('rds')
 
-# Backup the newest snapshot each day, check to make sure we're not backing it up twice
-# Make sure the backup was successful
-# Put them in Glacier in 30 days
+# Backup the newest snapshot each day, check to make sure we're not backing it
+# up twice.
+
 
 def list_backups():
     s3_objects = s3.list_objects_v2(Bucket='dosomething-quasar-archive', Delimiter="/")
@@ -15,6 +15,7 @@ def list_backups():
     for folder in s3_objects['CommonPrefixes']:
         folders.append(folder['Prefix'][:-1])
     return folders
+
 
 def list_snapshots():
     response = rds.describe_db_snapshots(DBInstanceIdentifier='quasar-prod')
@@ -38,13 +39,14 @@ def check_backup_status():
     task_status['running'] = 0
 
     for task in task_progress['ExportTasks']:
-        task_status[task['ExportTaskIdentifier']] = {"status" : task['Status']}
+        task_status[task['ExportTaskIdentifier']] = {"status":task['Status']}
         if (task['Status'] in ('IN_PROGRESS', 'STARTING')):
             task_status['running'] += 1
         if ('WarningMessage' in task):
-            task_status[task['ExportTaskIdentifier']].update({"msg" : task['WarningMessage']})
+            task_status[task['ExportTaskIdentifier']].update({"msg":task['WarningMessage']})
 
     return task_status
+
 
 def start_export_task():
     rds_snapshots = list_snapshots()
@@ -55,18 +57,19 @@ def start_export_task():
 
     task_status = check_backup_status()
 
-    backup_slots = 5 - task_status['running'] # StartExportTask only allows for 5 concurrent backups
+    backup_slots = 5 - task_status['running']  # StartExportTask only allows for 5 concurrent backups
     if backup_slots > 5:
         try:
             i = 0
             if i <= backup_slots:
                 for snapshot in to_backup:
-                        rds.start_export_task(ExportTaskIdentifier=snapshot, # S3 folder name
-                                                   SourceArn=rds_snapshots[snapshot], # RDS Snapshot ARN
-                                                   S3BucketName=os.environ.get('EXPORT_S3_BUCKET_NAME'),
-                                                   IamRoleArn=os.environ.get('EXPORT_ROLE_ARN'),
-                                                   KmsKeyId=os.environ.get('EXPORT_KMS_ID'))
+                    rds.start_export_task(ExportTaskIdentifier=snapshot,  # S3 folder name
+                                          SourceArn=rds_snapshots[snapshot],  # RDS Snapshot ARN
+                                          S3BucketName=os.environ.get('EXPORT_S3_BUCKET_NAME'),
+                                          IamRoleArn=os.environ.get('EXPORT_ROLE_ARN'),
+                                          KmsKeyId=os.environ.get('EXPORT_KMS_ID'))
                         i += 1
 
         except (ExportTaskLimitReachedFault) as export_limit:
-            print('Wait for backups to complete before before attempting. {error}'.format(error=export_limit))
+            print('Wait for backups to complete before before attempting. \
+                {error}'.format(error=export_limit))
