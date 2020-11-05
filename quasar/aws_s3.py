@@ -1,5 +1,6 @@
 import boto3
 import os
+import sys
 import collections
 
 
@@ -71,3 +72,4 @@ def start_export_task():
                     i += 1
         except Exception as e:
             print(e)
+            sys.exit(-1)  # Fail the Jenkins job if there's an exception
