@@ -40,8 +40,8 @@ models:
       - &cio_message_name
         name: cio_message_name
         description: the name of the campaign email
-  - name: cio_email_sent_event
-    description: Table containing Cio email sent events
+  - name: cio_email_events
+    description: Table containing CIO email open, converted, bounced, and unsubscribed events
     columns:
       - *email_id
       - *customer_id
@@ -50,36 +50,6 @@ models:
       - &subject
         name: subject
         description: email subject
-      - *event_id
-      - *timestamp
-      - *cio_campaign_id
-      - *cio_campaign_name
-      - *cio_campaign_type
-      - *cio_message_id
-      - *cio_message_name
-  - name: cio_email_bounced_event
-    description: Table containing CIO email bounced events
-    columns:
-      - *email_id
-      - *customer_id
-      - *email_address
-      - *template_id
-      - *subject
-      - *event_id
-      - *timestamp
-      - *cio_campaign_id
-      - *cio_campaign_name
-      - *cio_campaign_type
-      - *cio_message_id
-      - *cio_message_name
-  - name: cio_email_event
-    description: Table containing CIO email open, converted, bounced, and unsubscribed events
-    columns:
-      - *email_id
-      - *customer_id
-      - *email_address
-      - *template_id
-      - *subject
       - &href
         name: href
         description: Only on "clicked" events, the fully rendered URL of the link that was clicked.

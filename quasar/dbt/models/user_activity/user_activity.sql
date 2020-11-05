@@ -144,7 +144,7 @@ LEFT JOIN (
 ON u.northstar_id = mel.northstar_id
 LEFT JOIN (
     SELECT customer_id, max("timestamp") AS most_recent_email_open
-    FROM {{ ref('cio_email_event') }}
+    FROM {{ ref('cio_email_events') }}
     WHERE event_type = 'email_opened'
     GROUP BY customer_id
 ) email_opens
