@@ -417,23 +417,13 @@ models:
             - "CREATE INDEX {{ get_index_name(this, 'timestamp_nulls_first_event_type') }} (timestamp nulls first, event_type)"
             - "{{ grant_select_to(this, ['dsanalyst', 'looker']) }}"
           +tags: "cio"
-        cio_email_sent_event:
+        cio_email_events:
           +materialized: table
           +post-hook:
             - "CREATE INDEX {{ get_index_name(this, 'event_id') }} (event_id)"
-            - "CREATE INDEX {{ get_index_name(this, 'timestamp_nulls_first') }} (timestamp nulls first)"
-            - "{{ grant_select_to(this, ['dsanalyst', 'looker']) }}"
-          +tags: "cio"
-        cio_email_bounced_event:
-          +materialized: table
-          +post-hook:
-            - "CREATE INDEX {{ get_index_name(this, 'event_id') }} (event_id)"
-            - "CREATE INDEX {{ get_index_name(this, 'timestamp_nulls_first') }} (timestamp nulls first)"
-            - "{{ grant_select_to(this, ['dsanalyst', 'looker']) }}"
-          +tags: "cio"
-        cio_email_event:
-          +materialized: table
-          +post-hook:
+            - "CREATE INDEX {{ get_index_name(this, 'email_id') }} (email_id)"
+            - "CREATE INDEX {{ get_index_name(this, 'template_id') }} (template_id)"
+            - "CREATE INDEX {{ get_index_name(this, 'customer_id') }} (customer_id)"
             - "CREATE INDEX {{ get_index_name(this, 'event_id') }} (event_id)"
             - "CREATE INDEX {{ get_index_name(this, 'timestamp_nulls_first') }} (timestamp nulls first)"
             - "CREATE INDEX {{ get_index_name(this, 'timestamp_nulls_first_event_type') }} (timestamp nulls first, event_type)"

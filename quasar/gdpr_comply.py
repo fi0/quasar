@@ -15,10 +15,9 @@ def remove_northstar():
 
 def remove_cio():
     # Removes CIO user data for GDPR compliance.
+    # TODO: Update with condensed CIO tables
     data = {'customer_event': os.getenv('CIO_CUSTOMER_EVENT'),
-            'email_bounced': os.getenv('CIO_EMAIL_BOUNCED'),
-            'email_event': os.getenv('CIO_EMAIL_EVENT'),
-            'email_sent': os.getenv('CIO_EMAIL_SENT'),
+            'email_events': os.getenv('CIO_EMAIL_EVENTS'),
             'event_log': os.getenv('CIO_EVENT_LOG'),
             'users': os.getenv('NORTHSTAR_FT_SCHEMA')}
     run_sql_file('./data/sql/misc/gdpr_cio_removal.sql', data)

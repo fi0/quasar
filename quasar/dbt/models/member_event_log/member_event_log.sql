@@ -161,10 +161,10 @@ FROM (
         'clicked_link' AS "action",
         '7' AS action_id,
         cio.template_id::CHARACTER AS "source",
-        cio.event_id AS action_serial_id, 
+        cio.event_id AS action_serial_id,
         'email' AS "channel"
     FROM
-        {{ ref('cio_email_event') }} cio
+        {{ ref('cio_email_events') }} cio
     WHERE
     	--Filter to clicks within emails event log
         cio.event_type = 'email_clicked'
